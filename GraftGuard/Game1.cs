@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard
 {
-    enum GameState {
+    enum TimeState {
         Night,
         Dawn,
         Day
@@ -15,7 +15,7 @@ namespace GraftGuard
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        private GameState state;
+        private TimeState timeState;
         private float timer;
 
         private static readonly float NightTimeLength = 5;
@@ -31,7 +31,7 @@ namespace GraftGuard
 
         protected override void Initialize()
         {
-            this.state = GameState.Night;
+            this.timeState = TimeState.Night;
             inputManager = new InputManager();
 
             base.Initialize();
@@ -49,23 +49,23 @@ namespace GraftGuard
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            switch (state) {
-                case GameState.Night:
+            switch (timeState) {
+                case TimeState.Night:
                     timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer <= 0) {
-                        state = GameState.Dawn;
+                        timeState = TimeState.Dawn;
                         timer = DawnTimeLength;
                     }
                     break;
 
-                case GameState.Dawn:
+                case TimeState.Dawn:
                     timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer <= 0) {
-                        state = GameState.Day;
+                        timeState = TimeState.Day;
                     }
                     break;
 
-                case GameState.Day:
+                case TimeState.Day:
                     break;
             }
 
@@ -78,7 +78,7 @@ namespace GraftGuard
         /// Start Night
         /// </summary>
         public void StartNight() {
-            state = GameState.Night;
+            timeState = TimeState.Night;
             timer = NightTimeLength;
         }
 

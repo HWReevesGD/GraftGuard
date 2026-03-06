@@ -17,7 +17,7 @@ namespace GraftGuard
         // Properties
         public float CenterX { get => center.X; set => center.X = value; }
         public float CenterY { get => center.Y; set => center.Y = value; }
-        public Vector2 Center { get => center; set => center = value;  }
+        public Vector2 Center { get => center; }
         public float Radius { get; set; }
 
         // Constructor

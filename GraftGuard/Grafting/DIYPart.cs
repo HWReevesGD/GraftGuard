@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard
+namespace GraftGuard.Grafting
 {
-    internal class TowerManager
+    internal class DIYPart
     {
     }
 }

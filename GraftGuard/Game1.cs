@@ -11,6 +11,7 @@ namespace GraftGuard
         private SpriteBatch _spriteBatch;
 
         private InputManager inputManager;
+        private World _testingWorld;
 
         public Game1()
         {
@@ -32,6 +33,9 @@ namespace GraftGuard
 
             // Loading Tower Content
             Tower.LoadContent(Content);
+
+            // Add Testing World
+            _testingWorld = new World();
         }
 
         protected override void Update(GameTime gameTime)

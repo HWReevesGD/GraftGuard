@@ -63,7 +63,6 @@ namespace GraftGuard
             this.arial = Content.Load<SpriteFont>("arial");
 
             Player.LoadContent(Content);
-            this.player = new Player(Vector2.Zero, new Vector2(50, 50));
 
             // TODO: use this.Content to load your game content here
             // Loading Tower Content
@@ -127,8 +126,6 @@ namespace GraftGuard
                         break;
                     }
 
-                    player.Update(gameTime, inputManager);
-
                     // handle game timers
 
                     switch (timeState)
@@ -157,7 +154,7 @@ namespace GraftGuard
             }
 
             // TODO: call Update for all GameObjects here
-            _testingWorld.Update(gameTime);
+            _testingWorld.Update(gameTime, inputManager);
 
             base.Update(gameTime);
         }
@@ -179,7 +176,6 @@ namespace GraftGuard
             // TODO: Add your drawing code here
 
             // TODO: call Draw for all GameObjects here
-            _testingWorld.Draw(_spriteBatch, gameTime);
 
             switch (gameState)
             {
@@ -196,14 +192,12 @@ namespace GraftGuard
                     break;
 
                 case GameState.Game:
-                    this.player.Draw(gameTime, _spriteBatch);
+                    _testingWorld.Draw(_spriteBatch, gameTime);
                     _spriteBatch.DrawString(
                         arial,
                         $"GAME\n" +
                         $"STATE: {timeState}\n" +
-                        $"TIMER: {timer}\n" +
-                        $"PLAYER POSITION: {player.Position}\n" +
-                        $"MOVE DIR: {inputManager.GetMovementDirection()}",
+                        $"TIMER: {timer}\n",
                         Vector2.Zero,
                         Color.White
                     );

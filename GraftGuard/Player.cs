@@ -23,7 +23,7 @@ namespace GraftGuard
             Player.texture = content.Load<Texture2D>("playerplaceholder");
         }
 
-        public Player(Vector2 position, Vector2 hitboxSize) : base(position, hitboxSize, Player.texture)
+        public Player(Vector2 position) : base(position, new Vector2(50, 50), Player.texture)
         {
 
         }

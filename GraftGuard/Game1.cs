@@ -20,6 +20,7 @@ namespace GraftGuard
 
         private static readonly double NightTimeLength = 5;
         private static readonly double DawnTimeLength = 5;
+        private InputManager inputManager;
 
         public Game1()
         {
@@ -30,8 +31,8 @@ namespace GraftGuard
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
             this.state = GameState.Night;
+            inputManager = new InputManager();
 
             base.Initialize();
         }

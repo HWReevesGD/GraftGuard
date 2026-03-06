@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace GraftGuard
 {
-    internal class Tower : GameObject
+    internal class Part : GameObject
     {
-        public Tower(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
+        public Part(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
         {
         }
     }

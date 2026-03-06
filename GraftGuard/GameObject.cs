@@ -10,6 +10,18 @@ namespace GraftGuard
 {
     internal class GameObject
     {
+        public GameObject(Vector2 position, Vector2 size, Texture2D texture)
+        {
+            Position = position;
+            Size = size;
+            Texture = texture;
+        }
+
+        public Vector2 Position { get; set; }
+        public Vector2 Size { get; set; }
+        public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
+        public Texture2D Texture { get; set; }
+
         /// <summary>
         /// Update call that propagates down from Game1
         /// </summary>
@@ -25,7 +37,7 @@ namespace GraftGuard
         /// <param name="gameTime"></param>
         public virtual void Draw(GameTime gameTime, SpriteBatch batch)
         {
-
+            batch.Draw(Texture, Hitbox, Color.White);
         }
     }
 }

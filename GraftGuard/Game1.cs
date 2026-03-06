@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Grafting;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -10,6 +11,7 @@ namespace GraftGuard
         private SpriteBatch _spriteBatch;
 
         private InputManager inputManager;
+        private World _testingWorld;
 
         public Game1()
         {
@@ -29,7 +31,11 @@ namespace GraftGuard
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Loading Tower Content
+            Tower.LoadContent(Content);
+
+            // Add Testing World
+            _testingWorld = new World();
         }
 
         protected override void Update(GameTime gameTime)
@@ -40,6 +46,7 @@ namespace GraftGuard
             // TODO: Add your update logic here
 
             // TODO: call Update for all GameObjects here
+            _testingWorld.Update(gameTime);
 
             base.Update(gameTime);
         }

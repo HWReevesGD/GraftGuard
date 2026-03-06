@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard
+namespace GraftGuard.Grafting.Towers
 {
-    internal class Tower : GameObject
+    internal class TowerSpinner : Tower
     {
-        public Tower(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
+        public TowerSpinner(Vector2 position, Vector2 size) : base(position, size, TexturePlaceholder)
         {
         }
     }

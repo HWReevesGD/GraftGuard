@@ -11,16 +11,16 @@ namespace GraftGuard
 {
     internal class GameObject
     {
-        public GameObject(Vector2 position, Vector2 size, Texture2D texture)
+        public GameObject(Vector2 position, Vector2 hitboxSize, Texture2D texture)
         {
             Position = position;
-            Size = size;
+            HitboxSize = hitboxSize;
             Texture = texture;
         }
 
         public Vector2 Position { get; set; }
-        public Vector2 Size { get; set; }
-        public Rectangle Drawbox => new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
+        public Vector2 HitboxSize { get; set; }
+        public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)HitboxSize.X, (int)HitboxSize.Y);
         public Texture2D Texture { get; set; }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace GraftGuard
         /// <param name="gameTime"></param>
         public virtual void Draw(GameTime gameTime, SpriteBatch batch)
         {
-            batch.Draw(Texture, Drawbox, Color.White);
+            batch.Draw(Texture, Position, Color.White);
         }
     }
 }

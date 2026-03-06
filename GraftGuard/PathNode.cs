@@ -17,8 +17,7 @@ namespace GraftGuard
         private Circle debugCircle;
 
         // Properties
-        public float X {  get => position.X ; }
-        public float Y { get => position.Y ; }
+        public Vector2 Position { get => position ; }
 
         // Constructor
         /// <summary>

@@ -14,6 +14,13 @@ namespace GraftGuard
 {
     internal class GameObject
     {
+        // Properties
+        public Vector2 Position { get; set; }
+        public Vector2 HitboxSize { get; set; }
+        public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)HitboxSize.X, (int)HitboxSize.Y);
+        public Texture2D Texture { get; set; }
+
+        // Constructor
         public GameObject(Vector2 position, Vector2 hitboxSize, Texture2D texture)
         {
             Position = position;
@@ -21,11 +28,7 @@ namespace GraftGuard
             Texture = texture;
         }
 
-        public Vector2 Position { get; set; }
-        public Vector2 HitboxSize { get; set; }
-        public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)HitboxSize.X, (int)HitboxSize.Y);
-        public Texture2D Texture { get; set; }
-
+        // Methods
         /// <summary>
         /// Update call that propagates down from Game1
         /// </summary>

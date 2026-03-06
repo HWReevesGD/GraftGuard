@@ -63,6 +63,8 @@ namespace GraftGuard
             this.player = new Player(Vector2.Zero, new Vector2(150, 150), playerTexture);
 
             // TODO: use this.Content to load your game content here
+            // Loading Tower Content
+            Tower.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)

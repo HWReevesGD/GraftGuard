@@ -33,17 +33,8 @@ namespace GraftGuard
 
         // Methods
         /// <summary>
-        /// Ensures the circle stays on the node even if the node is moved for some reason
-        /// </summary>
-        /// <param name="gameTime"></param>
-        public void Update(GameTime gameTime)
-        {
-            if (position != debugCircle.Center)
-                debugCircle.Center = position;
-        }
-
-        /// <summary>
         /// Draws the circle
+        /// this should only be called if game is in debug mode
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)

@@ -45,6 +45,8 @@ namespace GraftGuard
             return direction;
         }
 
+        public bool WasKeyPressStarted(Keys key) => currentKeyState.IsKeyDown(key) && !prevKeyState.IsKeyDown(key);
+
         #endregion
 
         #region Mouse Helpers

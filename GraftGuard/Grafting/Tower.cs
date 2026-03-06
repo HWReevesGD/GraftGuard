@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,13 @@ namespace GraftGuard.Grafting
 {
     internal class Tower : GameObject
     {
+        private static Texture2D PlaceholderTower;
+
+        public static void LoadContent(ContentManager content)
+        {
+            PlaceholderTower = content.Load<Texture2D>("tower_placeholder");
+        }
+
         public enum Slot
         {
             First,

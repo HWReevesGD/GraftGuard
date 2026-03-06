@@ -25,11 +25,13 @@ namespace GraftGuard
 
         // Methods
         /// <summary>
-        /// Moves the enemy object towards the target
+        /// Moves the enemy object by having it navigate along a list of PathNodes
         /// </summary>
-        /// <param name="target">the PathNode object that it is moving towards</param>
-        public void Move(PathNode target)
+        /// <param name="route">the PathNode objects that it is moving along</param>
+        public void Move(List<PathNode> route)
         {
+            PathNode target = route[0]; // Temp
+
             // Get the unit vector of the direction from the enemy to the node
             Vector2 dirVec = target.Position - this.Position;
             dirUnitVec = dirVec / dirVec.Length();

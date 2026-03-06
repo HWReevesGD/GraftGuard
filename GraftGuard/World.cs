@@ -15,6 +15,7 @@ namespace GraftGuard
         // Fields
         private List<PathNode> pathNodes;
         private List<Enemy> enemies;
+        private Player player;
 
         // Properties
         public TowerManager TowerManager { get; set; }
@@ -25,17 +26,20 @@ namespace GraftGuard
             pathNodes = new List<PathNode>();
             enemies = new List<Enemy>();
             TowerManager = new TowerManager();
+            player = new Player(Vector2.Zero);
         }
 
         // Methods
-        public void Update(GameTime gameTime)
+        public void Update(GameTime gameTime, InputManager inputManager)
         {
             TowerManager.Update(gameTime);
+            player.Update(gameTime, inputManager);
         }
 
         public void Draw(SpriteBatch batch, GameTime gameTime)
         {
             TowerManager.Draw(batch, gameTime);
+            player.Draw(gameTime, batch);
         }
     }
 }

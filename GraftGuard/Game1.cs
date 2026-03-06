@@ -46,7 +46,7 @@ namespace GraftGuard
             // TODO: Add your update logic here
 
             // TODO: call Update for all GameObjects here
-            _testingWorld.Update();
+            _testingWorld.Update(gameTime);
 
             base.Update(gameTime);
         }

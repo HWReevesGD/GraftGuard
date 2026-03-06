@@ -15,11 +15,22 @@ namespace GraftGuard
         public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)Size.X, (int)Size.Y);
         public Texture2D Texture { get; set; }
 
-
-
-        public virtual void Draw(SpriteBatch batch)
+        /// <summary>
+        /// Update call that propagates down from Game1
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public virtual void Update(GameTime gameTime)
         {
 
+        }
+
+        /// <summary>
+        /// Draw call that propagates down from Game1
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public virtual void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            batch.Draw(Texture, Hitbox, Color.White);
         }
     }
 }

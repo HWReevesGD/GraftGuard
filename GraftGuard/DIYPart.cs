@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GraftGuard
 {
-    internal class DIYPart
+    internal class DIYPart : Part
     {
     }
 }

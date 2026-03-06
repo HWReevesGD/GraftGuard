@@ -179,9 +179,7 @@ namespace GraftGuard
             // TODO: Add your drawing code here
 
             // TODO: call Draw for all GameObjects here
-            _spriteBatch.Begin();
             _testingWorld.Draw(_spriteBatch, gameTime);
-            _spriteBatch.End();
 
             switch (gameState)
             {

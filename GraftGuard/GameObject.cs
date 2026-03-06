@@ -8,5 +8,6 @@ namespace GraftGuard
 {
     internal class GameObject
     {
+        
     }
 }

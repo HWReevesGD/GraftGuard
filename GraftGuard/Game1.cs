@@ -126,12 +126,15 @@ namespace GraftGuard
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            _spriteBatch.Begin();
+
             // TODO: Add your drawing code here
 
             // TODO: call Draw for all GameObjects here
 
             this.player.Draw(gameTime, _spriteBatch);
 
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }

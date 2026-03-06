@@ -11,11 +11,11 @@ namespace GraftGuard.Grafting
 {
     internal class Tower : GameObject
     {
-        private static Texture2D PlaceholderTower;
+        public static Texture2D TexturePlaceholder { get; private set; }
 
         public static void LoadContent(ContentManager content)
         {
-            PlaceholderTower = content.Load<Texture2D>("tower_placeholder");
+            TexturePlaceholder = content.Load<Texture2D>("tower_placeholder");
         }
 
         public enum Slot

@@ -29,7 +29,8 @@ namespace GraftGuard
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            // Loading Tower Content
+            Tower.LoadContent(Content);
         }
 
         protected override void Update(GameTime gameTime)

@@ -13,8 +13,22 @@ namespace GraftGuard
 {
     internal class Player : GameObject
     {
+        private static readonly float Speed = 15;
+
         public Player(Vector2 position, Vector2 hitboxSize, Texture2D texture) : base(position, hitboxSize, texture)
         {
+
+        }
+
+        public override void Update(GameTime gameTime, InputManager inputManager)
+        {
+            Vector2 moveVector = inputManager.GetMovementDirection();
+            base.Position += moveVector * Speed;
+        }
+
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            base.Draw(gameTime, base.Hitbox, batch);
         }
     }
 }

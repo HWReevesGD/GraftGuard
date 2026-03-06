@@ -32,8 +32,9 @@ namespace GraftGuard
         /// <summary>
         /// Update call that propagates down from Game1
         /// </summary>
-        /// <param name="gameTime"></param>
-        public virtual void Update(GameTime gameTime)
+        /// <param name="gameTime">Current frame GameTime</param>
+        /// <param name="inputManager">InputManager</param>
+        public virtual void Update(GameTime gameTime, InputManager inputManager)
         {
 
         }
@@ -41,10 +42,22 @@ namespace GraftGuard
         /// <summary>
         /// Draw call that propagates down from Game1
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Current frame GameTime</param>
+        /// <param name="batch">SpriteBatch</param>
         public virtual void Draw(GameTime gameTime, SpriteBatch batch)
         {
             batch.Draw(Texture, Position, Color.White);
+        }
+
+        /// <summary>
+        /// Draw call that takes in a Rectangle for the drawing bounds
+        /// </summary>
+        /// <param name="gameTime">Current frame GameTime</param>
+        /// <param name="bounds">bounds of the texture to draw</param>
+        /// <param name="batch">SpriteBatch</param>
+        public virtual void Draw(GameTime gameTime, Rectangle bounds, SpriteBatch batch)
+        {
+            batch.Draw(Texture, bounds, Color.White);
         }
     }
 }

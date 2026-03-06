@@ -70,22 +70,53 @@ namespace GraftGuard
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
+            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            //    Exit();
+
+            inputManager.Update();
 
             switch (gameState)
             {
                 case GameState.MainMenu:
+                    if (inputManager.WasKeyPressStarted(Keys.Escape))
+                    {
+                        Exit();
+                        break;
+                    }
+                    else if (inputManager.WasKeyPressStarted(Keys.Enter))
+                    {
+                        gameState = GameState.Game;
+                    }
                     break;
 
                 case GameState.Paused:
+                    if (inputManager.WasKeyPressStarted(Keys.Escape))
+                    {
+                        gameState = GameState.MainMenu;
+                        break;
+                    }
+                    else if (inputManager.WasKeyPressStarted(Keys.Enter))
+                    {
+                        gameState = GameState.Game;
+                    }
                     break;
 
                 case GameState.GameOver:
+                    if (inputManager.WasKeyPressStarted(Keys.Escape))
+                    {
+                        gameState = GameState.MainMenu;
+                        break;
+                    }
                     break;
 
                 case GameState.Game:
                     // TODO: handle gameplay inputs here
+
+                    if (inputManager.WasKeyPressStarted(Keys.Escape))
+                    {
+                        gameState = GameState.Paused;
+                        break;
+                    }
 
                     player.Update(gameTime, inputManager);
 

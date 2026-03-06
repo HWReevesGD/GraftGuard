@@ -21,7 +21,6 @@
 /build:Arial.spritefont
 
 #begin playerplaceholder.png
-#begin Placeholder/TowerPlaceholder.png
 #begin Placeholder/tower_placeholder.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -33,6 +32,5 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:playerplaceholder.png
-/build:Placeholder/TowerPlaceholder.png
 /build:Placeholder/tower_placeholder.png
 

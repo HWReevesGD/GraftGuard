@@ -38,7 +38,7 @@ namespace GraftGuard
         #region Keyboard Helpers
 
         public bool IsKeyDown(Keys key) => currentKeyState.IsKeyDown(key);
-
+        
         public Vector2 GetMovementDirection()
         {
             Vector2 direction = Vector2.Zero;
@@ -50,6 +50,8 @@ namespace GraftGuard
             if (direction != Vector2.Zero) direction.Normalize();
             return direction;
         }
+
+        public bool WasKeyPressStarted(Keys key) => currentKeyState.IsKeyDown(key) && !prevKeyState.IsKeyDown(key);
 
         #endregion
 

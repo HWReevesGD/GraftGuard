@@ -10,7 +10,6 @@ namespace GraftGuard
 {
     internal class GameObject
     {
-
         /// <summary>
         /// Update call that propagates down from Game1
         /// </summary>

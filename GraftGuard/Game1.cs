@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Towers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -36,6 +37,10 @@ namespace GraftGuard
 
             // Add Testing World
             _testingWorld = new World();
+
+            // Testing Towers (Testing only!)
+            TowerManager t = _testingWorld.TowerManager;
+            t.AddTower(new TowerSpinner(new Vector2(200, 200)));
         }
 
         protected override void Update(GameTime gameTime)
@@ -58,6 +63,9 @@ namespace GraftGuard
             // TODO: Add your drawing code here
 
             // TODO: call Draw for all GameObjects here
+            _spriteBatch.Begin();
+            _testingWorld.Draw(_spriteBatch, gameTime);
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }

@@ -10,7 +10,7 @@ namespace GraftGuard.Grafting.Towers
 {
     internal class TowerSpinner : Tower
     {
-        public TowerSpinner(Vector2 position, Vector2 size) : base(position, size, TexturePlaceholder)
+        public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholder)
         {
         }
     }

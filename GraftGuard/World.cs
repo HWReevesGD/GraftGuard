@@ -23,5 +23,10 @@ namespace GraftGuard
         {
             TowerManager.Update(gameTime);
         }
+
+        public void Draw(SpriteBatch batch, GameTime gameTime)
+        {
+            TowerManager.Draw(batch, gameTime);
+        }
     }
 }

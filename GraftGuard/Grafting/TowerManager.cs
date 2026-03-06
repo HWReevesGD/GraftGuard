@@ -20,5 +20,18 @@ namespace GraftGuard.Grafting
                 tower.Update(gameTime);
             }
         }
+
+        public void Draw(SpriteBatch batch, GameTime gameTime)
+        {
+            foreach (Tower tower in Towers)
+            {
+                tower.Draw(gameTime, batch);
+            }
+        }
+
+        public void AddTower(Tower tower)
+        {
+            Towers.Add(tower);
+        }
     }
 }

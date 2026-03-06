@@ -68,6 +68,7 @@ namespace GraftGuard
             // TODO: use this.Content to load your game content here
             // Loading Tower Content
             Tower.LoadContent(Content);
+            PartDefinition.LoadContent(Content);
 
             // Add Testing World
             _testingWorld = new World();

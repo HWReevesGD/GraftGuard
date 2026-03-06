@@ -13,6 +13,7 @@ namespace GraftGuard.Grafting
     {
         public static Texture2D TexturePlaceholder1;
 
+        public string Name;
         public float BaseDamge;
         public float SpeedModifier;
         public float ArmorModifier;
@@ -27,9 +28,16 @@ namespace GraftGuard.Grafting
             TexturePlaceholder1 = content.Load<Texture2D>("Placeholder/placeholder_part_1");
         }
 
-        public PartDefinition(Texture2D texture, float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f, float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f)
+        public PartDefinition(string name, Texture2D texture, float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f, float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f)
         {
+            Name = name;
             Texture = texture;
+            BaseDamge = baseDamage;
+            SpeedModifier = speedModifier;
+            ArmorModifier = armorModifier;
+            RangeModifier = rangeModifier;
+            CriticalModifier = criticalModifier;
+            HealthModifier = healthModifier;
         }
     }
 }

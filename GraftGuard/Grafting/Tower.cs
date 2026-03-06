@@ -26,7 +26,7 @@ namespace GraftGuard.Grafting
             Fourth,
         }
 
-        private PartDefinition[] _attachedParts;
+        protected PartDefinition[] _attachedParts;
         /// <summary>
         /// Constructs a Tower with Empty Parts
         /// </summary>

@@ -11,9 +11,12 @@ namespace GraftGuard
 {
     internal class Player : GameObject
     {
-        private Vector2 position;
-
         private static readonly float Speed = 15;
+
+        public Player(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
+        {
+
+        }
 
         public override void Update(GameTime gameTime)
         {
@@ -33,7 +36,7 @@ namespace GraftGuard
             Vector2 moveVector = new Vector2(xOffset, yOffset);
             moveVector.Normalize();
 
-            position += moveVector * Speed;
+            base.Position += moveVector * Speed;
         }
     }
 }

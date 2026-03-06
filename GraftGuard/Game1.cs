@@ -37,6 +37,8 @@ namespace GraftGuard
 
             // TODO: Add your update logic here
 
+            // TODO: call Update for all GameObjects here
+
             base.Update(gameTime);
         }
 
@@ -45,6 +47,8 @@ namespace GraftGuard
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            // TODO: call Draw for all GameObjects here
 
             base.Draw(gameTime);
         }

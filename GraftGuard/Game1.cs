@@ -27,6 +27,8 @@ namespace GraftGuard
         private TimeState timeState;
         private float timer;
 
+        private SpriteFont arial;
+
         private static readonly float NightTimeLength = 5;
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
@@ -55,8 +57,10 @@ namespace GraftGuard
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            this.arial = Content.Load<SpriteFont>("arial");
+
             Texture2D playerTexture = Content.Load<Texture2D>("playerplaceholder");
-            this.player = new Player(Vector2.Zero, new Vector2(50, 50), playerTexture);
+            this.player = new Player(Vector2.Zero, new Vector2(150, 150), playerTexture);
 
             // TODO: use this.Content to load your game content here
         }
@@ -132,7 +136,32 @@ namespace GraftGuard
 
             // TODO: call Draw for all GameObjects here
 
-            this.player.Draw(gameTime, _spriteBatch);
+            switch (gameState)
+            {
+                case GameState.MainMenu:
+                    _spriteBatch.DrawString(arial, "MAIN MENU", Vector2.Zero, Color.White);
+                    break;
+
+                case GameState.Paused:
+                    _spriteBatch.DrawString(arial, "PAUSED", Vector2.Zero, Color.White);
+                    break;
+
+                case GameState.GameOver:
+                    _spriteBatch.DrawString(arial, "GAME OVER", Vector2.Zero, Color.White);
+                    break;
+
+                case GameState.Game:
+                    this.player.Draw(gameTime, _spriteBatch);
+                    _spriteBatch.DrawString(
+                        arial,
+                        $"GAME\n" +
+                        $"STATE: {timeState}\n" +
+                        $"TIMER: {timer}\n",
+                        Vector2.Zero,
+                        Color.White
+                    );
+                    break;
+            }
 
             _spriteBatch.End();
             base.Draw(gameTime);

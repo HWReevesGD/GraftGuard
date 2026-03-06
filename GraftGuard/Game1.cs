@@ -9,6 +9,8 @@ namespace GraftGuard
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private InputManager inputManager;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,7 +20,7 @@ namespace GraftGuard
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            inputManager = new InputManager();
 
             base.Initialize();
         }
@@ -37,6 +39,8 @@ namespace GraftGuard
 
             // TODO: Add your update logic here
 
+            // TODO: call Update for all GameObjects here
+
             base.Update(gameTime);
         }
 
@@ -45,6 +49,8 @@ namespace GraftGuard
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+
+            // TODO: call Draw for all GameObjects here
 
             base.Draw(gameTime);
         }

@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard
 {
-    internal class TowerManager
+    internal class DIYPart : Part
     {
     }
 }

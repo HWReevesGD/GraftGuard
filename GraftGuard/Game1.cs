@@ -62,7 +62,7 @@ namespace GraftGuard
             this.arial = Content.Load<SpriteFont>("arial");
 
             Texture2D playerTexture = Content.Load<Texture2D>("playerplaceholder");
-            this.player = new Player(Vector2.Zero, new Vector2(150, 150), playerTexture);
+            this.player = new Player(Vector2.Zero, new Vector2(50, 50), playerTexture);
 
             // TODO: use this.Content to load your game content here
             // Loading Tower Content

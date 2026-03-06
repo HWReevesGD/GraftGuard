@@ -25,5 +25,10 @@ namespace GraftGuard
             Vector2 moveVector = inputManager.GetMovementDirection();
             base.Position += moveVector * Speed;
         }
+
+        public override void Draw(GameTime gameTime, SpriteBatch batch)
+        {
+            base.Draw(gameTime, base.Hitbox, batch);
+        }
     }
 }

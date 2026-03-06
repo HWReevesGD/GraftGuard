@@ -4,6 +4,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard
 {
+    enum GameState
+    {
+        MainMenu,
+        Paused,
+        GameOver,
+        Game
+    }
+
     enum TimeState {
         Night,
         Dawn,
@@ -15,12 +23,15 @@ namespace GraftGuard
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private GameState gameState;
         private TimeState timeState;
         private float timer;
 
         private static readonly float NightTimeLength = 5;
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
+
+        private Player player;
 
         public Game1()
         {
@@ -31,8 +42,11 @@ namespace GraftGuard
 
         protected override void Initialize()
         {
+            this.gameState = GameState.Game;
             this.timeState = TimeState.Night;
             inputManager = new InputManager();
+
+            
 
             base.Initialize();
         }
@@ -40,6 +54,9 @@ namespace GraftGuard
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            Texture2D playerTexture = Content.Load<Texture2D>("playerplaceholder");
+            this.player = new Player(Vector2.Zero, new Vector2(50, 50), playerTexture);
 
             // TODO: use this.Content to load your game content here
         }
@@ -49,23 +66,46 @@ namespace GraftGuard
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            switch (timeState) {
-                case TimeState.Night:
-                    timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (timer <= 0) {
-                        timeState = TimeState.Dawn;
-                        timer = DawnTimeLength;
-                    }
+            switch (gameState)
+            {
+                case GameState.MainMenu:
                     break;
 
-                case TimeState.Dawn:
-                    timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                    if (timer <= 0) {
-                        timeState = TimeState.Day;
-                    }
+                case GameState.Paused:
                     break;
 
-                case TimeState.Day:
+                case GameState.GameOver:
+                    break;
+
+                case GameState.Game:
+                    // TODO: handle gameplay inputs here
+
+                    player.Update(gameTime);
+
+                    // handle game timers
+
+                    switch (timeState)
+                    {
+                        case TimeState.Night:
+                            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            if (timer <= 0)
+                            {
+                                timeState = TimeState.Dawn;
+                                timer = DawnTimeLength;
+                            }
+                            break;
+
+                        case TimeState.Dawn:
+                            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            if (timer <= 0)
+                            {
+                                timeState = TimeState.Day;
+                            }
+                            break;
+
+                        case TimeState.Day:
+                            break;
+                    }
                     break;
             }
 
@@ -89,6 +129,8 @@ namespace GraftGuard
             // TODO: Add your drawing code here
 
             // TODO: call Draw for all GameObjects here
+
+            this.player.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);
         }

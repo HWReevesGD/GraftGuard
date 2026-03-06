@@ -17,7 +17,7 @@ namespace GraftGuard.Grafting
         public float CriticalModifier;
         public float HealthModifier;
 
-        public Part(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
+        public Part(Vector2 position, Vector2 hitboxSize, Texture2D texture) : base(position, hitboxSize, texture)
         {
         }
     }

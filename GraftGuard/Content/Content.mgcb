@@ -21,6 +21,7 @@
 /build:Arial.spritefont
 
 #begin playerplaceholder.png
+#begin Placeholder/TowerPlaceholder.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -31,4 +32,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:playerplaceholder.png
-
+/build:Placeholder/TowerPlaceholder.png

@@ -18,24 +18,9 @@ namespace GraftGuard
 
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, InputManager inputManager)
         {
-            KeyboardState kb = Keyboard.GetState();
-            int xOffset = 0;
-            int yOffset = 0;
-
-            if (kb.IsKeyDown(Keys.W))
-                yOffset--;
-            if (kb.IsKeyDown(Keys.A))
-                xOffset--;
-            if (kb.IsKeyDown(Keys.S))
-                yOffset++;
-            if (kb.IsKeyDown(Keys.D))
-                xOffset++;
-
-            Vector2 moveVector = new Vector2(xOffset, yOffset);
-            moveVector.Normalize();
-
+            Vector2 moveVector = inputManager.GetMovementDirection();
             base.Position += moveVector * Speed;
         }
     }

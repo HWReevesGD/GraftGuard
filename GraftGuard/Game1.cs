@@ -84,7 +84,7 @@ namespace GraftGuard
                 case GameState.Game:
                     // TODO: handle gameplay inputs here
 
-                    player.Update(gameTime);
+                    player.Update(gameTime, inputManager);
 
                     // handle game timers
 

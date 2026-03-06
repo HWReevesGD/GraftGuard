@@ -26,7 +26,7 @@ namespace GraftGuard
         /// Update call that propagates down from Game1
         /// </summary>
         /// <param name="gameTime"></param>
-        public virtual void Update(GameTime gameTime)
+        public virtual void Update(GameTime gameTime, InputManager inputManager)
         {
 
         }

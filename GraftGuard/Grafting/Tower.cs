@@ -38,6 +38,11 @@ namespace GraftGuard.Grafting
             _attachedParts = new Part[4];
         }
 
+        public virtual void Update(GameTime gameTime)
+        {
+
+        }
+
         public virtual void SetPart(Part part, Slot slot)
         {
             switch (slot)

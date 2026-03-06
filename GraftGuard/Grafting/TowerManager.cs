@@ -11,5 +11,6 @@ namespace GraftGuard.Grafting
 {
     internal class TowerManager
     {
+        public List<Tower> Towers = new();
     }
 }

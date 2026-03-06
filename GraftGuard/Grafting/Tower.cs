@@ -15,7 +15,7 @@ namespace GraftGuard.Grafting
 
         public static void LoadContent(ContentManager content)
         {
-            TexturePlaceholder = content.Load<Texture2D>("tower_placeholder");
+            TexturePlaceholder = content.Load<Texture2D>("Placeholder/tower_placeholder");
         }
 
         public enum Slot

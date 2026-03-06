@@ -33,6 +33,7 @@ namespace GraftGuard
         private static readonly float NightTimeLength = 5;
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
+        private World _testingWorld;
 
         private Player player;
 
@@ -66,6 +67,9 @@ namespace GraftGuard
             // TODO: use this.Content to load your game content here
             // Loading Tower Content
             Tower.LoadContent(Content);
+
+            // Add Testing World
+            _testingWorld = new World();
         }
 
         protected override void Update(GameTime gameTime)
@@ -148,6 +152,7 @@ namespace GraftGuard
             }
 
             // TODO: call Update for all GameObjects here
+            _testingWorld.Update(gameTime);
 
             base.Update(gameTime);
         }

@@ -22,7 +22,25 @@ namespace GraftGuard
 
         public override void Update(GameTime gameTime, InputManager inputManager)
         {
-            Vector2 moveVector = inputManager.GetMovementDirection();
+            //Vector2 moveVector = inputManager.GetMovementDirection();
+
+            float xOffset = 0;
+            float yOffset = 0;
+
+            KeyboardState kb = Keyboard.GetState();
+            if (kb.IsKeyDown(Keys.W))
+                yOffset--;
+            if (kb.IsKeyDown(Keys.A))
+                xOffset--;
+            if (kb.IsKeyDown(Keys.S))
+                yOffset++;
+            if (kb.IsKeyDown(Keys.D))
+                xOffset++;
+
+            Vector2 moveVector = new Vector2(xOffset, yOffset);
+            if (moveVector != Vector2.Zero)
+                moveVector.Normalize();
+
             base.Position += moveVector * Speed;
         }
     }

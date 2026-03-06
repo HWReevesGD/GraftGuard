@@ -156,7 +156,9 @@ namespace GraftGuard
                         arial,
                         $"GAME\n" +
                         $"STATE: {timeState}\n" +
-                        $"TIMER: {timer}\n",
+                        $"TIMER: {timer}\n" +
+                        $"PLAYER POSITION: {player.Position}\n" +
+                        $"MOVE DIR: {inputManager.GetMovementDirection()}",
                         Vector2.Zero,
                         Color.White
                     );

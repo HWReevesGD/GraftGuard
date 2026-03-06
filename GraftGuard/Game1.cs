@@ -9,6 +9,8 @@ namespace GraftGuard
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        private InputManager inputManager;
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -18,7 +20,7 @@ namespace GraftGuard
 
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            inputManager = new InputManager();
 
             base.Initialize();
         }

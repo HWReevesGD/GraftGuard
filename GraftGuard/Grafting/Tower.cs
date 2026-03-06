@@ -11,11 +11,11 @@ namespace GraftGuard.Grafting
 {
     internal class Tower : GameObject
     {
-        private static Texture2D PlaceholderTower;
+        public static Texture2D TexturePlaceholder { get; private set; }
 
         public static void LoadContent(ContentManager content)
         {
-            PlaceholderTower = content.Load<Texture2D>("tower_placeholder");
+            TexturePlaceholder = content.Load<Texture2D>("Placeholder/tower_placeholder");
         }
 
         public enum Slot
@@ -26,7 +26,7 @@ namespace GraftGuard.Grafting
             Fourth,
         }
 
-        private Part[] _attachedParts;
+        private PartDefinition[] _attachedParts;
         /// <summary>
         /// Constructs a Tower with Empty Parts
         /// </summary>
@@ -35,10 +35,15 @@ namespace GraftGuard.Grafting
         /// <param name="texture">Tower's Texture</param>
         public Tower(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
         {
-            _attachedParts = new Part[4];
+            _attachedParts = new PartDefinition[4];
         }
 
-        public virtual void SetPart(Part part, Slot slot)
+        public virtual void Update(GameTime gameTime)
+        {
+
+        }
+
+        public virtual void SetPart(PartDefinition part, Slot slot)
         {
             switch (slot)
             {

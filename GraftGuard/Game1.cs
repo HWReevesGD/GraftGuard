@@ -16,10 +16,10 @@ namespace GraftGuard
         private SpriteBatch _spriteBatch;
 
         private GameState state;
-        private double timer;
+        private float timer;
 
-        private static readonly double NightTimeLength = 5;
-        private static readonly double DawnTimeLength = 5;
+        private static readonly float NightTimeLength = 5;
+        private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
 
         public Game1()
@@ -51,7 +51,7 @@ namespace GraftGuard
 
             switch (state) {
                 case GameState.Night:
-                    timer -= gameTime.ElapsedGameTime.TotalSeconds;
+                    timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer <= 0) {
                         state = GameState.Dawn;
                         timer = DawnTimeLength;
@@ -59,7 +59,7 @@ namespace GraftGuard
                     break;
 
                 case GameState.Dawn:
-                    timer -= gameTime.ElapsedGameTime.TotalSeconds;
+                    timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (timer <= 0) {
                         state = GameState.Day;
                     }

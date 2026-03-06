@@ -1,21 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard
 {
     internal class Player : GameObject
     {
         private static readonly float Speed = 15;
+        private static Texture2D texture;
 
-        public Player(Vector2 position, Vector2 hitboxSize, Texture2D texture) : base(position, hitboxSize, texture)
+        public static void LoadContent(ContentManager content)
+        {
+            Player.texture = content.Load<Texture2D>("playerplaceholder");
+        }
+
+        public Player(Vector2 position) : base(position, new Vector2(50, 50), Player.texture)
         {
 
         }

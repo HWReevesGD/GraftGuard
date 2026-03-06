@@ -26,7 +26,7 @@ namespace GraftGuard.Grafting
             Fourth,
         }
 
-        private Part[] _attachedParts;
+        private PartDefinition[] _attachedParts;
         /// <summary>
         /// Constructs a Tower with Empty Parts
         /// </summary>
@@ -35,7 +35,7 @@ namespace GraftGuard.Grafting
         /// <param name="texture">Tower's Texture</param>
         public Tower(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
         {
-            _attachedParts = new Part[4];
+            _attachedParts = new PartDefinition[4];
         }
 
         public virtual void Update(GameTime gameTime)
@@ -43,7 +43,7 @@ namespace GraftGuard.Grafting
 
         }
 
-        public virtual void SetPart(Part part, Slot slot)
+        public virtual void SetPart(PartDefinition part, Slot slot)
         {
             switch (slot)
             {

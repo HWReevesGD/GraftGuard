@@ -27,7 +27,7 @@ namespace GraftGuard
         public PathNode(Vector2 position)
         {
             this.position = position;
-            debugCircle = new Circle(X, Y, 5);
+            debugCircle = new Circle(position.X, position.Y, 5);
         }
 
         // Methods

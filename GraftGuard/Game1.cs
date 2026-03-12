@@ -74,7 +74,8 @@ namespace GraftGuard
 
             // Testing Towers (Testing only!)
             TowerManager t = _testingWorld.TowerManager;
-            t.AddTower(new TowerSpinner(new Vector2(200, 200)));
+            t.AddTower(new TowerTrap(new Vector2(200, 200)));
+            t.AddTower(new TowerSpinner(new Vector2(400, 200)));
         }
 
         protected override void Update(GameTime gameTime)

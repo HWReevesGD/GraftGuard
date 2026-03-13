@@ -6,6 +6,7 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace GraftGuard
 {
@@ -31,8 +32,6 @@ namespace GraftGuard
         private GameState gameState;
         private TimeState timeState;
         private float timer;
-
-        private SpriteFont arial;
 
         private static readonly float NightTimeLength = 5;
         private static readonly float DawnTimeLength = 5;
@@ -64,7 +63,7 @@ namespace GraftGuard
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            this.arial = Content.Load<SpriteFont>("arial");
+            Fonts.LoadContent(Content);
 
             Player.LoadContent(Content);
 
@@ -82,8 +81,11 @@ namespace GraftGuard
             t.AddTower(new TowerSpinner(new Vector2(400, 200)));
 
             Placeholders.LoadContent(Content);
-            NinePatch _testingButtonPatch = new NinePatch(Placeholders.TextureButton1, 6, 6, 6, 11);
-            _testingButton = new Button(_testingButtonPatch, new Vector2(48, 48), new Vector2(320, 100));
+
+            _testingButton = new Button(new Vector2(48, 48), new Vector2(320, 100),
+                Placeholders.TextureButton1, 6, 6, 11, 11,
+                pressedTexture: Placeholders.TextureButtonPressed1,
+                hoverTexture: Placeholders.TextureButtonHover1);
         }
 
         protected override void Update(GameTime gameTime)
@@ -136,6 +138,9 @@ namespace GraftGuard
                         break;
                     }
 
+                    _testingWorld.Update(gameTime, inputManager);
+                    _testingButton.Update();
+
                     // handle game timers
 
                     switch (timeState)
@@ -162,9 +167,6 @@ namespace GraftGuard
                     }
                     break;
             }
-
-            // TODO: call Update for all GameObjects here
-            _testingWorld.Update(gameTime, inputManager);
 
             base.Update(gameTime);
         }

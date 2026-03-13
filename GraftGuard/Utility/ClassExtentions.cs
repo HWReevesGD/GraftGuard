@@ -27,5 +27,9 @@ namespace GraftGuard.Utility
         {
             return new Point(texture.Width, texture.Height);
         }
+        public static Rectangle Transposed(this Rectangle rectangle, Point offset)
+        {
+            return new Rectangle(rectangle.Location + offset, rectangle.Size);
+        }
     }
 }

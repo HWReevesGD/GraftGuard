@@ -1,5 +1,8 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
+using GraftGuard.UI;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -35,6 +38,7 @@ namespace GraftGuard
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
         private World _testingWorld;
+        private Button _testingButton;
 
         private Player player;
 
@@ -76,6 +80,10 @@ namespace GraftGuard
             TowerManager t = _testingWorld.TowerManager;
             t.AddTower(new TowerTrap(new Vector2(200, 200)));
             t.AddTower(new TowerSpinner(new Vector2(400, 200)));
+
+            Placeholders.LoadContent(Content);
+            NinePatch _testingButtonPatch = new NinePatch(Placeholders.TextureButton1, 6, 6, 6, 11);
+            _testingButton = new Button(_testingButtonPatch, new Vector2(48, 48), new Vector2(320, 100));
         }
 
         protected override void Update(GameTime gameTime)
@@ -173,7 +181,7 @@ namespace GraftGuard
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
 
             // TODO: Add your drawing code here
 
@@ -194,7 +202,10 @@ namespace GraftGuard
                     break;
 
                 case GameState.Game:
+                    // Testing Stuff
                     _testingWorld.Draw(_spriteBatch, gameTime);
+                    _testingButton.Draw(_spriteBatch);
+                    
                     _spriteBatch.DrawString(
                         arial,
                         $"GAME\n" +

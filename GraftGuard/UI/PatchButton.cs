@@ -47,11 +47,9 @@ internal class PatchButton : Button
     /// <summary>
     /// Updates the current State of the button
     /// </summary>
-    public void Update()
+    public override void Update()
     {
-        // Update Mouse States
-        _lastMouseState = _thisMouseState;
-        _thisMouseState = Mouse.GetState();
+        base.Update();
 
         // Update Texture based on Button and Mouse States
         if (IsMouseOver && IsPressed)
@@ -68,14 +66,9 @@ internal class PatchButton : Button
         }
     }
 
-    public void Draw(SpriteBatch batch, Color? color = null)
+    public override void Draw(SpriteBatch batch, Color? color = null)
     {
         Patch.Draw(batch, Position, Size, color);
-        batch.DrawString(
-            Font,
-            Text,
-            Position + Size / 2.0f - Font.MeasureString(Text) / 2.0f,
-            TextColor
-            );
+        base.Draw(batch, color);
     }
 }

@@ -31,5 +31,9 @@ namespace GraftGuard.Utility
         {
             return new Rectangle(rectangle.Location + offset, rectangle.Size);
         }
+        public static Vector2 GetSize(this Rectangle rectangle)
+        {
+            return new Vector2(rectangle.Width, rectangle.Height);
+        }
     }
 }

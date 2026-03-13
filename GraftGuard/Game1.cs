@@ -63,7 +63,9 @@ namespace GraftGuard
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Content for Static classes
             Fonts.LoadContent(Content);
+            Placeholders.LoadContent(Content);
 
             Player.LoadContent(Content);
 
@@ -80,12 +82,12 @@ namespace GraftGuard
             t.AddTower(new TowerTrap(new Vector2(200, 200)));
             t.AddTower(new TowerSpinner(new Vector2(400, 200)));
 
-            Placeholders.LoadContent(Content);
-
             _testingButton = new Button(new Vector2(48, 48), new Vector2(320, 100),
                 Placeholders.TextureButton1, 6, 6, 11, 11,
                 pressedTexture: Placeholders.TextureButtonPressed1,
-                hoverTexture: Placeholders.TextureButtonHover1);
+                hoverTexture: Placeholders.TextureButtonHover1,
+                text: "TESTING!",
+                font: Fonts.Arial);
         }
 
         protected override void Update(GameTime gameTime)
@@ -192,15 +194,15 @@ namespace GraftGuard
             switch (gameState)
             {
                 case GameState.MainMenu:
-                    _spriteBatch.DrawString(arial, "MAIN MENU", Vector2.Zero, Color.White);
+                    _spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
                     break;
 
                 case GameState.Paused:
-                    _spriteBatch.DrawString(arial, "PAUSED", Vector2.Zero, Color.White);
+                    _spriteBatch.DrawString(Fonts.Arial, "PAUSED", Vector2.Zero, Color.White);
                     break;
 
                 case GameState.GameOver:
-                    _spriteBatch.DrawString(arial, "GAME OVER", Vector2.Zero, Color.White);
+                    _spriteBatch.DrawString(Fonts.Arial, "GAME OVER", Vector2.Zero, Color.White);
                     break;
 
                 case GameState.Game:
@@ -209,7 +211,7 @@ namespace GraftGuard
                     _testingButton.Draw(_spriteBatch);
                     
                     _spriteBatch.DrawString(
-                        arial,
+                        Fonts.Arial,
                         $"GAME\n" +
                         $"STATE: {timeState}\n" +
                         $"TIMER: {timer}\n",

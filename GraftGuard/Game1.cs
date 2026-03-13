@@ -37,7 +37,7 @@ namespace GraftGuard
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
         private World _testingWorld;
-        private Button _testingButton;
+        private PatchButton _testingButton;
 
         private Player player;
 
@@ -82,7 +82,7 @@ namespace GraftGuard
             t.AddTower(new TowerTrap(new Vector2(200, 200)));
             t.AddTower(new TowerSpinner(new Vector2(400, 200)));
 
-            _testingButton = new Button(new Vector2(48, 48), new Vector2(320, 100),
+            _testingButton = new PatchButton(new Vector2(48, 48), new Vector2(320, 100),
                 Placeholders.TextureButton1, 6, 6, 11, 11,
                 pressedTexture: Placeholders.TextureButtonPressed1,
                 hoverTexture: Placeholders.TextureButtonHover1,

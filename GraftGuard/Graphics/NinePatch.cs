@@ -14,6 +14,9 @@ internal class NinePatch
     public int MarginRight { get; set; }
     public int MarginTop { get; set; }
     public int MarginBottom { get; set; }
+    public Point MarginTopLeft => new Point(MarginLeft, MarginTop);
+    public Point MarginBottomRight => new Point(MarginRight, MarginBottom);
+    public Point MarginAll => new Point(MarginLeft + MarginRight, MarginTop + MarginBottom);
     public NinePatch(Texture2D texture, int marginLeft, int marginRight, int marginTop, int marginBottom)
     {
         Texture = texture;

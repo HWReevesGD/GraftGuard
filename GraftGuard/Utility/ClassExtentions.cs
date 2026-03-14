@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace GraftGuard.Utility
 {
@@ -34,6 +35,11 @@ namespace GraftGuard.Utility
         public static Vector2 GetSize(this Rectangle rectangle)
         {
             return new Vector2(rectangle.Width, rectangle.Height);
+        }
+        public static Vector2 SquareOfSmallest(this Vector2 vector)
+        {
+            float smallest = MathF.MinMagnitude(vector.X, vector.Y);
+            return new Vector2(smallest, smallest);
         }
     }
 }

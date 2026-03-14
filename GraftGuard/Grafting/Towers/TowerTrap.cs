@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Towers;
-internal class TowerTrap : Tower
+internal class TowerTrap : Tower, ITower
 {
     private const int GridSize = 5;
     private const int GridOffsets = 16;
@@ -36,5 +36,10 @@ internal class TowerTrap : Tower
                 batch.DrawCentered(part.Texture, Position + offset);
             }
         }
+    }
+
+    public static new Tower Create(Vector2 position)
+    {
+        return new TowerTrap(position);
     }
 }

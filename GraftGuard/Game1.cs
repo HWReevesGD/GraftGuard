@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
 using GraftGuard.UI;
@@ -26,7 +27,7 @@ namespace GraftGuard
 
     public class Game1 : Game
     {
-        private GraphicsDeviceManager _graphics;
+        public GraphicsDeviceManager Graphics;
         private SpriteBatch _spriteBatch;
 
         private GameState gameState;
@@ -37,13 +38,13 @@ namespace GraftGuard
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
         private World _testingWorld;
-        private PatchButton _testingButton;
+        private Button _testingButton;
 
         private Player player;
 
         public Game1()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            Graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -52,9 +53,9 @@ namespace GraftGuard
         {
             this.gameState = GameState.Game;
             this.timeState = TimeState.Night;
-            inputManager = new InputManager();
-
             
+            inputManager = new InputManager();
+            Interface.Initialize(this);
 
             base.Initialize();
         }
@@ -74,6 +75,10 @@ namespace GraftGuard
             Tower.LoadContent(Content);
             PartDefinition.LoadContent(Content);
 
+            // Setting Tower Registry
+            TowerRegistry.Register("Spinner", TowerSpinner.Create);
+            TowerRegistry.Register("Trap", TowerTrap.Create);
+
             // Add Testing World
             _testingWorld = new World();
 
@@ -82,12 +87,15 @@ namespace GraftGuard
             t.AddTower(new TowerTrap(new Vector2(200, 200)));
             t.AddTower(new TowerSpinner(new Vector2(400, 200)));
 
+            
             _testingButton = new PatchButton(new Vector2(48, 48), new Vector2(320, 100),
                 Placeholders.TextureButton1, 6, 6, 11, 11,
                 pressedTexture: Placeholders.TextureButtonPressed1,
                 hoverTexture: Placeholders.TextureButtonHover1,
                 text: "TESTING!",
-                font: Fonts.Arial);
+                font: Fonts.Arial,
+                icon: Placeholders.TextureMissing1,
+                iconType: ButtonIconType.AspectStretch);
         }
 
         protected override void Update(GameTime gameTime)

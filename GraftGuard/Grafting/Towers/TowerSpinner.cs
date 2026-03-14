@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Towers
 {
-    internal class TowerSpinner : Tower
+    internal class TowerSpinner : Tower, ITower
     {
         public readonly Vector2 SpinOffset = new Vector2(0, -16);
 
@@ -40,6 +40,11 @@ namespace GraftGuard.Grafting.Towers
                 batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.2f, new Vector2(8, 48), Vector2.One, SpriteEffects.None, 1.0f);
                 batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.4f, new Vector2(8, 64), Vector2.One, SpriteEffects.None, 1.0f);
             }
+        }
+
+        public static new Tower Create(Vector2 position)
+        {
+            return new TowerSpinner(position);
         }
     }
 }

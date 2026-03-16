@@ -2,22 +2,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Towers
 {
-    internal class TowerSpinner : Tower, ITower
+    internal class TowerSpinner : Tower
     {
         public readonly Vector2 SpinOffset = new Vector2(0, -16);
 
-        public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholder1)
+        public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderTower)
         {
-            SetPart(new PartDefinition("test", PartDefinition.TexturePlaceholder1, 1.201f), Slot.First);
-            SetPart(new PartDefinition("test_knife_limb", PartDefinition.TexturePlaceholder2, 1.0f), Slot.Second);
-            SetPart(new PartDefinition("test_knife_limb", PartDefinition.TexturePlaceholder2, 1.0f), Slot.Third);
+
         }
 
         public override void Update(GameTime gameTime)
@@ -42,9 +36,25 @@ namespace GraftGuard.Grafting.Towers
             }
         }
 
-        public static new Tower Create(Vector2 position)
+        /// <summary>
+        /// Function which creates a new Spinner Tower. This is passed into the Tower's TowerDefinition
+        /// </summary>
+        /// <param name="position">Position of the tower</param>
+        /// <returns>The created <see cref="Tower"/></returns>
+        public static Tower Create(Vector2 position)
         {
             return new TowerSpinner(position);
+        }
+
+        /// <summary>
+        /// Draws the "preview" for the tower, before it is placed. This is generally a transparent version of the tower's base
+        /// </summary>
+        /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+        /// <param name="time">Current <see cref="GameTime"/></param>
+        /// <param name="position">Position to draw at</param>
+        public static void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position)
+        {
+            batch.DrawCentered(TexturePlaceholderTower, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
         }
     }
 }

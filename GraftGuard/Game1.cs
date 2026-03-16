@@ -1,8 +1,10 @@
 ﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Parts;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
 using GraftGuard.UI;
+using GraftGuard.UI.Grafting;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -38,9 +40,6 @@ namespace GraftGuard
         private static readonly float DawnTimeLength = 5;
         private InputManager inputManager;
         private World _testingWorld;
-        private Button _testingButton;
-
-        private Player player;
 
         public Game1()
         {
@@ -75,27 +74,15 @@ namespace GraftGuard
             Tower.LoadContent(Content);
             PartDefinition.LoadContent(Content);
 
-            // Setting Tower Registry
-            TowerRegistry.Register("Spinner", TowerSpinner.Create);
-            TowerRegistry.Register("Trap", TowerTrap.Create);
+            // Registering Towers
+            TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
+            TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
+            // Registering Parts
+            PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f);
+            PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f);
 
             // Add Testing World
             _testingWorld = new World();
-
-            // Testing Towers (Testing only!)
-            TowerManager t = _testingWorld.TowerManager;
-            t.AddTower(new TowerTrap(new Vector2(200, 200)));
-            t.AddTower(new TowerSpinner(new Vector2(400, 200)));
-
-            
-            _testingButton = new PatchButton(new Vector2(48, 48), new Vector2(320, 100),
-                Placeholders.TextureButton1, 6, 6, 11, 11,
-                pressedTexture: Placeholders.TextureButtonPressed1,
-                hoverTexture: Placeholders.TextureButtonHover1,
-                text: "TESTING!",
-                font: Fonts.Arial,
-                icon: Placeholders.TextureMissing1,
-                iconType: ButtonIconType.AspectStretch);
         }
 
         protected override void Update(GameTime gameTime)
@@ -149,7 +136,6 @@ namespace GraftGuard
                     }
 
                     _testingWorld.Update(gameTime, inputManager);
-                    _testingButton.Update();
 
                     // handle game timers
 
@@ -216,14 +202,13 @@ namespace GraftGuard
                 case GameState.Game:
                     // Testing Stuff
                     _testingWorld.Draw(_spriteBatch, gameTime);
-                    _testingButton.Draw(_spriteBatch);
                     
                     _spriteBatch.DrawString(
                         Fonts.Arial,
                         $"GAME\n" +
                         $"STATE: {timeState}\n" +
                         $"TIMER: {timer}\n",
-                        Vector2.Zero,
+                        new Vector2(64, 0),
                         Color.White
                     );
                     break;

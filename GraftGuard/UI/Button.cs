@@ -84,6 +84,7 @@ internal class Button
     }
     protected virtual void DrawIcon(SpriteBatch batch)
     {
+        if (Icon is null) return;
         Rectangle destinationRectangle = IconType switch
         {
             ButtonIconType.Fixed => new Rectangle((Position + Size * 0.5f - Icon.GetSize() * 0.5f).ToPoint(), Icon.GetSizePoint()),

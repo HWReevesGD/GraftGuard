@@ -13,7 +13,7 @@ internal class TowerTrap : Tower
     private const int GridSize = 5;
     private const int GridOffsets = 16;
 
-    public bool TrapActive = true;
+    public bool Active = true;
 
     public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)))
     {
@@ -23,7 +23,7 @@ internal class TowerTrap : Tower
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {
         batch.DrawCentered(Texture, Position);
-        if (!TrapActive || !HasParts) return;
+        if (!Active || !HasParts) return;
 
         for (int x = 0; x < GridSize; x++)
         {
@@ -43,6 +43,11 @@ internal class TowerTrap : Tower
                 batch.Draw(part.Texture, Position + gridOffset + positionalOffset, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
             }
         }
+    }
+
+    public override void Update(GameTime gameTime)
+    {
+        Active = gameTime.TotalGameTime.Seconds % 2 == 0;
     }
 
     /// <summary>

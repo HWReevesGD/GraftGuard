@@ -17,7 +17,7 @@ enum ButtonIconType
     Stretch,
     AspectStretch,
 }
-internal class Button
+internal class Button : IMouseDetectable
 {
     public Vector2 Position { get; set; }
     public Vector2 Size { get; set; }
@@ -31,9 +31,9 @@ internal class Button
     private MouseState _lastMouseState = new MouseState();
     private MouseState _thisMouseState = new MouseState();
 
-    public bool IsMouseOver => Box.Contains(_thisMouseState.Position);
-    public bool IsPressed => IsMouseOver && _thisMouseState.LeftButton == ButtonState.Pressed;
-    public bool ClickedThisFrame => _lastMouseState.LeftButton == ButtonState.Released && _thisMouseState.LeftButton == ButtonState.Pressed && IsMouseOver;
+    public bool IsMouseHovered => Box.Contains(_thisMouseState.Position);
+    public bool IsPressed => IsMouseHovered && _thisMouseState.LeftButton == ButtonState.Pressed;
+    public bool ClickedThisFrame => _lastMouseState.LeftButton == ButtonState.Released && _thisMouseState.LeftButton == ButtonState.Pressed && IsMouseHovered;
 
     /// <summary>
     /// Setup a button with the given position and size
@@ -92,5 +92,10 @@ internal class Button
             ButtonIconType.AspectStretch => new Rectangle((Position + Size * 0.5f - Size.SquareOfSmallest() * 0.5f).ToPoint(), Size.SquareOfSmallest().ToPoint())
         };
         batch.Draw(Icon, destinationRectangle, Color.White);
+    }
+
+    bool IMouseDetectable.IsMouseOver(InputManager inputManager)
+    {
+        return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MousePosition);
     }
 }

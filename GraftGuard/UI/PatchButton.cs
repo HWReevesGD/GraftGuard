@@ -65,11 +65,11 @@ internal class PatchButton : Button
         base.Update();
 
         // Update Texture based on Button and Mouse States
-        if (IsMouseOver && IsPressed)
+        if (IsMouseHovered && IsPressed)
         {
             Patch.Texture = PressedTexture;
         }
-        else if (IsMouseOver)
+        else if (IsMouseHovered)
         {
             Patch.Texture = HoverTexture;
         }

@@ -13,6 +13,9 @@ namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
 internal delegate void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position);
+/// <summary>
+/// Base Class for all Towers
+/// </summary>
 internal abstract class Tower : GameObject, IMouseDetectable
 {
     public static Texture2D TexturePlaceholderTower { get; private set; }
@@ -56,6 +59,10 @@ internal abstract class Tower : GameObject, IMouseDetectable
         MouseBox = mouseBox;
     }
 
+    /// <summary>
+    /// Empty Update for use in Child Classes
+    /// </summary>
+    /// <param name="gameTime"></param>
     public virtual void Update(GameTime gameTime)
     {
 
@@ -84,6 +91,11 @@ internal abstract class Tower : GameObject, IMouseDetectable
         return part;
     }
 
+    /// <summary>
+    /// Sets the part at the given <see cref="Slot"/> to the given <paramref name="part"/>
+    /// </summary>
+    /// <param name="part">Part to set</param>
+    /// <param name="slot"><see cref="Slot"/> to use</param>
     public virtual void SetPart(PartDefinition part, Slot slot)
     {
         switch (slot)
@@ -118,7 +130,11 @@ internal abstract class Tower : GameObject, IMouseDetectable
             }
         }
     }
-
+    /// <summary>
+    /// Checks if the Mouse's Position is over this <see cref="Tower"/>
+    /// </summary>
+    /// <param name="inputManager"><see cref="InputManager"/> to use for the Mouse</param>
+    /// <returns><see cref="true"/> if the Mouse overlaps the <see cref="Tower"/>, <see cref="false"/> otherwise</returns>
     public bool IsMouseOver(InputManager inputManager)
     {
         return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(inputManager.MousePosition);

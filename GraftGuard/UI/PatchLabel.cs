@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace GraftGuard.UI;
-internal class PatchLabel
+internal class PatchLabel : IMouseDetectable
 {
     public string Text { get; set; }
     public Vector2 Position { get; set; }
@@ -31,5 +31,10 @@ internal class PatchLabel
     {
         Patch.Draw(batch, Position, Size, color ?? Color.White);
         batch.DrawString(Font, Text, Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, TextColor);
+    }
+
+    public bool IsMouseOver(InputManager inputManager)
+    {
+        return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MousePosition);
     }
 }

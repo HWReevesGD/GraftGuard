@@ -21,6 +21,9 @@ internal class TowerGrafter
     private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 72);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
 
+    // All UI Elements
+    private List<IMouseDetectable> _allUI = [];
+
     // Indices in these arrays point to matching data in each
     private List<Button> _towerChoiceButtons = [];
     private List<TowerDefinition> _towerChoices = [];
@@ -66,20 +69,31 @@ internal class TowerGrafter
                     icon: partDefinition.Texture
                     ));
         }
+
+        // Populate All UI
+        _allUI.AddRange(_towerChoiceButtons);
+        _allUI.AddRange(_partChoiceButtons);
+        _allUI.Add(_currentChosenLabel);
     }
 
     public void Update(GameTime time, InputManager inputManager)
     {
-        // Handle Tower Placement
-        if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
+        bool isOverUI = _allUI.Any((uiPart) => uiPart.IsMouseOver(inputManager));
+
+        if (!isOverUI)
         {
-            _towerManager.MakeTower(tower, inputManager.MousePosition.ToVector());
+            // Handle Tower Placement
+            if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
+            {
+                _towerManager.MakeTower(tower, inputManager.MousePosition.ToVector());
+            }
+            // Handle Part Attaching
+            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && _towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
+            {
+                overTower.AttachPart(part);
+            }
         }
-        // Handle Part Attaching
-        if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && _towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
-        {
-            overTower.AttachPart(part);
-        }
+
         // Update Towers
         for (int index = 0; index < _towerChoiceButtons.Count; index++)
         {

@@ -34,8 +34,11 @@ internal class TowerGrafter
     private TowerDefinition? _currentlyGraftingTower = null;
     private PartDefinition? _currentlyChosenPart = null;
 
-    public TowerGrafter()
+    private TowerManager _towerManager;
+
+    public TowerGrafter(TowerManager towerManager)
     {
+        _towerManager = towerManager;
         _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentTowerLabelSize.X, 0), _currentTowerLabelSize);
 
         // Populate Towers
@@ -65,8 +68,13 @@ internal class TowerGrafter
         }
     }
 
-    public void Update(GameTime time)
+    public void Update(GameTime time, InputManager inputManager)
     {
+        // Handle Tower Placement
+        if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
+        {
+            _towerManager.MakeTower(tower, inputManager.MousePosition.ToVector());
+        }
         // Update Towers
         for (int index = 0; index < _towerChoiceButtons.Count; index++)
         {

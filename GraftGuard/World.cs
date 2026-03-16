@@ -30,7 +30,7 @@ namespace GraftGuard
             
             // Create new TowerManagers and TowerGrafters
             TowerManager = new TowerManager();
-            TowerGrafter = new TowerGrafter();
+            TowerGrafter = new TowerGrafter(TowerManager);
 
             player = new Player(Vector2.Zero);
         }
@@ -39,7 +39,7 @@ namespace GraftGuard
         public void Update(GameTime gameTime, InputManager inputManager)
         {
             TowerManager.Update(gameTime);
-            TowerGrafter.Update(gameTime);
+            TowerGrafter.Update(gameTime, inputManager);
             player.Update(gameTime, inputManager);
         }
 

@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.Grafting.Towers;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GraftGuard.Grafting.Registry;
@@ -17,6 +18,6 @@ internal struct TowerDefinition
     {
         Name = name;
         Factory = factory;
-        Icon = icon ?? Placeholders.TextureMissing1;
+        Icon = icon ?? Placeholders.TextureMissingIcon;
     }
 }

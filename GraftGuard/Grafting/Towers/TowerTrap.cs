@@ -31,9 +31,16 @@ internal class TowerTrap : Tower, ITower
             for (int y = 0; y < GridSize; y++)
             {
                 PartDefinition part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: true);
-                Vector2 offset = new Vector2(x - GridSize / 2, y - GridSize / 2) * GridOffsets;
-                offset += new Vector2(0.0f, MathF.Sin((x + y) * 2.0f + (float)gameTime.TotalGameTime.TotalSeconds));
-                batch.DrawCentered(part.Texture, Position + offset);
+                Point partSize = part.Texture.GetSizePoint();
+
+                float sinHeight = MathF.Sin(x + y + (float)gameTime.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
+
+                Vector2 gridOffset = new Vector2(x - GridSize / 2, y - GridSize / 2) * GridOffsets;
+                gridOffset.Y += sinHeight;
+
+                Vector2 positionalOffset = new Vector2(-partSize.X / 2.0f, -partSize.Y / 2.0f);
+                
+                batch.Draw(part.Texture, Position + gridOffset + positionalOffset, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
             }
         }
     }

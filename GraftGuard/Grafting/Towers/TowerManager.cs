@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard.Grafting
+namespace GraftGuard.Grafting.Towers
 {
     internal class TowerManager
     {

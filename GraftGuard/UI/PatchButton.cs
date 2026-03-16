@@ -17,6 +17,7 @@ internal class PatchButton : Button
     public Texture2D HoverTexture;
     public NinePatch Patch { get; set; }
     public bool FitIconToPatchMargins { get; set; }
+    public bool FitTextToPatchMargins { get; set; }
 
     private MouseState _lastMouseState = new MouseState();
     private MouseState _thisMouseState = new MouseState();
@@ -37,7 +38,7 @@ internal class PatchButton : Button
     public PatchButton(Vector2 position, Vector2 size, Texture2D mainTexture, int leftMargin, int rightMargin,
         int topMargin, int bottomMargin, Texture2D? pressedTexture = null, Texture2D? hoverTexture = null,
         string text = "", Color? textColor = null, SpriteFont font = null, Texture2D? icon = null,
-        ButtonIconType iconType = ButtonIconType.Fixed, bool fitIconToPatchMargins = true) : base(position, size, text, textColor, font, icon, iconType)
+        ButtonIconType iconType = ButtonIconType.Fixed, bool fitIconToPatchMargins = true, bool fitTextToPatchMargins = true) : base(position, size, text, textColor, font, icon, iconType)
     {
 
         MainTexture = mainTexture;
@@ -45,7 +46,15 @@ internal class PatchButton : Button
         HoverTexture = hoverTexture ?? mainTexture;
 
         Patch = new NinePatch(mainTexture, leftMargin, rightMargin, topMargin, bottomMargin);
+
         FitIconToPatchMargins = fitIconToPatchMargins;
+        FitTextToPatchMargins = fitTextToPatchMargins;
+    }
+
+    public static PatchButton MakeBase(Vector2 position, Vector2 size, string text = "", Color? textColor = null, SpriteFont font = null, Texture2D? icon = null,
+        ButtonIconType iconType = ButtonIconType.Fixed, bool fitIconToPatchMargins = true)
+    {
+        return new PatchButton(position, size, Placeholders.TextureButton, 6, 6, 11, 15, Placeholders.TextureButtonPressed, Placeholders.TextureButtonHover, text, textColor, font, icon, iconType, fitIconToPatchMargins);
     }
 
     /// <summary>
@@ -78,7 +87,8 @@ internal class PatchButton : Button
 
     protected override void DrawIcon(SpriteBatch batch)
     {
-        if(!FitIconToPatchMargins)
+        if (Icon is null) return;
+        if (!FitIconToPatchMargins)
         {
             base.DrawIcon(batch);
             return;
@@ -94,5 +104,24 @@ internal class PatchButton : Button
             ButtonIconType.AspectStretch => new Rectangle((marginPosition + marginSize * 0.5f - marginSize.SquareOfSmallest() * 0.5f).ToPoint(), marginSize.SquareOfSmallest().ToPoint())
         };
         batch.Draw(Icon, destinationRectangle, Color.White);
+    }
+
+    protected override void DrawText(SpriteBatch batch)
+    {
+        if (!FitTextToPatchMargins)
+        {
+            base.DrawText(batch);
+            return;
+        }
+
+        Vector2 marginOffset = Position + Patch.MarginTopLeft.ToVector();
+        Vector2 marginSize = Size - Patch.MarginAll.ToVector();
+
+        batch.DrawString(
+            Font,
+            Text,
+            marginOffset + marginSize / 2.0f - Font.MeasureString(Text) / 2.0f,
+            TextColor
+            );
     }
 }

@@ -12,13 +12,15 @@ internal static class Placeholders
 {
     public static void LoadContent(ContentManager content)
     {
-        TextureButton1 = content.Load<Texture2D>("Placeholder/button_placeholder");
-        TextureButtonPressed1 = content.Load<Texture2D>("Placeholder/button_placeholder_pressed");
-        TextureButtonHover1 = content.Load<Texture2D>("Placeholder/button_placeholder_hover");
-        TextureMissing1 = content.Load<Texture2D>("Placeholder/missing_texture_1");
+        TextureButton = content.Load<Texture2D>("Placeholder/button_placeholder");
+        TextureButtonPressed = content.Load<Texture2D>("Placeholder/button_placeholder_pressed");
+        TextureButtonHover = content.Load<Texture2D>("Placeholder/button_placeholder_hover");
+        TextureMissingIcon = content.Load<Texture2D>("Placeholder/missing_texture_1");
+        TexturePatchLabel = content.Load<Texture2D>("Placeholder/label_placeholder");
     }
-    public static Texture2D TextureButton1;
-    public static Texture2D TextureButtonPressed1;
-    public static Texture2D TextureButtonHover1;
-    public static Texture2D TextureMissing1;
+    public static Texture2D TextureButton;
+    public static Texture2D TextureButtonPressed;
+    public static Texture2D TextureButtonHover;
+    public static Texture2D TextureMissingIcon;
+    public static Texture2D TexturePatchLabel;
 }

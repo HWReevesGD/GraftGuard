@@ -1,5 +1,4 @@
-﻿using GraftGuard.Grafting.Towers;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -8,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard.Grafting;
+namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
 internal abstract class Tower : GameObject, ITower
@@ -60,7 +59,7 @@ internal abstract class Tower : GameObject, ITower
     /// <param name="index">Index of the part</param>
     /// <param name="shiftIfNull">Attempts to shift to another part if the part at the index is null</param>
     /// <returns></returns>
-    public PartDefinition? GetPartFromIndex(int index, bool shiftIfNull)
+    public PartDefinition GetPartFromIndex(int index, bool shiftIfNull)
     {
         PartDefinition part = _attachedParts[index];
         if(shiftIfNull && part is null)

@@ -75,6 +75,11 @@ internal class TowerGrafter
         {
             _towerManager.MakeTower(tower, inputManager.MousePosition.ToVector());
         }
+        // Handle Part Attaching
+        if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && _towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
+        {
+            overTower.AttachPart(part);
+        }
         // Update Towers
         for (int index = 0; index < _towerChoiceButtons.Count; index++)
         {

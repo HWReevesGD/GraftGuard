@@ -13,14 +13,14 @@ namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
 internal delegate void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position);
-internal abstract class Tower : GameObject
+internal abstract class Tower : GameObject, IMouseDetectable
 {
     public static Texture2D TexturePlaceholderTower { get; private set; }
     public static Texture2D TexturePlaceholderGround { get; private set; }
 
     public static void LoadContent(ContentManager content)
     {
-        TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder_1");
+        TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder");
         TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
     }
 
@@ -39,6 +39,10 @@ internal abstract class Tower : GameObject
     /// </summary>
     public bool HasParts => _attachedParts.Any((part) => part is not null);
     public int TotalAttachedParts => _attachedParts.Count((part) => part is not null);
+    /// <summary>
+    /// Rectangle which determines where the Mouse will be considered to be "hovering" over this tower
+    /// </summary>
+    public Rectangle MouseBox { get; private set; }
 
     /// <summary>
     /// Constructs a Tower with Empty Parts
@@ -46,9 +50,10 @@ internal abstract class Tower : GameObject
     /// <param name="position">Tower's Initial Position</param>
     /// <param name="size">Tower's Drawing Size</param>
     /// <param name="texture">Tower's Texture</param>
-    public Tower(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
+    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox) : base(position, size, texture)
     {
         _attachedParts = new PartDefinition[4];
+        MouseBox = mouseBox;
     }
 
     public virtual void Update(GameTime gameTime)
@@ -96,5 +101,26 @@ internal abstract class Tower : GameObject
                 _attachedParts[3] = part;
                 break;
         }
+    }
+
+    /// <summary>
+    /// Attaches a <see cref="PartDefinition"/> to the first empty <see cref="Slot"/>. If the <see cref="Tower"/> is full, this does nothing
+    /// </summary>
+    /// <param name="part"><see cref="PartDefinition"/> to attach</param>
+    public void AttachPart(PartDefinition part)
+    {
+        for (int index = 0; index < _attachedParts.Length; index++)
+        {
+            if (_attachedParts[index] is null)
+            {
+                _attachedParts[index] = part;
+                return;
+            }
+        }
+    }
+
+    public bool IsMouseOver(InputManager inputManager)
+    {
+        return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(inputManager.MousePosition);
     }
 }

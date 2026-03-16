@@ -15,7 +15,7 @@ internal class TowerTrap : Tower
 
     public bool TrapActive = true;
 
-    public TowerTrap(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderGround)
+    public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)))
     {
 
     }
@@ -29,7 +29,8 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                PartDefinition part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: true);
+                PartDefinition part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
+                if (part is null) continue;
                 Point partSize = part.Texture.GetSizePoint();
 
                 float sinHeight = MathF.Sin(x + y + (float)gameTime.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;

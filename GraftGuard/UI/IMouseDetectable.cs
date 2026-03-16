@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 namespace GraftGuard.UI;
 internal interface IMouseDetectable
 {
-    public bool IsMouseOver(MouseState mouse);
+    public bool IsMouseOver(InputManager inputManager);
 }

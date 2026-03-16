@@ -34,5 +34,22 @@ namespace GraftGuard.Grafting.Towers
         {
             Towers.Add(tower.Factory(position));
         }
+
+        /// <summary>
+        /// Gets the First (Arbitrary) <see cref="Tower"/> at the current Mouse's position 
+        /// </summary>
+        /// <param name="inputManager"><see cref="InputManager"/> to use for Mouse</param>
+        /// <returns><see cref="Tower"/> found or <see cref="null"/></returns>
+        public Tower? GetFirstTowerAtMousePosition(InputManager inputManager)
+        {
+            foreach (Tower tower in Towers)
+            {
+                if (tower.IsMouseOver(inputManager))
+                {
+                    return tower;
+                }
+            }
+            return null;
+        }
     }
 }

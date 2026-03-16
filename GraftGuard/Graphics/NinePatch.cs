@@ -47,7 +47,7 @@ internal class NinePatch
         // ║   ║
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(0, 0, MarginLeft, MarginTop).Transposed(offset),
+            new Rectangle(0, 0, MarginLeft, MarginTop).Translated(offset),
             new Rectangle(0, 0, MarginLeft, MarginTop),
             finalColor);
         
@@ -56,7 +56,7 @@ internal class NinePatch
         // ║   ║
         // ░░══╝
         batch.Draw(Texture,
-            new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Transposed(offset),
+            new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Translated(offset),
             new Rectangle(0, textureSize.Y - MarginBottom, MarginLeft, MarginBottom),
             finalColor);
         
@@ -65,7 +65,7 @@ internal class NinePatch
         // ║   ║
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, 0, MarginRight, MarginTop).Transposed(offset),
+            new Rectangle(size.X - MarginRight, 0, MarginRight, MarginTop).Translated(offset),
             new Rectangle(textureSize.X - MarginRight, 0, MarginRight, MarginTop),
             finalColor);
 
@@ -74,7 +74,7 @@ internal class NinePatch
         // ║   ║
         // ╚══░░
         batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, size.Y - MarginBottom, MarginRight, MarginBottom).Transposed(offset),
+            new Rectangle(size.X - MarginRight, size.Y - MarginBottom, MarginRight, MarginBottom).Translated(offset),
             new Rectangle(textureSize.X - MarginRight, textureSize.Y - MarginBottom, MarginRight, MarginBottom),
             finalColor);
 
@@ -83,7 +83,7 @@ internal class NinePatch
         // ░   ║
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(0, MarginTop, MarginLeft, sideSize.Y).Transposed(offset),
+            new Rectangle(0, MarginTop, MarginLeft, sideSize.Y).Translated(offset),
             new Rectangle(0, MarginTop, MarginLeft, textureSideSize.Y),
             finalColor);
 
@@ -92,7 +92,7 @@ internal class NinePatch
         // ║   ░
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, MarginTop, MarginRight, sideSize.Y).Transposed(offset),
+            new Rectangle(size.X - MarginRight, MarginTop, MarginRight, sideSize.Y).Translated(offset),
             new Rectangle(textureSize.X - MarginRight, MarginTop, MarginRight, textureSideSize.Y),
             finalColor);
 
@@ -101,7 +101,7 @@ internal class NinePatch
         // ║   ║
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(MarginLeft, 0, sideSize.X, MarginTop).Transposed(offset),
+            new Rectangle(MarginLeft, 0, sideSize.X, MarginTop).Translated(offset),
             new Rectangle(MarginLeft, 0, textureSideSize.X, MarginTop),
             finalColor);
 
@@ -110,7 +110,7 @@ internal class NinePatch
         // ║   ║
         // ╚░░░╝
         batch.Draw(Texture,
-            new Rectangle(MarginLeft, size.Y - MarginBottom, sideSize.X, MarginBottom).Transposed(offset),
+            new Rectangle(MarginLeft, size.Y - MarginBottom, sideSize.X, MarginBottom).Translated(offset),
             new Rectangle(MarginLeft, textureSize.Y - MarginBottom, textureSideSize.X, MarginBottom),
             finalColor);
 
@@ -119,7 +119,7 @@ internal class NinePatch
         // ║░░░║
         // ╚═══╝
         batch.Draw(Texture,
-            new Rectangle(MarginLeft, MarginTop, sideSize.X, sideSize.Y).Transposed(offset),
+            new Rectangle(MarginLeft, MarginTop, sideSize.X, sideSize.Y).Translated(offset),
             new Rectangle(MarginLeft, MarginTop, textureSideSize.X, textureSideSize.Y),
             finalColor);
     }

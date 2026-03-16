@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraftGuard.Grafting.Registry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -29,9 +30,9 @@ namespace GraftGuard.Grafting.Towers
             }
         }
 
-        public void AddTower(Tower tower)
+        public void MakeTower(TowerDefinition tower, Vector2 position)
         {
-            Towers.Add(tower);
+            Towers.Add(tower.Factory(position));
         }
     }
 }

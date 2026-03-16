@@ -1,6 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,15 +12,16 @@ using System.Threading.Tasks;
 namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
-internal abstract class Tower : GameObject, ITower
+internal delegate void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position);
+internal abstract class Tower : GameObject
 {
-    public static Texture2D TexturePlaceholder1 { get; private set; }
-    public static Texture2D TexturePlaceholder2 { get; private set; }
+    public static Texture2D TexturePlaceholderTower { get; private set; }
+    public static Texture2D TexturePlaceholderGround { get; private set; }
 
     public static void LoadContent(ContentManager content)
     {
-        TexturePlaceholder1 = content.Load<Texture2D>("Placeholder/tower_placeholder_1");
-        TexturePlaceholder2 = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
+        TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder_1");
+        TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
     }
 
     public enum Slot
@@ -93,10 +96,5 @@ internal abstract class Tower : GameObject, ITower
                 _attachedParts[3] = part;
                 break;
         }
-    }
-
-    public static Tower Create(Vector2 position)
-    {
-        throw new NotImplementedException("Must Implement the New() Method in Tower Classes!");
     }
 }

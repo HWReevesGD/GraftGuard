@@ -11,12 +11,14 @@ namespace Grafter
 
         private PartData currentlyEditing;
 
-        private string filePath = "parts_data.csv";
+        private string projectContentPath = @"..\..\..\..\GraftGuard\Content\Parts\";
 
         public Form1()
         {
             InitializeComponent();
             lstParts.DataSource = partsList;
+            picPreview.SizeMode = PictureBoxSizeMode.Zoom;
+            Debug.WriteLine("Working Directory: " + Directory.GetCurrentDirectory());
         }
 
         private void btnSave_Click(object sender, EventArgs e)
@@ -34,8 +36,7 @@ namespace Grafter
                     var lines = partsList.Select(p => p.ToCsv());
                     File.WriteAllLines(sfd.FileName, lines);
 
-                    // Optional: Store this path so you know where to auto-load from next time
-                    this.filePath = sfd.FileName;
+
                     MessageBox.Show("File saved successfully!");
                 }
             }
@@ -68,7 +69,6 @@ namespace Grafter
                             }
                         }
                     }
-                    this.filePath = ofd.FileName; // Keep track of the file we opened
 
                     // --- AUTO-FILL LOGIC ---
                     // Check if we actually loaded any parts
@@ -78,7 +78,7 @@ namespace Grafter
                     }
                 }
 
-                
+
             }
         }
 
@@ -99,24 +99,23 @@ namespace Grafter
                 numRange.Value = (decimal)selected.RangeModifier;
                 numCritical.Value = (decimal)selected.CriticalModifier;
                 numHealth.Value = (decimal)selected.HealthModifier;
+                // Reconstruct the path based on the local project directory
+                string expectedPath = Path.Combine(projectContentPath, selected.TextureName + ".png");
 
-                if(selected.FullImagePath != "")
-                {
-                    picPreview.Image = Image.FromFile(selected.FullImagePath);
-                }
-                else
-                {
-                    picPreview.Image = null;
-                }
+                picPreview.Image = null;
 
-                if (selected.FullImagePath != "")
+                if (File.Exists(expectedPath))
                 {
+                    selected.FullImagePath = expectedPath;
+                    picPreview.Image = Image.FromFile(expectedPath);
                     btnSelectTexture.Text = selected.TextureName;
                 }
                 else
                 {
+                    picPreview.Image = null;
                     btnSelectTexture.Text = "Select Texture";
                 }
+
             }
             else
             {
@@ -164,21 +163,102 @@ namespace Grafter
 
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "Image Files|*.png;*.jpg;*.png";
+                ofd.Filter = "Image Files|*.png;*.jpg;*.tga";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    // Store the full path for the editor to use right now
-                    currentlyEditing.FullImagePath = ofd.FileName;
-                    currentlyEditing.TextureName = Path.GetFileNameWithoutExtension(ofd.FileName);
+                    string sourcePath = ofd.FileName;
+                    string fileName = Path.GetFileName(sourcePath);
+                    string destinationPath = Path.Combine(projectContentPath, fileName);
 
-                    // Show preview in PictureBox
-                    picPreview.Image = Image.FromFile(ofd.FileName);
-                    btnSelectTexture.Text = currentlyEditing.TextureName;
+                    try
+                    {
+                        // Only copy if the file isn't already there
+                        if (!File.Exists(destinationPath))
+                        {
+                            if (!Directory.Exists(projectContentPath)) Directory.CreateDirectory(projectContentPath);
+                            File.Copy(sourcePath, destinationPath);
+
+                            // Trigger compilation only for NEW files
+                            RegisterWithMonoGame(destinationPath);
+                        }
+
+                        // Always update the object data, even if the file already existed
+                        currentlyEditing.TextureName = Path.GetFileNameWithoutExtension(fileName);
+                        currentlyEditing.FullImagePath = destinationPath;
+
+                        // Update UI Preview
+                        if (picPreview.Image != null) picPreview.Image.Dispose();
+                        picPreview.Image = Image.FromFile(destinationPath);
+                        btnSelectTexture.Text = currentlyEditing.TextureName;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error linking texture: {ex.Message}");
+                    }
                 }
             }
         }
 
+        private void picPreview_Paint(object sender, PaintEventArgs e)
+        {
+            // This ensures pixel art stays crisp when zoomed in
+            e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+            e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 
+            if (currentlyEditing == null || picPreview.Image == null) return;
+
+            // Calculate the actual screen position of the pivot
+            // (Inverse of the math used in MouseClick)
+            float ratioX = (float)picPreview.ClientSize.Width / picPreview.Image.Width;
+            float ratioY = (float)picPreview.ClientSize.Height / picPreview.Image.Height;
+            float ratio = Math.Min(ratioX, ratioY);
+            float imgWidth = picPreview.Image.Width * ratio;
+            float imgHeight = picPreview.Image.Height * ratio;
+            float offsetX = (picPreview.ClientSize.Width - imgWidth) / 2;
+            float offsetY = (picPreview.ClientSize.Height - imgHeight) / 2;
+
+            float screenPivotX = offsetX + (currentlyEditing.PivotX * imgWidth);
+            float screenPivotY = offsetY + (currentlyEditing.PivotY * imgHeight);
+
+            // Draw a bright crosshair
+            using (Pen p = new Pen(Color.Red, 2))
+            {
+                e.Graphics.DrawLine(p, screenPivotX - 10, screenPivotY, screenPivotX + 10, screenPivotY);
+                e.Graphics.DrawLine(p, screenPivotX, screenPivotY - 10, screenPivotX, screenPivotY + 10);
+            }
+        }
+
+        private void picPreview_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (currentlyEditing == null || picPreview.Image == null) return;
+
+            // 1. Calculate the scale ratio of the image inside the Zoomed PictureBox
+            float ratioX = (float)picPreview.ClientSize.Width / picPreview.Image.Width;
+            float ratioY = (float)picPreview.ClientSize.Height / picPreview.Image.Height;
+            float ratio = Math.Min(ratioX, ratioY);
+
+            // 2. Calculate the offset of the image inside the PictureBox
+            float imgWidth = picPreview.Image.Width * ratio;
+            float imgHeight = picPreview.Image.Height * ratio;
+            float offsetX = (picPreview.ClientSize.Width - imgWidth) / 2;
+            float offsetY = (picPreview.ClientSize.Height - imgHeight) / 2;
+
+            // 3. Convert Mouse Click to Image Coordinates
+            float clickedImgX = (e.X - offsetX) / ratio;
+            float clickedImgY = (e.Y - offsetY) / ratio;
+
+            // 4. Convert to Normalized Coordinates (0.0 to 1.0)
+            if (clickedImgX >= 0 && clickedImgX <= picPreview.Image.Width &&
+                clickedImgY >= 0 && clickedImgY <= picPreview.Image.Height)
+            {
+                currentlyEditing.PivotX = clickedImgX / picPreview.Image.Width;
+                currentlyEditing.PivotY = clickedImgY / picPreview.Image.Height;
+
+                // Force the PictureBox to redraw so we can see a crosshair
+                picPreview.Invalidate();
+                MessageBox.Show($"Pivot set to: {currentlyEditing.PivotX:F2}, {currentlyEditing.PivotY:F2}");
+            }
+        }
         private void SaveUiToObject()
         {
             if (currentlyEditing != null)
@@ -193,6 +273,13 @@ namespace Grafter
 
                 partsList.ResetBindings(); // Updates the name in the list instantly
             }
+        }
+
+        private void RegisterWithMonoGame(string texturePath)
+        {
+            // This tells MonoGame's builder to recognize the new PNG we just dropped in
+            // You can point this to your .mgcb file or run the raw command as you did before
+            CompileTexture(texturePath, projectContentPath);
         }
 
         private void CompileTexture(string sourcePngPath, string outputFolder)
@@ -223,5 +310,37 @@ namespace Grafter
             }
         }
 
+        private void lstParts_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if the user pressed Backspace or Delete
+            if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
+            {
+                // Ensure an item is actually selected
+                if (lstParts.SelectedItem is PartData selectedPart)
+                {
+                    var result = MessageBox.Show(
+                        $"Are you sure you want to remove '{selectedPart.Name}'?",
+                        "Confirm Deletion",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Warning);
+
+                    if (result == DialogResult.Yes)
+                    {
+                        // Remove from the BindingList (updates UI immediately)
+                        partsList.Remove(selectedPart);
+
+                        // Clear the preview if we deleted the part we were editing
+                        if (currentlyEditing == selectedPart)
+                        {
+                            currentlyEditing = null;
+                            picPreview.Image?.Dispose();
+                            picPreview.Image = null;
+                            txtName.Text = "";
+                        }
+
+                    }
+                }
+            }
+        }
     }
 }

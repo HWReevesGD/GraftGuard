@@ -16,14 +16,18 @@ namespace Grafter
         public float CriticalModifier { get; set; }
         public float HealthModifier { get; set; }
 
-        public string TextureName { get; set; } = ""; 
+        // New fields for the game engine
+        public string TextureName { get; set; } = "";
+
+        // Default to center
+        public float PivotX { get; set; } = 0.5f; 
+        public float PivotY { get; set; } = 0.5f;
 
         public string FullImagePath { get; set; } = ""; 
 
-        // Converts the object to a CSV line
-        public string ToCsv() => $"{Name},{BaseDamage},{SpeedModifier},{ArmorModifier},{RangeModifier},{CriticalModifier},{HealthModifier}";
+        public string ToCsv() => $"{Name},{BaseDamage},{SpeedModifier},{ArmorModifier},{RangeModifier},{CriticalModifier},{HealthModifier},{TextureName},{PivotX},{PivotY}";
 
-        // Creates an object from a CSV line
+
         public static PartData FromCsv(string csvLine)
         {
             var parts = csvLine.Split(',');
@@ -35,7 +39,10 @@ namespace Grafter
                 ArmorModifier = float.Parse(parts[3]),
                 RangeModifier = float.Parse(parts[4]),
                 CriticalModifier = float.Parse(parts[5]),
-                HealthModifier = float.Parse(parts[6])
+                HealthModifier = float.Parse(parts[6]),
+                TextureName = parts.Length > 7 ? parts[7] : "",
+                PivotX = parts.Length > 8 ? float.Parse(parts[8]) : 0.5f,
+                PivotY = parts.Length > 9 ? float.Parse(parts[9]) : 0.5f
             };
         }
 

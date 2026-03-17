@@ -1,0 +1,33 @@
+﻿using GraftGuard.UI;
+using GraftGuard.Utility;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ShapeUtils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GraftGuard;
+internal class Terrain
+{
+    public List<Rectangle> Boxes { get; set; } = [];
+
+    public Terrain()
+    {
+        Boxes.Add(new Rectangle(128, 128, 128, 128));
+    }
+
+    public void Update(GameTime time)
+    {
+
+    }
+    public void Draw(SpriteBatch batch, GameTime time)
+    {
+        foreach (Rectangle box in Boxes)
+        {
+            batch.Draw(Placeholders.TexturePixel, box, new Color(0.7f, 0.3f, 0.1f));
+        }
+    }
+}

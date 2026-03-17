@@ -41,6 +41,14 @@ namespace GraftGuard.Utility
             float smallest = MathF.MinMagnitude(vector.X, vector.Y);
             return new Vector2(smallest, smallest);
         }
+        public static Rectangle AddX(this Rectangle rectangle, int addition)
+        {
+            return rectangle with { X = rectangle.X + addition };
+        }
+        public static Rectangle AddY(this Rectangle rectangle, int addition)
+        {
+            return rectangle with { Y = rectangle.Y + addition };
+        }
         public static Point Divided(this Point point, int divider) => new Point(point.X / divider, point.Y / divider);
     }
 }

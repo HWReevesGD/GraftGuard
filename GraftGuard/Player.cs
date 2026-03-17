@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.UI;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,7 +16,7 @@ namespace GraftGuard
 {
     internal class Player : GameObject
     {
-        private static readonly float Speed = 15;
+        private static readonly float Speed = 600;
         private static Texture2D texture;
 
         public static void LoadContent(ContentManager content)
@@ -23,20 +24,21 @@ namespace GraftGuard
             Player.texture = content.Load<Texture2D>("playerplaceholder");
         }
 
-        public Player(Vector2 position) : base(position, new Vector2(50, 50), Player.texture)
+        public Player(Vector2 position) : base(position, new Vector2(25, 50), Player.texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
         {
 
         }
 
-        public override void Update(GameTime gameTime, InputManager inputManager)
+        public void Update(GameTime gameTime, InputManager inputManager, World world)
         {
+            float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Vector2 moveVector = inputManager.GetMovementDirection();
-            base.Position += moveVector * Speed;
+            Move(moveVector * Speed * delta, world);
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch batch)
         {
-            base.Draw(gameTime, base.Hitbox, batch);
+            base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
         }
     }
 }

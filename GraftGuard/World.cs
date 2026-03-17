@@ -21,16 +21,17 @@ namespace GraftGuard
         // Properties
         public TowerManager TowerManager { get; set; }
         public TowerGrafter TowerGrafter { get; set; }
-        
+        public Terrain Terrain { get; set; }
+
         // Constructor
         public World()
         {
             pathNodes = new List<PathNode>();
             enemies = new List<Enemy>();
             
-            // Create new TowerManagers and TowerGrafters
             TowerManager = new TowerManager();
             TowerGrafter = new TowerGrafter(TowerManager);
+            Terrain = new Terrain();
 
             player = new Player(Vector2.Zero);
         }
@@ -40,13 +41,15 @@ namespace GraftGuard
         {
             TowerManager.Update(gameTime);
             TowerGrafter.Update(gameTime, inputManager);
-            player.Update(gameTime, inputManager);
+            Terrain.Update(gameTime);
+            player.Update(gameTime, inputManager, this);
         }
 
         public void Draw(SpriteBatch batch, GameTime gameTime)
         {
             TowerManager.Draw(batch, gameTime);
             TowerGrafter.Draw(batch, gameTime);
+            Terrain.Draw(batch, gameTime);
             player.Draw(gameTime, batch);
         }
     }

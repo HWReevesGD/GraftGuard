@@ -17,10 +17,12 @@ internal static class Placeholders
         TextureButtonHover = content.Load<Texture2D>("Placeholder/button_placeholder_hover");
         TextureMissingIcon = content.Load<Texture2D>("Placeholder/missing_texture_1");
         TexturePatchLabel = content.Load<Texture2D>("Placeholder/label_placeholder");
+        TexturePixel = content.Load<Texture2D>("pixel");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
     public static Texture2D TextureButtonHover;
     public static Texture2D TextureMissingIcon;
     public static Texture2D TexturePatchLabel;
+    public static Texture2D TexturePixel;
 }

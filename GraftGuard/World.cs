@@ -52,8 +52,6 @@ namespace GraftGuard
         public void DrawStatic(SpriteBatch batch, GameTime gameTime)
         {
             TowerGrafter.Draw(batch, gameTime);
-            var text = $"Mou: {Mouse.GetState().Position}\nMat: {Camera.WorldToScreen.Translation}\nTra: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.WorldToScreen)}\nTru: {Mouse.GetState().Position.ToVector2() + Camera.Position}";
-            batch.DrawString(Fonts.Arial, text, new Vector2(0, 128), Color.White);
         }
 
         public void DrawCamera(SpriteBatch batch, GameTime gameTime)

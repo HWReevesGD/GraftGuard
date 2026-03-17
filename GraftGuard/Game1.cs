@@ -90,11 +90,10 @@ namespace GraftGuard
             //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             //    Exit();
 
-            inputManager.Update();
-
             switch (gameState)
             {
                 case GameState.MainMenu:
+                    inputManager.Update();
                     if (inputManager.WasKeyPressStarted(Keys.Escape))
                     {
                         Exit();
@@ -107,6 +106,7 @@ namespace GraftGuard
                     break;
 
                 case GameState.Paused:
+                    inputManager.Update();
                     if (inputManager.WasKeyPressStarted(Keys.Escape))
                     {
                         gameState = GameState.MainMenu;
@@ -119,6 +119,7 @@ namespace GraftGuard
                     break;
 
                 case GameState.GameOver:
+                    inputManager.Update();
                     if (inputManager.WasKeyPressStarted(Keys.Escape))
                     {
                         gameState = GameState.MainMenu;
@@ -179,7 +180,7 @@ namespace GraftGuard
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointClamp);
+            _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
             // TODO: Add your drawing code here
 
@@ -201,7 +202,7 @@ namespace GraftGuard
 
                 case GameState.Game:
                     // Testing Stuff
-                    _testingWorld.Draw(_spriteBatch, gameTime);
+                    _testingWorld.DrawStatic(_spriteBatch, gameTime);
                     
                     _spriteBatch.DrawString(
                         Fonts.Arial,
@@ -211,6 +212,14 @@ namespace GraftGuard
                         new Vector2(64, 0),
                         Color.White
                     );
+
+                    _spriteBatch.End();
+
+                    // Draw by the Camera
+                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
+
+                    _testingWorld.DrawCamera(_spriteBatch, gameTime);
+
                     break;
             }
 

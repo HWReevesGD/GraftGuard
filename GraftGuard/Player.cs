@@ -1,4 +1,5 @@
 ﻿using GraftGuard.UI;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -34,6 +35,7 @@ namespace GraftGuard
             float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Vector2 moveVector = inputManager.GetMovementDirection();
             Move(moveVector * Speed * delta, world);
+            world.Camera.Position = Position - Interface.ScreenCenter;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch batch)

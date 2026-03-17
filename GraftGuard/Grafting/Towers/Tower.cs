@@ -137,6 +137,6 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <returns><see cref="true"/> if the Mouse overlaps the <see cref="Tower"/>, <see cref="false"/> otherwise</returns>
     public bool IsMouseOver(InputManager inputManager)
     {
-        return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(inputManager.MousePosition);
+        return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(inputManager.MouseWorldPosition);
     }
 }

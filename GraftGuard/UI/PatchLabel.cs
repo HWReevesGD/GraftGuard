@@ -35,6 +35,6 @@ internal class PatchLabel : IMouseDetectable
 
     public bool IsMouseOver(InputManager inputManager)
     {
-        return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MousePosition);
+        return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MouseScreenPosition);
     }
 }

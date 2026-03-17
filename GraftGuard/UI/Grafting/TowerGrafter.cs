@@ -85,7 +85,7 @@ internal class TowerGrafter
             // Handle Tower Placement
             if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
             {
-                _towerManager.MakeTower(tower, inputManager.MousePosition.ToVector());
+                _towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
             }
             // Handle Part Attaching
             if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && _towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)

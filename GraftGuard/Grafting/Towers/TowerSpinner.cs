@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.UI;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -34,6 +35,8 @@ namespace GraftGuard.Grafting.Towers
                 batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.2f, new Vector2(8, 48), Vector2.One, SpriteEffects.None, 1.0f);
                 batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.4f, new Vector2(8, 64), Vector2.One, SpriteEffects.None, 1.0f);
             }
+
+            batch.DrawString(Fonts.Arial, $"Pos: {Position}", Position, Color.White);
         }
 
         /// <summary>

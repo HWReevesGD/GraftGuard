@@ -124,4 +124,15 @@ internal class GameObject
         // Return the modified position
         return currentBox;
     }
+
+    /// <summary>
+    /// Filters a list of <see cref="GameObject"/> to objects which lie on any of the given <paramref name="layers"/> and overlap this object's Hitbox
+    /// </summary>
+    /// <param name="layers"><see cref="CollisionLayer"/>s to match</param>
+    /// <param name="objects">List of <see cref="GameObject"/>s to filter</param>
+    /// <returns>Filtered <see cref="GameObject"/> List of all colliding objects</returns>
+    public List<GameObject> GetOverlapping(CollisionLayer layers, List<GameObject> objects)
+    {
+        return objects.Where((obj) => obj.CollisionLayers.HasFlag(layers) && obj.Hitbox.Intersects(Hitbox)).ToList();
+    }
 }

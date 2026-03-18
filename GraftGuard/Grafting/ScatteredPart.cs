@@ -14,7 +14,7 @@ internal class ScatteredPart : GameObject
     private static readonly Random _random = new Random();
     private float _randomRotation;
     public PartDefinition Definition { get; private set; }
-    public ScatteredPart(Vector2 position, PartDefinition definition) : base(position, new Vector2(32, 32), null)
+    public ScatteredPart(Vector2 position, PartDefinition definition) : base(position, new Vector2(32, 32), null, collisionLayers: CollisionLayer.ScatteredPart)
     {
         Definition = definition;
         _randomRotation = _random.NextSingle() * MathF.Tau;

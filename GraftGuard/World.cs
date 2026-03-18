@@ -35,7 +35,11 @@ internal class World
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
-            new ScatteredPart(new Vector2(420, 420), PartRegistry.GetByName("arm")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("arm")),
+            new ScatteredPart(new Vector2(420, 320), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(520, 320), PartRegistry.GetByName("arm")),
+            new ScatteredPart(new Vector2(620, 320), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(720, 320), PartRegistry.GetByName("knife")),
             ];
         
         TowerManager = new TowerManager();

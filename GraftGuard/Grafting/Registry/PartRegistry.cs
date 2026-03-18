@@ -21,8 +21,7 @@ internal static class PartRegistry
         _allParts.Add(new PartDefinition(name, texture, type, baseDamage, speedModifier, armorModifier, rangeModifier, criticalModifier, healthModifier));
     }
     /// <summary>
-    /// Gets a <see cref="PartDefinition"/> from the Registry by its name, case-insensitive.
-    /// This is inefficient, and should ONLY be used for testing!
+    /// Gets a <see cref="PartDefinition"/> from the Registry by its name, case-insensitive
     /// </summary>
     /// <param name="name">Name of part to search for</param>
     /// <returns>Found <see cref="PartDefinition"/></returns>

@@ -4,7 +4,7 @@ using System;
 
 namespace GraftGuard.Utility
 {
-    internal static class ClassExtentions
+    internal static class ClassExtensions
     {
         public static Point ToPoint(this Vector2 vector) => new Point((int)vector.X, (int)vector.Y);
         public static Vector2 ToVector(this Point point) => new Vector2(point.X, point.Y);
@@ -48,6 +48,10 @@ namespace GraftGuard.Utility
         public static Rectangle AddY(this Rectangle rectangle, int addition)
         {
             return rectangle with { Y = rectangle.Y + addition };
+        }
+        public static  bool Intersects(this Rectangle rectangle, Circle circle)
+        {
+            return circle.Intersects(rectangle);
         }
         public static Point Divided(this Point point, int divider) => new Point(point.X / divider, point.Y / divider);
     }

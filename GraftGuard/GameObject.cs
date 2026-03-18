@@ -19,6 +19,7 @@ enum CollisionLayer {
     Solid = 1,
     Player = 1 << 1,
     Terrain = 1 << 2,
+    ScatteredPart = 1 << 3,
 }
 
 internal class GameObject
@@ -134,5 +135,15 @@ internal class GameObject
     public List<GameObject> GetOverlapping(CollisionLayer layers, List<GameObject> objects)
     {
         return objects.Where((obj) => obj.CollisionLayers.HasFlag(layers) && obj.Hitbox.Intersects(Hitbox)).ToList();
+    }
+
+    public static List<T> GetIntersects<T>(Rectangle checkArea, CollisionLayer layers, List<T> objects) where T : GameObject
+    {
+        return objects.Where((obj) => obj.CollisionLayers.HasFlag(layers) && obj.Hitbox.Intersects(checkArea)).ToList();
+    }
+
+    public static List<T> GetIntersects<T>(Circle checkCircle, CollisionLayer layers, List<T> objects) where T : GameObject
+    {
+        return objects.Where((obj) => obj.CollisionLayers.HasFlag(layers) && obj.Hitbox.Intersects(checkCircle)).ToList();
     }
 }

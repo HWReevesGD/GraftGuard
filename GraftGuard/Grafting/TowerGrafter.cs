@@ -31,12 +31,18 @@ internal class TowerGrafter
     private List<Button> _partChoiceButtons = [];
     private List<PartDefinition> _partChoices = [];
 
+    // Label which displays the currently selected building option
     private PatchLabel _currentChosenLabel;
 
+    // Tracking currently selected parts and towers
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
 
+    // The world's TowerManager
     private TowerManager _towerManager;
+
+    // TODO: Current Inventory of Parts / Materials
+
 
     public TowerGrafter(TowerManager towerManager)
     {

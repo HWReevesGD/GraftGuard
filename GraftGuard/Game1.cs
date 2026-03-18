@@ -132,7 +132,7 @@ public class Game1 : Game
                     break;
                 }
 
-                _testingWorld.Update(gameTime, inputManager);
+                _testingWorld.Update(gameTime, inputManager, timeState);
 
                 // handle game timers
 
@@ -203,14 +203,14 @@ public class Game1 : Game
                 // Draw by the Camera's Position
                 _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
 
-                _testingWorld.DrawCamera(_spriteBatch, gameTime);
+                _testingWorld.DrawCamera(_spriteBatch, gameTime, timeState);
 
                 _spriteBatch.End();
 
                 // Drawn on the Screen Directly
                 _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-                _testingWorld.DrawStatic(_spriteBatch, gameTime);
+                _testingWorld.DrawStatic(_spriteBatch, gameTime, timeState);
 
                 _spriteBatch.DrawString(
                     Fonts.Arial,

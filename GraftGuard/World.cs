@@ -47,21 +47,28 @@ internal class World
     }
 
     // Methods
-    public void Update(GameTime gameTime, InputManager inputManager)
+    public void Update(GameTime gameTime, InputManager inputManager, TimeState state)
     {
         player.Update(gameTime, inputManager, this);
         inputManager.Update(Camera);
         TowerManager.Update(gameTime);
-        TowerGrafter.Update(gameTime, inputManager);
         Terrain.Update(gameTime);
+
+        if (state == TimeState.Day)
+        {
+            TowerGrafter.Update(gameTime, inputManager);
+        }
     }
 
-    public void DrawStatic(SpriteBatch batch, GameTime gameTime)
+    public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state)
     {
-        TowerGrafter.Draw(batch, gameTime);
+        if (state == TimeState.Day)
+        {
+            TowerGrafter.Draw(batch, gameTime);
+        }
     }
 
-    public void DrawCamera(SpriteBatch batch, GameTime gameTime)
+    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state)
     {
         Terrain.Draw(batch, gameTime);
 

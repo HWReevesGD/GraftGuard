@@ -1,4 +1,5 @@
-﻿using GraftGuard.UI;
+﻿using GraftGuard.Graphics;
+using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,14 +14,16 @@ namespace GraftGuard;
 internal class Terrain
 {
     public List<Rectangle> Boxes { get; set; } = [];
-
+    public NinePatch TerrainPatch;
     public Terrain()
     {
+        TerrainPatch = new NinePatch(Placeholders.TextureTerrain, 15, 15, 15, 15);
         Boxes = [
             new Rectangle(-128, -1280, 1280, 1280),
             new Rectangle(-1280, -128, 1280, 1280),
             new Rectangle(960, 0, 1280, 1280),
             new Rectangle(0, 960, 1280, 1280),
+            new Rectangle(320, 421, 320, 149),
             ];
     }
 
@@ -32,7 +35,7 @@ internal class Terrain
     {
         foreach (Rectangle box in Boxes)
         {
-            batch.Draw(Placeholders.TexturePixel, box, new Color(0.7f, 0.3f, 0.1f));
+            TerrainPatch.Draw(batch, box);
         }
     }
 }

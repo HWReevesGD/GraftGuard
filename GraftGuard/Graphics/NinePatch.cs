@@ -25,6 +25,7 @@ internal class NinePatch
         MarginTop = marginTop;
         MarginBottom = marginBottom;
     }
+    public void Draw(SpriteBatch batch, Rectangle box, Color? color = null) => Draw(batch, box.Location.ToVector(), box.Size.ToVector(), color);
     public void Draw(SpriteBatch batch, Vector2 position, Point size, Color? color = null)
     {
         // The Position of the Nine-Patch turned into a Point

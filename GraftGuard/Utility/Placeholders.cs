@@ -18,6 +18,7 @@ internal static class Placeholders
         TextureMissingIcon = content.Load<Texture2D>("Placeholder/missing_texture_1");
         TexturePatchLabel = content.Load<Texture2D>("Placeholder/label_placeholder");
         TexturePixel = content.Load<Texture2D>("pixel");
+        TextureTerrain = content.Load<Texture2D>("Placeholder/placeholder_terrain");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
@@ -25,4 +26,5 @@ internal static class Placeholders
     public static Texture2D TextureMissingIcon;
     public static Texture2D TexturePatchLabel;
     public static Texture2D TexturePixel;
+    public static Texture2D TextureTerrain;
 }

@@ -1,7 +1,6 @@
-﻿using GraftGuard.Grafting;
-using GraftGuard.Grafting.Parts;
-using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +12,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard.UI.Grafting;
+namespace GraftGuard.Grafting;
 internal class TowerGrafter
 {
     // Constants for button sizing
@@ -34,8 +33,8 @@ internal class TowerGrafter
 
     private PatchLabel _currentChosenLabel;
 
-    private TowerDefinition? _currentlyGraftingTower = null;
-    private PartDefinition? _currentlyChosenPart = null;
+    private TowerDefinition _currentlyGraftingTower = null;
+    private PartDefinition _currentlyChosenPart = null;
 
     private TowerManager _towerManager;
 

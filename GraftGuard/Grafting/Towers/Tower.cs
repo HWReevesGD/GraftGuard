@@ -1,4 +1,5 @@
-﻿using GraftGuard.UI;
+﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;

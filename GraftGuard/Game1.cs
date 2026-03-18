@@ -1,235 +1,230 @@
-﻿using GraftGuard.Grafting;
-using GraftGuard.Grafting.Parts;
-using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
 using GraftGuard.UI;
-using GraftGuard.UI.Grafting;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace GraftGuard
+namespace GraftGuard;
+enum GameState
 {
-    enum GameState
+    MainMenu,
+    Paused,
+    GameOver,
+    Game
+}
+
+enum TimeState {
+    Night,
+    Dawn,
+    Day
+}
+
+public class Game1 : Game
+{
+    public GraphicsDeviceManager Graphics;
+    private SpriteBatch _spriteBatch;
+
+    private GameState gameState;
+    private TimeState timeState;
+    private float timer;
+
+    private static readonly float NightTimeLength = 5;
+    private static readonly float DawnTimeLength = 5;
+    private InputManager inputManager;
+    private World _testingWorld;
+
+    public Game1()
     {
-        MainMenu,
-        Paused,
-        GameOver,
-        Game
+        Graphics = new GraphicsDeviceManager(this);
+        Content.RootDirectory = "Content";
+        IsMouseVisible = true;
     }
 
-    enum TimeState {
-        Night,
-        Dawn,
-        Day
+    protected override void Initialize()
+    {
+        this.gameState = GameState.Game;
+        this.timeState = TimeState.Night;
+        
+        inputManager = new InputManager();
+        Interface.Initialize(this);
+
+        base.Initialize();
     }
 
-    public class Game1 : Game
+    protected override void LoadContent()
     {
-        public GraphicsDeviceManager Graphics;
-        private SpriteBatch _spriteBatch;
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        private GameState gameState;
-        private TimeState timeState;
-        private float timer;
+        // Content for Static classes
+        Fonts.LoadContent(Content);
+        Placeholders.LoadContent(Content);
 
-        private static readonly float NightTimeLength = 5;
-        private static readonly float DawnTimeLength = 5;
-        private InputManager inputManager;
-        private World _testingWorld;
+        Player.LoadContent(Content);
 
-        public Game1()
+        // TODO: use this.Content to load your game content here
+        // Loading Tower Content
+        Tower.LoadContent(Content);
+        PartDefinition.LoadContent(Content);
+
+        // Registering Towers
+        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
+        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
+        // Registering Parts
+        PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f);
+        PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f);
+
+        // Add Testing World
+        _testingWorld = new World();
+    }
+
+    protected override void Update(GameTime gameTime)
+    {
+        //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+        //    Exit();
+
+        switch (gameState)
         {
-            Graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-            IsMouseVisible = true;
-        }
+            case GameState.MainMenu:
+                inputManager.Update();
+                if (inputManager.WasKeyPressStarted(Keys.Escape))
+                {
+                    Exit();
+                    break;
+                }
+                else if (inputManager.WasKeyPressStarted(Keys.Enter))
+                {
+                    gameState = GameState.Game;
+                }
+                break;
 
-        protected override void Initialize()
-        {
-            this.gameState = GameState.Game;
-            this.timeState = TimeState.Night;
-            
-            inputManager = new InputManager();
-            Interface.Initialize(this);
+            case GameState.Paused:
+                inputManager.Update();
+                if (inputManager.WasKeyPressStarted(Keys.Escape))
+                {
+                    gameState = GameState.MainMenu;
+                    break;
+                }
+                else if (inputManager.WasKeyPressStarted(Keys.Enter))
+                {
+                    gameState = GameState.Game;
+                }
+                break;
 
-            base.Initialize();
-        }
+            case GameState.GameOver:
+                inputManager.Update();
+                if (inputManager.WasKeyPressStarted(Keys.Escape))
+                {
+                    gameState = GameState.MainMenu;
+                    break;
+                }
+                break;
 
-        protected override void LoadContent()
-        {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            case GameState.Game:
+                // TODO: handle gameplay inputs here
 
-            // Content for Static classes
-            Fonts.LoadContent(Content);
-            Placeholders.LoadContent(Content);
+                if (inputManager.WasKeyPressStarted(Keys.Escape))
+                {
+                    gameState = GameState.Paused;
+                    break;
+                }
 
-            Player.LoadContent(Content);
+                _testingWorld.Update(gameTime, inputManager);
 
-            // TODO: use this.Content to load your game content here
-            // Loading Tower Content
-            Tower.LoadContent(Content);
-            PartDefinition.LoadContent(Content);
+                // handle game timers
 
-            // Registering Towers
-            TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
-            TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
-            // Registering Parts
-            PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f);
-            PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f);
-
-            // Add Testing World
-            _testingWorld = new World();
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            //    Exit();
-
-            switch (gameState)
-            {
-                case GameState.MainMenu:
-                    inputManager.Update();
-                    if (inputManager.WasKeyPressStarted(Keys.Escape))
-                    {
-                        Exit();
+                switch (timeState)
+                {
+                    case TimeState.Night:
+                        timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (timer <= 0)
+                        {
+                            timeState = TimeState.Dawn;
+                            timer = DawnTimeLength;
+                        }
                         break;
-                    }
-                    else if (inputManager.WasKeyPressStarted(Keys.Enter))
-                    {
-                        gameState = GameState.Game;
-                    }
-                    break;
 
-                case GameState.Paused:
-                    inputManager.Update();
-                    if (inputManager.WasKeyPressStarted(Keys.Escape))
-                    {
-                        gameState = GameState.MainMenu;
+                    case TimeState.Dawn:
+                        timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        if (timer <= 0)
+                        {
+                            timeState = TimeState.Day;
+                        }
                         break;
-                    }
-                    else if (inputManager.WasKeyPressStarted(Keys.Enter))
-                    {
-                        gameState = GameState.Game;
-                    }
-                    break;
 
-                case GameState.GameOver:
-                    inputManager.Update();
-                    if (inputManager.WasKeyPressStarted(Keys.Escape))
-                    {
-                        gameState = GameState.MainMenu;
+                    case TimeState.Day:
                         break;
-                    }
-                    break;
-
-                case GameState.Game:
-                    // TODO: handle gameplay inputs here
-
-                    if (inputManager.WasKeyPressStarted(Keys.Escape))
-                    {
-                        gameState = GameState.Paused;
-                        break;
-                    }
-
-                    _testingWorld.Update(gameTime, inputManager);
-
-                    // handle game timers
-
-                    switch (timeState)
-                    {
-                        case TimeState.Night:
-                            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                            if (timer <= 0)
-                            {
-                                timeState = TimeState.Dawn;
-                                timer = DawnTimeLength;
-                            }
-                            break;
-
-                        case TimeState.Dawn:
-                            timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                            if (timer <= 0)
-                            {
-                                timeState = TimeState.Day;
-                            }
-                            break;
-
-                        case TimeState.Day:
-                            break;
-                    }
-                    break;
-            }
-
-            base.Update(gameTime);
+                }
+                break;
         }
 
-        /// <summary>
-        /// Start Night
-        /// </summary>
-        public void StartNight() {
-            timeState = TimeState.Night;
-            timer = NightTimeLength;
-        }
+        base.Update(gameTime);
+    }
 
-        protected override void Draw(GameTime gameTime)
+    /// <summary>
+    /// Start Night
+    /// </summary>
+    public void StartNight() {
+        timeState = TimeState.Night;
+        timer = NightTimeLength;
+    }
+
+    protected override void Draw(GameTime gameTime)
+    {
+        GraphicsDevice.Clear(Color.CornflowerBlue);
+
+        _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+
+        // TODO: Add your drawing code here
+
+        // TODO: call Draw for all GameObjects here
+
+        switch (gameState)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            case GameState.MainMenu:
+                _spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
+                break;
 
-            _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+            case GameState.Paused:
+                _spriteBatch.DrawString(Fonts.Arial, "PAUSED", Vector2.Zero, Color.White);
+                break;
 
-            // TODO: Add your drawing code here
+            case GameState.GameOver:
+                _spriteBatch.DrawString(Fonts.Arial, "GAME OVER", Vector2.Zero, Color.White);
+                break;
 
-            // TODO: call Draw for all GameObjects here
+            case GameState.Game:
 
-            switch (gameState)
-            {
-                case GameState.MainMenu:
-                    _spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
-                    break;
+                _spriteBatch.End();
 
-                case GameState.Paused:
-                    _spriteBatch.DrawString(Fonts.Arial, "PAUSED", Vector2.Zero, Color.White);
-                    break;
+                // Draw by the Camera's Position
+                _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
 
-                case GameState.GameOver:
-                    _spriteBatch.DrawString(Fonts.Arial, "GAME OVER", Vector2.Zero, Color.White);
-                    break;
+                _testingWorld.DrawCamera(_spriteBatch, gameTime);
 
-                case GameState.Game:
+                _spriteBatch.End();
 
-                    _spriteBatch.End();
+                // Drawn on the Screen Directly
+                _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-                    // Draw by the Camera's Position
-                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
+                _testingWorld.DrawStatic(_spriteBatch, gameTime);
 
-                    _testingWorld.DrawCamera(_spriteBatch, gameTime);
+                _spriteBatch.DrawString(
+                    Fonts.Arial,
+                    $"GAME\n" +
+                    $"STATE: {timeState}\n" +
+                    $"TIMER: {timer}\n",
+                    new Vector2(64, 0),
+                    Color.White
+                );
 
-                    _spriteBatch.End();
-
-                    // Drawn on the Screen Directly
-                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-
-                    _testingWorld.DrawStatic(_spriteBatch, gameTime);
-
-                    _spriteBatch.DrawString(
-                        Fonts.Arial,
-                        $"GAME\n" +
-                        $"STATE: {timeState}\n" +
-                        $"TIMER: {timer}\n",
-                        new Vector2(64, 0),
-                        Color.White
-                    );
-
-                    break;
-            }
-
-            _spriteBatch.End();
-            base.Draw(gameTime);
+                break;
         }
+
+        _spriteBatch.End();
+        base.Draw(gameTime);
     }
 }

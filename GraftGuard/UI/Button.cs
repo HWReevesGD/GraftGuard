@@ -10,7 +10,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.UI;
-
 enum ButtonIconType
 {
     Fixed,

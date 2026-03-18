@@ -15,6 +15,13 @@ internal class TowerDefinition
     public readonly CreateTower Factory;
     public readonly DrawPreview DrawPreview;
     public readonly Texture2D Icon;
+    /// <summary>
+    /// Creates a new <see cref="TowerDefinition"/>
+    /// </summary>
+    /// <param name="name">Tower name</param>
+    /// <param name="factory">Tower creation factory method</param>
+    /// <param name="drawPreview">Draw preview method</param>
+    /// <param name="icon">Part's icon texture</param>
     public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, Texture2D? icon = null)
     {
         Name = name;

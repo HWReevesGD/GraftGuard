@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -8,11 +9,12 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting;
+
+/// <summary>
+/// Handles the Grafting Interface and Part Inventory
+/// </summary>
 internal class TowerGrafter
 {
     // Constants for button sizing
@@ -38,16 +40,15 @@ internal class TowerGrafter
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
 
-    // The world's TowerManager
-    private TowerManager _towerManager;
-
     // Inventory Dictionary
     private Dictionary<string, int> _inventory;
 
+    /// <summary>
+    /// Creates a new <see cref="TowerGrafter"/>
+    /// </summary>
     public TowerGrafter(TowerManager towerManager)
     {
         _inventory = [];
-        _towerManager = towerManager;
         _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentTowerLabelSize.X, 0), _currentTowerLabelSize);
 
         // Populate Towers
@@ -82,8 +83,15 @@ internal class TowerGrafter
         _allUI.Add(_currentChosenLabel);
     }
 
-    public void Update(GameTime time, InputManager inputManager)
+    /// <summary>
+    /// Updates the <see cref="TowerGrafter"/>
+    /// </summary>
+    /// <param name="time">Game Time</param>
+    /// <param name="inputManager">Current Input Manager</param>
+    /// <param name="world">World Owner</param>
+    public void Update(GameTime time, InputManager inputManager, World world)
     {
+        TowerManager towerManager = world.TowerManager;
         bool isOverUI = _allUI.Any((uiPart) => uiPart.IsMouseOver(inputManager));
 
         if (!isOverUI)
@@ -91,12 +99,17 @@ internal class TowerGrafter
             // Handle Tower Placement
             if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
             {
-                _towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
+                towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
             }
             // Handle Part Attaching
-            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && _towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
+            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
             {
-                overTower.AttachPart(part);
+                // Don't allow part attachment if the player does not have enough parts
+                if (GetPartCount(part) != 0)
+                {
+                    overTower.AttachPart(part);
+                    ModifyPartCount(part, -1);
+                }
             }
         }
 
@@ -116,16 +129,24 @@ internal class TowerGrafter
         for (int index = 0; index < _partChoiceButtons.Count; index++)
         {
             Button button = _partChoiceButtons[index];
+            button.Text = $"{GetPartCount(_partChoices[index])}";
+
             button.Update();
             if (button.ClickedThisFrame)
             {
                 Deselect();
+
                 _currentlyChosenPart = _partChoices[index];
                 _currentChosenLabel.Text = "Current:\n" + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
             }
         }
     }
 
+    /// <summary>
+    /// Draws the <see cref="TowerGrafter"/> Interface
+    /// </summary>
+    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="time">Game Time</param>
     public void Draw(SpriteBatch batch, GameTime time)
     {
         // Draw the Label showing the Currently Grafting Tower
@@ -152,29 +173,65 @@ internal class TowerGrafter
         }
     }
 
+    /// <summary>
+    /// Deselects all selected parts and towers
+    /// </summary>
     public void Deselect()
     {
         _currentlyGraftingTower = null;
         _currentlyChosenPart = null;
     }
 
+    /// <summary>
+    /// Returns the count for the given <paramref name="part"/>
+    /// </summary>
+    /// <param name="part">Part to get count for</param>
+    /// <returns>Number of this part in inventory</returns>
     public int GetPartCount(PartDefinition part) => GetPartCount(part.Name);
+    /// <summary>
+    /// Returns the count for the given <paramref name="partName"/>
+    /// </summary>
+    /// <param name="partName">Part to get count for</param>
+    /// <returns>Number of this part in inventory</returns>
     public int GetPartCount(string partName)
     {
-        return _inventory.GetValueOrDefault(partName.ToLower(), 0);
+        partName = partName.ToLower();
+        return _inventory.GetValueOrDefault(partName, 0);
     }
+    /// <summary>
+    /// Sets the count for the give <paramref name="part"/>
+    /// </summary>
+    /// <param name="part">Part to set count for</param>
+    /// <param name="value">Count value to set</param>
     public void SetPartCount(PartDefinition part, int value) => SetPartCount(part.Name, value);
+    /// <summary>
+    /// Sets the count for the give <paramref name="partName"/>
+    /// </summary>
+    /// <param name="partName">Part to set count for</param>
+    /// <param name="value">Count value to set</param>
     public void SetPartCount(string partName, int value)
     {
+        partName = partName.ToLower();
         if (value < 0)
         {
             throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
         }
         _inventory[partName] = value;
     }
+    /// <summary>
+    /// Modifiers the count of the given <paramref name="part"/>
+    /// </summary>
+    /// <param name="part">Part to modify count of</param>
+    /// <param name="change">Amount to modify count by</param>
     public void ModifyPartCount(PartDefinition part, int change) => ModifyPartCount(part.Name, change);
+    /// <summary>
+    /// Modifiers the count of the given <paramref name="partName"/>
+    /// </summary>
+    /// <param name="partName">Part to modify count of</param>
+    /// <param name="change">Amount to modify count by</param>
     public void ModifyPartCount(string partName, int change)
     {
+        partName = partName.ToLower();
         if (GetPartCount(partName) + change < 0)
         {
             throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");

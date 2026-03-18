@@ -63,7 +63,7 @@ internal class World
 
         if (state == TimeState.Day)
         {
-            TowerGrafter.Update(gameTime, inputManager);
+            TowerGrafter.Update(gameTime, inputManager, this);
         }
     }
 

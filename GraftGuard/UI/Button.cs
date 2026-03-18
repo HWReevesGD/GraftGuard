@@ -68,8 +68,8 @@ internal class Button : IMouseDetectable
 
     public virtual void Draw(SpriteBatch batch, Color? color = null)
     {
-        DrawText(batch);
         DrawIcon(batch);
+        DrawText(batch);
     }
 
     protected virtual void DrawText(SpriteBatch batch)

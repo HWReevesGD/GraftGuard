@@ -9,12 +9,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard.Map
+namespace GraftGuard.Map;
+internal class Projectile : GameObject
 {
-    internal class Projectile : GameObject
+    public Projectile(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
     {
-        public Projectile(Vector2 position, Vector2 size, Texture2D texture) : base(position, size, texture)
-        {
-        }
     }
 }

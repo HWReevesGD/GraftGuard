@@ -20,6 +20,7 @@ internal static class Placeholders
         TexturePixel = content.Load<Texture2D>("pixel");
         TextureTerrain = content.Load<Texture2D>("Placeholder/placeholder_terrain");
         TextureGaragePatch = content.Load<Texture2D>("Placeholder/garage_patch_placeholder");
+        TexturePartReceptacle = content.Load<Texture2D>("Placeholder/part_receptacle_placeholder");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
@@ -29,4 +30,5 @@ internal static class Placeholders
     public static Texture2D TexturePixel;
     public static Texture2D TextureTerrain;
     public static Texture2D TextureGaragePatch;
+    public static Texture2D TexturePartReceptacle;
 }

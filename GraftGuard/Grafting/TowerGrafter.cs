@@ -41,11 +41,12 @@ internal class TowerGrafter
     // The world's TowerManager
     private TowerManager _towerManager;
 
-    // TODO: Current Inventory of Parts / Materials
-
+    // Inventory Dictionary
+    private Dictionary<string, int> _inventory;
 
     public TowerGrafter(TowerManager towerManager)
     {
+        _inventory = [];
         _towerManager = towerManager;
         _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentTowerLabelSize.X, 0), _currentTowerLabelSize);
 
@@ -155,6 +156,30 @@ internal class TowerGrafter
     {
         _currentlyGraftingTower = null;
         _currentlyChosenPart = null;
+    }
+
+    public int GetPartCount(PartDefinition part) => GetPartCount(part.Name);
+    public int GetPartCount(string partName)
+    {
+        return _inventory.GetValueOrDefault(partName.ToLower(), 0);
+    }
+    public void SetPartCount(PartDefinition part, int value) => SetPartCount(part.Name, value);
+    public void SetPartCount(string partName, int value)
+    {
+        if (value < 0)
+        {
+            throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
+        }
+        _inventory[partName] = value;
+    }
+    public void ModifyPartCount(PartDefinition part, int change) => ModifyPartCount(part.Name, change);
+    public void ModifyPartCount(string partName, int change)
+    {
+        if (GetPartCount(partName) + change < 0)
+        {
+            throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
+        }
+        _inventory[partName] = GetPartCount(partName) + change;
     }
 
 }

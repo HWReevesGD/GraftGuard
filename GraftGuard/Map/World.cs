@@ -18,13 +18,14 @@ internal class World
     // Fields
     private List<PathNode> pathNodes;
     private List<Enemy> enemies;
-    private Player player;
 
     // Properties
+    public Player Player { get; set; }
     public TowerManager TowerManager { get; set; }
     public TowerGrafter TowerGrafter { get; set; }
     public Terrain Terrain { get; set; }
     public Camera Camera { get; set; }
+    public Garage Garage { get; set; }
     public List<ScatteredPart> ScatteredParts { get; set; }
 
     // Constructor
@@ -45,18 +46,20 @@ internal class World
         TowerManager = new TowerManager();
         TowerGrafter = new TowerGrafter(TowerManager);
         Terrain = new Terrain();
+        Garage = new Garage();
 
-        player = new Player(Vector2.Zero);
+        Player = new Player(Vector2.Zero);
         Camera = new Camera();
     }
 
     // Methods
     public void Update(GameTime gameTime, InputManager inputManager, TimeState state)
     {
-        player.Update(gameTime, inputManager, this);
+        Player.Update(gameTime, inputManager, this);
         inputManager.Update(Camera);
         TowerManager.Update(gameTime);
         Terrain.Update(gameTime);
+        Garage.Update(gameTime, this);
 
         if (state == TimeState.Day)
         {
@@ -66,6 +69,7 @@ internal class World
 
     public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state)
     {
+        batch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.ScreenToWorld)}", new Vector2(64, 128),Color.White);
         if (state == TimeState.Day)
         {
             TowerGrafter.Draw(batch, gameTime);
@@ -81,7 +85,9 @@ internal class World
             part.Draw(gameTime, batch);
         }
 
+        Garage.Draw(batch, gameTime);
+
         TowerManager.Draw(batch, gameTime);
-        player.Draw(gameTime, batch);
+        Player.Draw(gameTime, batch);
     }
 }

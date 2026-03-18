@@ -22,7 +22,9 @@ internal class Terrain
             new Rectangle(-128, -1280, 1280, 1280),
             new Rectangle(-1280, -128, 1280, 1280),
             new Rectangle(960, 0, 1280, 1280),
-            new Rectangle(0, 960, 1280, 1280),
+            new Rectangle(0, 960, 320, 1280),
+            new Rectangle(0, 960 + 320, 1280, 1280),
+            new Rectangle(312 + 480, 960, 1280, 1280),
             new Rectangle(320, 421, 320, 149),
             ];
     }

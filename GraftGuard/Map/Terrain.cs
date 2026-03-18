@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard;
+namespace GraftGuard.Map;
 internal class Terrain
 {
     public List<Rectangle> Boxes { get; set; } = [];

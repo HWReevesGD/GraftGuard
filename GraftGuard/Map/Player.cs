@@ -13,7 +13,7 @@ using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GraftGuard
+namespace GraftGuard.Map
 {
     internal class Player : GameObject
     {
@@ -30,10 +30,10 @@ namespace GraftGuard
 
         public static void LoadContent(ContentManager content)
         {
-            Player.texture = content.Load<Texture2D>("playerplaceholder");
+            texture = content.Load<Texture2D>("playerplaceholder");
         }
 
-        public Player(Vector2 position) : base(position, new Vector2(25, 50), Player.texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
+        public Player(Vector2 position) : base(position, new Vector2(25, 50), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
         {
             _collectionCircle = new Circle(CenterOffset, PickupRadius);
             HeldParts = [];
@@ -75,7 +75,7 @@ namespace GraftGuard
         private void HandlePartPickups(World world)
         {
             // Get all overlapping ScatteredParts
-            List<ScatteredPart> scatteredParts = GameObject.GetIntersects<ScatteredPart>(
+            List<ScatteredPart> scatteredParts = GetIntersects(
                 _collectionCircle.Translated(Position),
                 layers: CollisionLayer.ScatteredPart,
                 world.ScatteredParts

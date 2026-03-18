@@ -12,7 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard;
+namespace GraftGuard.Map;
 internal class World
 {
     // Fields

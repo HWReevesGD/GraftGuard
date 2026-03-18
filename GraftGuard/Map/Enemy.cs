@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard
+namespace GraftGuard.Map
 {
     internal class Enemy : GameObject
     {
@@ -33,11 +33,11 @@ namespace GraftGuard
             PathNode target = route[0]; // Temp
 
             // Get the unit vector of the direction from the enemy to the node
-            Vector2 dirVec = target.Position - this.Position;
+            Vector2 dirVec = target.Position - Position;
             dirUnitVec = dirVec / dirVec.Length();
 
             // Move the enemy
-            this.Position += (dirUnitVec * speed);
+            Position += dirUnitVec * speed;
         }
     }
 }

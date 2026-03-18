@@ -16,7 +16,12 @@ internal class Terrain
 
     public Terrain()
     {
-        Boxes.Add(new Rectangle(128, 128, 128, 128));
+        Boxes = [
+            new Rectangle(-128, -1280, 1280, 1280),
+            new Rectangle(-1280, -128, 1280, 1280),
+            new Rectangle(960, 0, 1280, 1280),
+            new Rectangle(0, 960, 1280, 1280),
+            ];
     }
 
     public void Update(GameTime time)

@@ -201,9 +201,21 @@ namespace GraftGuard
                     break;
 
                 case GameState.Game:
-                    // Testing Stuff
+
+                    _spriteBatch.End();
+
+                    // Draw by the Camera's Position
+                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
+
+                    _testingWorld.DrawCamera(_spriteBatch, gameTime);
+
+                    _spriteBatch.End();
+
+                    // Drawn on the Screen Directly
+                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+
                     _testingWorld.DrawStatic(_spriteBatch, gameTime);
-                    
+
                     _spriteBatch.DrawString(
                         Fonts.Arial,
                         $"GAME\n" +
@@ -212,13 +224,6 @@ namespace GraftGuard
                         new Vector2(64, 0),
                         Color.White
                     );
-
-                    _spriteBatch.End();
-
-                    // Draw by the Camera
-                    _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
-
-                    _testingWorld.DrawCamera(_spriteBatch, gameTime);
 
                     break;
             }

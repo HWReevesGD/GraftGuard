@@ -7,12 +7,13 @@ internal class Enemy : GameObject
 {
     // Fields
     private Vector2 dirUnitVec;
-    private float health;
     private float speed;
+
+    public float Health { get; set; }
 
     public Enemy(Vector2 position, Vector2 hitboxSize, Texture2D texture, float health, float speed) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
     {
-        this.health = health;
+        this.Health = health;
         this.speed = speed;
         dirUnitVec = new Vector2();
     }

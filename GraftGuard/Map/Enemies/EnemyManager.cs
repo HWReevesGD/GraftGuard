@@ -22,9 +22,17 @@ internal class EnemyManager
 
     public void Update(GameTime time, InputManager inputManager)
     {
-        foreach (Enemy enemy in Enemies)
+        for (int index = 0; index < Enemies.Count; index++)
         {
+            Enemy enemy = Enemies[index];
             enemy.Update(time, inputManager);
+
+            if (enemy.Health <= 0.0f)
+            {
+                enemy.OnDeath();
+                Enemies.RemoveAt(index);
+                index--;
+            }
         }
     }
 
@@ -34,5 +42,23 @@ internal class EnemyManager
         {
             enemy.Draw(time, batch);
         }
+    }
+
+    /// <summary>
+    /// Returns a <see cref="List"/> of <see cref="Enemy"/> with all enemies that overlap any of the given <see cref="Rectangle"/>s or <see cref="Circle"/>s
+    /// </summary>
+    /// <param name="boxes">List of <see cref="Rectangle"/>s to check</param>
+    /// <param name="circles">List of <see cref="Circle"/>s to check</param>
+    public List<Enemy> GetEnemiesInAreas(List<Rectangle> boxes, List<Circle> circles)
+    {
+        List<Enemy> areaEnemies = [];
+        foreach (Enemy enemy in Enemies)
+        {
+            if (boxes.Any((box) => box.Intersects(enemy.Hitbox)) || circles.Any((circle) => circle.Intersects(enemy.Hitbox)))
+            {
+                areaEnemies.Add(enemy);
+            }
+        }
+        return areaEnemies;
     }
 }

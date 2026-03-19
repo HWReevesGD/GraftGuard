@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -8,11 +9,11 @@ internal class TowerManager
 {
     public List<Tower> Towers = new();
 
-    public void Update(GameTime gameTime)
+    public void Update(GameTime time, World world, InputManager inputManager, TimeState state)
     {
         foreach (Tower tower in Towers)
         {
-            tower.Update(gameTime);
+            tower.Update(time, world, inputManager, state);
         }
     }
 

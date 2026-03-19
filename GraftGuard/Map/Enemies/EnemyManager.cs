@@ -61,4 +61,13 @@ internal class EnemyManager
         }
         return areaEnemies;
     }
+
+    public void DealDamageInAreas(List<Rectangle> boxes, List<Circle> circles, float damage)
+    {
+        List<Enemy> enemies = GetEnemiesInAreas(boxes, circles);
+        foreach (Enemy enemy in enemies)
+        {
+            enemy.Health -= damage;
+        }
+    }
 }

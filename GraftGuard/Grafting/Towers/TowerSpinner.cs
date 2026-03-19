@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -14,9 +15,9 @@ internal class TowerSpinner : Tower
 
     }
 
-    public override void Update(GameTime gameTime)
+    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state)
     {
-        base.Update(gameTime);
+        base.Update(time, world, inputManager, state);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)

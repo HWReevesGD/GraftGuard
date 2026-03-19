@@ -70,7 +70,7 @@ internal class World
 
         inputManager.Update(Camera);
         EnemyManager.Update(gameTime, inputManager);
-        TowerManager.Update(gameTime);
+        TowerManager.Update(gameTime, this, inputManager, state);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
     }
@@ -95,8 +95,8 @@ internal class World
 
         Garage.Draw(batch, gameTime);
 
-        EnemyManager.Draw(batch, gameTime);
         TowerManager.Draw(batch, gameTime);
+        EnemyManager.Draw(batch, gameTime);
         Player.Draw(gameTime, batch);
     }
 }

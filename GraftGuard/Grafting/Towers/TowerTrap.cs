@@ -1,18 +1,42 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Map;
+using GraftGuard.Map.Enemies;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GraftGuard.Grafting.Towers;
 internal class TowerTrap : Tower
 {
     private const int GridSize = 5;
     private const int GridOffsets = 16;
+    private const float DamageInterval = 0.5f;
+
+    private IntervalTimer damageInterval;
 
     public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)))
     {
+        damageInterval = new IntervalTimer(DamageInterval);
+    }
 
+    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state)
+    {
+        bool dealDamage = damageInterval.Update(time);
+
+        if (dealDamage)
+        {
+            // Damage is the Sum of all part damages, and the sun of all part Critical Modifiers of random strength 0% - 100%
+            // If there is a null part, that part adds 0 damage to the sum
+            float damage = _attachedParts.Sum(
+                (part) => part is not null ? (part.BaseDamge + part.CriticalModifier * random.NextSingle()) : 0.0f
+                );
+            System.Diagnostics.Debug.WriteLine($"Damage: {damage}");
+            world.EnemyManager.DealDamageInAreas([Hitbox], [], damage);
+
+        }
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)

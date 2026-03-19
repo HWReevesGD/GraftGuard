@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Map;
 using GraftGuard.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -43,6 +44,10 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// Rectangle which determines where the Mouse will be considered to be "hovering" over this tower
     /// </summary>
     public Rectangle MouseBox { get; private set; }
+    /// <summary>
+    /// Random used for general <see cref="Tower"/> randomness
+    /// </summary>
+    protected static Random random;
 
     /// <summary>
     /// Constructs a Tower with Empty Parts
@@ -53,14 +58,14 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox) : base(position, size, texture)
     {
         _attachedParts = new PartDefinition[4];
+        random = new Random();
         MouseBox = mouseBox;
     }
 
     /// <summary>
     /// Empty Update for use in Child Classes
     /// </summary>
-    /// <param name="gameTime"></param>
-    public virtual void Update(GameTime gameTime)
+    public virtual void Update(GameTime time, World world, InputManager inputManager, TimeState state)
     {
 
     }

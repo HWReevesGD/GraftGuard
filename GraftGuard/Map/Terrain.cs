@@ -1,14 +1,8 @@
 ﻿using GraftGuard.Graphics;
-using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using ShapeUtils;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.Map;
 internal class Terrain

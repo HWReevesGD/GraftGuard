@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GraftGuard.Grafting;
+﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
@@ -12,6 +7,7 @@ using GraftGuard.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace GraftGuard.Map;
 internal class World
@@ -48,7 +44,7 @@ internal class World
             new ScatteredPart(new Vector2(620, 220), PartRegistry.GetByName("knife")),
             new ScatteredPart(new Vector2(720, 220), PartRegistry.GetByName("knife")),
             ];
-        
+
         TowerManager = new TowerManager();
         TowerGrafter = new TowerGrafter(TowerManager);
         Terrain = new Terrain();
@@ -75,7 +71,7 @@ internal class World
 
     public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state)
     {
-        batch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.ScreenToWorld)}", new Vector2(64, 128),Color.White);
+        batch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.ScreenToWorld)}", new Vector2(64, 128), Color.White);
         if (state == TimeState.Day)
         {
             TowerGrafter.Draw(batch, gameTime);

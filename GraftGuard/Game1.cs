@@ -1,13 +1,11 @@
 ﻿using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
-using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
 
 namespace GraftGuard;
 enum GameState
@@ -18,7 +16,8 @@ enum GameState
     Game
 }
 
-enum TimeState {
+enum TimeState
+{
     Night,
     Dawn,
     Day
@@ -49,7 +48,7 @@ public class Game1 : Game
     {
         this.gameState = GameState.Game;
         this.timeState = TimeState.Night;
-        
+
         inputManager = new InputManager();
         Interface.Initialize(this);
 
@@ -176,7 +175,8 @@ public class Game1 : Game
     /// <summary>
     /// Start Night
     /// </summary>
-    public void StartNight() {
+    public void StartNight()
+    {
         timeState = TimeState.Night;
         timer = NightTimeLength;
     }

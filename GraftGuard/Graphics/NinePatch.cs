@@ -51,7 +51,7 @@ internal class NinePatch
             new Rectangle(0, 0, MarginLeft, MarginTop).Translated(offset),
             new Rectangle(0, 0, MarginLeft, MarginTop),
             finalColor);
-        
+
         // Bottom-Left
         // ╔═══╗
         // ║   ║
@@ -60,7 +60,7 @@ internal class NinePatch
             new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Translated(offset),
             new Rectangle(0, textureSize.Y - MarginBottom, MarginLeft, MarginBottom),
             finalColor);
-        
+
         // Top-Right
         // ╔══░░
         // ║   ║

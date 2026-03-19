@@ -3,10 +3,6 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Towers;
 internal class TowerTrap : Tower
@@ -38,7 +34,7 @@ internal class TowerTrap : Tower
                 gridOffset.Y += sinHeight;
 
                 Vector2 positionalOffset = new Vector2(-partSize.X / 2.0f, -partSize.Y / 2.0f);
-                
+
                 batch.Draw(part.Texture, Position + gridOffset + positionalOffset, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
             }
         }

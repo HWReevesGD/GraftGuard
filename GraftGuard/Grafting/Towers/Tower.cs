@@ -3,12 +3,8 @@ using GraftGuard.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Towers;
 
@@ -37,7 +33,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     }
 
     protected PartDefinition[] _attachedParts;
-    
+
     /// <summary>
     /// True if there is at least one non-null part attached
     /// </summary>
@@ -78,7 +74,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public PartDefinition GetPartFromIndex(int index, bool shiftIfNull)
     {
         PartDefinition part = _attachedParts[index];
-        if(shiftIfNull && part is null)
+        if (shiftIfNull && part is null)
         {
             foreach (PartDefinition otherPart in _attachedParts)
             {

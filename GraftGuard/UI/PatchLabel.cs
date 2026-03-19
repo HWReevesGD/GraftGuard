@@ -2,7 +2,6 @@
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 
 namespace GraftGuard.UI;
 internal class PatchLabel : IMouseDetectable

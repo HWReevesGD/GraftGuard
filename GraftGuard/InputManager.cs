@@ -1,11 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using GraftGuard.Graphics;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard;
@@ -21,18 +15,18 @@ internal class InputManager
     // Drag and Drop Properties
     public bool IsDragging { get; private set; }
     private Vector2 dragStartPosition;
-    private const float DragThreshold = 5f; 
+    private const float DragThreshold = 5f;
 
     public InputManager() { }
 
     public void Update(Camera camera = null)
     {
-        if(camera is not null)
+        if (camera is not null)
         {
             _currentScreenToWorld = camera.ScreenToWorld;
         }
 
-            prevKeyState = currentKeyState;
+        prevKeyState = currentKeyState;
         prevMouseState = currentMouseState;
 
         currentKeyState = Keyboard.GetState();

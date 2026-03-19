@@ -2,12 +2,9 @@
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard;
 
@@ -15,7 +12,8 @@ namespace GraftGuard;
 /// An <see cref="enum"/> representing a set of flags used for determining what <see cref="GameObject"/>s can interact with each other
 /// </summary>
 [Flags]
-enum CollisionLayer {
+enum CollisionLayer
+{
     None = 0,
     Solid = 1,
     Player = 1 << 1,

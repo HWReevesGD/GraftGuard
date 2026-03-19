@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -19,7 +20,7 @@ internal class TowerGrafter
 {
     // Constants for button sizing
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
-    private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 72);
+    private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 128);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
 
     // All UI Elements
@@ -99,7 +100,11 @@ internal class TowerGrafter
             // Handle Tower Placement
             if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
             {
-                towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
+                if (CanAffordTower(tower))
+                {
+                    RemoveCostOfTower(tower);
+                    towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
+                }
             }
             // Handle Part Attaching
             if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
@@ -123,6 +128,13 @@ internal class TowerGrafter
                 Deselect();
                 _currentlyGraftingTower = _towerChoices[index];
                 _currentChosenLabel.Text = "Current:\n" + (_currentlyGraftingTower is not null ? _currentlyGraftingTower.Name : "Nothing");
+
+                _currentChosenLabel.Text += "\n-- Cost --";
+                FrozenSet<PartAmount> cost = _currentlyGraftingTower.Cost;
+                foreach (PartAmount amount in cost)
+                {
+                    _currentChosenLabel.Text += $"\n{amount.Amount} - {amount.Part.Name}";
+                }
             }
         }
         // Update Parts
@@ -183,6 +195,29 @@ internal class TowerGrafter
     }
 
     /// <summary>
+    /// Checks if the given <see cref="TowerDefinition"/> can be afforded with the current Inventory
+    /// </summary>
+    /// <param name="tower"><see cref="TowerDefinition"/> to check</param>
+    /// <returns>True if the <see cref="TowerDefinition"/> can be afforded, false otherwise</returns>
+    public bool CanAffordTower(TowerDefinition tower)
+    {
+        return tower.Cost.All((amount) => GetPartCount(amount.Part) >= amount.Amount);
+    }
+
+    /// <summary>
+    /// Removes the required cost of building a <see cref="TowerDefinition"/> from the Inventory.
+    /// This will throw a <see cref="ArgumentOutOfRangeException"/> if the <see cref="TowerDefinition"/> cannot be afforded
+    /// </summary>
+    /// <param name="tower"><see cref="TowerDefinition"/> to get cost from</param>
+    public void RemoveCostOfTower(TowerDefinition tower)
+    {
+        foreach (PartAmount amount in tower.Cost)
+        {
+            ModifyPartCount(amount.Part, -amount.Amount);
+        }
+    }
+
+    /// <summary>
     /// Returns the count for the given <paramref name="part"/>
     /// </summary>
     /// <param name="part">Part to get count for</param>
@@ -229,6 +264,7 @@ internal class TowerGrafter
     /// </summary>
     /// <param name="partName">Part to modify count of</param>
     /// <param name="change">Amount to modify count by</param>
+    /// <exception cref="ArgumentOutOfRangeException">Thrown if the part count is changed below zero</exception>
     public void ModifyPartCount(string partName, int change)
     {
         partName = partName.ToLower();

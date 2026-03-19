@@ -41,6 +41,11 @@ internal class World
             new ScatteredPart(new Vector2(520, 320), PartRegistry.GetByName("arm")),
             new ScatteredPart(new Vector2(620, 320), PartRegistry.GetByName("knife")),
             new ScatteredPart(new Vector2(720, 320), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("arm")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(520, 220), PartRegistry.GetByName("arm")),
+            new ScatteredPart(new Vector2(620, 220), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(720, 220), PartRegistry.GetByName("knife")),
             ];
         
         TowerManager = new TowerManager();

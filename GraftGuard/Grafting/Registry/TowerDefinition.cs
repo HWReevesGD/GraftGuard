@@ -2,6 +2,9 @@
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework.Graphics;
 
+using System.Collections.Frozen;
+using System.Collections.Generic;
+
 namespace GraftGuard.Grafting.Registry;
 
 /// <summary>
@@ -15,6 +18,7 @@ internal class TowerDefinition
     public readonly CreateTower Factory;
     public readonly DrawPreview DrawPreview;
     public readonly Texture2D Icon;
+    public readonly FrozenSet<PartAmount> Cost;
     /// <summary>
     /// Creates a new <see cref="TowerDefinition"/>
     /// </summary>
@@ -22,11 +26,12 @@ internal class TowerDefinition
     /// <param name="factory">Tower creation factory method</param>
     /// <param name="drawPreview">Draw preview method</param>
     /// <param name="icon">Part's icon texture</param>
-    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, Texture2D? icon = null)
+    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, HashSet<PartAmount> requiredResources, Texture2D? icon = null)
     {
         Name = name;
         Factory = factory;
         DrawPreview = drawPreview;
         Icon = icon ?? Placeholders.TextureMissingIcon;
+        Cost = requiredResources.ToFrozenSet();
     }
 }

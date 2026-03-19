@@ -14,8 +14,8 @@ internal static class TowerRegistry
 {
     private static List<TowerDefinition> _allTowers = [];
     public static ReadOnlyCollection<TowerDefinition> Towers => _allTowers.AsReadOnly();
-    public static void Register(string towerName, CreateTower towerFactory, DrawPreview drawPreview, Texture2D? towerIcon = null)
+    public static void Register(string towerName, CreateTower towerFactory, DrawPreview drawPreview, HashSet<PartAmount> requiredResources, Texture2D? towerIcon = null)
     {
-        _allTowers.Add(new TowerDefinition(towerName, towerFactory, drawPreview, icon: towerIcon));
+        _allTowers.Add(new TowerDefinition(towerName, towerFactory, drawPreview, requiredResources, icon: towerIcon));
     }
 }

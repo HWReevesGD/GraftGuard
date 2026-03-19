@@ -34,7 +34,7 @@ public class Game1 : Game
     private float timer;
 
     private static readonly float NightTimeLength = 5;
-    private static readonly float DawnTimeLength = 5;
+    private static readonly float DawnTimeLength = 10;
     private InputManager inputManager;
     private World _testingWorld;
 
@@ -71,12 +71,20 @@ public class Game1 : Game
         Tower.LoadContent(Content);
         PartDefinition.LoadContent(Content);
 
-        // Registering Towers
-        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
-        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
         // Registering Parts
         PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f);
         PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f);
+
+        // Registering Towers
+        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview,
+            [
+            new PartAmount(PartRegistry.GetByName("knife"), 2),
+            ]);
+        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview,
+            [
+            new PartAmount(PartRegistry.GetByName("arm"), 1),
+            new PartAmount(PartRegistry.GetByName("knife"), 2),
+            ]);
 
         // Add Testing World
         _testingWorld = new World();

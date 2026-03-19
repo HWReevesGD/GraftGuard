@@ -12,12 +12,9 @@ using System.Collections.Generic;
 namespace GraftGuard.Map;
 internal class World
 {
-    // Fields
-    private List<PathNode> pathNodes;
-    private List<Enemy> enemies;
-
     // Properties
     public Player Player { get; set; }
+    public EnemyManager EnemyManager { get; set; }
     public TowerManager TowerManager { get; set; }
     public TowerGrafter TowerGrafter { get; set; }
     public Terrain Terrain { get; set; }
@@ -28,8 +25,7 @@ internal class World
     // Constructor
     public World()
     {
-        pathNodes = new List<PathNode>();
-        enemies = new List<Enemy>();
+        EnemyManager = new EnemyManager();
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
@@ -68,18 +64,15 @@ internal class World
             case TimeState.Day:
                 Player.Position = Garage.Center;
                 Camera.UpdateFreeMovement(gameTime, inputManager);
+                TowerGrafter.Update(gameTime, inputManager, this);
                 break;
         }
 
         inputManager.Update(Camera);
+        EnemyManager.Update(gameTime, inputManager);
         TowerManager.Update(gameTime);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
-
-        if (state == TimeState.Day)
-        {
-            TowerGrafter.Update(gameTime, inputManager, this);
-        }
     }
 
     public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state)
@@ -102,6 +95,7 @@ internal class World
 
         Garage.Draw(batch, gameTime);
 
+        EnemyManager.Draw(batch, gameTime);
         TowerManager.Draw(batch, gameTime);
         Player.Draw(gameTime, batch);
     }

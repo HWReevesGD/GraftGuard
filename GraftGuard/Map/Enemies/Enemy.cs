@@ -7,10 +7,12 @@ internal class Enemy : GameObject
 {
     // Fields
     private Vector2 dirUnitVec;
+    private float health;
     private float speed;
 
-    public Enemy(Vector2 position, Vector2 hitboxSize, Texture2D texture, float speed) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
+    public Enemy(Vector2 position, Vector2 hitboxSize, Texture2D texture, float health, float speed) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
     {
+        this.health = health;
         this.speed = speed;
         dirUnitVec = new Vector2();
     }
@@ -30,5 +32,10 @@ internal class Enemy : GameObject
 
         // Move the enemy
         Position += dirUnitVec * speed;
+    }
+
+    public virtual void OnDeath()
+    {
+
     }
 }

@@ -5,18 +5,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard.Map;
+namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
 {
     // Fields
     private Vector2 dirUnitVec;
     private float speed;
 
-    public Enemy(Vector2 position, Vector2 hitboxSize, Texture2D texture, float speed) : base(position, hitboxSize, texture)
+    public Enemy(Vector2 position, Vector2 hitboxSize, Texture2D texture, float speed) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
     {
         this.speed = speed;
         dirUnitVec = new Vector2();

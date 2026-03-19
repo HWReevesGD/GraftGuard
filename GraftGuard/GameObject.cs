@@ -21,6 +21,7 @@ enum CollisionLayer {
     Player = 1 << 1,
     Terrain = 1 << 2,
     ScatteredPart = 1 << 3,
+    Enemy = 1 << 4,
 }
 
 internal class GameObject

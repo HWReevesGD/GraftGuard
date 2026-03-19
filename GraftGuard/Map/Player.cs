@@ -12,9 +12,10 @@ internal class Player : GameObject
 {
     public const int MaxHeldParts = 4;
     public const float PickupRadius = 32;
+    public const float Speed = 600.0f;
+
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
 
-    private static readonly float Speed = 600;
     private static Texture2D texture;
 
     public List<PartDefinition> HeldParts { get; private set; }

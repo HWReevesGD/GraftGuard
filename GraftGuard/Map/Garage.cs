@@ -9,6 +9,7 @@ internal class Garage
 {
     public readonly NinePatch MainPatch;
     public Vector2 Position { get; set; }
+    public Vector2 Center => Position + Size * 0.5f;
     public Vector2 Size { get; set; }
     public Rectangle ReceptacleBounds { get; set; }
     public Garage()

@@ -57,7 +57,20 @@ internal class World
     // Methods
     public void Update(GameTime gameTime, InputManager inputManager, TimeState state)
     {
-        Player.Update(gameTime, inputManager, this);
+        switch (state)
+        {
+            case TimeState.Night:
+                Player.Update(gameTime, inputManager, this);
+                break;
+            case TimeState.Dawn:
+                Player.Update(gameTime, inputManager, this);
+                break;
+            case TimeState.Day:
+                Player.Position = Garage.Center;
+                Camera.UpdateFreeMovement(gameTime, inputManager);
+                break;
+        }
+
         inputManager.Update(Camera);
         TowerManager.Update(gameTime);
         Terrain.Update(gameTime);

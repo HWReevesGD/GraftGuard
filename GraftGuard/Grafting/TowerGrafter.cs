@@ -44,6 +44,9 @@ internal class TowerGrafter
     // Inventory Dictionary
     private Dictionary<string, int> _inventory;
 
+    // Night Button
+    private PatchButton nightButton;
+
     /// <summary>
     /// Creates a new <see cref="TowerGrafter"/>
     /// </summary>
@@ -82,6 +85,9 @@ internal class TowerGrafter
         _allUI.AddRange(_towerChoiceButtons);
         _allUI.AddRange(_partChoiceButtons);
         _allUI.Add(_currentChosenLabel);
+
+        // Create Night Button
+        nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y), _towerButtonSize, "Begin");
     }
 
     /// <summary>
@@ -141,6 +147,8 @@ internal class TowerGrafter
                 _currentChosenLabel.Text = "Current:\n" + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
             }
         }
+
+        nightButton.Update();
     }
 
     /// <summary>
@@ -172,6 +180,8 @@ internal class TowerGrafter
         {
             batch.DrawCentered(_currentlyChosenPart.Texture, Mouse.GetState().Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
         }
+
+        nightButton.Draw(batch);
     }
 
     /// <summary>

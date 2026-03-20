@@ -3,6 +3,7 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GraftGuard.Map;
 internal class Terrain
@@ -33,5 +34,9 @@ internal class Terrain
         {
             TerrainPatch.Draw(batch, box);
         }
+    }
+    public bool Overlaps(Circle circle)
+    {
+        return Boxes.Any((box) => box.Intersects(circle));
     }
 }

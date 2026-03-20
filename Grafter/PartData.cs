@@ -37,7 +37,7 @@ namespace Grafter
         //public static Texture2D TexturePlaceholderKnife;
 
         public string Name { get; set; }
-        public PartType Type { get; set; } = PartType.Limb;
+        public PartType Type { get; set; }
         public float BaseDamage { get; set; }
         public float SpeedModifier { get; set; }
         public float ArmorModifier { get; set; }

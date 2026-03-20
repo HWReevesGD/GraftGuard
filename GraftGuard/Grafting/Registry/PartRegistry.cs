@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -12,6 +13,7 @@ namespace GraftGuard.Grafting.Registry;
 /// </summary>
 internal static class PartRegistry
 {
+    private static Random random = new Random();
     private static List<PartDefinition> _allParts = [];
     public static ReadOnlyCollection<PartDefinition> Parts => _allParts.AsReadOnly();
     /// <summary>
@@ -80,7 +82,6 @@ internal static class PartRegistry
         }
     }
 
-
     /// <summary>
     /// Gets a <see cref="PartDefinition"/> from the Registry by its name, case-insensitive
     /// </summary>
@@ -90,6 +91,15 @@ internal static class PartRegistry
     {
         PartDefinition definition = _allParts.Find((part) => part.Name.ToLower() == name.ToLower());
         return definition;
+    }
+
+    /// <summary>
+    /// Gets a random <see cref="PartDefinition"/>
+    /// </summary>
+    /// <returns>Returns a random <see cref="PartDefinition"/></returns>
+    public static PartDefinition GetRandom()
+    {
+        return _allParts[random.Next(_allParts.Count)];
     }
 
 }

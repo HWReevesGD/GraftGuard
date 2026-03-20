@@ -21,7 +21,7 @@ internal class EnemyManager
         PathManager = new PathManager();
         PathManager.BuildGrid();
         Enemies = [
-            new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
+            //new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
             ];
         
     }

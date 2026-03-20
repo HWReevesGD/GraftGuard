@@ -5,6 +5,7 @@ using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies;
 using GraftGuard.UI;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
@@ -22,8 +23,16 @@ internal class World
     public Garage Garage { get; set; }
     public List<ScatteredPart> ScatteredParts { get; set; }
 
+    private static Texture2D torsoTex;
+    private static Texture2D headTex;
+
+    public static void LoadContent(ContentManager content) {
+        torsoTex = content.Load<Texture2D>("Parts/enemy_0");
+        headTex = content.Load<Texture2D>("Parts/enemy_5");
+    }
+
     // Constructor
-    public World(Texture2D torsoTex, Texture2D headTex)
+    public World()
     {
         EnemyManager = new EnemyManager(torsoTex, headTex);
 

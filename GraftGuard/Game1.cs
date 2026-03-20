@@ -79,16 +79,15 @@ public class Game1 : Game
         // TODO: use this.Content to load your game content here
         // Loading Tower Content
         Tower.LoadContent(Content);
-        
+
+        World.LoadContent(Content);
+
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
 
-
-        Texture2D torsoTex = Content.Load<Texture2D>("Parts/enemy_0");
-        Texture2D headTex = Content.Load<Texture2D>("Parts/enemy_5");
         // Add Testing World
-        _testingWorld = new World(torsoTex, headTex);
+        _testingWorld = new World();
     }
 
     protected override void Update(GameTime gameTime)

@@ -88,6 +88,7 @@ namespace Grafter
                 selected.RangeModifier = (float)numRange.Value;
                 selected.CriticalModifier = (float)numCritical.Value;
                 selected.HealthModifier = (float)numHealth.Value;
+                selected.Type = isHead.Checked ? PartType.Head : PartType.Limb;
 
                 // Refresh the ListBox display so the name updates if changed
                 DataManager.Parts.ResetBindings();
@@ -158,6 +159,7 @@ namespace Grafter
             numRange.Value = (decimal)part.RangeModifier;
             numCritical.Value = (decimal)part.CriticalModifier;
             numHealth.Value = (decimal)part.HealthModifier;
+            isHead.Checked = part.Type == PartType.Head;
 
             if (!string.IsNullOrEmpty(part.FullImagePath) && File.Exists(part.FullImagePath))
             {
@@ -234,7 +236,7 @@ namespace Grafter
         }
 
         #endregion
-        
+
         private void SaveUiToObject()
         {
             if (currentlyEditing != null)
@@ -246,6 +248,8 @@ namespace Grafter
                 currentlyEditing.RangeModifier = (float)numRange.Value;
                 currentlyEditing.CriticalModifier = (float)numCritical.Value;
                 currentlyEditing.HealthModifier = (float)numHealth.Value;
+                currentlyEditing.Type = isHead.Checked ? PartType.Head : PartType.Limb;
+
 
                 DataManager.Parts.ResetBindings(); // Updates the name in the list instantly
             }
@@ -253,8 +257,6 @@ namespace Grafter
 
         private void RegisterWithMonoGame(string texturePath)
         {
-            // This tells MonoGame's builder to recognize the new PNG we just dropped in
-            // You can point this to your .mgcb file or run the raw command as you did before
             CompileTexture(texturePath, projectContentPath);
         }
 
@@ -322,8 +324,8 @@ namespace Grafter
         private void baseSelection_Click(object sender, EventArgs e)
         {
             BaseForm baseWindow = new BaseForm();
-            baseWindow.Show(); 
-        
-    }
+            baseWindow.Show();
+
+        }
     }
 }

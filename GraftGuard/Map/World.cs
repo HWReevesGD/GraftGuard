@@ -34,7 +34,7 @@ internal class World
     // Constructor
     public World()
     {
-        EnemyManager = new EnemyManager(torsoTex, headTex);
+        EnemyManager = new EnemyManager();
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [

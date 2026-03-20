@@ -10,8 +10,8 @@ namespace Grafter
 {
     public static class DataManager
     {
-        public static BindingList<PartDefinition> Parts { get; set; } = new();
-        public static BindingList<BaseData> Bases { get; set; } = new();
+        public static BindingList<PartDefinition> Parts { get; set; } = [];
+        public static BindingList<BaseDefinition> Bases { get; set; } = [];
 
         public static string CurrentFilePath = "graft_library.json";
 

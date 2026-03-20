@@ -86,6 +86,7 @@ public class Game1 : Game
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
 
+
         // Add Testing World
         _testingWorld = new World();
     }

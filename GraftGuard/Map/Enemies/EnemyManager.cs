@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Grafting.Registry;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,13 @@ internal class EnemyManager
     private List<PathNode> _pathNodes;
     public List<Enemy> Enemies;
 
-    public Texture2D torsoTex;
 
-    public EnemyManager(Texture2D torsoTex, Texture2D headTex)
+    public EnemyManager()
     {
-        this.torsoTex = torsoTex;
 
         _pathNodes = [];
         Enemies = [
-            new EnemyDummy(new Vector2(400, 350), torsoTex, headTex),
+            new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
             ];
         
     }

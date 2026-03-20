@@ -35,7 +35,7 @@ internal class Terrain
             TerrainPatch.Draw(batch, box);
         }
     }
-    public bool CircleOverlaps(Circle circle)
+    public bool Overlaps(Circle circle)
     {
         return Boxes.Any((box) => box.Intersects(circle));
     }

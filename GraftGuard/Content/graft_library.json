@@ -81,8 +81,8 @@
       "HealthModifier": 1,
       "TextureName": "enemy_5",
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_5.png",
-      "PivotX": 0,
-      "PivotY": 0
+      "PivotX": 0.4612326,
+      "PivotY": 0.66302186
     }
   ],
   "Bases": []

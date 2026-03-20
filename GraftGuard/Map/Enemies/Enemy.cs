@@ -13,7 +13,8 @@ internal class Enemy : GameObject
     // Fields
     private Vector2 dirUnitVec;
     private float speed;
-
+    public float SpeedPenalty { get; set; } 
+    private List<PathNode> route;
     public float Health { get; set; }
 
     public float Rotation { get; set; }
@@ -54,11 +55,13 @@ internal class Enemy : GameObject
         LeanFactor = 0.15f
     };
 
-
-    public Enemy(Vector2 position, float rotation, float scale, TorsoDefinition @base, Vector2 hitboxSize, Texture2D texture, float health, float speed, Texture2D headTex) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
+    // Constructor
+    public Enemy(Vector2 position, float rotation, float scale, TorsoDefinition @base, Vector2 hitboxSize, Texture2D texture, float health, float speed, Texture2D headTex, List<PathNode> route) : base(position, hitboxSize, texture, collisionLayers: CollisionLayer.Enemy)
     {
         this.Health = health;
         this.speed = speed;
+        SpeedPenalty = 0;
+        this.route = route;
         dirUnitVec = new Vector2();
 
         currentPosition = position;
@@ -107,17 +110,20 @@ internal class Enemy : GameObject
     /// <summary>
     /// Moves the enemy object by having it navigate along a list of PathNodes
     /// </summary>
-    /// <param name="route">the PathNode objects that it is moving along</param>
-    public void Move(List<PathNode> route)
+    public void Move()
     {
-        PathNode target = route[0]; // Temp
+        foreach (PathNode node in route)
+        {
+            while (Vector2.Distance(Position, node.Position) > (speed - SpeedPenalty))
+            {
+                // Get the unit vector of the direction from the enemy to the node
+                Vector2 dirVec = node.Position - Position;
+                dirUnitVec = dirVec / dirVec.Length();
 
-        // Get the unit vector of the direction from the enemy to the node
-        Vector2 dirVec = target.Position - Position;
-        dirUnitVec = dirVec / dirVec.Length();
-
-        // Move the enemy
-        Position += dirUnitVec * speed;
+                // Move the enemy
+                Position += dirUnitVec * (speed - SpeedPenalty);
+            }
+        }
     }
 
     public virtual void OnDeath()

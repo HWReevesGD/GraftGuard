@@ -10,16 +10,7 @@ namespace GraftGuard.Grafting
     public class GraftLibrary
     {
         public List<PartDefinition> Parts { get; set; } = new();
-        public List<BaseData> Bases { get; set; } = new();
+        public List<BaseDefinition> Bases { get; set; } = new();
     }
 
-    public class BaseData
-    {
-        public string Name { get; set; } = "New Base";
-        public string Id { get; set; } = "id_0";
-        public string TextureName { get; set; } = "";
-        public bool IsTorso { get; set; }
-        public string FullImagePath { get; set; } = "";
-        public override string ToString() => $"{Name} ({Id})";
-    }
 }

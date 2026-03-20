@@ -23,9 +23,9 @@ internal class World
     public List<ScatteredPart> ScatteredParts { get; set; }
 
     // Constructor
-    public World(Texture2D torsoTex, Texture2D headTex)
+    public World()
     {
-        EnemyManager = new EnemyManager(torsoTex, headTex);
+        EnemyManager = new EnemyManager();
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [

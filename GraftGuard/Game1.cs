@@ -82,15 +82,8 @@ public class Game1 : Game
         //PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f, criticalModifier: 0.5f);
 
         // Registering Towers
-        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview,
-            [
-            new PartAmount(PartRegistry.GetByName("part1"), 2),
-            ]);
-        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview,
-            [
-            new PartAmount(PartRegistry.GetByName("part2"), 1),
-            new PartAmount(PartRegistry.GetByName("part1"), 2),
-            ]);
+        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
+        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
 
 
         Texture2D torsoTex = Content.Load<Texture2D>("Parts/enemy_0");

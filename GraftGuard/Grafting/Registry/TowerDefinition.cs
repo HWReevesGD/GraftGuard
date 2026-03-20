@@ -26,12 +26,11 @@ internal class TowerDefinition
     /// <param name="factory">Tower creation factory method</param>
     /// <param name="drawPreview">Draw preview method</param>
     /// <param name="icon">Part's icon texture</param>
-    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, HashSet<PartAmount> requiredResources, Texture2D? icon = null)
+    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, Texture2D? icon = null)
     {
         Name = name;
         Factory = factory;
         DrawPreview = drawPreview;
         Icon = icon ?? Placeholders.TextureMissingIcon;
-        Cost = requiredResources.ToFrozenSet();
     }
 }

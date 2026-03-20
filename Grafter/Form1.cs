@@ -2,21 +2,21 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using static System.ComponentModel.Design.ObjectSelectorEditor;
 
 namespace Grafter
 {
     public partial class Form1 : Form
     {
-        BindingList<PartData> partsList = new BindingList<PartData>();
 
-        private PartData currentlyEditing;
+        private PartDefinition currentlyEditing;
 
         private string projectContentPath = @"..\..\..\..\GraftGuard\Content\Parts\";
 
         public Form1()
         {
             InitializeComponent();
-            lstParts.DataSource = partsList;
+            lstParts.DataSource = DataManager.Parts;
             picPreview.SizeMode = PictureBoxSizeMode.Zoom;
             Debug.WriteLine("Working Directory: " + Directory.GetCurrentDirectory());
         }
@@ -27,17 +27,14 @@ namespace Grafter
 
             using (SaveFileDialog sfd = new SaveFileDialog())
             {
-                sfd.Filter = "CSV Files (*.csv)|*.csv|All Files (*.*)|*.*";
-                sfd.Title = "Save Your Parts List";
-                sfd.FileName = "parts_data.csv"; // Default name
+                sfd.Filter = "JSON Files (*.json)|*.json";
+                sfd.DefaultExt = "json";
+                sfd.FileName = DataManager.CurrentFilePath;
 
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    var lines = partsList.Select(p => p.ToCsv());
-                    File.WriteAllLines(sfd.FileName, lines);
-
-
-                    MessageBox.Show("File saved successfully!");
+                    DataManager.Save(sfd.FileName);
+                    MessageBox.Show("Library Saved successfully!");
                 }
             }
         }
@@ -46,76 +43,28 @@ namespace Grafter
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
-                ofd.Filter = "CSV Files (*.csv)|*.csv";
-                ofd.Title = "Select a Parts CSV File";
-
+                ofd.Filter = "JSON Files (*.json)|*.json|All Files (*.*)|*.*";
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    partsList.Clear();
-                    var lines = File.ReadAllLines(ofd.FileName);
+                    DataManager.Load(ofd.FileName);
 
-                    foreach (var line in lines)
+                    if (DataManager.Parts.Count > 0)
                     {
-                        if (!string.IsNullOrWhiteSpace(line))
-                        {
-                            try
-                            {
-                                partsList.Add(PartData.FromCsv(line));
-
-                            }
-                            catch
-                            {
-                                MessageBox.Show($"Error reading line: {line}");
-                            }
-                        }
-                    }
-
-                    // --- AUTO-FILL LOGIC ---
-                    // Check if we actually loaded any parts
-                    if (partsList.Count > 0)
-                    {
-                        lstParts.SelectedIndex = 0; // This triggers SelectedIndexChanged
+                        lstParts.SelectedIndex = 0;
                     }
                 }
-
-
             }
+
         }
 
         private void lstParts_SelectedIndexChanged(object sender, EventArgs e)
         {
             SaveUiToObject();
 
-            // Ensure something is actually selected
-            if (lstParts.SelectedItem is PartData selected)
+            if (lstParts.SelectedItem is PartDefinition selected)
             {
-
                 currentlyEditing = selected;
-
-                txtName.Text = selected.Name;
-                numDamage.Value = (decimal)selected.BaseDamage;
-                numSpeed.Value = (decimal)selected.SpeedModifier;
-                numArmor.Value = (decimal)selected.ArmorModifier;
-                numRange.Value = (decimal)selected.RangeModifier;
-                numCritical.Value = (decimal)selected.CriticalModifier;
-                numHealth.Value = (decimal)selected.HealthModifier;
-                // Reconstruct the path based on the local project directory
-                string expectedPath = Path.Combine(projectContentPath, selected.TextureName + ".png");
-
-                picPreview.Image = null;
-
-                if (File.Exists(expectedPath))
-                {
-                    selected.FullImagePath = expectedPath;
-                    picPreview.Image = Image.FromFile(expectedPath);
-                    btnSelectTexture.Text = selected.TextureName;
-                }
-                else
-                {
-                    picPreview.Image = null;
-                    btnSelectTexture.Text = "Select Texture";
-                }
-
+                LoadObjectToUi(selected);
             }
             else
             {
@@ -125,10 +74,11 @@ namespace Grafter
             }
         }
 
+
         private void btnUpdate_Click(object sender, EventArgs e)
         {
             // Check if an item is actually selected in the ListBox
-            if (lstParts.SelectedItem is PartData selected)
+            if (lstParts.SelectedItem is PartDefinition selected)
             {
                 // Pull values from the UI controls and cast them back to float
                 selected.Name = txtName.Text;
@@ -140,7 +90,7 @@ namespace Grafter
                 selected.HealthModifier = (float)numHealth.Value;
 
                 // Refresh the ListBox display so the name updates if changed
-                partsList.ResetBindings();
+                DataManager.Parts.ResetBindings();
 
                 MessageBox.Show($"{selected.Name} updated successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -152,8 +102,8 @@ namespace Grafter
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
-            var newPart = new PartData { Name = "New Part" };
-            partsList.Add(newPart);
+            var newPart = new PartDefinition { Name = "New Part" };
+            DataManager.Parts.Add(newPart);
             lstParts.SelectedItem = newPart; // Auto-select the new one
         }
 
@@ -199,9 +149,32 @@ namespace Grafter
             }
         }
 
+        private void LoadObjectToUi(PartDefinition part)
+        {
+            txtName.Text = part.Name;
+            numDamage.Value = (decimal)part.BaseDamage;
+            numSpeed.Value = (decimal)part.SpeedModifier;
+            numArmor.Value = (decimal)part.ArmorModifier;
+            numRange.Value = (decimal)part.RangeModifier;
+            numCritical.Value = (decimal)part.CriticalModifier;
+            numHealth.Value = (decimal)part.HealthModifier;
+
+            if (!string.IsNullOrEmpty(part.FullImagePath) && File.Exists(part.FullImagePath))
+            {
+                picPreview.Image?.Dispose();
+                picPreview.Image = Image.FromFile(part.FullImagePath);
+                btnSelectTexture.Text = part.TextureName;
+            }
+            else
+            {
+                picPreview.Image = null;
+                btnSelectTexture.Text = "Select Texture";
+            }
+        }
+
+        #region pivot placement
         private void picPreview_Paint(object sender, PaintEventArgs e)
         {
-            // This ensures pixel art stays crisp when zoomed in
             e.Graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
             e.Graphics.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.Half;
 
@@ -232,22 +205,22 @@ namespace Grafter
         {
             if (currentlyEditing == null || picPreview.Image == null) return;
 
-            // 1. Calculate the scale ratio of the image inside the Zoomed PictureBox
+            // Calculate the scale ratio of the image inside the Zoomed PictureBox
             float ratioX = (float)picPreview.ClientSize.Width / picPreview.Image.Width;
             float ratioY = (float)picPreview.ClientSize.Height / picPreview.Image.Height;
             float ratio = Math.Min(ratioX, ratioY);
 
-            // 2. Calculate the offset of the image inside the PictureBox
+            // Calculate the offset of the image inside the PictureBox
             float imgWidth = picPreview.Image.Width * ratio;
             float imgHeight = picPreview.Image.Height * ratio;
             float offsetX = (picPreview.ClientSize.Width - imgWidth) / 2;
             float offsetY = (picPreview.ClientSize.Height - imgHeight) / 2;
 
-            // 3. Convert Mouse Click to Image Coordinates
+            // Convert Mouse Click to Image Coordinates
             float clickedImgX = (e.X - offsetX) / ratio;
             float clickedImgY = (e.Y - offsetY) / ratio;
 
-            // 4. Convert to Normalized Coordinates (0.0 to 1.0)
+            // Convert to Normalized Coordinates (0.0 to 1.0)
             if (clickedImgX >= 0 && clickedImgX <= picPreview.Image.Width &&
                 clickedImgY >= 0 && clickedImgY <= picPreview.Image.Height)
             {
@@ -259,6 +232,9 @@ namespace Grafter
                 MessageBox.Show($"Pivot set to: {currentlyEditing.PivotX:F2}, {currentlyEditing.PivotY:F2}");
             }
         }
+
+        #endregion
+        
         private void SaveUiToObject()
         {
             if (currentlyEditing != null)
@@ -271,7 +247,7 @@ namespace Grafter
                 currentlyEditing.CriticalModifier = (float)numCritical.Value;
                 currentlyEditing.HealthModifier = (float)numHealth.Value;
 
-                partsList.ResetBindings(); // Updates the name in the list instantly
+                DataManager.Parts.ResetBindings(); // Updates the name in the list instantly
             }
         }
 
@@ -316,7 +292,7 @@ namespace Grafter
             if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
             {
                 // Ensure an item is actually selected
-                if (lstParts.SelectedItem is PartData selectedPart)
+                if (lstParts.SelectedItem is PartDefinition selectedPart)
                 {
                     var result = MessageBox.Show(
                         $"Are you sure you want to remove '{selectedPart.Name}'?",
@@ -327,7 +303,7 @@ namespace Grafter
                     if (result == DialogResult.Yes)
                     {
                         // Remove from the BindingList (updates UI immediately)
-                        partsList.Remove(selectedPart);
+                        DataManager.Parts.Remove(selectedPart);
 
                         // Clear the preview if we deleted the part we were editing
                         if (currentlyEditing == selectedPart)
@@ -342,5 +318,12 @@ namespace Grafter
                 }
             }
         }
+
+        private void baseSelection_Click(object sender, EventArgs e)
+        {
+            BaseForm baseWindow = new BaseForm();
+            baseWindow.Show(); 
+        
+    }
     }
 }

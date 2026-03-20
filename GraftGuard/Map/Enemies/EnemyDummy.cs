@@ -6,11 +6,13 @@ using Microsoft.Xna.Framework.Graphics;
 namespace GraftGuard.Map.Enemies;
 internal class EnemyDummy : Enemy
 {
-    public EnemyDummy(Vector2 position)
-        : base(position, hitboxSize: new Vector2(32, 48), Placeholders.TextureEnemyDummy, 30.0f, 1.0f)
+    Texture2D torsoTex;
+    public EnemyDummy(Vector2 position, Texture2D torsoTex, Texture2D headTex)
+        : base(position, 0, 1, new TorsoDefinition("idk", torsoTex), hitboxSize: new Vector2(32, 48), torsoTex, 30.0f, 1.0f, headTex)
     {
 
     }
+    
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {

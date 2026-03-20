@@ -31,7 +31,7 @@ internal class TowerTrap : Tower
             // Damage is the Sum of all part damages, and the sun of all part Critical Modifiers of random strength 0% - 100%
             // If there is a null part, that part adds 0 damage to the sum
             float damage = _attachedParts.Sum(
-                (part) => part is not null ? (part.BaseDamge + part.CriticalModifier * random.NextSingle()) : 0.0f
+                (part) => part is not null ? (part.BaseDamage + part.CriticalModifier * random.NextSingle()) : 0.0f
                 );
 
             world.EnemyManager.DealDamageInAreas([Hitbox], [], damage);

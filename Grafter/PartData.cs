@@ -2,50 +2,56 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Grafter
 {
-    public class PartData
+    public class GraftLibrary
     {
-        public string Name { get; set; } = "New Part";
+        public List<PartDefinition> Parts { get; set; } = new();
+        public List<BaseData> Bases { get; set; } = new();
+    }
+
+    public class BaseData
+    {
+        public string Name { get; set; } = "New Base";
+        public string Id { get; set; } = "id_0";
+        public string TextureName { get; set; } = "";
+        public bool IsTorso { get; set; } // true = Torso, false = Tower Base
+        public string FullImagePath { get; set; } = "";
+
+        // This makes the name show up correctly in the ListBox
+        public override string ToString() => $"{Name} ({Id})";
+    }
+
+    public enum PartType
+    {
+        Limb,
+        Head,
+    }
+
+    public class PartDefinition
+    {
+        //public static Texture2D TexturePlaceholderArm;
+        //public static Texture2D TexturePlaceholderKnife;
+
+        public string Name { get; set; }
+        public PartType Type { get; set; } = PartType.Limb;
         public float BaseDamage { get; set; }
         public float SpeedModifier { get; set; }
         public float ArmorModifier { get; set; }
         public float RangeModifier { get; set; }
         public float CriticalModifier { get; set; }
         public float HealthModifier { get; set; }
+        public string TextureName { get; set; }
+        public string FullImagePath { get; set; }
+        public float PivotX { get; set; }
+        public float PivotY { get; set; }
 
-        // New fields for the game engine
-        public string TextureName { get; set; } = "";
-
-        // Default to center
-        public float PivotX { get; set; } = 0.5f; 
-        public float PivotY { get; set; } = 0.5f;
-
-        public string FullImagePath { get; set; } = ""; 
-
-        public string ToCsv() => $"{Name},{BaseDamage},{SpeedModifier},{ArmorModifier},{RangeModifier},{CriticalModifier},{HealthModifier},{TextureName},{PivotX},{PivotY}";
-
-
-        public static PartData FromCsv(string csvLine)
-        {
-            var parts = csvLine.Split(',');
-            return new PartData
-            {
-                Name = parts[0],
-                BaseDamage = float.Parse(parts[1]),
-                SpeedModifier = float.Parse(parts[2]),
-                ArmorModifier = float.Parse(parts[3]),
-                RangeModifier = float.Parse(parts[4]),
-                CriticalModifier = float.Parse(parts[5]),
-                HealthModifier = float.Parse(parts[6]),
-                TextureName = parts.Length > 7 ? parts[7] : "",
-                PivotX = parts.Length > 8 ? float.Parse(parts[8]) : 0.5f,
-                PivotY = parts.Length > 9 ? float.Parse(parts[9]) : 0.5f
-            };
-        }
 
         public override string ToString() => Name;
     }
+
+
 }

@@ -6,6 +6,8 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.IO;
 
 namespace GraftGuard;
 enum GameState
@@ -59,6 +61,9 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
+        //Loading Parts from JSON
+        PartRegistry.LoadFromLibrary(Content, "graft_library.json");
+
         // Content for Static classes
         Fonts.LoadContent(Content);
         Placeholders.LoadContent(Content);
@@ -68,25 +73,30 @@ public class Game1 : Game
         // TODO: use this.Content to load your game content here
         // Loading Tower Content
         Tower.LoadContent(Content);
-        PartDefinition.LoadContent(Content);
+      
+
+        //PartDefinition.LoadContent(Content);
 
         // Registering Parts
-        PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f, criticalModifier: 0.1f);
-        PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f, criticalModifier: 0.5f);
+        //PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f, criticalModifier: 0.1f);
+        //PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f, criticalModifier: 0.5f);
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview,
             [
-            new PartAmount(PartRegistry.GetByName("knife"), 2),
+            new PartAmount(PartRegistry.GetByName("part1"), 2),
             ]);
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview,
             [
-            new PartAmount(PartRegistry.GetByName("arm"), 1),
-            new PartAmount(PartRegistry.GetByName("knife"), 2),
+            new PartAmount(PartRegistry.GetByName("part2"), 1),
+            new PartAmount(PartRegistry.GetByName("part1"), 2),
             ]);
 
+
+        Texture2D torsoTex = Content.Load<Texture2D>("Parts/enemy_0");
+        Texture2D headTex = Content.Load<Texture2D>("Parts/enemy_5");
         // Add Testing World
-        _testingWorld = new World();
+        _testingWorld = new World(torsoTex, headTex);
     }
 
     protected override void Update(GameTime gameTime)
@@ -106,6 +116,8 @@ public class Game1 : Game
                 else if (inputManager.WasKeyPressStarted(Keys.Enter))
                 {
                     gameState = GameState.Game;
+                    timeState = TimeState.Dawn;
+                    timer = DawnTimeLength;
                 }
                 break;
 

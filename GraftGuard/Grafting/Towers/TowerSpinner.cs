@@ -36,7 +36,7 @@ internal class TowerSpinner : Tower
                 Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
                 Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
 
-                float damage = (part.BaseDamge + part.CriticalModifier * random.NextSingle());
+                float damage = (part.BaseDamage + part.CriticalModifier * random.NextSingle());
 
                 world.EnemyManager.DealDamageInAreas([], [damageCircle], damage);
             }

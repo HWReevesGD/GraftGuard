@@ -12,12 +12,17 @@ internal class EnemyManager
     private List<PathNode> _pathNodes;
     public List<Enemy> Enemies;
 
-    public EnemyManager()
+    public Texture2D torsoTex;
+
+    public EnemyManager(Texture2D torsoTex, Texture2D headTex)
     {
+        this.torsoTex = torsoTex;
+
         _pathNodes = [];
         Enemies = [
-            new EnemyDummy(new Vector2(400, 400)),
+            new EnemyDummy(new Vector2(400, 350), torsoTex, headTex),
             ];
+        
     }
 
     public void Update(GameTime time, InputManager inputManager)

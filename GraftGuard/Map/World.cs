@@ -23,22 +23,22 @@ internal class World
     public List<ScatteredPart> ScatteredParts { get; set; }
 
     // Constructor
-    public World()
+    public World(Texture2D torsoTex, Texture2D headTex)
     {
-        EnemyManager = new EnemyManager();
+        EnemyManager = new EnemyManager(torsoTex, headTex);
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
-            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("arm")),
-            new ScatteredPart(new Vector2(420, 320), PartRegistry.GetByName("knife")),
-            new ScatteredPart(new Vector2(520, 320), PartRegistry.GetByName("arm")),
-            new ScatteredPart(new Vector2(620, 320), PartRegistry.GetByName("knife")),
-            new ScatteredPart(new Vector2(720, 320), PartRegistry.GetByName("knife")),
-            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("arm")),
-            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("knife")),
-            new ScatteredPart(new Vector2(520, 220), PartRegistry.GetByName("arm")),
-            new ScatteredPart(new Vector2(620, 220), PartRegistry.GetByName("knife")),
-            new ScatteredPart(new Vector2(720, 220), PartRegistry.GetByName("knife")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("part1")),
+            new ScatteredPart(new Vector2(420, 320), PartRegistry.GetByName("part2")),
+            new ScatteredPart(new Vector2(520, 320), PartRegistry.GetByName("part3")),
+            new ScatteredPart(new Vector2(620, 320), PartRegistry.GetByName("part4")),
+            new ScatteredPart(new Vector2(720, 320), PartRegistry.GetByName("part1")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("part2")),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetByName("part3")),
+            new ScatteredPart(new Vector2(520, 220), PartRegistry.GetByName("part4")),
+            new ScatteredPart(new Vector2(620, 220), PartRegistry.GetByName("part1")),
+            new ScatteredPart(new Vector2(720, 220), PartRegistry.GetByName("part2")),
             ];
 
         TowerManager = new TowerManager();

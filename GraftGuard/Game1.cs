@@ -85,10 +85,8 @@ public class Game1 : Game
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
 
 
-        Texture2D torsoTex = Content.Load<Texture2D>("Parts/enemy_0");
-        Texture2D headTex = Content.Load<Texture2D>("Parts/enemy_5");
         // Add Testing World
-        _testingWorld = new World(torsoTex, headTex);
+        _testingWorld = new World();
     }
 
     protected override void Update(GameTime gameTime)

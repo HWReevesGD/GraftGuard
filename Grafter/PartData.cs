@@ -9,26 +9,33 @@ namespace Grafter
 {
     public class GraftLibrary
     {
-        public List<PartDefinition> Parts { get; set; } = new();
-        public List<BaseData> Bases { get; set; } = new();
+        public List<PartDefinition> Parts { get; set; } = [];
+        public List<BaseDefinition> Bases { get; set; } = [];
     }
 
-    public class BaseData
+    public class BaseDefinition
     {
         public string Name { get; set; } = "New Base";
-        public string Id { get; set; } = "id_0";
         public string TextureName { get; set; } = "";
         public bool IsTorso { get; set; } // true = Torso, false = Tower Base
         public string FullImagePath { get; set; } = "";
 
+        public List<AttachPoint> AttachPoints { get; set; } = [];
+
         // This makes the name show up correctly in the ListBox
-        public override string ToString() => $"{Name} ({Id})";
+        public override string ToString() => $"{Name}";
     }
 
     public enum PartType
     {
         Limb,
         Head,
+    }
+
+    public struct AttachPoint {
+        public string Name;
+        public float PivotX { get; set; }
+        public float PivotY { get; set; }
     }
 
     public class PartDefinition

@@ -18,6 +18,7 @@ internal static class Placeholders
         TexturePartReceptacle = content.Load<Texture2D>("Placeholder/part_receptacle_placeholder");
         TextureEnemyDummy = content.Load<Texture2D>("Placeholder/dummy_enemy");
         TextureSpinnerArm = content.Load<Texture2D>("Placeholder/spinner_arm");
+        TextureCircle = content.Load<Texture2D>("Placeholder/circle");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
@@ -30,4 +31,5 @@ internal static class Placeholders
     public static Texture2D TexturePartReceptacle;
     public static Texture2D TextureEnemyDummy;
     public static Texture2D TextureSpinnerArm;
+    public static Texture2D TextureCircle;
 }

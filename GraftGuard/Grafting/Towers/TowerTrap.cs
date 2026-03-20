@@ -33,7 +33,7 @@ internal class TowerTrap : Tower
             float damage = _attachedParts.Sum(
                 (part) => part is not null ? (part.BaseDamge + part.CriticalModifier * random.NextSingle()) : 0.0f
                 );
-            System.Diagnostics.Debug.WriteLine($"Damage: {damage}");
+
             world.EnemyManager.DealDamageInAreas([Hitbox], [], damage);
 
         }

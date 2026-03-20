@@ -4,36 +4,72 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Reflection;
 
 namespace GraftGuard.Grafting.Towers;
 internal class TowerSpinner : Tower
 {
+    public const float DamageInterval = 0.1f;
+    public const float DamageCircleRadius = 16.0f;
+    public const float SpinSpeed = 8.0f;
+
     public readonly Vector2 SpinOffset = new Vector2(0, -16);
+    private IntervalTimer _damageInterval;
 
     public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderTower, new Rectangle(new Point(-32, -32), new Point(64, 64)))
     {
-
+        _damageInterval = new IntervalTimer(DamageInterval);
     }
 
     public override void Update(GameTime time, World world, InputManager inputManager, TimeState state)
     {
-        base.Update(time, world, inputManager, state);
+        bool dealDamage = _damageInterval.Update(time);
+
+        if (dealDamage)
+        {
+            for (int index = 0; index < _attachedParts.Length; index++)
+            {
+                PartDefinition part = _attachedParts[index];
+                if (part is null) continue;
+
+                float rotation = GetPartRotation(time, index);
+                Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
+                Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
+
+                float damage = (part.BaseDamge + part.CriticalModifier * random.NextSingle());
+
+                world.EnemyManager.DealDamageInAreas([], [damageCircle], damage);
+            }
+        }
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime time, SpriteBatch batch)
     {
         batch.DrawCentered(Texture, Position);
-        int attachedSoFar = 0;
 
-        foreach (PartDefinition part in _attachedParts)
+        for (int index = 0; index < _attachedParts.Length; index++)
         {
+            PartDefinition part = _attachedParts[index];
             if (part is null) continue;
-            float rotation = ((float)gameTime.TotalGameTime.TotalSeconds * 8.0f) % MathF.Tau;
-            rotation += MathF.Tau / TotalAttachedParts * attachedSoFar;
-            attachedSoFar++;
+
+            float rotation = GetPartRotation(time, index);
+            //Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
+
+            //Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
+            //batch.DrawCircle(damageCircle, Color.Red);
             batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24));
-            batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation, new Vector2(8, 64), Vector2.One, SpriteEffects.None, 1.0f);
+            batch.DrawCentered(part.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48));
         }
+    }
+
+    public float GetPartRotation(GameTime time, int partIndex)
+    {
+        // Base Rotation
+        float rotation = (float)time.TotalGameTime.TotalSeconds * SpinSpeed % MathF.Tau;
+        // Index-Based offset
+        rotation += MathF.Tau / TotalAttachedParts * partIndex;
+        // Return Final
+        return rotation;
     }
 
     /// <summary>

@@ -19,6 +19,10 @@ internal static class ClassExtensions
         if (origin is null) origin = Vector2.Zero;
         batch.Draw(texture, destinationRectangle, sourceRectangle, color.Value, rotation, origin.Value + texture.GetSize() * 0.5f, effects, layerDepth);
     }
+    public static void DrawCircle(this SpriteBatch batch, Circle circle, Color? color = null, float layerDepth = 0.0f)
+    {
+        batch.DrawCentered(Placeholders.TextureCircle, new Rectangle(circle.Center.ToPoint(), new Point((int)(circle.Radius * 2.0f))), color: color, layerDepth: layerDepth);
+    }
     public static Vector2 GetSize(this Texture2D texture)
     {
         return new Vector2(texture.Width, texture.Height);

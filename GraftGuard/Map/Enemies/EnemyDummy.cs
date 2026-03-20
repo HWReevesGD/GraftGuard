@@ -12,7 +12,6 @@ internal class EnemyDummy : Enemy
     {
 
     }
-    
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {

@@ -41,6 +41,7 @@ internal static class PartRegistry
     public static void LoadFromLibrary(ContentManager content, string jsonPath)
     {
         Debug.WriteLine("--- PART REGISTRY: STARTING LOAD ---");
+        jsonPath = Path.Join(content.RootDirectory, jsonPath);
         Debug.WriteLine($"Attempting to load from: {Path.GetFullPath(jsonPath)}");
 
         if (!File.Exists(jsonPath)) return;

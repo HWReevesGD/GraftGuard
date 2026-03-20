@@ -20,6 +20,9 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin graft_library.json
+/copy:graft_library.json
+
 #begin Parts/enemy_0.png
 /importer:TextureImporter
 /processor:TextureProcessor

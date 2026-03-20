@@ -8,7 +8,7 @@ internal class EnemyDummy : Enemy
 {
     Texture2D torsoTex;
     public EnemyDummy(Vector2 position, Texture2D torsoTex, Texture2D headTex)
-        : base(position, 0, 1, new TorsoDefinition("idk", torsoTex), hitboxSize: new Vector2(32, 48), torsoTex, 30.0f, 1.0f, headTex)
+        : base(position, 0, 1, new TorsoDefinition("idk", torsoTex), hitboxSize: new Vector2(32, 48), torsoTex, 30.0f, 1.0f, headTex, route: [])
     {
 
     }

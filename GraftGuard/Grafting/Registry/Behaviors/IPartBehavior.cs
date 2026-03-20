@@ -10,8 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
+internal delegate IPartBehavior CreatePartBehavior();
 internal interface IPartBehavior
 {
+    public static abstract IPartBehavior Create();
     public void Update(Tower tower, GameTime time, World world, InputManager inputManager, TimeState state);
     public void Draw(Tower tower, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
     public void OnHitEnemy(Tower tower, GameTime time, Enemy enemy, World world, InputManager inputManager, TimeState state);

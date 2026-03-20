@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartSlashing : IPartBehavior
 {
+    public static IPartBehavior Create() => new PartSlashing();
+
     public void Draw(Tower tower, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         

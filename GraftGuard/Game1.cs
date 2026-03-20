@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.UI;
@@ -61,8 +62,13 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        //Loading Parts from JSON
+        // Register parts from JSON
         PartRegistry.LoadFromLibrary(Content, "graft_library.json");
+
+        // Register (and save) part behaviors
+        PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
+
+        PartBehaviorRegistry.Save();
 
         // Content for Static classes
         Fonts.LoadContent(Content);
@@ -73,14 +79,7 @@ public class Game1 : Game
         // TODO: use this.Content to load your game content here
         // Loading Tower Content
         Tower.LoadContent(Content);
-      
-
-        //PartDefinition.LoadContent(Content);
-
-        // Registering Parts
-        //PartRegistry.Register("Arm", PartDefinition.TexturePlaceholderArm, PartType.Limb, 1.0f, criticalModifier: 0.1f);
-        //PartRegistry.Register("Knife", PartDefinition.TexturePlaceholderKnife, PartType.Limb, 3.0f, criticalModifier: 0.5f);
-
+        
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);

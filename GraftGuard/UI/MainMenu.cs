@@ -10,26 +10,28 @@ using System;
 namespace GraftGuard.UI;
 
 internal class MainMenu {
-    private World backgroundWorld;
-    private InputManager idleInputManager; // input manager that will never update, because it's for the background (world needs it)
-    private InputManager inputManager;
-    private TimeState timeState;
+    private readonly World backgroundWorld;
+    private readonly InputManager idleInputManager; // input manager that will never update, because it's for the background (world needs it)
+    private readonly InputManager inputManager;
+    private readonly TimeState timeState;
 
-    private static int titleTextTopPosition = 150;
-    private static int startTextBottomPosition = 150;
-    private static float cameraPanSpeed = 0.5f;
-    private static float textWaveSpeed = 3f;
-    private static float kerning = 5;
+    private readonly static int titleTextTopPosition = 150;
+    private readonly static int startTextBottomPosition = 150;
+    private readonly static float cameraPanSpeed = 0.5f;
+    private readonly static float textWaveSpeed = 3f;
+    private readonly static float kerning = 5;
 
     private static Texture2D backgroundTexture;
-    private static string titleText = "GRAFTGUARD";
-    private static string startText = "< Press Enter to Begin >";
+    private readonly static string titleText = "GRAFTGUARD";
+    private readonly static string startText = "< Press Enter to Begin >";
 
-    public static void LoadContent(ContentManager content) {
+    public static void LoadContent(ContentManager content)
+    {
         backgroundTexture = content.Load<Texture2D>("pixel");
     }
 
-    public MainMenu(InputManager inputManager) {
+    public MainMenu(InputManager inputManager)
+    {
         this.backgroundWorld = new World();
         this.idleInputManager = new InputManager();
         this.inputManager = inputManager;
@@ -37,7 +39,8 @@ internal class MainMenu {
         CreateTowers();
     }
 
-    private void CreateTowers() {
+    private void CreateTowers()
+    {
         // create random towers for the world
     }
 
@@ -45,7 +48,8 @@ internal class MainMenu {
     /// Update background world simulation and pan the camera
     /// </summary>
     /// <param name="gameTime">gameTime from Game1 Update()</param>
-    public void Update(GameTime gameTime) {
+    public void Update(GameTime gameTime)
+    {
         backgroundWorld.Update(gameTime, idleInputManager, timeState);
 
         // TODO: animate this
@@ -61,7 +65,8 @@ internal class MainMenu {
     /// </summary>
     /// <param name="batch">SpriteBatch</param>
     /// <param name="gameTime">gameTime from Game1 Draw()</param>
-    public void Draw(SpriteBatch batch, GameTime gameTime) {
+    public void Draw(SpriteBatch batch, GameTime gameTime)
+    {
         // simulate and render world in the background
         // with random towers and constantly spawning enemies
         // if the world succumbs to an enemy, don't
@@ -87,7 +92,8 @@ internal class MainMenu {
 
         float leftSize = 0;
 
-        for (int i = 0; i < titleText.Length; i++) {
+        for (int i = 0; i < titleText.Length; i++)
+        {
             string character = titleText.Substring(i, 1);
             float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + i / 2) * 6;
 
@@ -98,9 +104,11 @@ internal class MainMenu {
             leftSize += charSize.X + kerning;
         }
 
-
         Vector2 startTextSize = Fonts.Arial.MeasureString(startText);
-        Vector2 startTextPosition = new Vector2(Interface.Width / 2 - startTextSize.X / 2, Interface.Height - startTextSize.Y - startTextBottomPosition);
+        Vector2 startTextPosition = new Vector2(
+            Interface.Width / 2 - startTextSize.X / 2,
+            Interface.Height - startTextSize.Y - startTextBottomPosition
+        );
 
         batch.DrawString(Fonts.Arial, startText, startTextPosition, Color.White);
     }

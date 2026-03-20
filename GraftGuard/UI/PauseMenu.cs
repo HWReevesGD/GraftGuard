@@ -8,23 +8,26 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 
 namespace GraftGuard.UI;
+internal class PauseMenu
+{
+    private readonly World world;
 
-internal class PauseMenu {
-    private World world;
-
-    private static string text = "< Press Enter to Return to Play >\n< Press Esc to Exit >";
+    private readonly static string text = "< Press Enter to Return to Play >\n< Press Esc to Exit >";
 
     private static Texture2D backgroundTexture;
 
-    public static void LoadContent(ContentManager content) {
+    public static void LoadContent(ContentManager content)
+    {
         backgroundTexture = content.Load<Texture2D>("pixel");
     }
 
-    public PauseMenu(World world) {
+    public PauseMenu(World world)
+    {
         this.world = world;
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime, TimeState timeState) {
+    public void Draw(SpriteBatch batch, GameTime gameTime, TimeState timeState)
+    {
 
         batch.End();
         // Draw by the Camera's Position

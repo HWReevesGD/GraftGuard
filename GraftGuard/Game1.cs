@@ -52,7 +52,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        this.gameState = GameState.Game;
+        this.gameState = GameState.MainMenu;
         this.timeState = TimeState.Night;
 
         inputManager = new InputManager();

@@ -100,11 +100,7 @@ internal class TowerGrafter
             // Handle Tower Placement
             if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
             {
-                if (CanAffordTower(tower))
-                {
-                    RemoveCostOfTower(tower);
-                    towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
-                }
+                towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
             }
             // Handle Part Attaching
             if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
@@ -128,13 +124,6 @@ internal class TowerGrafter
                 Deselect();
                 _currentlyGraftingTower = _towerChoices[index];
                 _currentChosenLabel.Text = "Current:\n" + (_currentlyGraftingTower is not null ? _currentlyGraftingTower.Name : "Nothing");
-
-                _currentChosenLabel.Text += "\n-- Cost --";
-                FrozenSet<PartAmount> cost = _currentlyGraftingTower.Cost;
-                foreach (PartAmount amount in cost)
-                {
-                    _currentChosenLabel.Text += $"\n{amount.Amount} - {amount.Part.Name}";
-                }
             }
         }
         // Update Parts

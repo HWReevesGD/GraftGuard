@@ -1,3 +1,4 @@
+﻿using GraftGuard.Map.Pathing;
 ﻿using GraftGuard.Grafting.Registry;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -10,14 +11,15 @@ using System.Threading.Tasks;
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
 {
-    private List<PathNode> _pathNodes;
     public List<Enemy> Enemies;
+    public PathManager PathManager { get; set; }
 
 
     public EnemyManager()
     {
 
-        _pathNodes = [];
+        PathManager = new PathManager();
+        PathManager.BuildGrid();
         Enemies = [
             new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
             ];
@@ -26,6 +28,7 @@ internal class EnemyManager
 
     public void Update(GameTime time, InputManager inputManager)
     {
+
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];
@@ -42,6 +45,7 @@ internal class EnemyManager
 
     public void Draw(SpriteBatch batch, GameTime time)
     {
+        PathManager.Draw(batch, time);
         foreach (Enemy enemy in Enemies)
         {
             enemy.Draw(time, batch);

@@ -3,6 +3,9 @@ using GraftGuard.Map.Enemies.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Reflection.Metadata;
+using GraftGuard.Utility;
+using GraftGuard.Map.Pathing;
 
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject

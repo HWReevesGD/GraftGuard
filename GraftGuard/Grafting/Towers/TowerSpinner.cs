@@ -31,9 +31,8 @@ internal class TowerSpinner : Tower
             float rotation = ((float)gameTime.TotalGameTime.TotalSeconds * 8.0f) % MathF.Tau;
             rotation += MathF.Tau / TotalAttachedParts * attachedSoFar;
             attachedSoFar++;
-            batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation, new Vector2(8, 32), Vector2.One, SpriteEffects.None, 1.0f);
-            batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.2f, new Vector2(8, 48), Vector2.One, SpriteEffects.None, 1.0f);
-            batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation - 0.4f, new Vector2(8, 64), Vector2.One, SpriteEffects.None, 1.0f);
+            batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24));
+            batch.Draw(part.Texture, Position + SpinOffset, null, Color.White, rotation, new Vector2(8, 64), Vector2.One, SpriteEffects.None, 1.0f);
         }
     }
 

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
+using GraftGuard.Utility;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -15,20 +17,22 @@ internal class EnemyManager
     public PathManager PathManager { get; set; }
 
 
-    public EnemyManager()
+    public EnemyManager(World world)
     {
 
         PathManager = new PathManager();
-        PathManager.BuildGrid();
+        PathManager.BuildGrid(world);
+
         Enemies = [
             //new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
             ];
         
     }
 
-    public void Update(GameTime time, InputManager inputManager)
+    private List<PathNode> _debugPath;
+    public void Update(GameTime time, World world, InputManager inputManager)
     {
-
+        _debugPath = PathManager.FindPath(new Point(1, 1), ((inputManager.MouseWorldPosition.ToVector() - PathManager.Start) / (PathNode.GridDistance)).ToPoint(), false);
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];
@@ -49,6 +53,11 @@ internal class EnemyManager
         foreach (Enemy enemy in Enemies)
         {
             enemy.Draw(time, batch);
+        }
+
+        foreach (PathNode node in _debugPath)
+        {
+            batch.DrawCircle(node.CheckCircle, Color.Green);
         }
     }
 

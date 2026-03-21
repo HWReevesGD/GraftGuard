@@ -17,7 +17,8 @@ internal class TowerTrap : Tower
 
     private IntervalTimer damageInterval;
 
-    public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)))
+    public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)),
+        2.0f, [new Rectangle(-48, -48, 96, 96)])
     {
         damageInterval = new IntervalTimer(DamageInterval);
     }

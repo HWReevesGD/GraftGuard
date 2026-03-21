@@ -16,7 +16,8 @@ internal class TowerSpinner : Tower
     public readonly Vector2 SpinOffset = new Vector2(0, -16);
     private IntervalTimer _damageInterval;
 
-    public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderTower, new Rectangle(new Point(-32, -32), new Point(64, 64)))
+    public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderTower, new Rectangle(new Point(-32, -32), new Point(64, 64)),
+        2.0f, [new Rectangle(-32, -32, 64, 64)])
     {
         _damageInterval = new IntervalTimer(DamageInterval);
     }

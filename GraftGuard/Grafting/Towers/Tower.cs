@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Grafting.Registry;
 using GraftGuard.Map;
 using GraftGuard.UI;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -49,17 +50,28 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// </summary>
     protected static Random random;
 
+    public float PathCost { get; init; }
+    public Rectangle[] PathAreas { get; init; }
+
     /// <summary>
     /// Constructs a Tower with Empty Parts
     /// </summary>
     /// <param name="position">Tower's Initial Position</param>
     /// <param name="size">Tower's Drawing Size</param>
     /// <param name="texture">Tower's Texture</param>
-    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox) : base(position, size, texture)
+    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null) : base(position, size, texture)
     {
         _attachedParts = new PartDefinition[4];
         random = new Random();
         MouseBox = mouseBox;
+        PathCost = pathCost;
+        
+        for (int i = 0; i < pathAreas.Length; i++)
+        {
+            pathAreas[i] = pathAreas[i].Translated(position.ToPoint());
+        }
+
+        PathAreas = pathAreas ?? [];
     }
 
     /// <summary>

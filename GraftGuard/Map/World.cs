@@ -34,7 +34,6 @@ internal class World
     // Constructor
     public World()
     {
-        EnemyManager = new EnemyManager();
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
@@ -50,9 +49,10 @@ internal class World
             new ScatteredPart(new Vector2(720, 220), PartRegistry.GetRandom()),
             ];
 
-        TowerManager = new TowerManager();
+        TowerManager = new TowerManager(this);
         TowerGrafter = new TowerGrafter(TowerManager);
         Terrain = new Terrain();
+        EnemyManager = new EnemyManager(this);
         Garage = new Garage();
 
         Player = new Player(Vector2.Zero);
@@ -78,7 +78,7 @@ internal class World
         }
 
         inputManager.Update(Camera);
-        EnemyManager.Update(gameTime, inputManager);
+        EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
@@ -107,5 +107,9 @@ internal class World
         TowerManager.Draw(batch, gameTime);
         EnemyManager.Draw(batch, gameTime);
         Player.Draw(gameTime, batch);
+    }
+    public void UpdatePaths()
+    {
+        EnemyManager.PathManager.BuildGrid(this);
     }
 }

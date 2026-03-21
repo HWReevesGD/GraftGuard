@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.UI;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using ShapeUtils;
@@ -8,31 +9,23 @@ namespace GraftGuard.Map.Pathing;
 internal class PathNode
 {
     public const float GridDistance = 32.0f;
+    public const float CheckRadius = 24.0f;
     // Properties
-    public Vector2 Position { get; private set; }
-    public Circle CheckCircle { get; private set; }
-    private List<PathNode> _neighbors;
+    public Vector2 WorldPosition { get; private set; }
+    public float Cost { get; set; }
+    public Circle CheckCircle => new Circle(WorldPosition, CheckRadius);
+    public Color DebugColor = Color.Red;
 
     // Constructor
     /// <summary>
     /// PathNode objects are used as navigation points for enemies
     /// </summary>
-    /// <param name="position">the node's position</param>
-    public PathNode(Vector2 position)
+    /// <param name="worldPosition">the node's position</param>
+    public PathNode(Vector2 worldPosition)
     {
-        Position = position;
-        CheckCircle = new Circle(position.X, position.Y, 5);
+        WorldPosition = worldPosition;
+        Cost = 1.0f;
     }
-
-    /// <summary>
-    /// Adds a new Neighbor to the <see cref="PathNode"/> for pathfinding
-    /// </summary>
-    /// <param name="neighbor"><see cref="PathNode"/> neighbor</param>
-    public void AddNeighbor(PathNode neighbor)
-    {
-        _neighbors.Add(neighbor);
-    }
-
 
     // Methods
     /// <summary>
@@ -42,6 +35,8 @@ internal class PathNode
     /// <param name="spriteBatch"></param>
     public void Draw(SpriteBatch batch)
     {
-        batch.DrawCircle(CheckCircle, Color.Red);
+        batch.DrawCircle(new Circle(WorldPosition, 5.0f), DebugColor with { A = (byte)MathHelper.Clamp((int)(Cost * 20), 0, 255) });
+        string text = $"{Cost}";
+        batch.DrawString(Fonts.Arial, text, WorldPosition - Fonts.Arial.MeasureString(text) * 0.5f, Color.White);
     }
 }

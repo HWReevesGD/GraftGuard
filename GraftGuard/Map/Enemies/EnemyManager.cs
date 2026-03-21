@@ -55,7 +55,7 @@ internal class EnemyManager
             enemy.Draw(time, batch);
         }
 
-        foreach (PathNode node in _debugPath)
+        foreach (PathNode node in _debugPath ?? [])
         {
             batch.DrawCircle(node.CheckCircle, Color.Green);
         }

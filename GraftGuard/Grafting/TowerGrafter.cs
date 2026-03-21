@@ -116,6 +116,7 @@ internal class TowerGrafter
                 {
                     overTower.AttachPart(part);
                     ModifyPartCount(part, -1);
+                    world.UpdatePaths();
                 }
             }
         }

@@ -50,7 +50,8 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// </summary>
     protected static Random random;
 
-    public float PathCost { get; init; }
+    private float _basePathCost;
+    public float PathCost => HasParts ? _basePathCost : 0;
     public Rectangle[] PathAreas { get; init; }
 
     /// <summary>
@@ -64,7 +65,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         _attachedParts = new PartDefinition[4];
         random = new Random();
         MouseBox = mouseBox;
-        PathCost = pathCost;
+        _basePathCost = pathCost;
         
         for (int i = 0; i < pathAreas.Length; i++)
         {

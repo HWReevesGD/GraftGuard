@@ -40,6 +40,9 @@ public class Game1 : Game
     private InputManager inputManager;
     private World _testingWorld;
 
+    private MainMenu mainMenu;
+    private PauseMenu pauseMenu;
+
     public Game1()
     {
         Graphics = new GraphicsDeviceManager(this);
@@ -49,7 +52,7 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        this.gameState = GameState.Game;
+        this.gameState = GameState.MainMenu;
         this.timeState = TimeState.Night;
 
         inputManager = new InputManager();
@@ -79,7 +82,8 @@ public class Game1 : Game
         // TODO: use this.Content to load your game content here
         // Loading Tower Content
         Tower.LoadContent(Content);
-
+        MainMenu.LoadContent(Content);
+        PauseMenu.LoadContent(Content);
         World.LoadContent(Content);
 
         // Registering Towers
@@ -89,6 +93,9 @@ public class Game1 : Game
 
         // Add Testing World
         _testingWorld = new World();
+
+        mainMenu = new MainMenu(inputManager);
+        pauseMenu = new PauseMenu(_testingWorld);
     }
 
     protected override void Update(GameTime gameTime)
@@ -111,6 +118,7 @@ public class Game1 : Game
                     timeState = TimeState.Dawn;
                     timer = DawnTimeLength;
                 }
+                mainMenu.Update(gameTime);
                 break;
 
             case GameState.Paused:
@@ -198,11 +206,12 @@ public class Game1 : Game
         switch (gameState)
         {
             case GameState.MainMenu:
-                _spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
+                //_spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
+                mainMenu.Draw(_spriteBatch, gameTime);
                 break;
 
             case GameState.Paused:
-                _spriteBatch.DrawString(Fonts.Arial, "PAUSED", Vector2.Zero, Color.White);
+                pauseMenu.Draw(_spriteBatch, gameTime, timeState);
                 break;
 
             case GameState.GameOver:

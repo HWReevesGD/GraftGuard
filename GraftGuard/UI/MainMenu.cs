@@ -52,7 +52,6 @@ internal class MainMenu {
     {
         backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
 
-        // TODO: animate this
         double x = 200 + Math.Cos(gameTime.TotalGameTime.TotalSeconds / 3 * cameraPanSpeed) * 400 + 400;
         double y = 200 + Math.Sin(gameTime.TotalGameTime.TotalSeconds * cameraPanSpeed) * 300 + 300;
         Vector2 position = new Vector2((float)x, (float)y);
@@ -83,6 +82,8 @@ internal class MainMenu {
 
         batch.Begin();
 
+        // wavy text
+
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
@@ -103,6 +104,8 @@ internal class MainMenu {
 
             currentLeftPosition += charSize.X + kerning;
         }
+
+        // start text
 
         Vector2 startTextSize = Fonts.Arial.MeasureString(startText);
         Vector2 startTextPosition = new Vector2(

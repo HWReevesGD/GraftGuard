@@ -50,7 +50,7 @@ internal class Player : GameObject
         Move(moveVector * Speed * delta, world);
 
         // Set the Camera's position
-        world.Camera.Position = Position - Interface.ScreenCenter;
+        world.Camera.Position = Position;
 
         HandlePartPickups(world);
 

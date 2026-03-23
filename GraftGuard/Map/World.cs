@@ -77,6 +77,7 @@ internal class World
                 break;
         }
 
+        Camera.Update(gameTime);
         inputManager.Update(Camera);
         EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);

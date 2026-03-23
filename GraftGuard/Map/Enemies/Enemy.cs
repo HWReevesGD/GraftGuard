@@ -49,13 +49,14 @@ internal class Enemy : GameObject
         dirUnitVec = new Vector2();
 
         // Attachment points logic could also be moved to a Factory or Registry later
-        SetupDefaultAttachmentPoints(torso);
+        //SetupDefaultAttachmentPoints(torso);
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 1f, Idle);
+        Visual = new EnemyVisual(torso, 4f, Idle);
     }
 
+    /*
     private static void SetupDefaultAttachmentPoints(BaseDefinition torso)
     {
         if (torso.AttachmentPoints.Count > 0) return;
@@ -64,7 +65,8 @@ internal class Enemy : GameObject
         torso.AttachmentPoints.Add("LeftArm", new Vector2(-6.75f, -10));
         torso.AttachmentPoints.Add("RightLeg", new Vector2(5.75f, 8.25f));
         torso.AttachmentPoints.Add("LeftLeg", new Vector2(-6.5f, 8.25f));
-    }
+    }*/
+
     // Methods
     /// <summary>
     /// Moves the enemy object by having it navigate along a list of PathNodes

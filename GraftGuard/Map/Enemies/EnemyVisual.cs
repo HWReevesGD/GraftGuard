@@ -35,7 +35,6 @@ namespace GraftGuard.Map.Enemies
             List<PartDefinition> headPool = PartRegistry.Parts
                 .Where(p => p.Type == PartType.Head).ToList();
 
-            Debug.WriteLine($"Head Pool Count: {headPool.Count}");
 
             List<PartDefinition> limbPool = PartRegistry.Parts
                 .Where(p => p.Type == PartType.Limb).ToList();
@@ -45,7 +44,7 @@ namespace GraftGuard.Map.Enemies
                 ? headPool[rng.Next(0, headPool.Count)]
                 : null;
 
-            //// 3. Iterate through sockets and assign
+            // Iterate through sockets and assign
             int limbIndex = 0;
             foreach (string slotName in Base.AttachmentPoints.Keys)
             {
@@ -109,7 +108,13 @@ namespace GraftGuard.Map.Enemies
             {
                 if (EquippedParts.TryGetValue(slot.Key, out var part))
                 {
-                    DrawLimb(part.Name, slot.Value, part, count++, ctx);
+                    //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+                    Vector2 pixelOffset = new Vector2(
+                        (slot.Value.X - 0.5f) * Base.Texture.Width,
+                        (slot.Value.Y - 0.5f) * Base.Texture.Height
+                    );
+
+                    DrawLimb(part.Name, pixelOffset, part, count++, ctx);
                 }
             }
         }

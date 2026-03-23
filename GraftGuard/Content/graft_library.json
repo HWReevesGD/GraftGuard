@@ -32,7 +32,7 @@
       "Name": "part3",
       "Type": 0,
       "BaseDamage": 1,
-      "SpeedModifier": 1,
+      "SpeedModifier": 23,
       "ArmorModifier": 1,
       "RangeModifier": 1,
       "CriticalModifier": 1,
@@ -85,5 +85,44 @@
       "PivotY": 0.66302186
     }
   ],
-  "Bases": []
+  "Bases": [
+    {
+      "Name": "New Base",
+      "TextureName": "enemy_0",
+      "IsTorso": true,
+      "FullImagePath": "C:\\Users\\askhu\\OneDrive\\Desktop\\GraftGuard\\GraftGuard\\Content\\enemy_0.png",
+      "AttachPoints": [
+        {
+          "Name": "Arm_R",
+          "PivotX": 0.643695,
+          "PivotY": 0.28445747,
+          "ColorArgb": -16319527
+        },
+        {
+          "Name": "Arm_L",
+          "PivotX": 0.31524926,
+          "PivotY": 0.28445747,
+          "ColorArgb": -1426474
+        },
+        {
+          "Name": "Leg_L",
+          "PivotX": 0.29765397,
+          "PivotY": 0.7683284,
+          "ColorArgb": -8147589
+        },
+        {
+          "Name": "Leg_R",
+          "PivotX": 0.66129035,
+          "PivotY": 0.7859238,
+          "ColorArgb": -6842821
+        },
+        {
+          "Name": "Head",
+          "PivotX": 0.47947213,
+          "PivotY": 0.1319648,
+          "ColorArgb": -6816979
+        }
+      ]
+    }
+  ]
 }

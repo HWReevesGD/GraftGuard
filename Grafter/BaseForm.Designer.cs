@@ -30,7 +30,7 @@
         {
             picPreview = new PictureBox();
             label1 = new Label();
-            sockets = new ListBox();
+            lstSockets = new ListBox();
             btnSelectTexture = new Button();
             label10 = new Label();
             btnAdd = new Button();
@@ -38,11 +38,12 @@
             btnSave = new Button();
             label2 = new Label();
             txtName = new TextBox();
-            checkBox1 = new CheckBox();
+            isTorso = new CheckBox();
             label3 = new Label();
             txtID = new TextBox();
-            lstParts = new ListBox();
+            lstBases = new ListBox();
             label4 = new Label();
+            addSocket = new Button();
             ((System.ComponentModel.ISupportInitialize)picPreview).BeginInit();
             SuspendLayout();
             // 
@@ -54,7 +55,8 @@
             picPreview.Size = new Size(352, 341);
             picPreview.TabIndex = 4;
             picPreview.TabStop = false;
-            picPreview.Click += picPreview_Click;
+            picPreview.Paint += picPreview_Paint;
+            picPreview.MouseClick += picPreview_MouseClick;
             // 
             // label1
             // 
@@ -67,16 +69,17 @@
             label1.TabIndex = 5;
             label1.Text = "Grafter - Base Designer";
             // 
-            // sockets
+            // lstSockets
             // 
-            sockets.FormattingEnabled = true;
-            sockets.ItemHeight = 15;
-            sockets.Location = new Point(24, 468);
-            sockets.Margin = new Padding(2);
-            sockets.Name = "sockets";
-            sockets.Size = new Size(172, 94);
-            sockets.TabIndex = 8;
-            sockets.SelectedIndexChanged += lstParts_SelectedIndexChanged;
+            lstSockets.FormattingEnabled = true;
+            lstSockets.ItemHeight = 15;
+            lstSockets.Location = new Point(24, 468);
+            lstSockets.Margin = new Padding(2);
+            lstSockets.Name = "lstSockets";
+            lstSockets.Size = new Size(172, 109);
+            lstSockets.TabIndex = 8;
+            lstSockets.SelectedIndexChanged += lstSockets_SelectedIndexChanged;
+            lstSockets.KeyDown += lstSockets_KeyDown;
             // 
             // btnSelectTexture
             // 
@@ -102,10 +105,10 @@
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(24, 599);
+            btnAdd.Location = new Point(24, 659);
             btnAdd.Margin = new Padding(2);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(180, 20);
+            btnAdd.Size = new Size(172, 20);
             btnAdd.TabIndex = 29;
             btnAdd.Text = "Add Base";
             btnAdd.UseVisualStyleBackColor = true;
@@ -113,10 +116,10 @@
             // 
             // btnLoad
             // 
-            btnLoad.Location = new Point(109, 574);
+            btnLoad.Location = new Point(109, 634);
             btnLoad.Margin = new Padding(2);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new Size(95, 20);
+            btnLoad.Size = new Size(87, 20);
             btnLoad.TabIndex = 28;
             btnLoad.Text = "Load";
             btnLoad.UseVisualStyleBackColor = true;
@@ -124,7 +127,7 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(24, 574);
+            btnSave.Location = new Point(24, 634);
             btnSave.Margin = new Padding(2);
             btnSave.Name = "btnSave";
             btnSave.Size = new Size(81, 20);
@@ -152,17 +155,16 @@
             txtName.Size = new Size(164, 23);
             txtName.TabIndex = 25;
             // 
-            // checkBox1
+            // isTorso
             // 
-            checkBox1.AutoSize = true;
-            checkBox1.Font = new Font("Segoe UI", 10F);
-            checkBox1.Location = new Point(431, 542);
-            checkBox1.Name = "checkBox1";
-            checkBox1.Size = new Size(61, 23);
-            checkBox1.TabIndex = 32;
-            checkBox1.Text = "Torso";
-            checkBox1.UseVisualStyleBackColor = true;
-            checkBox1.CheckedChanged += checkBox1_CheckedChanged;
+            isTorso.AutoSize = true;
+            isTorso.Font = new Font("Segoe UI", 10F);
+            isTorso.Location = new Point(431, 542);
+            isTorso.Name = "isTorso";
+            isTorso.Size = new Size(61, 23);
+            isTorso.TabIndex = 32;
+            isTorso.Text = "Torso";
+            isTorso.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
@@ -183,15 +185,17 @@
             txtID.Size = new Size(164, 23);
             txtID.TabIndex = 33;
             // 
-            // lstParts
+            // lstBases
             // 
-            lstParts.FormattingEnabled = true;
-            lstParts.ItemHeight = 15;
-            lstParts.Location = new Point(231, 570);
-            lstParts.Margin = new Padding(2);
-            lstParts.Name = "lstParts";
-            lstParts.Size = new Size(261, 49);
-            lstParts.TabIndex = 35;
+            lstBases.FormattingEnabled = true;
+            lstBases.ItemHeight = 15;
+            lstBases.Location = new Point(231, 570);
+            lstBases.Margin = new Padding(2);
+            lstBases.Name = "lstBases";
+            lstBases.Size = new Size(261, 109);
+            lstBases.TabIndex = 35;
+            lstBases.SelectedIndexChanged += lstBases_SelectedIndexChanged;
+            lstBases.KeyDown += lstBases_KeyDown;
             // 
             // label4
             // 
@@ -204,16 +208,28 @@
             label4.TabIndex = 36;
             label4.Text = "Sockets";
             // 
+            // addSocket
+            // 
+            addSocket.Location = new Point(24, 595);
+            addSocket.Margin = new Padding(2);
+            addSocket.Name = "addSocket";
+            addSocket.Size = new Size(172, 20);
+            addSocket.TabIndex = 37;
+            addSocket.Text = "Add Socket";
+            addSocket.UseVisualStyleBackColor = true;
+            addSocket.Click += addSocket_Click;
+            // 
             // BaseForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(523, 658);
+            ClientSize = new Size(523, 694);
+            Controls.Add(addSocket);
             Controls.Add(label4);
-            Controls.Add(lstParts);
+            Controls.Add(lstBases);
             Controls.Add(label3);
             Controls.Add(txtID);
-            Controls.Add(checkBox1);
+            Controls.Add(isTorso);
             Controls.Add(btnSelectTexture);
             Controls.Add(label10);
             Controls.Add(btnAdd);
@@ -221,7 +237,7 @@
             Controls.Add(btnSave);
             Controls.Add(label2);
             Controls.Add(txtName);
-            Controls.Add(sockets);
+            Controls.Add(lstSockets);
             Controls.Add(label1);
             Controls.Add(picPreview);
             Name = "BaseForm";
@@ -235,7 +251,7 @@
 
         private PictureBox picPreview;
         private Label label1;
-        private ListBox sockets;
+        private ListBox lstSockets;
         private Button btnSelectTexture;
         private Label label10;
         private Button btnAdd;
@@ -243,10 +259,11 @@
         private Button btnSave;
         private Label label2;
         private TextBox txtName;
-        private CheckBox checkBox1;
+        private CheckBox isTorso;
         private Label label3;
         private TextBox txtID;
-        private ListBox lstParts;
+        private ListBox lstBases;
         private Label label4;
+        private Button addSocket;
     }
 }

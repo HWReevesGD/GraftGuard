@@ -68,6 +68,9 @@ public class Game1 : Game
         // Register parts from JSON
         PartRegistry.LoadFromLibrary(Content, "graft_library.json");
 
+        // Register bases from JSON
+        BaseRegistry.LoadFromLibrary(Content, "graft_library.json");
+
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
 

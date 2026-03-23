@@ -50,7 +50,7 @@ internal class MainMenu {
     /// <param name="gameTime">gameTime from Game1 Update()</param>
     public void Update(GameTime gameTime)
     {
-        backgroundWorld.Update(gameTime, idleInputManager, timeState);
+        backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
 
         // TODO: animate this
         double x = 200 + Math.Cos(gameTime.TotalGameTime.TotalSeconds / 3 * cameraPanSpeed) * 400 + 400;
@@ -76,7 +76,7 @@ internal class MainMenu {
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: backgroundWorld.Camera.WorldToScreen);
-        backgroundWorld.DrawCamera(batch, gameTime, timeState);
+        backgroundWorld.DrawCamera(batch, gameTime, timeState, false);
         batch.End();
 
         // draw menu items

@@ -248,17 +248,6 @@
             numHealth.Size = new Size(268, 39);
             numHealth.TabIndex = 17;
             // 
-            // btnUpdate
-            // 
-            btnUpdate.Location = new Point(386, 925);
-            btnUpdate.Margin = new Padding(4);
-            btnUpdate.Name = "btnUpdate";
-            btnUpdate.Size = new Size(144, 42);
-            btnUpdate.TabIndex = 19;
-            btnUpdate.Text = "Update";
-            btnUpdate.UseVisualStyleBackColor = true;
-            btnUpdate.Click += btnUpdate_Click;
-            // 
             // label9
             // 
             label9.AutoSize = true;

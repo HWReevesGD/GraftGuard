@@ -51,6 +51,15 @@ namespace Grafter
                     lstParts.SelectedIndex = 0;
                 }
             }
+
+            // Automatically load the Part Behaviors .json file
+            DataManager.LoadBehaviors();
+
+            // Add behaviors to the checklist
+            foreach (string behavior in DataManager.Behaviors)
+            {
+                chkBehaviors.Items.Add(behavior);
+            }
         }
 
         #region Save/ Load
@@ -163,12 +172,12 @@ namespace Grafter
         private void SaveBehaviors()
         {
             // Save Behaviors
-            currentlyEditing.PartBehaviorNames = [];
+            controller.CurrentlyEditing.PartBehaviorNames = [];
             for (int index = 0; index < chkBehaviors.Items.Count; index++)
             {
                 if (chkBehaviors.GetItemChecked(index))
                 {
-                    currentlyEditing.PartBehaviorNames = currentlyEditing.PartBehaviorNames.Append((string)chkBehaviors.Items[index]).ToArray();
+                    controller.CurrentlyEditing.PartBehaviorNames = controller.CurrentlyEditing.PartBehaviorNames.Append((string)chkBehaviors.Items[index]).ToArray();
                 }
             }
         }
@@ -184,7 +193,7 @@ namespace Grafter
             numHealth.Value = (decimal)part.HealthModifier;
             isHead.Checked = part.Type == PartType.Head;
 
-            LoadBehaviors();
+            LoadBehaviors(part);
 
             FormHelper.SyncTextureToPreview(part, picPreview, btnSelectTexture);
 
@@ -199,14 +208,6 @@ namespace Grafter
 
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            DataManager.LoadBehaviors();
-            foreach (string behavior in DataManager.Behaviors)
-            {
-                chkBehaviors.Items.Add(behavior);
-            }
-        }
         #region Directory Selection
         private void ctSelectButton_Click(object sender, EventArgs e)
         {

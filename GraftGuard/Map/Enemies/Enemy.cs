@@ -18,29 +18,6 @@ internal class Enemy : GameObject
 
     public EnemyVisual Visual { get; private set; }
 
-    public static AnimationClip Idle = new AnimationClip
-    {
-        ClipName = "Idle",
-        IsStatic = true,
-        StrideLength = 2.0f,
-        BobIntensity = 1.0f,
-        SwayIntensity = 0.5f,
-        LimbWobbleScale = 0.05f,
-        LeanFactor = 0
-    };
-
-    public static AnimationClip Walk = new AnimationClip
-    {
-        ClipName = "Walk",
-        IsStatic = false,
-        StrideLength = 0.1f,
-        BobIntensity = 2.5f,
-        SwayIntensity = 3.0f,
-        LimbWobbleScale = 0.25f,
-        LeanFactor = 0.15f
-    };
-
-
     public Enemy(Vector2 position, BaseDefinition torso, Vector2 hitboxSize, float health, float speed)
         : base(position, hitboxSize, torso.Texture, collisionLayers: CollisionLayer.Enemy)
     {
@@ -53,7 +30,7 @@ internal class Enemy : GameObject
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 4f, Idle);
+        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle);
     }
 
     /*
@@ -91,6 +68,7 @@ internal class Enemy : GameObject
 
     public override void Update(GameTime gameTime, InputManager inputManager)
     {
+        Position = Position + new Vector2(1,0);
         Visual.Update(gameTime, Position);
     }
 

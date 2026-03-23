@@ -18,6 +18,8 @@ namespace GraftGuard.Map.Enemies
 
         private Random rng;
 
+        private float speedMultiplier = 1f;
+
         public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip)
         {
             rng = new Random();
@@ -69,9 +71,9 @@ namespace GraftGuard.Map.Enemies
 
         }
 
-        public void Update(GameTime gameTime, Vector2 position)
+        public void Update(GameTime gameTime, Vector2 position, float speedMultiplier = 1)
         {
-            Animator.Update(gameTime, position);
+            Animator.Update(gameTime, position, speedMultiplier);
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)

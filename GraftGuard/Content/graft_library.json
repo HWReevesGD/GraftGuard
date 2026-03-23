@@ -87,7 +87,7 @@
   ],
   "Bases": [
     {
-      "Name": "New Base",
+      "Name": "Default",
       "TextureName": "enemy_0",
       "IsTorso": true,
       "FullImagePath": "C:\\Users\\askhu\\OneDrive\\Desktop\\GraftGuard\\GraftGuard\\Content\\enemy_0.png",

@@ -1,6 +1,7 @@
 using GraftGuard.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace GraftGuard;
 internal class InputManager
@@ -50,6 +51,7 @@ internal class InputManager
         if (currentKeyState.IsKeyDown(Keys.D)) direction.X += 1;
 
         if (direction != Vector2.Zero) direction.Normalize();
+        
         return direction;
     }
 

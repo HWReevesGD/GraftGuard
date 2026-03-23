@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,18 +22,19 @@ namespace GraftGuard.Map.Enemies.Animation
             CurrentClip = startingClip;
         }
 
-        public void Update(GameTime gameTime, Vector2 currentPosition)
+        public void Update(GameTime gameTime, Vector2 currentPosition, float speedMultiplier = 1)
         {
-            Vector2 velocity = currentPosition - lastPosition;
-            float distance = velocity.Length();
+            Vector2 velocity = (currentPosition - lastPosition) * speedMultiplier;
+            float distance = velocity.Length() ;
+
 
             // Skip state switching if debugging a specific loop
             if (!IsDebugMode)
             {
                 if (distance > 0.1f)
-                    CurrentClip = Enemy.Walk;
+                    CurrentClip = AnimationClips.Walk;
                 else
-                    CurrentClip = Enemy.Idle;
+                    CurrentClip = AnimationClips.Idle;
             }
             else
             {

@@ -50,9 +50,8 @@ internal class MainMenu {
     /// <param name="gameTime">gameTime from Game1 Update()</param>
     public void Update(GameTime gameTime)
     {
-        backgroundWorld.Update(gameTime, idleInputManager, timeState);
+        backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
 
-        // TODO: animate this
         double x = 200 + Math.Cos(gameTime.TotalGameTime.TotalSeconds / 3 * cameraPanSpeed) * 400 + 400;
         double y = 200 + Math.Sin(gameTime.TotalGameTime.TotalSeconds * cameraPanSpeed) * 300 + 300;
         Vector2 position = new Vector2((float)x, (float)y);
@@ -76,33 +75,37 @@ internal class MainMenu {
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: backgroundWorld.Camera.WorldToScreen);
-        backgroundWorld.DrawCamera(batch, gameTime, timeState);
+        backgroundWorld.DrawCamera(batch, gameTime, timeState, false);
         batch.End();
 
         // draw menu items
 
         batch.Begin();
 
+        // wavy text
+
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
 
-        Vector2 textSize = Fonts.Arial.MeasureString(titleText) + new Vector2((titleText.Length - 1) * kerning, 0);
+        Vector2 textSize = Fonts.Arial.MeasureString(titleText) + new Vector2(titleText.Length * kerning, 0);
         Vector2 leftPosition = new Vector2(Interface.Width / 2 - textSize.X / 2, titleTextTopPosition);
 
-        float leftSize = 0;
+        float currentLeftPosition = 0;
 
         for (int i = 0; i < titleText.Length; i++)
         {
             string character = titleText.Substring(i, 1);
-            float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + i / 2) * 6;
+            float yOffset = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + (float)i / 2) * 6;
 
             Vector2 charSize = Fonts.Arial.MeasureString(character);
-            Vector2 position = leftPosition + new Vector2(leftSize + charSize.X + kerning, yOffset);
+            Vector2 position = leftPosition + new Vector2(currentLeftPosition, yOffset);
             batch.DrawString(Fonts.Arial, character, position, Color.White);
 
-            leftSize += charSize.X + kerning;
+            currentLeftPosition += charSize.X + kerning;
         }
+
+        // start text
 
         Vector2 startTextSize = Fonts.Arial.MeasureString(startText);
         Vector2 startTextPosition = new Vector2(

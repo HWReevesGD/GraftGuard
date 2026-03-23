@@ -28,6 +28,8 @@ internal class Button : IMouseDetectable
     public bool IsPressed => IsMouseHovered && _thisMouseState.LeftButton == ButtonState.Pressed;
     public bool ClickedThisFrame => _lastMouseState.LeftButton == ButtonState.Released && _thisMouseState.LeftButton == ButtonState.Pressed && IsMouseHovered;
 
+    
+
     /// <summary>
     /// Setup a button with the given position and size
     /// </summary>

@@ -1,6 +1,7 @@
 using GraftGuard.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace GraftGuard;
 internal class InputManager
@@ -17,20 +18,30 @@ internal class InputManager
     private Vector2 dragStartPosition;
     private const float DragThreshold = 5f;
 
+    // Zoom settings
+    private const float ZoomSensitivity = 0.001f;
+
     public InputManager() { }
 
     public void Update(Camera camera = null)
     {
-        if (camera is not null)
-        {
-            _currentScreenToWorld = camera.ScreenToWorld;
-        }
 
         prevKeyState = currentKeyState;
         prevMouseState = currentMouseState;
 
         currentKeyState = Keyboard.GetState();
         currentMouseState = Mouse.GetState();
+
+        if (camera is not null)
+        {
+            _currentScreenToWorld = camera.ScreenToWorld;
+
+            int scrollDelta = GetScrollDelta();
+            if (scrollDelta != 0)
+            {
+                camera.AdjustZoom(scrollDelta * ZoomSensitivity);
+            }
+        }
 
         UpdateDragLogic();
     }
@@ -50,12 +61,15 @@ internal class InputManager
         if (currentKeyState.IsKeyDown(Keys.D)) direction.X += 1;
 
         if (direction != Vector2.Zero) direction.Normalize();
+        
         return direction;
     }
 
     #endregion
 
     #region Mouse Helpers
+
+    public int GetScrollDelta() => currentMouseState.ScrollWheelValue - prevMouseState.ScrollWheelValue;
 
     public Point MouseScreenPosition => currentMouseState.Position;
     public Point MouseWorldPosition => Vector2.Transform(MouseScreenPosition.ToVector2(), _currentScreenToWorld).ToPoint();

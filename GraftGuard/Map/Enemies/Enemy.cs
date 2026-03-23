@@ -18,29 +18,6 @@ internal class Enemy : GameObject
 
     public EnemyVisual Visual { get; private set; }
 
-    public static AnimationClip Idle = new AnimationClip
-    {
-        ClipName = "Idle",
-        IsStatic = true,
-        StrideLength = 2.0f,
-        BobIntensity = 1.0f,
-        SwayIntensity = 0.5f,
-        LimbWobbleScale = 0.05f,
-        LeanFactor = 0
-    };
-
-    public static AnimationClip Walk = new AnimationClip
-    {
-        ClipName = "Walk",
-        IsStatic = false,
-        StrideLength = 0.1f,
-        BobIntensity = 2.5f,
-        SwayIntensity = 3.0f,
-        LimbWobbleScale = 0.25f,
-        LeanFactor = 0.15f
-    };
-
-
     public Enemy(Vector2 position, BaseDefinition torso, Vector2 hitboxSize, float health, float speed)
         : base(position, hitboxSize, torso.Texture, collisionLayers: CollisionLayer.Enemy)
     {
@@ -49,13 +26,14 @@ internal class Enemy : GameObject
         dirUnitVec = new Vector2();
 
         // Attachment points logic could also be moved to a Factory or Registry later
-        SetupDefaultAttachmentPoints(torso);
+        //SetupDefaultAttachmentPoints(torso);
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 1f, Idle);
+        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle, position);
     }
 
+    /*
     private static void SetupDefaultAttachmentPoints(BaseDefinition torso)
     {
         if (torso.AttachmentPoints.Count > 0) return;
@@ -64,7 +42,8 @@ internal class Enemy : GameObject
         torso.AttachmentPoints.Add("LeftArm", new Vector2(-6.75f, -10));
         torso.AttachmentPoints.Add("RightLeg", new Vector2(5.75f, 8.25f));
         torso.AttachmentPoints.Add("LeftLeg", new Vector2(-6.5f, 8.25f));
-    }
+    }*/
+
     // Methods
     /// <summary>
     /// Moves the enemy object by having it navigate along a list of PathNodes
@@ -89,6 +68,7 @@ internal class Enemy : GameObject
 
     public override void Update(GameTime gameTime, InputManager inputManager)
     {
+        Position = Position + new Vector2(1,0);
         Visual.Update(gameTime, Position);
     }
 

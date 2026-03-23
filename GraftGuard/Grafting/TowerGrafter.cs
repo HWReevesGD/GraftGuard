@@ -13,6 +13,8 @@ using System.Linq;
 
 namespace GraftGuard.Grafting;
 
+delegate void NightButtonPressed();
+
 /// <summary>
 /// Handles the Grafting Interface and Part Inventory
 /// </summary>
@@ -46,6 +48,7 @@ internal class TowerGrafter
 
     // Night Button
     private PatchButton nightButton;
+    public event NightButtonPressed OnNightButtonPressed;
 
     /// <summary>
     /// Creates a new <see cref="TowerGrafter"/>
@@ -88,6 +91,11 @@ internal class TowerGrafter
 
         // Create Night Button
         nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y), _towerButtonSize, "Begin");
+        if (nightButton.ClickedThisFrame)
+        {
+            Console.WriteLine("Click");
+            OnNightButtonPressed();
+        }
     }
 
     /// <summary>
@@ -150,6 +158,11 @@ internal class TowerGrafter
         }
 
         nightButton.Update();
+        if (nightButton.ClickedThisFrame)
+        {
+            
+            Console.WriteLine("Begin button pressed");
+        }
     }
 
     /// <summary>

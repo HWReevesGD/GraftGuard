@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace GraftGuard.Map;
@@ -60,23 +61,33 @@ internal class World
     }
 
     // Methods
-    public void Update(GameTime gameTime, InputManager inputManager, TimeState state)
+    public void Update(GameTime gameTime, InputManager inputManager, TimeState state, bool allowPlayerControls)
     {
         switch (state)
         {
             case TimeState.Night:
-                Player.Update(gameTime, inputManager, this);
+                if (allowPlayerControls)
+                {
+                    Player.Update(gameTime, inputManager, this);
+                }
                 break;
             case TimeState.Dawn:
-                Player.Update(gameTime, inputManager, this);
+                if (allowPlayerControls)
+                {
+                    Player.Update(gameTime, inputManager, this);
+                }
                 break;
             case TimeState.Day:
                 Player.Position = Garage.Center;
-                Camera.UpdateFreeMovement(gameTime, inputManager);
+                if (allowPlayerControls)
+                {
+                    Camera.UpdateFreeMovement(gameTime, inputManager);
+                }
                 TowerGrafter.Update(gameTime, inputManager, this);
                 break;
         }
 
+        Camera.Update(gameTime);
         inputManager.Update(Camera);
         EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);
@@ -93,7 +104,7 @@ internal class World
         }
     }
 
-    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager)
+    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager, bool renderPlayer)
     {
         Terrain.Draw(batch, gameTime);
 
@@ -106,7 +117,10 @@ internal class World
 
         TowerManager.Draw(batch, gameTime, this, inputManager, state);
         EnemyManager.Draw(batch, gameTime);
-        Player.Draw(gameTime, batch);
+        if (renderPlayer)
+        {
+            Player.Draw(gameTime, batch);
+        }
     }
     public void UpdatePaths()
     {

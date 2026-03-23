@@ -68,6 +68,9 @@ public class Game1 : Game
         // Register parts from JSON
         PartRegistry.LoadFromLibrary(Content, "graft_library.json");
 
+        // Register bases from JSON
+        BaseRegistry.LoadFromLibrary(Content, "graft_library.json");
+
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
 
@@ -153,7 +156,7 @@ public class Game1 : Game
                     break;
                 }
 
-                _world.Update(gameTime, inputManager, timeState);
+                _world.Update(gameTime, inputManager, timeState, true);
 
                 // handle game timers
 
@@ -226,7 +229,7 @@ public class Game1 : Game
                 // Draw by the Camera's Position
                 _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
 
-                _world.DrawCamera(_spriteBatch, gameTime, timeState, inputManager);
+                _world.DrawCamera(_spriteBatch, gameTime, timeState, inputManager, true);
 
                 _spriteBatch.End();
 

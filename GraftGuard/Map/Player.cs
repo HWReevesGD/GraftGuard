@@ -1,5 +1,7 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -22,15 +24,18 @@ internal class Player : GameObject
     private Circle _collectionCircle;
     public bool InventoryFull => HeldParts.Count >= MaxHeldParts;
 
+    private EnemyVisual playerVisual;
+
     public static void LoadContent(ContentManager content)
     {
-        texture = content.Load<Texture2D>("playerplaceholder");
+        //texture = content.Load<Texture2D>("playerplaceholder");
     }
 
     public Player(Vector2 position) : base(position, new Vector2(25, 50), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
     {
         _collectionCircle = new Circle(CenterOffset, PickupRadius);
         HeldParts = [];
+        playerVisual = new EnemyVisual(BaseRegistry.GetByName("Default"), 1, AnimationClips.Idle, position);
     }
 
     public void Update(GameTime gameTime, InputManager inputManager, World world)
@@ -45,14 +50,17 @@ internal class Player : GameObject
         Move(moveVector * Speed * delta, world);
 
         // Set the Camera's position
-        world.Camera.Position = Position - Interface.ScreenCenter;
+        world.Camera.Position = Position;
 
         HandlePartPickups(world);
+
+        playerVisual.Update(gameTime, Position, .1f);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {
-        base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
+        playerVisual.Draw(batch, Position);
+        //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
         // Draw Held Parts
         for (int index = 0; index < HeldParts.Count; index++)

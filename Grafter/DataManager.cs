@@ -1,19 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel;
 using System.Text.Json;
-using System.Threading.Tasks;
-using System.Windows.Forms.VisualStyles;
 
 namespace Grafter
 {
+
     public static class DataManager
     {
         public static BindingList<PartDefinition> Parts { get; set; } = [];
         public static BindingList<BaseDefinition> Bases { get; set; } = [];
         public static string[] Behaviors = [];
+
+        public static string ProjectContentPath
+        {
+            get => Properties.Settings.Default.ContentPath;
+            set
+            {
+                Properties.Settings.Default.ContentPath = value;
+                Properties.Settings.Default.Save(); 
+            }
+        }
+
+        public static string ProjectRootPath
+        {
+            get => Properties.Settings.Default.MgcbPath;
+            set
+            {
+                Properties.Settings.Default.MgcbPath = value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         public static string CurrentFilePath = "graft_library.json";
         public const string RelativeBehaviorPath = "../../../../GraftGuard/Content/part_behaviors.json";
@@ -28,6 +43,9 @@ namespace Grafter
                 var options = new JsonSerializerOptions { WriteIndented = true };
                 string json = JsonSerializer.Serialize(library, options);
                 File.WriteAllText(path, json);
+
+                Properties.Settings.Default.LastLibraryPath = path;
+                Properties.Settings.Default.Save();
             }
             catch (Exception ex)
             {
@@ -41,13 +59,16 @@ namespace Grafter
 
             try
             {
-                CurrentFilePath = path;
                 string json = File.ReadAllText(path);
-
                 GraftLibrary library = JsonSerializer.Deserialize<GraftLibrary>(json);
 
                 if (library != null)
                 {
+                    CurrentFilePath = path; 
+
+                    Properties.Settings.Default.LastLibraryPath = path;
+                    Properties.Settings.Default.Save();
+
                     Parts.Clear();
                     foreach (var limb in library.Parts) Parts.Add(limb);
 
@@ -57,6 +78,10 @@ namespace Grafter
             }
             catch (Exception ex)
             {
+                // If it's unparsable or corrupted, clear the setting so we don't 
+                // try to load a broken file forever.
+                Properties.Settings.Default.LastLibraryPath = "";
+                Properties.Settings.Default.Save();
                 MessageBox.Show($"Failed to load library: {ex.Message}");
             }
         }

@@ -28,7 +28,7 @@ namespace GraftGuard.Grafting.Registry
         /// </summary>
         public static void LoadFromLibrary(ContentManager content, string jsonPath)
         {
-            Debug.WriteLine("--- PART REGISTRY: STARTING LOAD ---");
+            Debug.WriteLine("--- BASE REGISTRY: STARTING LOAD ---");
             jsonPath = Path.Join(content.RootDirectory, jsonPath);
             Debug.WriteLine($"Attempting to load from: {Path.GetFullPath(jsonPath)}");
 
@@ -37,26 +37,14 @@ namespace GraftGuard.Grafting.Registry
             string json = File.ReadAllText(jsonPath);
             var library = JsonSerializer.Deserialize<GraftLibrary>(json);
 
+            
             if (library != null && library.Bases != null)
             {
                 _allBases.Clear();
 
-                foreach (var data in library.Bases)
+                foreach (var definition in library.Bases)
                 {
-                    Debug.WriteLine($"Loading: {data.TextureName}!");
-                    Texture2D tex = content.Load<Texture2D>($"Bases/{data.TextureName}");
-
-
-                    // Create the definition with pivot data
-                    var definition = new BaseDefinition(
-                        data.Name,
-                        data.TextureName,
-                        tex,
-                        data.IsTorso,
-                        data.AttachPoints
-
-                    );
-
+                    definition.Texture = content.Load<Texture2D>($"Parts/{definition.TextureName}");
                     _allBases.Add(definition);
                 }
             }
@@ -79,6 +67,7 @@ namespace GraftGuard.Grafting.Registry
         /// <returns>Returns a random <see cref="BaseDefinition"/></returns>
         public static BaseDefinition GetRandom()
         {
+            Debug.WriteLine($"Base Count: {_allBases.Count}");
             if( _allBases.Count == 0 ) return null;
             return _allBases[random.Next(_allBases.Count)];
         }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,16 @@ namespace GraftGuard.Grafting.Registry
             TextureName = textureName;
             Texture = texture;
             IsTorso = isTorso;
+
+            Debug.WriteLine("Starting Stack Trace:");
+            Debug.WriteLine(Environment.StackTrace);
+            Debug.WriteLine($"--- Debugging Sockets for: {Name} ---");
+            foreach (var socket in attachPoints)
+            {
+                Debug.WriteLine($"Name: {socket.Name,-15} | X: {socket.PivotX:P2} | Y: {socket.PivotY:P2}");
+            }
+            Debug.WriteLine("------------------------------------------");
+
             AttachmentPoints = attachPoints.ToDictionary(
                 point => point.Name,
                 point => new Vector2(point.PivotX, point.PivotY));
@@ -40,7 +51,7 @@ namespace GraftGuard.Grafting.Registry
 
     public struct AttachPoint
     {
-        public string Name;
+        public string Name { get; set; }
         public float PivotX { get; set; }
         public float PivotY { get; set; }
     }

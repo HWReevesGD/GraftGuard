@@ -16,7 +16,7 @@ internal class Camera
 
     public Matrix ScreenToWorld => Matrix.Invert(WorldToScreen);
     public Matrix WorldToScreen =>
-        Matrix.CreateTranslation(new Vector3(-Position, 0)) * // Move player to origin
+        Matrix.CreateTranslation(new Vector3(-Position, 0)) * 
         Matrix.CreateScale(Zoom, Zoom, 1) * Matrix.CreateTranslation(new Vector3(Interface.ScreenCenter, 0)); 
 
 

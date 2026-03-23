@@ -30,7 +30,7 @@ internal class Enemy : GameObject
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle);
+        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle, position);
     }
 
     /*

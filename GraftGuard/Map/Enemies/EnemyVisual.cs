@@ -20,7 +20,7 @@ namespace GraftGuard.Map.Enemies
 
         private float speedMultiplier = 1f;
 
-        public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip)
+        public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos)
         {
             rng = new Random();
 
@@ -28,7 +28,10 @@ namespace GraftGuard.Map.Enemies
             Scale = scale;
             Animator = new Animator(initialClip);
 
+            Animator.Teleport(spawnPos);
+
             InitializeDefaultParts();
+
         }
 
         private void InitializeDefaultParts()
@@ -103,6 +106,8 @@ namespace GraftGuard.Map.Enemies
                 Timer = timer,
                 Clip = clip
             };
+
+
 
             // Draw Limbs
             int count = 0;

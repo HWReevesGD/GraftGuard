@@ -22,6 +22,12 @@ namespace GraftGuard.Map.Enemies.Animation
             CurrentClip = startingClip;
         }
 
+        public void Teleport(Vector2 position)
+        {
+            lastPosition = position;
+            rotation = 0; //start upright;
+        }
+
         public void Update(GameTime gameTime, Vector2 currentPosition, float speedMultiplier = 1)
         {
             Vector2 velocity = (currentPosition - lastPosition) * speedMultiplier;

@@ -11,6 +11,13 @@ namespace Grafter.Tools
     {
         public static async Task<bool> EnsureMgcbReady()
         {
+            if (!IsDotnetInstalled())
+            {
+                MessageBox.Show("The .NET SDK is required to run Grafter tools.");
+                return false;
+                
+            }
+
             // Check if it's already working
             if (IsMgcbInstalled())
             {
@@ -110,8 +117,36 @@ namespace Grafter.Tools
             }
             return false;
         }
+
+        public static bool IsDotnetInstalled()
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = "dotnet",
+                    Arguments = "--version",
+                    CreateNoWindow = true,
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true
+                };
+
+                using (Process process = Process.Start(startInfo))
+                {
+                    process.WaitForExit();
+                    return process.ExitCode == 0;
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
         private static async Task<bool> RunDotnetCommand(string args)
         {
+
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = "dotnet",

@@ -96,7 +96,7 @@ internal class MainMenu {
         for (int i = 0; i < titleText.Length; i++)
         {
             string character = titleText.Substring(i, 1);
-            float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + (float)i / 2) * 6;
+            float yOffset = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + (float)i / 2) * 6;
 
             Vector2 charSize = Fonts.Arial.MeasureString(character);
             Vector2 position = leftPosition + new Vector2(currentLeftPosition, yOffset);

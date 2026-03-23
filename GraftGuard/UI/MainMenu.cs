@@ -87,21 +87,21 @@ internal class MainMenu {
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
 
-        Vector2 textSize = Fonts.Arial.MeasureString(titleText) + new Vector2((titleText.Length - 1) * kerning, 0);
+        Vector2 textSize = Fonts.Arial.MeasureString(titleText) + new Vector2(titleText.Length * kerning, 0);
         Vector2 leftPosition = new Vector2(Interface.Width / 2 - textSize.X / 2, titleTextTopPosition);
 
-        float leftSize = 0;
+        float currentLeftPosition = 0;
 
         for (int i = 0; i < titleText.Length; i++)
         {
             string character = titleText.Substring(i, 1);
-            float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + i / 2) * 6;
+            float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + (float)i / 2) * 6;
 
             Vector2 charSize = Fonts.Arial.MeasureString(character);
-            Vector2 position = leftPosition + new Vector2(leftSize + charSize.X + kerning, yOffset);
+            Vector2 position = leftPosition + new Vector2(currentLeftPosition, yOffset);
             batch.DrawString(Fonts.Arial, character, position, Color.White);
 
-            leftSize += charSize.X + kerning;
+            currentLeftPosition += charSize.X + kerning;
         }
 
         Vector2 startTextSize = Fonts.Arial.MeasureString(startText);

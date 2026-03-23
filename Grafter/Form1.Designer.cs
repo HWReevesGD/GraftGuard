@@ -54,7 +54,7 @@
             baseSelection = new Button();
             isHead = new CheckBox();
             chkBehaviors = new CheckedListBox();
-            label11 = new Label();
+            behaviorLabel = new Label();
             txtContentPath = new TextBox();
             ctSelectButton = new Button();
             projDirSelectButton = new Button();
@@ -70,20 +70,20 @@
             // 
             // txtName
             // 
-            txtName.Location = new Point(123, 166);
-            txtName.Margin = new Padding(2);
+            txtName.Location = new Point(228, 354);
+            txtName.Margin = new Padding(4);
             txtName.Name = "txtName";
-            txtName.Size = new Size(164, 23);
+            txtName.Size = new Size(301, 39);
             txtName.TabIndex = 0;
             // 
             // label1
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 36F);
-            label1.Location = new Point(19, 5);
-            label1.Margin = new Padding(2, 0, 2, 0);
+            label1.Location = new Point(35, 11);
+            label1.Margin = new Padding(4, 0, 4, 0);
             label1.Name = "label1";
-            label1.Size = new Size(175, 65);
+            label1.Size = new Size(348, 128);
             label1.TabIndex = 1;
             label1.Text = "Grafter";
             // 
@@ -91,19 +91,19 @@
             // 
             label2.AutoSize = true;
             label2.Font = new Font("Segoe UI", 10F);
-            label2.Location = new Point(32, 166);
-            label2.Margin = new Padding(2, 0, 2, 0);
+            label2.Location = new Point(59, 354);
+            label2.Margin = new Padding(4, 0, 4, 0);
             label2.Name = "label2";
-            label2.Size = new Size(74, 19);
+            label2.Size = new Size(141, 37);
             label2.TabIndex = 2;
             label2.Text = "Part Name";
             // 
             // picPreview
             // 
-            picPreview.Location = new Point(349, 40);
-            picPreview.Margin = new Padding(2);
+            picPreview.Location = new Point(887, 110);
+            picPreview.Margin = new Padding(4);
             picPreview.Name = "picPreview";
-            picPreview.Size = new Size(352, 341);
+            picPreview.Size = new Size(654, 727);
             picPreview.TabIndex = 3;
             picPreview.TabStop = false;
             picPreview.Paint += picPreview_Paint;
@@ -111,10 +111,10 @@
             // 
             // btnSave
             // 
-            btnSave.Location = new Point(32, 434);
-            btnSave.Margin = new Padding(2);
+            btnSave.Location = new Point(59, 926);
+            btnSave.Margin = new Padding(4);
             btnSave.Name = "btnSave";
-            btnSave.Size = new Size(125, 20);
+            btnSave.Size = new Size(232, 43);
             btnSave.TabIndex = 4;
             btnSave.Text = "Save";
             btnSave.UseVisualStyleBackColor = true;
@@ -122,10 +122,10 @@
             // 
             // btnLoad
             // 
-            btnLoad.Location = new Point(162, 434);
-            btnLoad.Margin = new Padding(2);
+            btnLoad.Location = new Point(301, 926);
+            btnLoad.Margin = new Padding(4);
             btnLoad.Name = "btnLoad";
-            btnLoad.Size = new Size(125, 20);
+            btnLoad.Size = new Size(232, 43);
             btnLoad.TabIndex = 5;
             btnLoad.Text = "Load";
             btnLoad.UseVisualStyleBackColor = true;
@@ -134,41 +134,40 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(349, 404);
-            label3.Margin = new Padding(2, 0, 2, 0);
+            label3.Location = new Point(887, 853);
+            label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
-            label3.Size = new Size(124, 15);
+            label3.Size = new Size(248, 32);
             label3.TabIndex = 6;
             label3.Text = "Active Base: Unknown";
             // 
             // lstParts
             // 
             lstParts.FormattingEnabled = true;
-            lstParts.ItemHeight = 15;
-            lstParts.Location = new Point(32, 72);
-            lstParts.Margin = new Padding(2);
+            lstParts.Location = new Point(59, 154);
+            lstParts.Margin = new Padding(4);
             lstParts.Name = "lstParts";
-            lstParts.Size = new Size(255, 79);
+            lstParts.Size = new Size(470, 164);
             lstParts.TabIndex = 7;
             lstParts.SelectedIndexChanged += lstParts_SelectedIndexChanged;
             lstParts.KeyDown += lstParts_KeyDown;
             // 
             // numDamage
             // 
-            numDamage.Location = new Point(143, 205);
-            numDamage.Margin = new Padding(2);
+            numDamage.Location = new Point(266, 437);
+            numDamage.Margin = new Padding(4);
             numDamage.Name = "numDamage";
-            numDamage.Size = new Size(144, 23);
+            numDamage.Size = new Size(267, 39);
             numDamage.TabIndex = 8;
             // 
             // label4
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 10F);
-            label4.Location = new Point(32, 205);
-            label4.Margin = new Padding(2, 0, 2, 0);
+            label4.Location = new Point(59, 437);
+            label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
-            label4.Size = new Size(92, 19);
+            label4.Size = new Size(178, 37);
             label4.TabIndex = 9;
             label4.Text = "Base Damage";
             // 
@@ -176,56 +175,56 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10F);
-            label5.Location = new Point(32, 241);
-            label5.Margin = new Padding(2, 0, 2, 0);
+            label5.Location = new Point(59, 514);
+            label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
-            label5.Size = new Size(101, 19);
+            label5.Size = new Size(199, 37);
             label5.TabIndex = 10;
             label5.Text = "Speed Modifier";
             // 
             // numSpeed
             // 
-            numSpeed.Location = new Point(143, 242);
-            numSpeed.Margin = new Padding(2);
+            numSpeed.Location = new Point(266, 516);
+            numSpeed.Margin = new Padding(4);
             numSpeed.Name = "numSpeed";
-            numSpeed.Size = new Size(144, 23);
+            numSpeed.Size = new Size(267, 39);
             numSpeed.TabIndex = 11;
             // 
             // numArmor
             // 
-            numArmor.Location = new Point(143, 281);
-            numArmor.Margin = new Padding(2);
+            numArmor.Location = new Point(266, 599);
+            numArmor.Margin = new Padding(4);
             numArmor.Name = "numArmor";
-            numArmor.Size = new Size(144, 23);
+            numArmor.Size = new Size(267, 39);
             numArmor.TabIndex = 12;
             // 
             // label6
             // 
             label6.AutoSize = true;
             label6.Font = new Font("Segoe UI", 10F);
-            label6.Location = new Point(32, 280);
-            label6.Margin = new Padding(2, 0, 2, 0);
+            label6.Location = new Point(59, 597);
+            label6.Margin = new Padding(4, 0, 4, 0);
             label6.Name = "label6";
-            label6.Size = new Size(103, 19);
+            label6.Size = new Size(199, 37);
             label6.TabIndex = 13;
             label6.Text = "Armor Modifier";
             // 
             // numCritical
             // 
-            numCritical.Location = new Point(143, 341);
-            numCritical.Margin = new Padding(2);
+            numCritical.Location = new Point(266, 727);
+            numCritical.Margin = new Padding(4);
             numCritical.Name = "numCritical";
-            numCritical.Size = new Size(144, 23);
+            numCritical.Size = new Size(267, 39);
             numCritical.TabIndex = 14;
             // 
             // label7
             // 
             label7.AutoSize = true;
             label7.Font = new Font("Segoe UI", 10F);
-            label7.Location = new Point(32, 341);
-            label7.Margin = new Padding(2, 0, 2, 0);
+            label7.Location = new Point(59, 727);
+            label7.Margin = new Padding(4, 0, 4, 0);
             label7.Name = "label7";
-            label7.Size = new Size(105, 19);
+            label7.Size = new Size(207, 37);
             label7.TabIndex = 15;
             label7.Text = "Critical Modifier";
             // 
@@ -233,46 +232,46 @@
             // 
             label8.AutoSize = true;
             label8.Font = new Font("Segoe UI", 10F);
-            label8.Location = new Point(32, 373);
-            label8.Margin = new Padding(2, 0, 2, 0);
+            label8.Location = new Point(59, 796);
+            label8.Margin = new Padding(4, 0, 4, 0);
             label8.Name = "label8";
-            label8.Size = new Size(104, 19);
+            label8.Size = new Size(203, 37);
             label8.TabIndex = 16;
             label8.Text = "Health Modifier";
             // 
             // numHealth
             // 
-            numHealth.Location = new Point(265, 797);
+            numHealth.Location = new Point(266, 798);
             numHealth.Margin = new Padding(4);
             numHealth.Name = "numHealth";
-            numHealth.Size = new Size(268, 39);
+            numHealth.Size = new Size(267, 39);
             numHealth.TabIndex = 17;
             // 
             // label9
             // 
             label9.AutoSize = true;
             label9.Font = new Font("Segoe UI", 10F);
-            label9.Location = new Point(32, 310);
-            label9.Margin = new Padding(2, 0, 2, 0);
+            label9.Location = new Point(59, 661);
+            label9.Margin = new Padding(4, 0, 4, 0);
             label9.Name = "label9";
-            label9.Size = new Size(102, 19);
+            label9.Size = new Size(200, 37);
             label9.TabIndex = 21;
             label9.Text = "Range Modifier";
             // 
             // numRange
             // 
-            numRange.Location = new Point(143, 310);
-            numRange.Margin = new Padding(2);
+            numRange.Location = new Point(266, 661);
+            numRange.Margin = new Padding(4);
             numRange.Name = "numRange";
-            numRange.Size = new Size(144, 23);
+            numRange.Size = new Size(267, 39);
             numRange.TabIndex = 20;
             // 
             // btnAdd
             // 
-            btnAdd.Location = new Point(32, 459);
-            btnAdd.Margin = new Padding(2);
+            btnAdd.Location = new Point(59, 979);
+            btnAdd.Margin = new Padding(4);
             btnAdd.Name = "btnAdd";
-            btnAdd.Size = new Size(255, 20);
+            btnAdd.Size = new Size(474, 43);
             btnAdd.TabIndex = 22;
             btnAdd.Text = "Add Part";
             btnAdd.UseVisualStyleBackColor = true;
@@ -282,19 +281,19 @@
             // 
             label10.AutoSize = true;
             label10.Font = new Font("Segoe UI", 10F);
-            label10.Location = new Point(32, 404);
-            label10.Margin = new Padding(2, 0, 2, 0);
+            label10.Location = new Point(59, 862);
+            label10.Margin = new Padding(4, 0, 4, 0);
             label10.Name = "label10";
-            label10.Size = new Size(53, 19);
+            label10.Size = new Size(101, 37);
             label10.TabIndex = 23;
             label10.Text = "Texture";
             // 
             // btnSelectTexture
             // 
-            btnSelectTexture.Location = new Point(123, 403);
-            btnSelectTexture.Margin = new Padding(2);
+            btnSelectTexture.Location = new Point(228, 860);
+            btnSelectTexture.Margin = new Padding(4);
             btnSelectTexture.Name = "btnSelectTexture";
-            btnSelectTexture.Size = new Size(163, 20);
+            btnSelectTexture.Size = new Size(303, 43);
             btnSelectTexture.TabIndex = 24;
             btnSelectTexture.Text = "Select Texture";
             btnSelectTexture.UseVisualStyleBackColor = true;
@@ -302,9 +301,10 @@
             // 
             // baseSelection
             // 
-            baseSelection.Location = new Point(569, 400);
+            baseSelection.Location = new Point(1277, 853);
+            baseSelection.Margin = new Padding(6);
             baseSelection.Name = "baseSelection";
-            baseSelection.Size = new Size(132, 23);
+            baseSelection.Size = new Size(264, 41);
             baseSelection.TabIndex = 25;
             baseSelection.Text = "Select Base/Torso";
             baseSelection.UseVisualStyleBackColor = true;
@@ -313,45 +313,46 @@
             // isHead
             // 
             isHead.AutoSize = true;
-            isHead.Location = new Point(213, 38);
-            isHead.Margin = new Padding(2);
+            isHead.Location = new Point(396, 81);
+            isHead.Margin = new Padding(4);
             isHead.Name = "isHead";
-            isHead.Size = new Size(70, 19);
+            isHead.Size = new Size(136, 36);
             isHead.TabIndex = 26;
             isHead.Text = "Is Head?";
             isHead.UseVisualStyleBackColor = true;
             // 
             // chkBehaviors
             // 
-            chkBehaviors.CheckOnClick = true;
-            chkBehaviors.FormattingEnabled = true;
-            chkBehaviors.Location = new Point(560, 318);
-            chkBehaviors.Margin = new Padding(12);
+            chkBehaviors.Location = new Point(560, 339);
             chkBehaviors.Name = "chkBehaviors";
-            chkBehaviors.Size = new Size(383, 580);
-            chkBehaviors.TabIndex = 27;
+            chkBehaviors.Size = new Size(272, 688);
+            chkBehaviors.TabIndex = 29;
             // 
-            // label11
+            // behaviorLabel
             // 
-            label11.AutoSize = true;
-            label11.Font = new Font("Segoe UI", 12F);
-            label11.Location = new Point(633, 270);
-            label11.Name = "label11";
-            label11.Size = new Size(220, 45);
-            label11.TabIndex = 28;
-            label11.Text = "Part Behaviors";
+            behaviorLabel.AutoSize = true;
+            behaviorLabel.Font = new Font("Segoe UI", 12F);
+            behaviorLabel.Location = new Point(578, 273);
+            behaviorLabel.Name = "behaviorLabel";
+            behaviorLabel.Size = new Size(220, 45);
+            behaviorLabel.TabIndex = 28;
+            behaviorLabel.Text = "Part Behaviors";
+            behaviorLabel.Click += label11_Click;
+            // 
             // txtContentPath
             // 
-            txtContentPath.Location = new Point(349, 434);
+            txtContentPath.Location = new Point(887, 902);
+            txtContentPath.Margin = new Padding(6);
             txtContentPath.Name = "txtContentPath";
-            txtContentPath.Size = new Size(192, 23);
+            txtContentPath.Size = new Size(329, 39);
             txtContentPath.TabIndex = 27;
             // 
             // ctSelectButton
             // 
-            ctSelectButton.Location = new Point(548, 434);
+            ctSelectButton.Location = new Point(1228, 902);
+            ctSelectButton.Margin = new Padding(6);
             ctSelectButton.Name = "ctSelectButton";
-            ctSelectButton.Size = new Size(153, 23);
+            ctSelectButton.Size = new Size(313, 41);
             ctSelectButton.TabIndex = 28;
             ctSelectButton.Text = "Select Content Folder";
             ctSelectButton.UseVisualStyleBackColor = true;
@@ -359,9 +360,10 @@
             // 
             // projDirSelectButton
             // 
-            projDirSelectButton.Location = new Point(547, 459);
+            projDirSelectButton.Location = new Point(1228, 955);
+            projDirSelectButton.Margin = new Padding(6);
             projDirSelectButton.Name = "projDirSelectButton";
-            projDirSelectButton.Size = new Size(153, 23);
+            projDirSelectButton.Size = new Size(313, 39);
             projDirSelectButton.TabIndex = 29;
             projDirSelectButton.Text = "Select Project Directory";
             projDirSelectButton.UseVisualStyleBackColor = true;
@@ -369,17 +371,18 @@
             // 
             // txtProjDirPath
             // 
-            txtProjDirPath.Location = new Point(349, 459);
+            txtProjDirPath.Location = new Point(887, 955);
+            txtProjDirPath.Margin = new Padding(6);
             txtProjDirPath.Name = "txtProjDirPath";
-            txtProjDirPath.Size = new Size(192, 23);
+            txtProjDirPath.Size = new Size(329, 39);
             txtProjDirPath.TabIndex = 30;
             // 
             // Form1
-            //
+            // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1710, 1039);
-            Controls.Add(label11);
+            ClientSize = new Size(1597, 1039);
+            Controls.Add(behaviorLabel);
             Controls.Add(chkBehaviors);
             Controls.Add(txtProjDirPath);
             Controls.Add(projDirSelectButton);
@@ -453,7 +456,7 @@
         private Button baseSelection;
         private CheckBox isHead;
         private CheckedListBox chkBehaviors;
-        private Label label11;
+        private Label behaviorLabel;
         private TextBox txtContentPath;
         private Button ctSelectButton;
         private Button projDirSelectButton;

@@ -65,7 +65,8 @@ namespace Grafter
         #region Save/ Load
         private void btnSave_Click(object sender, EventArgs e) => FormHelper.RequestGlobalSave(this, SaveUiToObject);
 
-        private void btnLoad_Click(object sender, EventArgs e) => FormHelper.RequestGlobalLoad(this, () => {
+        private void btnLoad_Click(object sender, EventArgs e) => FormHelper.RequestGlobalLoad(this, () =>
+        {
             if (DataManager.Parts.Count > 0)
             {
                 lstParts.SelectedIndex = 0;
@@ -81,7 +82,7 @@ namespace Grafter
         private void lstParts_KeyDown(object sender, KeyEventArgs e)
             => controller.HandleDeletion(e, DataManager.Parts, () => txtName.Text = "");
         #endregion
-        
+
         private void btnAdd_Click(object sender, EventArgs e) => controller.CreateNewItem(DataManager.Parts);
 
         private async void btnSelectTexture_Click(object sender, EventArgs e)
@@ -105,7 +106,7 @@ namespace Grafter
                 e.Graphics.DrawLine(p, pt.X, pt.Y - 10, pt.X, pt.Y + 10);
                 e.Graphics.DrawRectangle(p, pt.X - 2, pt.Y - 2, 4, 4);
             }
-        
+
         }
 
         private void picPreview_MouseClick(object sender, MouseEventArgs e)
@@ -237,6 +238,10 @@ namespace Grafter
         #endregion
 
 
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 
 }

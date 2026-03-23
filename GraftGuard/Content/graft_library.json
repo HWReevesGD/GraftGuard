@@ -13,7 +13,9 @@
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_1.png",
       "PivotX": 0.48240468,
       "PivotY": 0.19648094,
-      "PartBehaviorNames": []
+      "PartBehaviorNames": [
+        "Slashing"
+      ]
     },
     {
       "Name": "part2",

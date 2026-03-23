@@ -32,7 +32,7 @@ internal class PauseMenu
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
-        world.DrawCamera(batch, gameTime, timeState);
+        world.DrawCamera(batch, gameTime, timeState, true);
         batch.End();
 
         // draw menu items

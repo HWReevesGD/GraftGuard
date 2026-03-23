@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows.Forms.VisualStyles;
 
 namespace Grafter
 {
@@ -12,8 +13,10 @@ namespace Grafter
     {
         public static BindingList<PartDefinition> Parts { get; set; } = [];
         public static BindingList<BaseDefinition> Bases { get; set; } = [];
+        public static string[] Behaviors = [];
 
         public static string CurrentFilePath = "graft_library.json";
+        public const string RelativeBehaviorPath = "../../../../GraftGuard/Content/part_behaviors.json";
 
         public static void Save(string path)
         {
@@ -55,6 +58,20 @@ namespace Grafter
             catch (Exception ex)
             {
                 MessageBox.Show($"Failed to load library: {ex.Message}");
+            }
+        }
+
+        public static void LoadBehaviors()
+        {
+            try
+            {
+                string json = File.ReadAllText(RelativeBehaviorPath);
+
+                Behaviors = JsonSerializer.Deserialize<string[]>(json);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load behaviors: {ex.Message}");
             }
         }
     }

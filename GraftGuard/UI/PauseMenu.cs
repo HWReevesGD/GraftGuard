@@ -15,15 +15,17 @@ internal class PauseMenu
     private readonly static string text = "< Press Enter to Return to Play >\n< Press Esc to Exit >";
 
     private static Texture2D backgroundTexture;
+    private InputManager _inputManager;
 
     public static void LoadContent(ContentManager content)
     {
         backgroundTexture = content.Load<Texture2D>("pixel");
     }
 
-    public PauseMenu(World world)
+    public PauseMenu(World world, InputManager inputManager)
     {
         this.world = world;
+        _inputManager = inputManager;
     }
 
     public void Draw(SpriteBatch batch, GameTime gameTime, TimeState timeState)
@@ -32,7 +34,7 @@ internal class PauseMenu
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
-        world.DrawCamera(batch, gameTime, timeState);
+        world.DrawCamera(batch, gameTime, timeState, _inputManager);
         batch.End();
 
         // draw menu items

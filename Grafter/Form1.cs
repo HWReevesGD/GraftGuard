@@ -1,6 +1,7 @@
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Security.Cryptography;
+using System.Windows.Forms.Design.Behavior;
 using System.Xml.Linq;
 using static System.ComponentModel.Design.ObjectSelectorEditor;
 
@@ -161,6 +162,8 @@ namespace Grafter
             numHealth.Value = (decimal)part.HealthModifier;
             isHead.Checked = part.Type == PartType.Head;
 
+            LoadBehaviors(part);
+
             if (!string.IsNullOrEmpty(part.FullImagePath) && File.Exists(part.FullImagePath))
             {
                 picPreview.Image?.Dispose();
@@ -171,6 +174,29 @@ namespace Grafter
             {
                 picPreview.Image = null;
                 btnSelectTexture.Text = "Select Texture";
+            }
+        }
+
+        private void LoadBehaviors(PartDefinition part)
+        {
+            // Uncheck all Behaviors
+            for (int index = 0; index < chkBehaviors.Items.Count; index++)
+            {
+                chkBehaviors.SetItemChecked(index, false);
+            }
+
+            // Check used Behaviors
+            foreach (string behavior in part.PartBehaviorNames)
+            {
+                for (int index = 0; index < chkBehaviors.Items.Count; index++)
+                {
+                    string item = (string)chkBehaviors.Items[index];
+                    if (behavior == item)
+                    {
+
+                        chkBehaviors.SetItemChecked(index, true);
+                    }
+                }
             }
         }
 
@@ -250,8 +276,22 @@ namespace Grafter
                 currentlyEditing.HealthModifier = (float)numHealth.Value;
                 currentlyEditing.Type = isHead.Checked ? PartType.Head : PartType.Limb;
 
+                SaveBehaviors();
 
                 DataManager.Parts.ResetBindings(); // Updates the name in the list instantly
+            }
+        }
+
+        private void SaveBehaviors()
+        {
+            // Save Behaviors
+            currentlyEditing.PartBehaviorNames = [];
+            for (int index = 0; index < chkBehaviors.Items.Count; index++)
+            {
+                if (chkBehaviors.GetItemChecked(index))
+                {
+                    currentlyEditing.PartBehaviorNames = currentlyEditing.PartBehaviorNames.Append((string)chkBehaviors.Items[index]).ToArray();
+                }
             }
         }
 
@@ -326,6 +366,15 @@ namespace Grafter
             BaseForm baseWindow = new BaseForm();
             baseWindow.Show();
 
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            DataManager.LoadBehaviors();
+            foreach (string behavior in DataManager.Behaviors)
+            {
+                chkBehaviors.Items.Add(behavior);
+            }
         }
     }
 }

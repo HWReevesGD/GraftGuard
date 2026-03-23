@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.Utility;
@@ -34,7 +35,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         Fourth,
     }
 
-    protected PartDefinition[] _attachedParts;
+    protected TowerPart[] _attachedParts;
 
     /// <summary>
     /// True if there is at least one non-null part attached
@@ -62,7 +63,8 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="texture">Tower's Texture</param>
     public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null) : base(position, size, texture)
     {
-        _attachedParts = new PartDefinition[4];
+        _attachedParts = new TowerPart[4];
+
         random = new Random();
         MouseBox = mouseBox;
         _basePathCost = pathCost;
@@ -83,18 +85,23 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     }
 
+    public virtual void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    {
+        base.Draw(time, batch);
+    }
+
     /// <summary>
     /// Gets a part from an <paramref name="index"/>. If <paramref name="shiftIfNull"/> is <see cref="true"/>, then the method will attempt to choose another attached part
     /// </summary>
     /// <param name="index">Index of the part</param>
     /// <param name="shiftIfNull">Attempts to shift to another part if the part at the index is null</param>
     /// <returns></returns>
-    public PartDefinition GetPartFromIndex(int index, bool shiftIfNull)
+    public TowerPart GetPartFromIndex(int index, bool shiftIfNull)
     {
-        PartDefinition part = _attachedParts[index];
+        TowerPart part = _attachedParts[index];
         if (shiftIfNull && part is null)
         {
-            foreach (PartDefinition otherPart in _attachedParts)
+            foreach (TowerPart otherPart in _attachedParts)
             {
                 if (otherPart is not null)
                 {
@@ -116,16 +123,16 @@ internal abstract class Tower : GameObject, IMouseDetectable
         switch (slot)
         {
             case Slot.First:
-                _attachedParts[0] = part;
+                _attachedParts[0] = new TowerPart(part);
                 break;
             case Slot.Second:
-                _attachedParts[1] = part;
+                _attachedParts[1] = new TowerPart(part);
                 break;
             case Slot.Third:
-                _attachedParts[2] = part;
+                _attachedParts[2] = new TowerPart(part);
                 break;
             case Slot.Fourth:
-                _attachedParts[3] = part;
+                _attachedParts[3] = new TowerPart(part);
                 break;
         }
     }
@@ -140,7 +147,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         {
             if (_attachedParts[index] is null)
             {
-                _attachedParts[index] = part;
+                _attachedParts[index] = new TowerPart(part);
                 return;
             }
         }

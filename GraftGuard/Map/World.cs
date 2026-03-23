@@ -84,7 +84,7 @@ internal class World
         Garage.Update(gameTime, this);
     }
 
-    public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state)
+    public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager)
     {
         batch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.ScreenToWorld)}", new Vector2(64, 128), Color.White);
         if (state == TimeState.Day)
@@ -93,7 +93,7 @@ internal class World
         }
     }
 
-    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state)
+    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager)
     {
         Terrain.Draw(batch, gameTime);
 
@@ -104,7 +104,7 @@ internal class World
 
         Garage.Draw(batch, gameTime);
 
-        TowerManager.Draw(batch, gameTime);
+        TowerManager.Draw(batch, gameTime, this, inputManager, state);
         EnemyManager.Draw(batch, gameTime);
         Player.Draw(gameTime, batch);
     }

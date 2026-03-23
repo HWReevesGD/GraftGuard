@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Utility;
@@ -6,7 +7,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace GraftGuard.Grafting.Towers;
 internal class TowerTrap : Tower
@@ -32,15 +35,33 @@ internal class TowerTrap : Tower
             // Damage is the Sum of all part damages, and the sun of all part Critical Modifiers of random strength 0% - 100%
             // If there is a null part, that part adds 0 damage to the sum
             float damage = _attachedParts.Sum(
-                (part) => part is not null ? (part.BaseDamage + part.CriticalModifier * random.NextSingle()) : 0.0f
+                (part) => part is not null ? (part.Definition.BaseDamage + part.Definition.CriticalModifier * random.NextSingle()) : 0.0f
                 );
-
             world.EnemyManager.DealDamageInAreas([Hitbox], [], damage);
+        }
 
+        for (int x = 0; x < GridSize; x++)
+        {
+            for (int y = 0; y < GridSize; y++)
+            {
+                TowerPart part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
+
+                if (part is null) continue;
+
+                Vector2 partPosition = GetPartPosition(time, part, x, y);
+                Point partSize = part.Definition.Texture.GetSizePoint();
+
+                part.UpdateBehavior(this, part.Definition, partPosition + partSize.ToVector(), time, world, inputManager, state);
+
+                if (dealDamage)
+                {
+                    part.BehaviorOnDealDamage(0.25f, this, part.Definition, partPosition, time, world, inputManager, state);
+                }
+            }
         }
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         batch.DrawCentered(Texture, Position);
         if (!HasParts) return;
@@ -49,20 +70,31 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                PartDefinition part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
+                TowerPart part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
                 if (part is null) continue;
-                Point partSize = part.Texture.GetSizePoint();
 
-                float sinHeight = MathF.Sin(x + y + (float)gameTime.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
+                Vector2 partPosition = GetPartPosition(time, part, x, y);
+                Point partSize = part.Definition.Texture.GetSizePoint();
+                float sinHeight = MathF.Sin(x + y + (float)time.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
 
-                Vector2 gridOffset = new Vector2(x - GridSize / 2, y - GridSize / 2) * GridOffsets;
-                gridOffset.Y += sinHeight;
+                batch.Draw(part.Definition.Texture, partPosition, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
 
-                Vector2 positionalOffset = new Vector2(-partSize.X / 2.0f, -partSize.Y / 2.0f);
-
-                batch.Draw(part.Texture, Position + gridOffset + positionalOffset, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
+                part.DrawBehavior(this, part.Definition, partPosition + partSize.ToVector() * 0.5f, time, batch, world, inputManager, state);
             }
         }
+    }
+
+    public Vector2 GetPartPosition(GameTime time, TowerPart part, int partX, int partY)
+    {
+        Point partSize = part.Definition.Texture.GetSizePoint();
+
+        float sinHeight = MathF.Sin(partX + partY + (float)time.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
+
+        Vector2 gridOffset = new Vector2(partX - GridSize / 2, partY - GridSize / 2) * GridOffsets;
+        gridOffset.Y += sinHeight;
+
+        Vector2 positionalOffset = new Vector2(-partSize.X / 2.0f, -partSize.Y / 2.0f);
+        return Position + gridOffset + positionalOffset;
     }
 
     /// <summary>

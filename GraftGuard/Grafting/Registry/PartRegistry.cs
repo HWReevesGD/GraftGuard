@@ -41,7 +41,6 @@ internal static class PartRegistry
                 Debug.WriteLine($"Loading: {data.TextureName}!");
                 Texture2D tex = content.Load<Texture2D>($"Parts/{data.TextureName}");
 
-
                 // Create the definition with pivot data
                 var definition = new PartDefinition(
                     data.Name,
@@ -55,7 +54,8 @@ internal static class PartRegistry
                     data.ArmorModifier,
                     data.RangeModifier,
                     data.CriticalModifier,
-                    data.HealthModifier
+                    data.HealthModifier,
+                    data.PartBehaviorNames
                 );
 
                 _allParts.Add(definition);

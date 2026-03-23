@@ -24,11 +24,11 @@ internal class TowerManager
         }
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime)
+    public void Draw(SpriteBatch batch, GameTime gameTime, World world, InputManager inputManager, TimeState state)
     {
         foreach (Tower tower in _towers)
         {
-            tower.Draw(gameTime, batch);
+            tower.Draw(gameTime, batch, world, inputManager, state);
         }
     }
 

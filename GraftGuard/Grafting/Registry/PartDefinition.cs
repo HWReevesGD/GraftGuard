@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 using System.Text.Json.Serialization;
 
 namespace GraftGuard.Grafting.Registry;
@@ -29,6 +30,7 @@ public class PartDefinition
     public string TextureName { get; set; }
     public float PivotX { get; set; }
     public float PivotY { get; set; }
+    public string[] PartBehaviorNames { get; set; }
 
     [JsonIgnore]
     public Texture2D Texture { get; set; }
@@ -62,7 +64,7 @@ public class PartDefinition
 
     public PartDefinition(string name, Texture2D texture, string textureName, float pivotX, float pivotY, PartType type,
                               float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f,
-                              float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f)
+                              float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f, string[]? partBehaviorNames = null)
     {
         Name = name;
         Texture = texture;
@@ -76,6 +78,7 @@ public class PartDefinition
         RangeModifier = rangeModifier;
         CriticalModifier = criticalModifier;
         HealthModifier = healthModifier;
+        PartBehaviorNames = partBehaviorNames ?? [];
     }
 
    

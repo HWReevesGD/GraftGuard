@@ -76,7 +76,7 @@ internal class MainMenu {
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: backgroundWorld.Camera.WorldToScreen);
-        backgroundWorld.DrawCamera(batch, gameTime, timeState);
+        backgroundWorld.DrawCamera(batch, gameTime, timeState, inputManager);
         batch.End();
 
         // draw menu items

@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -26,31 +27,36 @@ internal class TowerSpinner : Tower
     {
         bool dealDamage = _damageInterval.Update(time);
 
-        if (dealDamage)
+        for (int index = 0; index < _attachedParts.Length; index++)
         {
-            for (int index = 0; index < _attachedParts.Length; index++)
-            {
-                PartDefinition part = _attachedParts[index];
-                if (part is null) continue;
+            TowerPart part = _attachedParts[index];
+            if (part is null) continue;
 
-                float rotation = GetPartRotation(time, index);
-                Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
+            float rotation = GetPartRotation(time, index);
+            Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
+
+            part.UpdateBehavior(this, part.Definition, partPosition, time, world, inputManager, state);
+
+            if (dealDamage)
+            {
                 Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
 
-                float damage = (part.BaseDamage + part.CriticalModifier * random.NextSingle());
+                float damage = (part.Definition.BaseDamage + part.Definition.CriticalModifier * random.NextSingle());
 
                 world.EnemyManager.DealDamageInAreas([], [damageCircle], damage);
+
+                part.BehaviorOnDealDamage(0.5f, this, part.Definition, partPosition, time, world, inputManager, state);
             }
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch)
+    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         batch.DrawCentered(Texture, Position);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
-            PartDefinition part = _attachedParts[index];
+            TowerPart part = _attachedParts[index];
             if (part is null) continue;
 
             float rotation = GetPartRotation(time, index);
@@ -59,7 +65,9 @@ internal class TowerSpinner : Tower
             //Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
             //batch.DrawCircle(damageCircle, Color.Red);
             batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24));
-            batch.DrawCentered(part.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48));
+            batch.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48));
+
+            part.DrawBehavior(this, part.Definition, Position + SpinOffset + new Vector2(MathF.Cos(rotation - MathF.PI * 0.5f), MathF.Sin(rotation - MathF.PI * 0.5f)) * 48.0f, time, batch, world, inputManager, state);
         }
     }
 

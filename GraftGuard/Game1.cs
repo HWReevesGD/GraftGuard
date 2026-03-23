@@ -38,7 +38,7 @@ public class Game1 : Game
     private static readonly float NightTimeLength = 5;
     private static readonly float DawnTimeLength = 10;
     private InputManager inputManager;
-    private World _testingWorld;
+    private World _world;
 
     private MainMenu mainMenu;
     private PauseMenu pauseMenu;
@@ -71,7 +71,8 @@ public class Game1 : Game
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
 
-        PartBehaviorRegistry.Save();
+        // Serialize part behavior names
+        PartBehaviorRegistry.Save(Content);
 
         // Content for Static classes
         Fonts.LoadContent(Content);
@@ -92,10 +93,10 @@ public class Game1 : Game
 
 
         // Add Testing World
-        _testingWorld = new World();
+        _world = new World();
 
         mainMenu = new MainMenu(inputManager);
-        pauseMenu = new PauseMenu(_testingWorld);
+        pauseMenu = new PauseMenu(_world, inputManager);
     }
 
     protected override void Update(GameTime gameTime)
@@ -152,7 +153,7 @@ public class Game1 : Game
                     break;
                 }
 
-                _testingWorld.Update(gameTime, inputManager, timeState);
+                _world.Update(gameTime, inputManager, timeState);
 
                 // handle game timers
 
@@ -223,16 +224,16 @@ public class Game1 : Game
                 _spriteBatch.End();
 
                 // Draw by the Camera's Position
-                _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _testingWorld.Camera.WorldToScreen);
+                _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
 
-                _testingWorld.DrawCamera(_spriteBatch, gameTime, timeState);
+                _world.DrawCamera(_spriteBatch, gameTime, timeState, inputManager);
 
                 _spriteBatch.End();
 
                 // Drawn on the Screen Directly
                 _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-                _testingWorld.DrawStatic(_spriteBatch, gameTime, timeState);
+                _world.DrawStatic(_spriteBatch, gameTime, timeState, inputManager);
 
                 _spriteBatch.DrawString(
                     Fonts.Arial,

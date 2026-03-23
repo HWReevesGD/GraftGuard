@@ -8,23 +8,37 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GraftGuard.Utility;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartSlashing : IPartBehavior
 {
+    private float _slashSize = 0.9f;
+    public const float HitRadius = 14.0f;
+    public static string Name => "Slashing";
+
     public static IPartBehavior Create() => new PartSlashing();
 
-    public void Draw(Tower tower, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
-        
+        if (_slashSize <= 0.0f)
+        {
+            return;
+        }
+
+        _slashSize = MathF.Max(0.0f, _slashSize - (float)time.ElapsedGameTime.TotalSeconds);
+
+        batch.DrawCentered(Placeholders.TextureSlash, partPosition, rotation: (float)time.TotalGameTime.TotalSeconds * -24.0f % MathF.Tau, scale: _slashSize);
     }
 
-    public void OnHitEnemy(Tower tower, GameTime time, Enemy enemy, World world, InputManager inputManager, TimeState state)
+    public void OnDealDamage(float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state)
     {
-        
+        _slashSize = 0.9f;
+
+        world.EnemyManager.DealDamageInAreas([], [new Circle(partPosition, HitRadius)], part.BaseDamage * 0.5f);
     }
 
-    public void Update(Tower tower, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state)
     {
         
     }

@@ -19,6 +19,7 @@ internal static class Placeholders
         TextureEnemyDummy = content.Load<Texture2D>("Placeholder/dummy_enemy");
         TextureSpinnerArm = content.Load<Texture2D>("Placeholder/spinner_arm");
         TextureCircle = content.Load<Texture2D>("Placeholder/circle");
+        TextureSlash = content.Load<Texture2D>("Placeholder/slash");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
@@ -32,4 +33,5 @@ internal static class Placeholders
     public static Texture2D TextureEnemyDummy;
     public static Texture2D TextureSpinnerArm;
     public static Texture2D TextureCircle;
+    public static Texture2D TextureSlash;
 }

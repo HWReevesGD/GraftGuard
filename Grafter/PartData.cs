@@ -55,6 +55,7 @@ namespace Grafter
         public string FullImagePath { get; set; }
         public float PivotX { get; set; }
         public float PivotY { get; set; }
+        public string[] PartBehaviorNames { get; set; } = [];
 
 
         public override string ToString() => Name;

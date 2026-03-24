@@ -3,7 +3,11 @@ using System.Text.Json;
 
 namespace Grafter
 {
-
+    public interface ITextureEditor
+    {
+        string TextureName { get; set; }
+        string FullImagePath { get; set; }
+    }
     public static class DataManager
     {
         public static BindingList<PartDefinition> Parts { get; set; } = [];

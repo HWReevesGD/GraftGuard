@@ -11,40 +11,57 @@ namespace Grafter.Tools
     {
         public static void RegisterTexture(string fileName)
         {
-            string mgcbPath = Path.Combine(DataManager.ProjectContentPath, "Content.mgcb");
+            string mgcbPath = Path.Combine(DataManager.ProjectRootPath, "Content", "Content.mgcb");
             if (!File.Exists(mgcbPath)) return;
 
+            string relativePath = $"Parts/{fileName}";
+
             string content = File.ReadAllText(mgcbPath);
-            if (content.Contains($"/build:{fileName}")) return;
+            if (content.Contains($"/build:{relativePath}")) return;
 
             StringBuilder entry = new StringBuilder();
-            entry.AppendLine($"#begin {fileName}");
+            entry.AppendLine($"#begin {relativePath}");
             entry.AppendLine($"/importer:TextureImporter");
             entry.AppendLine($"/processor:TextureProcessor");
-            // Your specific settings for Graft Guard or other projects
             entry.AppendLine($"/processorParam:ColorKeyColor=255,0,255,255");
             entry.AppendLine($"/processorParam:ColorKeyEnabled=True");
             entry.AppendLine($"/processorParam:GenerateMipmaps=False");
             entry.AppendLine($"/processorParam:PremultiplyAlpha=True");
             entry.AppendLine($"/processorParam:TextureFormat=Color");
-            entry.AppendLine($"/build:{fileName}");
+            entry.AppendLine($"/build:{relativePath}");
             entry.AppendLine();
 
             File.AppendAllText(mgcbPath, entry.ToString());
         }
-        public static async Task BuildWithProgress(string fileName)
+        public static async Task BuildWithProgress()
         {
-           await Task.Run(() =>
+            await Task.Run(() =>
             {
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = "dotnet",
-                    Arguments = "mgcb /@:Content.mgcb",
-                    WorkingDirectory = DataManager.ProjectContentPath,
-                    CreateNoWindow = true,
-                    UseShellExecute = false
+                    Arguments = "mgcb /rebuild /@:Content/Content.mgcb",
+                    WorkingDirectory = DataManager.ProjectRootPath,
+                    CreateNoWindow = true, 
+                    UseShellExecute = false,
+                    RedirectStandardError = true,
+                    RedirectStandardOutput = true
                 };
-                using (Process p = Process.Start(startInfo)) p.WaitForExit();
+
+                using (Process p = Process.Start(startInfo))
+                {
+                    string output = p.StandardOutput.ReadToEnd();
+                    string error = p.StandardError.ReadToEnd();
+                    p.WaitForExit();
+
+                    if (p.ExitCode != 0)
+                    {
+                        Debug.WriteLine("MGCB Build Failed!");
+                        Debug.WriteLine($"Error: {error}");
+                    }
+
+                    Debug.WriteLine($"Output: {output}");
+                }
             });
         }
     }

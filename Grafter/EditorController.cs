@@ -93,7 +93,7 @@ namespace Grafter
             FormHelper.SyncTextureToPreview(CurrentlyEditing, preview, textureBtn);
 
             // Run the actual build
-            await MgcbAssetCompiler.BuildWithProgress(Path.GetFileName(destPath));
+            await MgcbAssetCompiler.BuildWithProgress();
 
             // Final callback (e.g., if you need to force a redraw)
             onUpdate?.Invoke(destPath);

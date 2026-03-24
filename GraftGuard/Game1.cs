@@ -76,6 +76,7 @@ public class Game1 : Game
 
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
+        PartBehaviorRegistry.Register("Flaming", PartFlaming.Create);
 
         // Serialize part behavior names
         PartBehaviorRegistry.Save(Content);
@@ -84,6 +85,7 @@ public class Game1 : Game
         Fonts.LoadContent(Content);
         Placeholders.LoadContent(Content);
 
+        Projectile.LoadContent(Content);
         Player.LoadContent(Content);
 
         // TODO: use this.Content to load your game content here

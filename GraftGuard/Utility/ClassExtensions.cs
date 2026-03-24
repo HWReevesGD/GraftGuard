@@ -27,6 +27,10 @@ internal static class ClassExtensions
     {
         return new Vector2(texture.Width, texture.Height);
     }
+    public static float Angle(this Vector2 vector)
+    {
+        return MathF.Atan2(vector.Y, vector.X);
+    }
     public static Point GetSizePoint(this Texture2D texture)
     {
         return new Point(texture.Width, texture.Height);
@@ -57,4 +61,6 @@ internal static class ClassExtensions
         return circle.Intersects(rectangle);
     }
     public static Point Divided(this Point point, int divider) => new Point(point.X / divider, point.Y / divider);
+
+    public static float Delta(this GameTime time) => (float)time.ElapsedGameTime.TotalSeconds;
 }

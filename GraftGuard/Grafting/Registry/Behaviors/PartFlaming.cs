@@ -1,45 +1,41 @@
 ﻿using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
-using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
-using GraftGuard.Utility;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
-internal class PartSlashing : IPartBehavior
+internal class PartFlaming : IPartBehavior
 {
-    private float _slashSize = 0.9f;
-    public const float HitRadius = 14.0f;
-    public static string Name => "Slashing";
-
-    public static IPartBehavior Create() => new PartSlashing();
+    private IntervalTimer _fireTimer = new IntervalTimer(0.05f);
+    public static IPartBehavior Create() => new PartFlaming();
 
     public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
-        if (_slashSize <= 0.0f)
-        {
-            return;
-        }
-
-        _slashSize = MathF.Max(0.0f, _slashSize - (float)time.ElapsedGameTime.TotalSeconds);
-
-        batch.DrawCentered(Placeholders.TextureSlash, partPosition, rotation: (float)time.TotalGameTime.TotalSeconds * -24.0f % MathF.Tau, scale: _slashSize);
+        
     }
 
     public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
     {
-        _slashSize = 0.9f;
-
-        world.EnemyManager.DealDamageInAreas([], [new Circle(partPosition, HitRadius)], part.BaseDamage * 0.5f);
+        
     }
 
     public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
     {
-        
+        bool fire = _fireTimer.Update(time);
+
+        if (fire)
+        {
+            world.ProjectileManager.Add(
+                new ProjectileFire(partPosition, partRotation, ProjectileTarget.Enemy)
+                );
+        }
     }
 }

@@ -24,27 +24,27 @@ internal class TowerPart
         _partBehaviors = definition.PartBehaviorNames.Select((name) => PartBehaviorRegistry.GetFromName(name).Create()).ToArray();
     }
 
-    public void BehaviorOnDealDamage(float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void BehaviorOnDealDamage(float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.OnDealDamage(damageModifier, tower, part, partPosition, time, world, inputManager, state);
+            behavior.OnDealDamage(damageModifier, part, partPosition, partRotation, time, world, inputManager, state);
         }
     }
 
-    public void UpdateBehavior(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void UpdateBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Update(tower, part, partPosition, time, world, inputManager, state);
+            behavior.Update(tower, part, partPosition, partRotation, time, world, inputManager, state);
         }
     }
 
-    public void DrawBehavior(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void DrawBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Draw(tower, part, partPosition, time, batch, world, inputManager, state);
+            behavior.Draw(tower, part, partPosition, partRotation, time, batch, world, inputManager, state);
         }
     }
 }

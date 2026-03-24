@@ -3,6 +3,7 @@ using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
@@ -18,6 +19,7 @@ internal class World
     public Player Player { get; set; }
     public EnemyManager EnemyManager { get; set; }
     public TowerManager TowerManager { get; set; }
+    public ProjectileManager ProjectileManager { get; set; }
     public Inventory Inventory { get; set; }
     public Terrain Terrain { get; set; }
     public Camera Camera { get; set; }
@@ -48,11 +50,22 @@ internal class World
             new ScatteredPart(new Vector2(520, 220), PartRegistry.GetRandom()),
             new ScatteredPart(new Vector2(620, 220), PartRegistry.GetRandom()),
             new ScatteredPart(new Vector2(720, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(420, 320), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(520, 320), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(620, 320), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(720, 320), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(420, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(520, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(620, 220), PartRegistry.GetRandom()),
+            new ScatteredPart(new Vector2(720, 220), PartRegistry.GetRandom()),
             ];
 
         TowerManager = new TowerManager(this);
         Terrain = new Terrain();
         EnemyManager = new EnemyManager(this);
+        ProjectileManager = new ProjectileManager();
         Garage = new Garage();
         Inventory = new Inventory();
 
@@ -90,6 +103,7 @@ internal class World
         inputManager.Update(Camera);
         EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);
+        ProjectileManager.Update(gameTime, this, inputManager);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
     }
@@ -107,6 +121,7 @@ internal class World
 
         TowerManager.Draw(batch, gameTime, this, inputManager, state);
         EnemyManager.Draw(batch, gameTime);
+        ProjectileManager.Draw(batch, gameTime, this, inputManager);
         if (renderPlayer)
         {
             Player.Draw(gameTime, batch);

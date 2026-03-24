@@ -20,8 +20,32 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial.spritefont
 
+#begin enemy_0.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:enemy_0.png
+
 #begin graft_library.json
 /copy:graft_library.json
+
+#begin Kirby-34.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Kirby-34.png
 
 #begin Parts/enemy_0.png
 /importer:TextureImporter
@@ -335,13 +359,7 @@
 /processorParam:TextureFormat=Color
 /build:playerplaceholder.png
 
-#begin Shaders/Outline.fx
-/importer:EffectImporter
-/processor:EffectProcessor
-/processorParam:DebugMode=Auto
-/build:Shaders/Outline.fx
-
-#begin Kirby-34.png
+#begin Projectile/fire.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -351,15 +369,11 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Kirby-34.png
+/build:Projectile/fire.png
 
-#begin enemy_0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Color
-/build:enemy_0.png
+#begin Shaders/Outline.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Shaders/Outline.fx
 

@@ -1,7 +1,7 @@
 {
   "Parts": [
     {
-      "Name": "part1",
+      "Name": "knife",
       "Type": 0,
       "BaseDamage": 1,
       "SpeedModifier": 1,
@@ -11,14 +11,14 @@
       "HealthModifier": 1,
       "TextureName": "enemy_1",
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_1.png",
-      "PivotX": 0.48240468,
-      "PivotY": 0.19648094,
+      "PivotX": 0.4,
+      "PivotY": 0.0,
       "PartBehaviorNames": [
         "Slashing"
       ]
     },
     {
-      "Name": "part2",
+      "Name": "flamethrower",
       "Type": 0,
       "BaseDamage": 1,
       "SpeedModifier": 1,
@@ -30,7 +30,9 @@
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_2.png",
       "PivotX": 0.47947213,
       "PivotY": 0.20234604,
-      "PartBehaviorNames": []
+      "PartBehaviorNames": [
+        "Flaming"
+      ]
     },
     {
       "Name": "part3",

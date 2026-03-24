@@ -13,7 +13,7 @@ namespace GraftGuard.Grafting.Registry.Behaviors;
 internal delegate IPartBehavior CreatePartBehavior();
 internal interface IPartBehavior
 {
-    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state);
-    public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
-    public void OnDealDamage(float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, GameTime time, World world, InputManager inputManager, TimeState state);
+    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state);
+    public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
+    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state);
 }

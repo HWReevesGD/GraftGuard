@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace GraftGuard.UI;
+
+internal delegate void Clicked();
+
 internal class PatchButton : Button
 {
     public Texture2D MainTexture;
@@ -16,6 +19,8 @@ internal class PatchButton : Button
 
     private MouseState _lastMouseState = new MouseState();
     private MouseState _thisMouseState = new MouseState();
+
+    public event Clicked Clicked;
 
     /// <summary>
     /// Setup a button with the given <see cref="Texture2D"/>s and Margins. The Margins are used to construct a <see cref="NinePatch"/>
@@ -71,6 +76,11 @@ internal class PatchButton : Button
         else
         {
             Patch.Texture = MainTexture;
+        }
+
+        if (ClickedThisFrame)
+        {
+            Clicked?.Invoke();
         }
     }
 

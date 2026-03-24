@@ -1,6 +1,8 @@
-﻿using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.Utility;
@@ -42,6 +44,7 @@ public class Game1 : Game
 
     private MainMenu mainMenu;
     private PauseMenu pauseMenu;
+    private TowerGraftingGUI towerGrafting;
 
     public Game1()
     {
@@ -100,6 +103,7 @@ public class Game1 : Game
 
         mainMenu = new MainMenu(inputManager);
         pauseMenu = new PauseMenu(_world, inputManager);
+        towerGrafting = new TowerGraftingGUI();
     }
 
     protected override void Update(GameTime gameTime)
@@ -180,6 +184,7 @@ public class Game1 : Game
                         break;
 
                     case TimeState.Day:
+                        towerGrafting.Update(gameTime, inputManager, _world);
                         break;
                 }
                 break;
@@ -236,7 +241,14 @@ public class Game1 : Game
                 // Drawn on the Screen Directly
                 _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-                _world.DrawStatic(_spriteBatch, gameTime, timeState, inputManager);
+                // Draw Tower Grafting GUI
+                if (timeState == TimeState.Day)
+                {
+                    towerGrafting.Draw(_spriteBatch, gameTime);
+                }
+
+                // Mouse Debug
+                _spriteBatch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), _world.Camera.ScreenToWorld)}", new Vector2(64, 128), Color.White);
 
                 _spriteBatch.DrawString(
                     Fonts.Arial,

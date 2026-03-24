@@ -26,7 +26,7 @@ internal class Garage
         {
             foreach (PartDefinition part in world.Player.HeldParts)
             {
-                world.TowerGrafter.ModifyPartCount(part, 1);
+                world.Inventory.ModifyPartCount(part, 1);
             }
             world.Player.ClearHeldParts();
         }

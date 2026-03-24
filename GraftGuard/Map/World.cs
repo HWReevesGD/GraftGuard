@@ -18,7 +18,7 @@ internal class World
     public Player Player { get; set; }
     public EnemyManager EnemyManager { get; set; }
     public TowerManager TowerManager { get; set; }
-    public TowerGrafter TowerGrafter { get; set; }
+    public Inventory Inventory { get; set; }
     public Terrain Terrain { get; set; }
     public Camera Camera { get; set; }
     public Garage Garage { get; set; }
@@ -51,10 +51,10 @@ internal class World
             ];
 
         TowerManager = new TowerManager(this);
-        TowerGrafter = new TowerGrafter(TowerManager);
         Terrain = new Terrain();
         EnemyManager = new EnemyManager(this);
         Garage = new Garage();
+        Inventory = new Inventory();
 
         Player = new Player(Vector2.Zero);
         Camera = new Camera();
@@ -83,7 +83,6 @@ internal class World
                 {
                     Camera.UpdateFreeMovement(gameTime, inputManager);
                 }
-                TowerGrafter.Update(gameTime, inputManager, this);
                 break;
         }
 
@@ -93,15 +92,6 @@ internal class World
         TowerManager.Update(gameTime, this, inputManager, state);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
-    }
-
-    public void DrawStatic(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager)
-    {
-        batch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), Camera.ScreenToWorld)}", new Vector2(64, 128), Color.White);
-        if (state == TimeState.Day)
-        {
-            TowerGrafter.Draw(batch, gameTime);
-        }
     }
 
     public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager, bool renderPlayer)

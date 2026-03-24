@@ -18,7 +18,7 @@ delegate void NightButtonPressed();
 /// <summary>
 /// Handles the Grafting Interface and Part Inventory
 /// </summary>
-internal class TowerGrafter
+internal class TowerGraftingGUI
 {
     // Constants for button sizing
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
@@ -43,19 +43,15 @@ internal class TowerGrafter
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
 
-    // Inventory Dictionary
-    private Dictionary<string, int> _inventory;
-
     // Night Button
     private PatchButton nightButton;
     public event NightButtonPressed OnNightButtonPressed;
 
     /// <summary>
-    /// Creates a new <see cref="TowerGrafter"/>
+    /// Creates a new <see cref="TowerGraftingGUI"/>
     /// </summary>
-    public TowerGrafter(TowerManager towerManager)
+    public TowerGraftingGUI()
     {
-        _inventory = [];
         _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentTowerLabelSize.X, 0), _currentTowerLabelSize);
 
         // Populate Towers
@@ -99,7 +95,7 @@ internal class TowerGrafter
     }
 
     /// <summary>
-    /// Updates the <see cref="TowerGrafter"/>
+    /// Updates the <see cref="TowerGraftingGUI"/>
     /// </summary>
     /// <param name="time">Game Time</param>
     /// <param name="inputManager">Current Input Manager</param>
@@ -120,10 +116,10 @@ internal class TowerGrafter
             if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
             {
                 // Don't allow part attachment if the player does not have enough parts
-                if (GetPartCount(part) != 0)
+                if (world.Inventory.GetPartCount(part) != 0)
                 {
                     overTower.AttachPart(part);
-                    ModifyPartCount(part, -1);
+                    world.Inventory.ModifyPartCount(part, -1);
                     world.UpdatePaths();
                 }
             }
@@ -145,7 +141,7 @@ internal class TowerGrafter
         for (int index = 0; index < _partChoiceButtons.Count; index++)
         {
             Button button = _partChoiceButtons[index];
-            button.Text = $"{GetPartCount(_partChoices[index])}";
+            button.Text = $"{world.Inventory.GetPartCount(_partChoices[index])}";
 
             button.Update();
             if (button.ClickedThisFrame)
@@ -166,7 +162,7 @@ internal class TowerGrafter
     }
 
     /// <summary>
-    /// Draws the <see cref="TowerGrafter"/> Interface
+    /// Draws the <see cref="TowerGraftingGUI"/> Interface
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Game Time</param>
@@ -206,86 +202,4 @@ internal class TowerGrafter
         _currentlyGraftingTower = null;
         _currentlyChosenPart = null;
     }
-
-    /// <summary>
-    /// Checks if the given <see cref="TowerDefinition"/> can be afforded with the current Inventory
-    /// </summary>
-    /// <param name="tower"><see cref="TowerDefinition"/> to check</param>
-    /// <returns>True if the <see cref="TowerDefinition"/> can be afforded, false otherwise</returns>
-    public bool CanAffordTower(TowerDefinition tower)
-    {
-        return tower.Cost.All((amount) => GetPartCount(amount.Part) >= amount.Amount);
-    }
-
-    /// <summary>
-    /// Removes the required cost of building a <see cref="TowerDefinition"/> from the Inventory.
-    /// This will throw a <see cref="ArgumentOutOfRangeException"/> if the <see cref="TowerDefinition"/> cannot be afforded
-    /// </summary>
-    /// <param name="tower"><see cref="TowerDefinition"/> to get cost from</param>
-    public void RemoveCostOfTower(TowerDefinition tower)
-    {
-        foreach (PartAmount amount in tower.Cost)
-        {
-            ModifyPartCount(amount.Part, -amount.Amount);
-        }
-    }
-
-    /// <summary>
-    /// Returns the count for the given <paramref name="part"/>
-    /// </summary>
-    /// <param name="part">Part to get count for</param>
-    /// <returns>Number of this part in inventory</returns>
-    public int GetPartCount(PartDefinition part) => GetPartCount(part.Name);
-    /// <summary>
-    /// Returns the count for the given <paramref name="partName"/>
-    /// </summary>
-    /// <param name="partName">Part to get count for</param>
-    /// <returns>Number of this part in inventory</returns>
-    public int GetPartCount(string partName)
-    {
-        partName = partName.ToLower();
-        return _inventory.GetValueOrDefault(partName, 0);
-    }
-    /// <summary>
-    /// Sets the count for the give <paramref name="part"/>
-    /// </summary>
-    /// <param name="part">Part to set count for</param>
-    /// <param name="value">Count value to set</param>
-    public void SetPartCount(PartDefinition part, int value) => SetPartCount(part.Name, value);
-    /// <summary>
-    /// Sets the count for the give <paramref name="partName"/>
-    /// </summary>
-    /// <param name="partName">Part to set count for</param>
-    /// <param name="value">Count value to set</param>
-    public void SetPartCount(string partName, int value)
-    {
-        partName = partName.ToLower();
-        if (value < 0)
-        {
-            throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
-        }
-        _inventory[partName] = value;
-    }
-    /// <summary>
-    /// Modifiers the count of the given <paramref name="part"/>
-    /// </summary>
-    /// <param name="part">Part to modify count of</param>
-    /// <param name="change">Amount to modify count by</param>
-    public void ModifyPartCount(PartDefinition part, int change) => ModifyPartCount(part.Name, change);
-    /// <summary>
-    /// Modifiers the count of the given <paramref name="partName"/>
-    /// </summary>
-    /// <param name="partName">Part to modify count of</param>
-    /// <param name="change">Amount to modify count by</param>
-    /// <exception cref="ArgumentOutOfRangeException">Thrown if the part count is changed below zero</exception>
-    public void ModifyPartCount(string partName, int change)
-    {
-        partName = partName.ToLower();
-        if (GetPartCount(partName) + change < 0)
-        {
-            throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
-        }
-        _inventory[partName] = GetPartCount(partName) + change;
-    }
-
 }

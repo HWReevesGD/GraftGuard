@@ -172,7 +172,7 @@ internal class MainMenu {
             {
                 targetXOffset = 15;
                 targetWaveAmplitude = itemShakeIntensity;
-                arrowYPosition = arrowYPosition + (yPosition - arrowYPosition) * alpha;
+                arrowYPosition = MathHelper.Lerp(arrowYPosition, yPosition, alpha);
             }
             else
             {
@@ -180,13 +180,13 @@ internal class MainMenu {
                 targetWaveAmplitude = 0;
             }
 
-            itemXOffests[i] = itemXOffests[i] + (targetXOffset - itemXOffests[i]) * alpha;
-            itemWaveAmplitudes[i] = itemWaveAmplitudes[i] + (targetWaveAmplitude - itemWaveAmplitudes[i]) * alpha;
+            itemXOffests[i] = MathHelper.Lerp(itemXOffests[i], targetXOffset, alpha);
+            itemWaveAmplitudes[i] = MathHelper.Lerp(itemWaveAmplitudes[i], targetWaveAmplitude, alpha);
 
             // render item on the bottom left yea
 
             Text text = new Text(Fonts.Arial, menuItemOrder[i]).SetYOrigin(YOrigin.Bottom).SetKerning(2);
-            new TextEffects(text)
+            new TextEffects(new Text(Fonts.Arial, menuItemOrder[i]).SetYOrigin(YOrigin.Bottom).SetKerning(2))
                 .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]))
                 .Draw(batch, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
 

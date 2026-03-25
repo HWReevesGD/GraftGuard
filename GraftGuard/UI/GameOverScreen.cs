@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Data;
+using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -25,6 +26,9 @@ internal class GameOverScreen
     private static readonly float countUpMaxTime = 3f;
     private static readonly int gap = 50; // gap between score text and score number
     private static readonly int scoreNumJumpDist = 5;
+
+    private static readonly float titleShakeMagnitude = 10;
+    private static readonly float titleShakeDecayTime = 0.5f;
 
     private bool scoreCountIsUp = false;
     private bool hiScoreCountIsUp = false;
@@ -74,15 +78,16 @@ internal class GameOverScreen
 
         // title
 
-        Vector2 titleSize = Fonts.Arial.MeasureString(titleText);
-        Vector2 position = new Vector2(
-            Interface.Width / 2 - titleSize.X / 2,
-            100
-            );
+        float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startShowingTime;
+        float shakeMagnitude = titleShakeMagnitude * Math.Max(1 - (elapsed / titleShakeDecayTime), 0);
 
-        batch.DrawString(Fonts.Arial, titleText, position, Color.White);
+        new TextEffects(new Text(Fonts.Arial, titleText).SetXOrigin(XOrigin.Center))
+            .AddEffect(new ShakeTextEffect(shakeMagnitude))
+            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 100));
 
-        int score = 500; // _session.CurrentScore
+        // score stuff
+
+        int score = 5; // _session.CurrentScore
         int hiScore = 12334434; // PlayerData.HighScore
 
         // stats

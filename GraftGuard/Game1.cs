@@ -1,50 +1,32 @@
-﻿using GraftGuard.Grafting;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
-using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using System.IO;
 
 namespace GraftGuard;
-enum GameState
-{
-    MainMenu,
-    Paused,
-    GameOver,
-    Game
-}
-
-enum TimeState
-{
-    Night,
-    Dawn,
-    Day
-}
 
 public class Game1 : Game
 {
     public GraphicsDeviceManager Graphics;
     private SpriteBatch _spriteBatch;
+    private GameManager _gameManager;
 
-    private GameState gameState;
-    private TimeState timeState;
-    private float timer;
+    private InputManager input;
 
-    private static readonly float NightTimeLength = 5;
-    private static readonly float DawnTimeLength = 10;
-    private InputManager inputManager;
-    private World _world;
 
-    private MainMenu mainMenu;
-    private PauseMenu pauseMenu;
-    private TowerGraftingGUI towerGrafting;
+    //private static readonly float NightTimeLength = 5;
+    //private static readonly float DawnTimeLength = 10;
+    //private World world;
+
+    //private MainMenu mainMenu;
+    //private PauseMenu pauseMenu;
+    //private TowerGraftingGUI towerGrafting;
 
     public Game1()
     {
@@ -55,10 +37,9 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        this.gameState = GameState.MainMenu;
-        this.timeState = TimeState.Night;
+        PlayerData.Load();
 
-        inputManager = new InputManager();
+        input = new InputManager();
         Interface.Initialize(this);
 
         base.Initialize();
@@ -93,7 +74,6 @@ public class Game1 : Game
         Tower.LoadContent(Content);
         MainMenu.LoadContent(Content);
         PauseMenu.LoadContent(Content);
-        World.LoadContent(Content);
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
@@ -101,11 +81,19 @@ public class Game1 : Game
 
 
         // Add Testing World
-        _world = new World();
+        var world = new World();
 
-        mainMenu = new MainMenu(inputManager);
-        pauseMenu = new PauseMenu(_world, inputManager);
-        towerGrafting = new TowerGraftingGUI();
+        _gameManager = new GameManager(
+            world,
+            new MainMenu(input),
+            new PauseMenu(world, input),
+            new TowerGraftingGUI(),
+            input
+        );
+
+        /*mainMenu = new MainMenu(inputManager);
+        pauseMenu = new PauseMenu(this.world, inputManager);
+        towerGrafting = new TowerGraftingGUI();*/
     }
 
     protected override void Update(GameTime gameTime)
@@ -113,7 +101,10 @@ public class Game1 : Game
         //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
         //    Exit();
 
-        switch (gameState)
+        //Yuxuan what you're looking for is now in GameManager. You can move specifics around but I'd like to keep Game1 as streamlined as possible.
+        //In theory we never have to touch this file again. I kept your old code here commented out
+
+        /*switch (gameState)
         {
             case GameState.MainMenu:
                 inputManager.Update();
@@ -190,30 +181,23 @@ public class Game1 : Game
                         break;
                 }
                 break;
-        }
+        }*/
+
+        _gameManager.Update(gameTime);
 
         base.Update(gameTime);
     }
 
-    /// <summary>
-    /// Start Night
-    /// </summary>
-    public void StartNight()
-    {
-        timeState = TimeState.Night;
-        timer = NightTimeLength;
-    }
-
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.ForestGreen);
 
         _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
         // TODO: Add your drawing code here
 
         // TODO: call Draw for all GameObjects here
-
+        /*
         switch (gameState)
         {
             case GameState.MainMenu:
@@ -262,9 +246,17 @@ public class Game1 : Game
                 );
 
                 break;
-        }
+        }*/
 
-        _spriteBatch.End();
+        _gameManager.Draw(_spriteBatch, gameTime);
+
+        _spriteBatch.End(); 
         base.Draw(gameTime);
+    }
+
+    protected override void OnExiting(object sender, ExitingEventArgs args)
+    {
+        PlayerData.Save();
+        base.OnExiting(sender, args);
     }
 }

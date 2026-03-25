@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GraftGuard.Utility;
+using GraftGuard.Data;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartSlashing : IPartBehavior

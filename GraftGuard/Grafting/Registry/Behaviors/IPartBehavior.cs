@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting.Towers;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using Microsoft.Xna.Framework;

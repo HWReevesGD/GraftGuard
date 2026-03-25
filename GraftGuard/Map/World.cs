@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
@@ -25,14 +26,6 @@ internal class World
     public Camera Camera { get; set; }
     public Garage Garage { get; set; }
     public List<ScatteredPart> ScatteredParts { get; set; }
-
-    private static Texture2D torsoTex;
-    private static Texture2D headTex;
-
-    public static void LoadContent(ContentManager content) {
-        torsoTex = content.Load<Texture2D>("Parts/enemy_0");
-        headTex = content.Load<Texture2D>("Parts/enemy_5");
-    }
 
     // Constructor
     public World()
@@ -96,7 +89,6 @@ internal class World
         }
 
         Camera.Update(gameTime);
-        inputManager.Update(Camera);
         EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);
         ProjectileManager.Update(gameTime, this, inputManager);

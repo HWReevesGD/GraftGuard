@@ -19,17 +19,19 @@ namespace GraftGuard
         private readonly World _world;
         private readonly MainMenu _mainMenu;
         private readonly PauseMenu _pauseMenu;
+        private readonly GameOverScreen _gameOverScreen;
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly InputManager inputManager;
 
         private const float DawnTimeLength = 10f;
         private const float NightTimeLength = 5f;
 
-        public GameManager(World world, MainMenu menu, PauseMenu pause, TowerGraftingGUI gui, InputManager input)
+        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, TowerGraftingGUI gui, InputManager input)
         {
             _world = world;
             _mainMenu = menu;
             _pauseMenu = pause;
+            _gameOverScreen = gameOver;
             _towerGrafting = gui;
             inputManager = input;
 
@@ -50,6 +52,9 @@ namespace GraftGuard
                     break;
                 case GameState.Paused:
                     UpdatePaused();
+                    break;
+                case GameState.GameOver:
+                    UpdateGameOver(gameTime);
                     break;
             }
         }
@@ -84,16 +89,17 @@ namespace GraftGuard
             else
             {
                 session.Timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (session.Timer <= 0) HandleTimeTransition(session);
+                if (session.Timer <= 0) HandleTimeTransition(gameTime, session);
             }
         }
 
-        private void HandleTimeTransition(GameData session)
+        private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
             if (session.Time == TimeState.Night)
             {
                 //Game Over
-                PlayerData.CurrentState = GameState.Paused;
+                PlayerData.CurrentState = GameState.GameOver;
+                _gameOverScreen.SetSession(gameTime, session);
             }
             else if (session.Time == TimeState.Dawn)
             {
@@ -116,6 +122,17 @@ namespace GraftGuard
                 PlayerData.CurrentState = GameState.Game;
         }
 
+        private void UpdateGameOver(GameTime gameTime)
+        {
+            if (inputManager.WasKeyPressStarted(Keys.Escape) || inputManager.WasKeyPressStarted(Keys.Enter))
+            {
+                PlayerData.CurrentState = GameState.MainMenu;
+                return;
+            }
+
+            _gameOverScreen.Update(gameTime);
+        }
+
         public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
         {
             switch (PlayerData.CurrentState)
@@ -128,6 +145,9 @@ namespace GraftGuard
                     break;
                 case GameState.Paused:
                     _pauseMenu.Draw(spriteBatch, gameTime, PlayerData.CurrentGame.Time);
+                    break;
+                case GameState.GameOver:
+                    _gameOverScreen.Draw(spriteBatch, gameTime);
                     break;
             }
         }

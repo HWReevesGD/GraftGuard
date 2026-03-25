@@ -2,6 +2,7 @@
 
 using GraftGuard.Data;
 using GraftGuard.Graphics.TextEffects;
+using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -185,10 +186,12 @@ internal class MainMenu {
 
             // render item on the bottom left yea
 
-            Text text = new Text(Fonts.Arial, menuItemOrder[i]).SetYOrigin(YOrigin.Bottom).SetKerning(2);
-            new TextEffects(new Text(Fonts.Arial, menuItemOrder[i]).SetYOrigin(YOrigin.Bottom).SetKerning(2))
-                .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]))
-                .Draw(batch, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
+            Text text = new Text(Fonts.Arial, menuItemOrder[i])
+                .SetYOrigin(YOrigin.Bottom)
+                .SetKerning(2)
+                .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]));
+
+            text.Draw(batch, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
 
             // increment up
             yPosition += -text.Height - itemGap;
@@ -197,14 +200,14 @@ internal class MainMenu {
         // little arrow thing
         new Text(Fonts.Arial, ">")
             .SetYOrigin(YOrigin.Bottom)
-            .Draw(batch, new Vector2(itemLeftPadding, arrowYPosition));
+            .DrawRaw(batch, new Vector2(itemLeftPadding, arrowYPosition));
 
         // title text
         new Text(Fonts.Arial, titleText)
             .SetYOrigin(YOrigin.Bottom)
             .SetScale(3)
             .SetKerning(3)
-            .Draw(batch, new Vector2(titleLeftPadding, yPosition));
+            .DrawRaw(batch, new Vector2(titleLeftPadding, yPosition));
 
         
     }

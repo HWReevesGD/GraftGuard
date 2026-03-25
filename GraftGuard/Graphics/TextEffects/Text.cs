@@ -2,6 +2,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
 
 namespace GraftGuard.Graphics.TextEffects;
 
@@ -28,9 +29,11 @@ public enum YOrigin
 /// <summary>
 /// Text parameters struct. Easily usable via method chaining.
 /// </summary>
-public struct Text
+internal struct Text
 {
     public SpriteFont Font;
+    public string TextString;
+    private List<ITextEffect> effects;
 
     /// <summary>
     /// Gets the size of the text without kerning
@@ -41,8 +44,6 @@ public struct Text
     /// Gets the size of the text with kerning included
     /// </summary>
     public Vector2 Size => BaseSize + new Vector2((TextString.Length - 1) * Kerning * Scale.X, 0);
-
-    public string TextString;
 
     /// <summary>
     /// Gets the width of the text with kerning included
@@ -108,6 +109,7 @@ public struct Text
     {
         Font = font;
         TextString = text;
+        effects = new List<ITextEffect>();
     }
 
     /// <summary>
@@ -190,11 +192,36 @@ public struct Text
     }
 
     /// <summary>
-    /// Draw each letter separately to add kerning
+    /// Add text effect to this handler
+    /// </summary>
+    /// <param name="effect">Effect to add</param>
+    /// <returns>This handler</returns>
+    public Text AddEffect(ITextEffect effect)
+    {
+        effects.Add(effect);
+        return this;
+    }
+
+    /// <summary>
+    /// Add multiple text effects to this handler
+    /// </summary>
+    /// <param name="effects">Array of effects</param>
+    /// <returns>This handler</returns>
+    public Text AddEffects(ITextEffect[] effects)
+    {
+        foreach (ITextEffect effect in effects)
+        {
+            this.effects.Add(effect);
+        }
+        return this;
+    }
+
+    /// <summary>
+    /// Draw each letter separately to add kerning without text effects
     /// </summary>
     /// <param name="batch">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    private void DrawWithKerning(SpriteBatch batch, Vector2 position)
+    private void DrawRawWithKerning(SpriteBatch batch, Vector2 position)
     {
         Vector2 leftPosition = position + Origin;
 
@@ -224,11 +251,11 @@ public struct Text
     /// </summary>
     /// <param name="batch">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    public void Draw(SpriteBatch batch, Vector2 position)
+    public void DrawRaw(SpriteBatch batch, Vector2 position)
     {
         if (Kerning != 0)
         {
-            DrawWithKerning(batch, position);
+            DrawRawWithKerning(batch, position);
             return;
         }
 
@@ -243,5 +270,55 @@ public struct Text
             SpriteEffects.None,
             0
             );
+    }
+
+    /// <summary>
+    /// Draw the text provided at construct time with the new effects added
+    /// </summary>
+    /// <param name="batch">SpriteBatch</param>
+    /// <param name="gameTime">GameTime</param>
+    /// <param name="position">Text origin position on screen</param>
+    public void Draw(SpriteBatch batch, GameTime gameTime, Vector2 position)
+    {
+        Vector2 renderOrigin = position + Origin;
+        Vector2 curPosition = renderOrigin;
+
+        // update all effects
+        foreach (ITextEffect effect in effects)
+        {
+            effect.Update(gameTime);
+        }
+
+        for (int i = 0; i < TextString.Length; i++)
+        {
+            string character = $"{TextString[i]}";
+
+            // apply all effects to individual characters
+            Letter letter = new Letter(character);
+            letter.Position = curPosition;
+            letter.Scale = Scale;
+            letter.Color = Color;
+
+            foreach (ITextEffect effect in effects)
+            {
+                letter = effect.DoEffect(i, gameTime, letter);
+            }
+
+            // draw this letter
+            batch.DrawString(
+                Font,
+                character,
+                letter.Position,
+                letter.Color,
+                0,
+                Vector2.Zero,
+                letter.Scale,
+                SpriteEffects.None,
+                0
+                );
+
+            // advance position
+            curPosition += new Vector2((Font.MeasureString(character).X + Kerning) * Scale.X, 0);
+        }
     }
 }

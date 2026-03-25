@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace GraftGuard.Graphics.TextEffects;
+namespace GraftGuard.Graphics.TextEffects.Effects;
 
 /// <summary>
 /// Text effect that shakes each letter

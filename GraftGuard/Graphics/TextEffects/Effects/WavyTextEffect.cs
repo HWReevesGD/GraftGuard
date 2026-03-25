@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
 
-namespace GraftGuard.Graphics.TextEffects;
+namespace GraftGuard.Graphics.TextEffects.Effects;
 
 /// <summary>
 /// Text effect that makes each letter go on a wave
@@ -33,7 +33,7 @@ internal class WavyTextEffect : ITextEffect
     /// <returns>Modified Letter struct</returns>
     public Letter DoEffect(int index, GameTime gameTime, Letter letter)
     {
-        float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * frequency + (float)(index) / 2) * amplitude;
+        float yOffset = (float)Math.Sin(gameTime.TotalGameTime.TotalSeconds * frequency + (float)index / 2) * amplitude;
         letter.Y += yOffset;
         return letter;
     }

@@ -2,7 +2,7 @@
 using GraftGuard.Grafting;
 using GraftGuard.Graphics;
 using GraftGuard.Map;
-using GraftGuard.UI;
+using GraftGuard.UI.Screens;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;

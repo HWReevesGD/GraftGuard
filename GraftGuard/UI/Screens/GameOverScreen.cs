@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace GraftGuard.UI;
+namespace GraftGuard.UI.Screens;
 
 internal class GameOverScreen
 {
@@ -79,7 +79,7 @@ internal class GameOverScreen
         // title
 
         float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startShowingTime;
-        float shakeMagnitude = titleShakeMagnitude * Math.Max(1 - (elapsed / titleShakeDecayTime), 0);
+        float shakeMagnitude = titleShakeMagnitude * Math.Max(1 - elapsed / titleShakeDecayTime, 0);
 
         new TextEffects(new Text(Fonts.Arial, titleText).SetXOrigin(XOrigin.Center))
             .AddEffect(new ShakeTextEffect(shakeMagnitude))

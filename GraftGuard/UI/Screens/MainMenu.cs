@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
-namespace GraftGuard.UI;
+namespace GraftGuard.UI.Screens;
 
 internal class MainMenu {
     private readonly World backgroundWorld;
@@ -51,14 +51,14 @@ internal class MainMenu {
     public MainMenu(Game1 game, InputManager inputManager)
     {
         this.game = game;
-        this.backgroundWorld = new World();
-        this.idleInputManager = new InputManager();
+        backgroundWorld = new World();
+        idleInputManager = new InputManager();
         this.inputManager = inputManager;
-        this.timeState = TimeState.Night; // always night
-        this.selectedItemIndex = 0;
-        this.itemXOffests = new float[menuItemOrder.Length];
-        this.itemWaveAmplitudes = new float[menuItemOrder.Length];
-        this.arrowYPosition = Interface.Height;
+        timeState = TimeState.Night; // always night
+        selectedItemIndex = 0;
+        itemXOffests = new float[menuItemOrder.Length];
+        itemWaveAmplitudes = new float[menuItemOrder.Length];
+        arrowYPosition = Interface.Height;
         CreateTowers();
     }
 

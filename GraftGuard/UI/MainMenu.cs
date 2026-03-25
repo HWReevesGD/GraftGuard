@@ -1,11 +1,13 @@
 ﻿// render main menu
 
 using GraftGuard.Data;
+using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace GraftGuard.UI;
@@ -16,27 +18,47 @@ internal class MainMenu {
     private readonly InputManager inputManager;
     private readonly TimeState timeState;
 
-    private readonly static int titleTextTopPosition = 150;
-    private readonly static int startTextBottomPosition = 150;
     private readonly static float cameraPanSpeed = 0.5f;
-    private readonly static float textWaveSpeed = 3f;
-    private readonly static float kerning = 5;
+
+    private readonly static float titleLeftPadding = 20;
+    private readonly static float itemLeftPadding = 40;
+    private readonly static float itemBottomPadding = 20;
+    private readonly static float itemGap = 10;
+    private readonly static float itemShakeIntensity = 1;
+    private readonly static float lerpSpeed = 15;
 
     private static Texture2D backgroundTexture;
     private readonly static string titleText = "GRAFTGUARD";
-    private readonly static string startText = "< Press Enter to Begin >";
+
+    private static readonly string[] menuItemOrder = [
+        "Start Game",
+        "Continue Game",
+        "Options",
+        "View Componedium"
+        ];
 
     public static void LoadContent(ContentManager content)
     {
         backgroundTexture = content.Load<Texture2D>("pixel");
     }
 
-    public MainMenu(InputManager inputManager)
+    private Game1 game;
+    private int selectedItemIndex;
+    private float[] itemXOffests;
+    private float[] itemWaveAmplitudes;
+    private float arrowYPosition;
+
+    public MainMenu(Game1 game, InputManager inputManager)
     {
+        this.game = game;
         this.backgroundWorld = new World();
         this.idleInputManager = new InputManager();
         this.inputManager = inputManager;
         this.timeState = TimeState.Night; // always night
+        this.selectedItemIndex = 0;
+        this.itemXOffests = new float[menuItemOrder.Length];
+        this.itemWaveAmplitudes = new float[menuItemOrder.Length];
+        this.arrowYPosition = Interface.Height;
         CreateTowers();
     }
 
@@ -46,10 +68,23 @@ internal class MainMenu {
     }
 
     /// <summary>
-    /// Update background world simulation and pan the camera
+    /// Update bmain menu
     /// </summary>
     /// <param name="gameTime">gameTime from Game1 Update()</param>
     public void Update(GameTime gameTime)
+    {
+        if (inputManager.WasKeyPressStarted(Keys.Escape))
+            game.Exit();
+
+        UpdateBackgroundWorld(gameTime);
+        UpdateMenu(gameTime);
+    }
+
+    /// <summary>
+    /// Update background world simulation and pan the camera
+    /// </summary>
+    /// <param name="gameTime">gameTime from Game1 Update()</param>
+    public void UpdateBackgroundWorld(GameTime gameTime)
     {
         backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
 
@@ -58,6 +93,36 @@ internal class MainMenu {
         Vector2 position = new Vector2((float)x, (float)y);
 
         backgroundWorld.Camera.Position = position - Interface.ScreenCenter;
+    }
+
+    /// <summary>
+    /// Update main menu by input requests
+    /// </summary>
+    /// <param name="gameTime">gameTime from Game1 Update()</param>
+    public void UpdateMenu(GameTime gameTime)
+    {
+        if (inputManager.WasKeyPressStarted(Keys.Up)) // advance back
+            selectedItemIndex = (selectedItemIndex + menuItemOrder.Length - 1) % menuItemOrder.Length;
+        if (inputManager.WasKeyPressStarted(Keys.Down)) // advance forward
+            selectedItemIndex = (selectedItemIndex + 1) % menuItemOrder.Length;
+
+        if (inputManager.WasKeyPressStarted(Keys.Enter))
+        {
+            switch (selectedItemIndex)
+            {
+                case 0: // start new game
+                    PlayerData.StartNewGame(GameManager.DawnTimeLength);
+                    break;
+                case 1: // continue game
+                    break;
+                case 2: // options
+                    break;
+                case 3: // compendium
+                    break;
+            }
+        }
+
+        inputManager.Update();
     }
 
     /// <summary>
@@ -79,41 +144,66 @@ internal class MainMenu {
         backgroundWorld.DrawCamera(batch, gameTime, timeState, inputManager, false);
         batch.End();
 
-        // draw menu items
+        // gui stuff
 
         batch.Begin();
 
-        // wavy text
+        // draw transulcent black cover
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
 
-        Vector2 textSize = Fonts.Arial.MeasureString(titleText) + new Vector2(titleText.Length * kerning, 0);
-        Vector2 leftPosition = new Vector2(Interface.Width / 2 - textSize.X / 2, titleTextTopPosition);
+        // draw menu items
 
-        float currentLeftPosition = 0;
+        float alpha = Math.Min(gameTime.Delta() * lerpSpeed, 1);
+        float yPosition = Interface.Height - itemBottomPadding;
 
-        for (int i = 0; i < titleText.Length; i++)
+        // draw each menu item
+
+        for (int i = menuItemOrder.Length - 1; i >= 0; i--)
         {
-            string character = titleText.Substring(i, 1);
-            float yOffset = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * textWaveSpeed + (float)i / 2) * 6;
+            // update effects for this item
 
-            Vector2 charSize = Fonts.Arial.MeasureString(character);
-            Vector2 position = leftPosition + new Vector2(currentLeftPosition, yOffset);
-            batch.DrawString(Fonts.Arial, character, position, Color.White);
+            float targetXOffset;
+            float targetWaveAmplitude;
 
-            currentLeftPosition += charSize.X + kerning;
+            if (i == selectedItemIndex)
+            {
+                targetXOffset = 15;
+                targetWaveAmplitude = itemShakeIntensity;
+                arrowYPosition = arrowYPosition + (yPosition - arrowYPosition) * alpha;
+            }
+            else
+            {
+                targetXOffset = 0;
+                targetWaveAmplitude = 0;
+            }
+
+            itemXOffests[i] = itemXOffests[i] + (targetXOffset - itemXOffests[i]) * alpha;
+            itemWaveAmplitudes[i] = itemWaveAmplitudes[i] + (targetWaveAmplitude - itemWaveAmplitudes[i]) * alpha;
+
+            // render item on the bottom left yea
+
+            Text text = new Text(Fonts.Arial, menuItemOrder[i]).SetYOrigin(YOrigin.Bottom).SetKerning(2);
+            new TextEffects(text)
+                .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]))
+                .Draw(batch, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
+
+            // increment up
+            yPosition += -text.Height - itemGap;
         }
 
-        // start text
+        new Text(Fonts.Arial, ">")
+            .SetYOrigin(YOrigin.Bottom)
+            .Draw(batch, new Vector2(itemLeftPadding, arrowYPosition));
 
-        Vector2 startTextSize = Fonts.Arial.MeasureString(startText);
-        Vector2 startTextPosition = new Vector2(
-            Interface.Width / 2 - startTextSize.X / 2,
-            Interface.Height - startTextSize.Y - startTextBottomPosition
-        );
+        new Text(Fonts.Arial, titleText)
+            .SetYOrigin(YOrigin.Bottom)
+            .SetScale(3)
+            .SetKerning(3)
+            .Draw(batch, new Vector2(titleLeftPadding, yPosition));
 
-        batch.DrawString(Fonts.Arial, startText, startTextPosition, Color.White);
+        
     }
 }

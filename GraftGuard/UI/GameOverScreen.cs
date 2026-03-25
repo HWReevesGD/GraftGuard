@@ -4,16 +4,17 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 
 namespace GraftGuard.UI;
 
 internal class GameOverScreen
 {
-    private World _world;
-    private GameData _session;
-    private InputManager _inputManager;
-    private float _startShowingTime;
+    private World world;
+    private GameData session;
+    private InputManager inputManager;
+    private float startShowingTime;
 
     private static Texture2D backgroundTexture;
 
@@ -37,27 +38,30 @@ internal class GameOverScreen
 
     public GameOverScreen(World world)
     {
-        _world = world;
-        _inputManager = new InputManager(); // idle InputManager
+        this.world = world;
+        inputManager = new InputManager(); // idle InputManager
     }
 
     public void SetSession(GameTime gameTime, GameData session)
     {
-        _session = session;
-        _startShowingTime = (float)gameTime.TotalGameTime.TotalSeconds;
+        this.session = session;
+        startShowingTime = (float)gameTime.TotalGameTime.TotalSeconds;
     }
 
     public void Update(GameTime gameTime)
     {
+        if (inputManager.WasKeyPressStarted(Keys.Escape) || inputManager.WasKeyPressStarted(Keys.Enter))
+            PlayerData.CurrentState = GameState.MainMenu;
 
+        inputManager.Update();
     }
 
     public void Draw(SpriteBatch batch, GameTime gameTime)
     {
         batch.End();
         // Draw by the Camera's Position
-        batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
-        _world.DrawCamera(batch, gameTime, _session.Time, _inputManager, true);
+        batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
+        world.DrawCamera(batch, gameTime, session.Time, inputManager, true);
         batch.End();
 
         // draw menu items
@@ -91,7 +95,7 @@ internal class GameOverScreen
 
         // score text
 
-        float scoreAlpha = ((float)gameTime.TotalGameTime.TotalSeconds - _startShowingTime) / scoreCountTime;
+        float scoreAlpha = ((float)gameTime.TotalGameTime.TotalSeconds - startShowingTime) / scoreCountTime;
         int displayScore = (int)(score * (float)Math.Min(scoreAlpha, 1));
 
         if (prevDisplayScore != displayScore)
@@ -120,7 +124,7 @@ internal class GameOverScreen
 
         // hi score text
 
-        float hiScoreAlpha = ((float)gameTime.TotalGameTime.TotalSeconds - _startShowingTime - scoreCountTime) / hiScoreCountTime;
+        float hiScoreAlpha = ((float)gameTime.TotalGameTime.TotalSeconds - startShowingTime - scoreCountTime) / hiScoreCountTime;
         int displayHiScore = (int)(hiScore * (float)Math.Clamp(hiScoreAlpha, 0, 1));
 
         if (prevDisplayHiScore != displayHiScore)

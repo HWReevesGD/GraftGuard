@@ -23,8 +23,8 @@ namespace GraftGuard
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly InputManager inputManager;
 
-        private const float DawnTimeLength = 10f;
-        private const float NightTimeLength = 5f;
+        public static readonly float DawnTimeLength = 10f;
+        public static readonly float NightTimeLength = 5f;
 
         public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, TowerGraftingGUI gui, InputManager input)
         {
@@ -61,9 +61,6 @@ namespace GraftGuard
 
         private void UpdateMainMenu(GameTime gameTime)
         {
-            if (inputManager.WasKeyPressStarted(Keys.Enter))
-                PlayerData.StartNewGame(DawnTimeLength);
-
             _mainMenu.Update(gameTime);
         }
 
@@ -71,7 +68,7 @@ namespace GraftGuard
         {
             var session = PlayerData.CurrentGame;
 
-            //Pausing
+            // Pausing
             if (inputManager.WasKeyPressStarted(Keys.Escape))
             {
                 PlayerData.CurrentState = GameState.Paused;
@@ -118,18 +115,11 @@ namespace GraftGuard
 
         private void UpdatePaused()
         {
-            if (inputManager.WasKeyPressStarted(Keys.Enter))
-                PlayerData.CurrentState = GameState.Game;
+            _pauseMenu.Update();
         }
 
         private void UpdateGameOver(GameTime gameTime)
         {
-            if (inputManager.WasKeyPressStarted(Keys.Escape) || inputManager.WasKeyPressStarted(Keys.Enter))
-            {
-                PlayerData.CurrentState = GameState.MainMenu;
-                return;
-            }
-
             _gameOverScreen.Update(gameTime);
         }
 

@@ -56,6 +56,11 @@ internal class PatchButton : Button
     {
         return new PatchButton(position, size, Placeholders.TextureButton, 6, 6, 11, 15, Placeholders.TextureButtonPressed, Placeholders.TextureButtonHover, text, textColor, font, icon, iconType, fitIconToPatchMargins);
     }
+    public static PatchButton MakeBaseCentered(Vector2 position, Vector2 size, string text = "", Color? textColor = null, SpriteFont font = null, Texture2D? icon = null,
+        ButtonIconType iconType = ButtonIconType.Fixed, bool fitIconToPatchMargins = true)
+    {
+        return MakeBase(position - size * 0.5f, size, text, textColor, font, icon, iconType, fitIconToPatchMargins);
+    }
 
     /// <summary>
     /// Updates the current State of the button
@@ -78,7 +83,7 @@ internal class PatchButton : Button
             Patch.Texture = MainTexture;
         }
 
-        if (ClickedThisFrame)
+        if (JustClicked)
         {
             Clicked?.Invoke();
         }

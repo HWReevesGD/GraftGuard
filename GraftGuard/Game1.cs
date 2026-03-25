@@ -96,8 +96,8 @@ public class Game1 : Game
         World.LoadContent(Content);
 
         // Registering Towers
-        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview);
-        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview);
+        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
+        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview, Tower.TexturePlaceholderGround);
 
 
         // Add Testing World
@@ -246,7 +246,7 @@ public class Game1 : Game
                 // Draw Tower Grafting GUI
                 if (timeState == TimeState.Day)
                 {
-                    towerGrafting.Draw(_spriteBatch, gameTime);
+                    towerGrafting.Draw(_spriteBatch, gameTime, _world, inputManager);
                 }
 
                 // Mouse Debug

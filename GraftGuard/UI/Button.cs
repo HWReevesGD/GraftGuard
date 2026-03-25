@@ -26,7 +26,7 @@ internal class Button : IMouseDetectable
 
     public bool IsMouseHovered => Box.Contains(_thisMouseState.Position);
     public bool IsPressed => IsMouseHovered && _thisMouseState.LeftButton == ButtonState.Pressed;
-    public bool ClickedThisFrame => _lastMouseState.LeftButton == ButtonState.Released && _thisMouseState.LeftButton == ButtonState.Pressed && IsMouseHovered;
+    public bool JustClicked => _lastMouseState.LeftButton == ButtonState.Released && _thisMouseState.LeftButton == ButtonState.Pressed && IsMouseHovered;
 
     
 

@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Towers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,8 @@ namespace GraftGuard.Grafting;
 internal class Inventory
 {
     // Inventory Dictionary
-    private Dictionary<string, int> _inventory = [];
+    private Dictionary<string, int> _parts = [];
+    public List<TowerDesign> Designs = [];
 
     /// <summary>
     /// Returns the count for the given <paramref name="part"/>
@@ -25,7 +27,7 @@ internal class Inventory
     public int GetPartCount(string partName)
     {
         partName = partName.ToLower();
-        return _inventory.GetValueOrDefault(partName, 0);
+        return _parts.GetValueOrDefault(partName, 0);
     }
     /// <summary>
     /// Sets the count for the give <paramref name="part"/>
@@ -45,7 +47,7 @@ internal class Inventory
         {
             throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
         }
-        _inventory[partName] = value;
+        _parts[partName] = value;
     }
     /// <summary>
     /// Modifiers the count of the given <paramref name="part"/>
@@ -66,6 +68,6 @@ internal class Inventory
         {
             throw new ArgumentOutOfRangeException("Cannot modify a part count to a negative number");
         }
-        _inventory[partName] = GetPartCount(partName) + change;
+        _parts[partName] = GetPartCount(partName) + change;
     }
 }

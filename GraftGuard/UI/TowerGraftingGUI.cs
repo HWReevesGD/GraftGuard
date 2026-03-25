@@ -10,6 +10,8 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
+using System.Reflection.Metadata.Ecma335;
 
 namespace GraftGuard.Grafting;
 
@@ -24,9 +26,16 @@ internal class TowerGraftingGUI
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
     private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 128);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
+    private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
+    private readonly Vector2 _towerPartAttachmentSize = new Vector2(64, 64);
+    private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
 
     // All UI Elements
     private List<IMouseDetectable> _allUI = [];
+
+    // Tower Display and Buttons
+    private PatchLabel _towerDisplay;
+    private List<PatchButton> _towerPartAttachments = [];
 
     // Indices in these arrays point to matching data in each
     private List<Button> _towerChoiceButtons = [];
@@ -44,8 +53,8 @@ internal class TowerGraftingGUI
     private PartDefinition _currentlyChosenPart = null;
 
     // Night Button
-    private PatchButton nightButton;
-    public event NightButtonPressed OnNightButtonPressed;
+    private PatchButton _nightButton;
+    public event Clicked OnNightButtonPressed;
 
     /// <summary>
     /// Creates a new <see cref="TowerGraftingGUI"/>
@@ -80,18 +89,44 @@ internal class TowerGraftingGUI
                     ));
         }
 
-        // Populate All UI
-        _allUI.AddRange(_towerChoiceButtons);
-        _allUI.AddRange(_partChoiceButtons);
-        _allUI.Add(_currentChosenLabel);
-
         // Create Night Button
-        nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y), _towerButtonSize, "Begin");
-        if (nightButton.ClickedThisFrame)
+        _nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y), _towerButtonSize, "Begin");
+        if (_nightButton.JustClicked)
         {
             Console.WriteLine("Click");
             OnNightButtonPressed();
         }
+
+        // The default tower is the first in the TowerRegistry
+        _currentlyGraftingTower = TowerRegistry.Towers[0];
+
+        // Tower Display
+        _towerDisplay = PatchLabel.MakeBaseCentered(
+            text: "",
+            position: Interface.ScreenCenter - _towerDisplayOffset,
+            size: _towerDisplaySize
+            );
+
+        // Tower Display Part Attachment Buttons
+        for (int index = 0; index < Tower.MaxParts; index++)
+        {
+            _towerPartAttachments.Add(
+            PatchButton.MakeBase(
+                position: Interface.ScreenCenter + Vector2.UnitY * _towerDisplaySize * 0.5f
+                    - Vector2.UnitX * (_towerPartAttachmentSize * Tower.MaxParts * 0.5f)
+                    + Vector2.UnitX * _towerPartAttachmentSize * index
+                    - _towerDisplayOffset,
+                size: _towerPartAttachmentSize
+                )
+            );
+        }
+
+        // Populate All UI
+        _allUI.AddRange(_towerChoiceButtons);
+        _allUI.AddRange(_partChoiceButtons);
+        _allUI.Add(_currentChosenLabel);
+        _allUI.Add(_nightButton);
+        _allUI.AddRange(_towerPartAttachments);
     }
 
     /// <summary>
@@ -107,54 +142,38 @@ internal class TowerGraftingGUI
 
         if (!isOverUI)
         {
-            // Handle Tower Placement
-            if (inputManager.LeftMouseClicked() && _currentlyGraftingTower is TowerDefinition tower)
-            {
-                towerManager.MakeTower(tower, inputManager.MouseWorldPosition.ToVector());
-            }
-            // Handle Part Attaching
-            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is PartDefinition part && towerManager.GetFirstTowerAtMousePosition(inputManager) is Tower overTower)
-            {
-                // Don't allow part attachment if the player does not have enough parts
-                if (world.Inventory.GetPartCount(part) != 0)
-                {
-                    overTower.AttachPart(part);
-                    world.Inventory.ModifyPartCount(part, -1);
-                    world.UpdatePaths();
-                }
-            }
+            // TODO: Handle Part Attaching
         }
 
-        // Update Towers
+        // Update Towers Selection
         for (int index = 0; index < _towerChoiceButtons.Count; index++)
         {
             Button button = _towerChoiceButtons[index];
             button.Update();
-            if (button.ClickedThisFrame)
+            if (button.JustClicked)
             {
-                Deselect();
+                // Select the tower
                 _currentlyGraftingTower = _towerChoices[index];
-                _currentChosenLabel.Text = "Current:\n" + (_currentlyGraftingTower is not null ? _currentlyGraftingTower.Name : "Nothing");
             }
         }
-        // Update Parts
+        // Update Parts Selection
         for (int index = 0; index < _partChoiceButtons.Count; index++)
         {
             Button button = _partChoiceButtons[index];
             button.Text = $"{world.Inventory.GetPartCount(_partChoices[index])}";
 
             button.Update();
-            if (button.ClickedThisFrame)
+            if (button.JustClicked)
             {
-                Deselect();
-
+                // Select the part
                 _currentlyChosenPart = _partChoices[index];
                 _currentChosenLabel.Text = "Current:\n" + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
             }
         }
 
-        nightButton.Update();
-        if (nightButton.ClickedThisFrame)
+        // Update Night Button
+        _nightButton.Update();
+        if (_nightButton.JustClicked)
         {
             
             Console.WriteLine("Begin button pressed");
@@ -166,7 +185,7 @@ internal class TowerGraftingGUI
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Game Time</param>
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
     {
         // Draw the Label showing the Currently Grafting Tower
         _currentChosenLabel.Draw(batch);
@@ -191,15 +210,15 @@ internal class TowerGraftingGUI
             batch.DrawCentered(_currentlyChosenPart.Texture, Mouse.GetState().Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
         }
 
-        nightButton.Draw(batch);
-    }
-
-    /// <summary>
-    /// Deselects all selected parts and towers
-    /// </summary>
-    public void Deselect()
-    {
-        _currentlyGraftingTower = null;
-        _currentlyChosenPart = null;
+        // Draw Night Button
+        _nightButton.Draw(batch);
+        // Draw Tower Display Border
+        _towerDisplay.Draw(batch);
+        
+        // Draw Part Attachment Buttons
+        foreach (PatchButton button in _towerPartAttachments)
+        {
+            button.Draw(batch);
+        }
     }
 }

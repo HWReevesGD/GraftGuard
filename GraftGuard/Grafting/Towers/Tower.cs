@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace GraftGuard.Grafting.Towers;
 
@@ -20,19 +21,12 @@ internal abstract class Tower : GameObject, IMouseDetectable
 {
     public static Texture2D TexturePlaceholderTower { get; private set; }
     public static Texture2D TexturePlaceholderGround { get; private set; }
+    public const int MaxParts = 4;
 
     public static void LoadContent(ContentManager content)
     {
         TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder");
         TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
-    }
-
-    public enum Slot
-    {
-        First,
-        Second,
-        Third,
-        Fourth,
     }
 
     protected TowerPart[] _attachedParts;
@@ -63,7 +57,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="texture">Tower's Texture</param>
     public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null) : base(position, size, texture)
     {
-        _attachedParts = new TowerPart[4];
+        _attachedParts = new TowerPart[MaxParts];
 
         random = new Random();
         MouseBox = mouseBox;
@@ -96,7 +90,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="index">Index of the part</param>
     /// <param name="shiftIfNull">Attempts to shift to another part if the part at the index is null</param>
     /// <returns></returns>
-    public TowerPart GetPartFromIndex(int index, bool shiftIfNull)
+    public TowerPart GetPart(int index, bool shiftIfNull)
     {
         TowerPart part = _attachedParts[index];
         if (shiftIfNull && part is null)
@@ -111,30 +105,6 @@ internal abstract class Tower : GameObject, IMouseDetectable
             }
         }
         return part;
-    }
-
-    /// <summary>
-    /// Sets the part at the given <see cref="Slot"/> to the given <paramref name="part"/>
-    /// </summary>
-    /// <param name="part">Part to set</param>
-    /// <param name="slot"><see cref="Slot"/> to use</param>
-    public virtual void SetPart(PartDefinition part, Slot slot)
-    {
-        switch (slot)
-        {
-            case Slot.First:
-                _attachedParts[0] = new TowerPart(part);
-                break;
-            case Slot.Second:
-                _attachedParts[1] = new TowerPart(part);
-                break;
-            case Slot.Third:
-                _attachedParts[2] = new TowerPart(part);
-                break;
-            case Slot.Fourth:
-                _attachedParts[3] = new TowerPart(part);
-                break;
-        }
     }
 
     /// <summary>

@@ -26,6 +26,10 @@ internal class PatchLabel : IMouseDetectable
     {
         return new PatchLabel(text, position, size, Placeholders.TexturePatchLabel, 5, 5, 5, 5);
     }
+    public static PatchLabel MakeBaseCentered(string text, Vector2 position, Vector2 size)
+    {
+        return MakeBase(text, position - size * 0.5f, size);
+    }
     public void Draw(SpriteBatch batch, Color? color = null)
     {
         Patch.Draw(batch, Position, Size, color ?? Color.White);

@@ -44,7 +44,7 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                TowerPart part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
+                TowerPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
 
                 if (part is null) continue;
 
@@ -70,7 +70,7 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                TowerPart part = GetPartFromIndex((x + y) % _attachedParts.Length, shiftIfNull: false);
+                TowerPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
                 if (part is null) continue;
 
                 Vector2 partPosition = GetPartPosition(time, part, x, y);

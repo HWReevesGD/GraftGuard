@@ -92,10 +92,6 @@ internal class World
                 break;
             case TimeState.Day:
                 Player.Position = Garage.Center;
-                if (allowPlayerControls)
-                {
-                    Camera.UpdateFreeMovement(gameTime, inputManager);
-                }
                 break;
         }
 

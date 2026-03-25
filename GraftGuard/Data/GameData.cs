@@ -20,11 +20,21 @@ namespace GraftGuard.Data
         Dawn,
         Day
     }
+
+    public enum Difficulty
+    {
+        Easy = 1,
+        Medium = 2,
+        Hard = 3,
+    }
+
     public class GameData
     {
         public TimeState Time { get; set; }
         public float Timer { get; set; }
         public int CurrentScore { get; set; }
+
+        public Difficulty CurrentDifficulty { get; set; }
 
     }
 }

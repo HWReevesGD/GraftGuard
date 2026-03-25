@@ -1,5 +1,6 @@
 ﻿// pause menu
 
+using GraftGuard.Data;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;

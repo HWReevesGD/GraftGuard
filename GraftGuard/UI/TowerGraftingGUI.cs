@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.UI;
@@ -156,8 +157,7 @@ internal class TowerGraftingGUI
         nightButton.Update();
         if (nightButton.ClickedThisFrame)
         {
-            
-            Console.WriteLine("Begin button pressed");
+            OnNightButtonPressed?.Invoke();
         }
     }
 

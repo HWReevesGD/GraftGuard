@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;

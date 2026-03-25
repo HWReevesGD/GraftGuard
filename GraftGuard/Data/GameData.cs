@@ -27,6 +27,7 @@ namespace GraftGuard.Data
         Medium = 2,
         Hard = 3,
     }
+
     public class GameData
     {
         public TimeState Time { get; set; }

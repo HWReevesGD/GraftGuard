@@ -194,10 +194,12 @@ internal class MainMenu {
             yPosition += -text.Height - itemGap;
         }
 
+        // little arrow thing
         new Text(Fonts.Arial, ">")
             .SetYOrigin(YOrigin.Bottom)
             .Draw(batch, new Vector2(itemLeftPadding, arrowYPosition));
 
+        // title text
         new Text(Fonts.Arial, titleText)
             .SetYOrigin(YOrigin.Bottom)
             .SetScale(3)

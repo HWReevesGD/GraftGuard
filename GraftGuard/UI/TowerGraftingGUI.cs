@@ -34,6 +34,7 @@ internal class TowerGraftingGUI
     private readonly Vector2 _saveButtonSize = new Vector2(128, 64);
     private readonly Vector2 _removePartSize = new Vector2(112, 64);
     private readonly Vector2 _arrowButtonSize = new Vector2(32, 64);
+    private readonly Vector2 _maxTowersLabelSize = new Vector2(112, 48);
     private const float _previewScale = 2.0f;
     private const float _arrowScrollSpeed = 256.0f;
 
@@ -79,6 +80,10 @@ internal class TowerGraftingGUI
     // Night Button
     private PatchButton _nightButton;
     public event Clicked OnNightButtonPressed;
+
+    // Created Tower Limit and Label
+    private PatchLabel _maxTowersLabel;
+    public int MaxAllowedTowers { get; set; } = 6;
 
     /// <summary>
     /// Creates a new <see cref="TowerGraftingGUI"/>
@@ -156,12 +161,22 @@ internal class TowerGraftingGUI
             text: @"\/"
             );
 
+        // Create Max Towers Label
+        _maxTowersLabel = PatchLabel.MakeBase(
+            text: $"Towers: 0 / {MaxAllowedTowers}",
+            new Vector2(_createdTowerSize.X, 0),
+            _maxTowersLabelSize
+            );
+
         // Populate All UI
         _allUI.AddRange(_towerChoiceButtons);
         _allUI.AddRange(_partChoiceButtons);
         _allUI.Add(_currentChosenLabel);
         _allUI.Add(_nightButton);
         _allUI.Add(_saveButton);
+        _allUI.Add(_upButton);
+        _allUI.Add(_downButton);
+        _allUI.Add(_maxTowersLabel);
     }
 
     /// <summary>
@@ -207,6 +222,7 @@ internal class TowerGraftingGUI
                 _editingTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
             }
         }
+
         // Update Parts Selection
         for (int index = 0; index < _partChoiceButtons.Count; index++)
         {
@@ -222,20 +238,40 @@ internal class TowerGraftingGUI
             }
         }
 
+        // Update Max Towers Label
+        _maxTowersLabel.Text = $"Towers: {_createdTowers.Count} / {MaxAllowedTowers}";
+        // Move Max Towers Text Color towards white
+        _maxTowersLabel.TextColor = _maxTowersLabel.TextColor with
+        {
+          R = (byte)MathHelper.Clamp(_maxTowersLabel.TextColor.R + (int)(time.Delta() * 256), 0, 255),
+          G = (byte)MathHelper.Clamp(_maxTowersLabel.TextColor.G + (int)(time.Delta() * 256), 0, 255),
+          B = (byte)MathHelper.Clamp(_maxTowersLabel.TextColor.B + (int)(time.Delta() * 256), 0, 255)
+        };
+
         // Update Save Button
         _saveButton.Update();
 
         // Handle Saving
         if (_saveButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
         {
-            _createdTowers.Add(
+            // Allow saving if there is space
+            if (_createdTowers.Count < MaxAllowedTowers)
+            {
+                _createdTowers.Add(
                 new CreatedTowerButton(_editingTower,
                 _currentlyGraftingTower,
                 Vector2.Zero,
                 _createdTowerSize
                 ));
-            _currentlyGraftingTower = null;
-            _editingTower = null;
+                _currentlyGraftingTower = null;
+                _editingTower = null;
+            }
+            // Otherwise, if there is not space...
+            else
+            {
+                // Set the non red channels of the Max Towers Label's Color to zero
+                _maxTowersLabel.TextColor = _maxTowersLabel.TextColor with { G = 0, B = 0 };
+            }
         }
 
         // Update Remove Part Button
@@ -310,6 +346,13 @@ internal class TowerGraftingGUI
         _nightButton.Update();
         if (_nightButton.JustClicked)
         {
+            // Save Designs
+            world.Inventory.Designs.AddRange(
+                _createdTowers.Select(
+                    (tower) => new TowerDesign(tower.Definition, tower.Tower.Parts.ToList())
+                    )
+                );
+            // Start Night
             OnNightButtonPressed?.Invoke();
         }
 
@@ -342,11 +385,6 @@ internal class TowerGraftingGUI
         {
             button.Draw(batch);
         }
-        // Draw the preview of the chosen part
-        if (_currentlyChosenPart is not null)
-        {
-            batch.DrawCentered(_currentlyChosenPart.Texture, Mouse.GetState().Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
-        }
 
         // Draw Night Button
         _nightButton.Draw(batch);
@@ -372,6 +410,9 @@ internal class TowerGraftingGUI
             _downButton.Draw(batch);
         }
 
+        // Draw Tower Count Label
+        _maxTowersLabel.Draw(batch);
+
         // Custom Tower Drawing
         batch.End();
 
@@ -392,6 +433,12 @@ internal class TowerGraftingGUI
         batch.End();
         // This should match the GUI static call in Game1
         batch.Begin(samplerState: SamplerState.PointWrap);
+
+        // Draw the preview of the chosen part
+        if (_currentlyChosenPart is not null)
+        {
+            batch.DrawCentered(_currentlyChosenPart.Texture, Mouse.GetState().Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+        }
     }
 
     /// <summary>

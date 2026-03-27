@@ -27,7 +27,7 @@ internal class TowerPart
     }
 
     public void BehaviorOnDealDamage(
-        float damageModifier, Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
+        float damageModifier, Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
         GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
@@ -36,7 +36,7 @@ internal class TowerPart
         }
     }
 
-    public void UpdateBehavior(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
+    public void UpdateBehavior(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
         GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
@@ -45,7 +45,7 @@ internal class TowerPart
         }
     }
 
-    public void DrawBehavior(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void DrawBehavior(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {

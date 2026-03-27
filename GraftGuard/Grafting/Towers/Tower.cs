@@ -51,7 +51,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     private float _basePathCost;
     public float PathCost => HasParts ? _basePathCost : 0;
     public Rectangle[] PathAreas { get; init; }
-    public TowerSettings Settings { get; init; }
+    public PartSettings Settings { get; init; }
 
     /// <summary>
     /// Constructs a Tower with Empty Parts
@@ -59,7 +59,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="position">Tower's Initial Position</param>
     /// <param name="size">Tower's Drawing Size</param>
     /// <param name="texture">Tower's Texture</param>
-    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, TowerSettings settings = null) : base(position, size, texture)
+    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, PartSettings settings = null) : base(position, size, texture)
     {
         _attachedParts = new TowerPart[MaxParts];
 
@@ -73,7 +73,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         }
 
         PathAreas = pathAreas ?? [];
-        Settings = settings ?? new TowerSettings();
+        Settings = settings ?? new PartSettings();
     }
 
     /// <summary>

@@ -15,7 +15,7 @@ namespace GraftGuard.Grafting.Registry.Behaviors;
 internal delegate IPartBehavior CreatePartBehavior();
 internal interface IPartBehavior
 {
-    public void Update(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
-    public void Draw(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
-    public void OnDealDamage(Tower tower, TowerSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
+    public void Update(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
+    public void Draw(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
+    public void OnDealDamage(Tower tower, PartSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
 }

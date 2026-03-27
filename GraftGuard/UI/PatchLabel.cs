@@ -9,6 +9,7 @@ internal class PatchLabel : IMouseDetectable
     public string Text { get; set; }
     public Vector2 Position { get; set; }
     public Vector2 Size { get; set; }
+    public Rectangle Box => new Rectangle(Position.ToPoint(), Size.ToPoint());
     public NinePatch Patch { get; set; }
     public SpriteFont Font { get; set; }
     public Color TextColor { get; set; }

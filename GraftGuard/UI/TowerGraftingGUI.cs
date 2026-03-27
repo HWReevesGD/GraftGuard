@@ -24,13 +24,14 @@ delegate void NightButtonPressed();
 /// </summary>
 internal class TowerGraftingGUI
 {
-    // Constants / Readonlys
+    // Constants / Readonly
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
     private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 128);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
     private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
-    private readonly Vector2 _towerPartAttachmentSize = new Vector2(64, 64);
     private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
+    private readonly Vector2 _createdTowerSize = new Vector2(72, 48);
+    private readonly Vector2 _saveButtonSize = new Vector2(128, 64);
     private const float _previewScale = 2.0f;
 
     // Internal Projectile Manager
@@ -39,9 +40,11 @@ internal class TowerGraftingGUI
     // All UI Elements
     private List<IMouseDetectable> _allUI = [];
 
-    // Tower Display and Buttons
+    // Tower Display
     private PatchLabel _towerDisplay;
-    private List<PatchButton> _towerPartAttachments = [];
+
+    // Save Button
+    private PatchButton _saveButton;
 
     // Indices in these arrays point to matching data in each
     private List<Button> _towerChoiceButtons = [];
@@ -58,6 +61,9 @@ internal class TowerGraftingGUI
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
     private Tower _previewTower = null;
+
+    // Tracking Created Towers
+    private List<CreatedTowerButton> _createdTowers = [];
 
     // Night Button
     private PatchButton _nightButton;
@@ -90,7 +96,7 @@ internal class TowerGraftingGUI
             _partChoices.Add(partDefinition);
             _partChoiceButtons.Add(
                 PatchButton.MakeBase(
-                    new Vector2(0, _partButtonSize.Y * index),
+                    new Vector2(Interface.ScreenCenter.X - (PartRegistry.Parts.Count * 0.5f * _partButtonSize.X) + _partButtonSize.X * index, Interface.ScreenSize.Y - _partButtonSize.Y),
                     _partButtonSize,
                     icon: partDefinition.Texture
                     ));
@@ -114,35 +120,21 @@ internal class TowerGraftingGUI
             size: _towerDisplaySize
             );
 
-        // Tower Display Part Attachment Buttons
-        for (int index = 0; index < Tower.MaxParts; index++)
-        {
-            _towerPartAttachments.Add(
-            PatchButton.MakeBase(
-                position: Interface.ScreenCenter + Vector2.UnitY * _towerDisplaySize * 0.5f
-                    - Vector2.UnitX * (_towerPartAttachmentSize * Tower.MaxParts * 0.5f)
-                    + Vector2.UnitX * _towerPartAttachmentSize * index
-                    - _towerDisplayOffset,
-                size: _towerPartAttachmentSize
-                )
-            );
-        }
-
-        // Create default tower
-        TowerDefinition defaultTower = TowerRegistry.Towers[0];
-        _currentlyGraftingTower = defaultTower;
-        _previewTower = defaultTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
-        _previewTower.AttachPart(PartRegistry.GetRandom());
-
         // Create Projectile Manager
         _projectiles = new ProjectileManager();
+
+        // Create Save Button
+        _saveButton = PatchButton.MakeBaseCentered(
+            Interface.ScreenCenter - _towerDisplayOffset + Vector2.UnitY * _towerDisplaySize * 0.5f + Vector2.UnitY * _saveButtonSize * 0.5f,
+            _saveButtonSize,
+            "Save");
 
         // Populate All UI
         _allUI.AddRange(_towerChoiceButtons);
         _allUI.AddRange(_partChoiceButtons);
         _allUI.Add(_currentChosenLabel);
         _allUI.Add(_nightButton);
-        _allUI.AddRange(_towerPartAttachments);
+        _allUI.Add(_saveButton);
     }
 
     /// <summary>
@@ -175,6 +167,7 @@ internal class TowerGraftingGUI
             {
                 // Select the tower
                 _currentlyGraftingTower = _towerChoices[index];
+                _previewTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
             }
         }
         // Update Parts Selection
@@ -192,6 +185,26 @@ internal class TowerGraftingGUI
             }
         }
 
+        // Update Created Towers
+        foreach (CreatedTowerButton created in _createdTowers)
+        {
+            created.Update(time, world, inputManager);
+        }
+
+        // Update Save Button
+        _saveButton.Update();
+
+        // Handle Saving
+        if (_saveButton.JustClicked && _previewTower is not null && _previewTower.HasParts)
+        {
+            _createdTowers.Add(
+                new CreatedTowerButton(_previewTower,
+                Vector2.Zero,
+                _createdTowerSize
+                ));
+            _previewTower = null;
+        }
+
         // Update Night Button
         _nightButton.Update();
         if (_nightButton.JustClicked)
@@ -200,7 +213,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Preview Tower
-        _previewTower.Update(time, world, inputManager, TimeState.Day, projectileDiversion: _projectiles);
+        _previewTower?.Update(time, world, inputManager, TimeState.Day, projectileDiversion: _projectiles);
 
         // Update Projectiles
         _projectiles.Update(time, world, inputManager);
@@ -235,19 +248,29 @@ internal class TowerGraftingGUI
         _nightButton.Draw(batch);
         // Draw Tower Display Border
         _towerDisplay.Draw(batch);
-        
-        //// Draw Part Attachment Buttons
-        //foreach (PatchButton button in _towerPartAttachments)
-        //{
-        //    button.Draw(batch);
-        //}
+
+        // Draw Created Towers
+        foreach (CreatedTowerButton created in _createdTowers)
+        {
+            created.Draw(batch, time, world, inputManager);
+        }
+
+        // Draw Save Button
+        _saveButton.Draw(batch);
 
         // Custom Tower Drawing
         batch.End();
-        batch.Begin(transformMatrix: Matrix.CreateScale(_previewScale), samplerState: SamplerState.PointWrap);
+
+        // Set Scissor Mask
+        batch.GraphicsDevice.ScissorRectangle = _towerDisplay.Box;
+
+        batch.Begin(
+            transformMatrix: Matrix.CreateScale(_previewScale),
+            samplerState: SamplerState.PointWrap,
+            rasterizerState: new RasterizerState { ScissorTestEnable = true });
 
         // Draw Tower
-        _previewTower.Draw(time, batch, world, inputManager, TimeState.Day);
+        _previewTower?.Draw(time, batch, world, inputManager, TimeState.Day);
 
         // Draw Projectiles
         _projectiles.Draw(batch, time, world, inputManager);

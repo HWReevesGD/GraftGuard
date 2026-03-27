@@ -39,6 +39,10 @@ internal static class ClassExtensions
     {
         return new Rectangle(rectangle.Location + offset, rectangle.Size);
     }
+    public static Rectangle LinearScaled(this Rectangle rectangle, Point scale)
+    {
+        return new Rectangle(rectangle.Location, rectangle.Size + scale);
+    }
     public static Vector2 GetSize(this Rectangle rectangle)
     {
         return new Vector2(rectangle.Width, rectangle.Height);
@@ -61,6 +65,6 @@ internal static class ClassExtensions
         return circle.Intersects(rectangle);
     }
     public static Point Divided(this Point point, int divider) => new Point(point.X / divider, point.Y / divider);
-
+    public static Point Negative(this Point point) => new Point(-point.X, -point.Y);
     public static float Delta(this GameTime time) => (float)time.ElapsedGameTime.TotalSeconds;
 }

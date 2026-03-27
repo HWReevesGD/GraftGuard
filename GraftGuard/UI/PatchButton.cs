@@ -14,6 +14,7 @@ internal class PatchButton : Button
     public Texture2D PressedTexture;
     public Texture2D HoverTexture;
     public NinePatch Patch { get; set; }
+    public Rectangle MarginBox => Box.Translated(Patch.MarginTopLeft).LinearScaled(Patch.MarginAll.Negative());
     public bool FitIconToPatchMargins { get; set; }
     public bool FitTextToPatchMargins { get; set; }
 

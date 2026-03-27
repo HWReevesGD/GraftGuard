@@ -30,9 +30,12 @@ internal class TowerGraftingGUI
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
     private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
     private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
-    private readonly Vector2 _createdTowerSize = new Vector2(72, 48);
+    private readonly Vector2 _createdTowerSize = new Vector2(72, 72);//new Vector2(72, 48);
     private readonly Vector2 _saveButtonSize = new Vector2(128, 64);
+    private readonly Vector2 _removePartSize = new Vector2(112, 64);
+    private readonly Vector2 _arrowButtonSize = new Vector2(32, 64);
     private const float _previewScale = 2.0f;
+    private const float _arrowScrollSpeed = 256.0f;
 
     // Internal Projectile Manager
     private ProjectileManager _projectiles;
@@ -45,6 +48,8 @@ internal class TowerGraftingGUI
 
     // Save Button
     private PatchButton _saveButton;
+    // Remove Part Button
+    private PatchButton _removePartButton;
 
     // Indices in these arrays point to matching data in each
     private List<Button> _towerChoiceButtons = [];
@@ -54,16 +59,22 @@ internal class TowerGraftingGUI
     private List<Button> _partChoiceButtons = [];
     private List<PartDefinition> _partChoices = [];
 
+    // Arrow Button and Boolean
+    private PatchButton _upButton;
+    private PatchButton _downButton;
+    private bool _showArrowButtons = false;
+
     // Label which displays the currently selected building option
     private PatchLabel _currentChosenLabel;
 
     // Tracking currently selected parts and towers
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
-    private Tower _previewTower = null;
+    private Tower _editingTower = null;
 
-    // Tracking Created Towers
+    // Tracking Created Towers and Offset
     private List<CreatedTowerButton> _createdTowers = [];
+    private float _createdTowersOffset = 0.0f;
 
     // Night Button
     private PatchButton _nightButton;
@@ -110,9 +121,6 @@ internal class TowerGraftingGUI
             OnNightButtonPressed();
         }
 
-        // The default tower is the first in the TowerRegistry
-        _currentlyGraftingTower = TowerRegistry.Towers[0];
-
         // Tower Display
         _towerDisplay = PatchLabel.MakeBaseCentered(
             text: "",
@@ -128,6 +136,25 @@ internal class TowerGraftingGUI
             Interface.ScreenCenter - _towerDisplayOffset + Vector2.UnitY * _towerDisplaySize * 0.5f + Vector2.UnitY * _saveButtonSize * 0.5f,
             _saveButtonSize,
             "Save");
+
+        // Create Remove Part Button
+        _removePartButton = PatchButton.MakeBase(
+            _saveButton.Position - Vector2.UnitX * _removePartSize,
+            _removePartSize,
+            text: "Remove Part"
+            );
+
+        // Create Arrow Buttons
+        _upButton = PatchButton.MakeBase(
+            new Vector2(_createdTowerSize.X, Interface.ScreenCenter.Y - _arrowButtonSize.Y),
+            _arrowButtonSize,
+            text: @"/\"
+            );
+        _downButton = PatchButton.MakeBase(
+            new Vector2(_createdTowerSize.X, Interface.ScreenCenter.Y),
+            _arrowButtonSize,
+            text: @"\/"
+            );
 
         // Populate All UI
         _allUI.AddRange(_towerChoiceButtons);
@@ -148,13 +175,19 @@ internal class TowerGraftingGUI
         TowerManager towerManager = world.TowerManager;
         bool isOverUI = _allUI.Any((uiPart) => uiPart.IsMouseOver(inputManager));
 
+        // Update Part Attachment
         if (!isOverUI)
         {
-            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is not null &&
-                _previewTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(),
-                    Matrix.CreateScale(1.0f / _previewScale))))
+            if (inputManager.LeftMouseClicked() &&
+                _currentlyChosenPart is not null &&
+                _editingTower is not null &&
+                _editingTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(), Matrix.CreateScale(1.0f / _previewScale))))
             {
-                _previewTower.AttachPart(_currentlyChosenPart);
+                if (world.Inventory.GetPartCount(_currentlyChosenPart) > 0)
+                {
+                    _editingTower.AttachPart(_currentlyChosenPart);
+                    world.Inventory.ModifyPartCount(_currentlyChosenPart, -1);
+                }
             }
         }
 
@@ -165,9 +198,13 @@ internal class TowerGraftingGUI
             button.Update();
             if (button.JustClicked)
             {
-                // Select the tower
+                // Create the new Tower
+                if (_editingTower is not null)
+                {
+                    RefundParts(_editingTower, world.Inventory);
+                }
                 _currentlyGraftingTower = _towerChoices[index];
-                _previewTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
+                _editingTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
             }
         }
         // Update Parts Selection
@@ -185,25 +222,89 @@ internal class TowerGraftingGUI
             }
         }
 
-        // Update Created Towers
-        foreach (CreatedTowerButton created in _createdTowers)
-        {
-            created.Update(time, world, inputManager);
-        }
-
         // Update Save Button
         _saveButton.Update();
 
         // Handle Saving
-        if (_saveButton.JustClicked && _previewTower is not null && _previewTower.HasParts)
+        if (_saveButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
         {
             _createdTowers.Add(
-                new CreatedTowerButton(_previewTower,
+                new CreatedTowerButton(_editingTower,
+                _currentlyGraftingTower,
                 Vector2.Zero,
                 _createdTowerSize
                 ));
-            _previewTower = null;
+            _currentlyGraftingTower = null;
+            _editingTower = null;
         }
+
+        // Update Remove Part Button
+        _removePartButton.Update();
+
+        // Handle Part Removal
+        if (_removePartButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
+        {
+            PartDefinition removed = _editingTower.RemovePart();
+            world.Inventory.ModifyPartCount(removed, 1);
+        }
+
+        // Update Created Towers
+        for (int index = 0; index < _createdTowers.Count; index++)
+        {
+            CreatedTowerButton created = _createdTowers[index];
+            created.Update(time, world, inputManager);
+            created.Internal.Position = new Vector2(
+                created.Internal.Position.X,
+                _createdTowerSize.Y * index - _createdTowersOffset
+                );
+        }
+
+        // Handle Selecting Created Towers
+        for (int index = 0; index < _createdTowers.Count; index++)
+        {
+            CreatedTowerButton button = _createdTowers[index];
+            
+            if (button.Internal.JustClicked)
+            {
+                if (_editingTower is not null)
+                {
+                    // Refund the parts of the CURRENTLY editing Tower
+                    RefundParts(_editingTower, world.Inventory);
+                }
+                // Set the selected Tower
+                _currentlyGraftingTower = button.Definition;
+                _editingTower = button.Tower;
+                _editingTower.Position = (Interface.ScreenCenter - _towerDisplayOffset) / _previewScale;
+                // Remove the selected Tower's button
+                _createdTowers.RemoveAt(index);
+                // Leave the loop
+                break;
+            }
+        }
+
+        // Calculate how much "beyond" the screen the created towers go
+        float createdBeyond = MathF.Max(0.0f, -(Interface.ScreenSize.Y - _createdTowerSize.Y * _createdTowers.Count));
+        _showArrowButtons = createdBeyond > 0.0f;
+
+        // Update Arrow Buttons (If there are enough created towers)
+        if (_showArrowButtons)
+        {
+            _upButton.Update();
+            _downButton.Update();
+
+            float delta = time.Delta();
+
+            if (_upButton.IsPressed)
+            {
+                _createdTowersOffset -= delta * _arrowScrollSpeed;
+            }
+            if (_downButton.IsPressed)
+            {
+                _createdTowersOffset += delta * _arrowScrollSpeed;
+            }
+        }
+        // Clamp Created Towers Offset
+        _createdTowersOffset = MathHelper.Clamp(_createdTowersOffset, 0.0f, createdBeyond);
 
         // Update Night Button
         _nightButton.Update();
@@ -213,7 +314,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Preview Tower
-        _previewTower?.Update(time, world, inputManager, TimeState.Day, projectileDiversion: _projectiles);
+        _editingTower?.Update(time, world, inputManager, TimeState.Day, projectileDiversion: _projectiles);
 
         // Update Projectiles
         _projectiles.Update(time, world, inputManager);
@@ -226,6 +327,9 @@ internal class TowerGraftingGUI
     /// <param name="time">Game Time</param>
     public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
     {
+        // Draw Background for created towers
+        batch.Draw(Placeholders.TexturePixel, new Rectangle(0, 0, (int)_createdTowerSize.X, (int)Interface.ScreenSize.Y), new Color(0.0f, 0.0f, 0.0f, 0.4f));
+
         // Draw the Label showing the Currently Grafting Tower
         _currentChosenLabel.Draw(batch);
         // Draw each Tower Button
@@ -258,6 +362,16 @@ internal class TowerGraftingGUI
         // Draw Save Button
         _saveButton.Draw(batch);
 
+        // Draw Remove Part Button
+        _removePartButton.Draw(batch);
+
+        // Draw Arrow Buttons (If there are enough created towers)
+        if (_showArrowButtons)
+        {
+            _upButton.Draw(batch);
+            _downButton.Draw(batch);
+        }
+
         // Custom Tower Drawing
         batch.End();
 
@@ -270,7 +384,7 @@ internal class TowerGraftingGUI
             rasterizerState: new RasterizerState { ScissorTestEnable = true });
 
         // Draw Tower
-        _previewTower?.Draw(time, batch, world, inputManager, TimeState.Day);
+        _editingTower?.Draw(time, batch, world, inputManager, TimeState.Day);
 
         // Draw Projectiles
         _projectiles.Draw(batch, time, world, inputManager);
@@ -278,5 +392,21 @@ internal class TowerGraftingGUI
         batch.End();
         // This should match the GUI static call in Game1
         batch.Begin(samplerState: SamplerState.PointWrap);
+    }
+
+    /// <summary>
+    /// Adds the parts currently on the given <paramref name="tower"/> to the <see cref="Inventory"/>. This does not modify the <see cref="Tower"/>
+    /// </summary>
+    /// <param name="tower"><see cref="Tower"/> to refund from</param>
+    /// <param name="inventory"><see cref="Inventory"/> to refund to</param>
+    public void RefundParts(Tower tower, Inventory inventory)
+    {
+        foreach (PartDefinition part in tower.Parts)
+        {
+            if (part is not null)
+            {
+                inventory.ModifyPartCount(part, 1);
+            }
+        }
     }
 }

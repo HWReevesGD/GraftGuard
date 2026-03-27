@@ -37,7 +37,7 @@ internal class TowerSpinner : Tower
             float rotation = GetPartRotation(time, index);
             Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
 
-            part.UpdateBehavior(this, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+            part.UpdateBehavior(this, Settings, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
             if (dealDamage)
             {
@@ -47,7 +47,7 @@ internal class TowerSpinner : Tower
 
                 world.EnemyManager.DealDamageInAreas([], [damageCircle], damage);
 
-                part.BehaviorOnDealDamage(0.5f, this, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                part.BehaviorOnDealDamage(0.5f, this, Settings, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
             }
         }
     }
@@ -69,7 +69,7 @@ internal class TowerSpinner : Tower
             batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24));
             batch.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48));
 
-            part.DrawBehavior(this, part.Definition, Position + SpinOffset + new Vector2(MathF.Cos(rotation - MathF.PI * 0.5f), MathF.Sin(rotation - MathF.PI * 0.5f)) * 48.0f, rotation, time, batch, world, inputManager, state);
+            part.DrawBehavior(this, Settings, part.Definition, Position + SpinOffset + new Vector2(MathF.Cos(rotation - MathF.PI * 0.5f), MathF.Sin(rotation - MathF.PI * 0.5f)) * 48.0f, rotation, time, batch, world, inputManager, state);
         }
     }
 

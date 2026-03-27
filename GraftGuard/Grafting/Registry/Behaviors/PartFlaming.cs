@@ -18,17 +18,17 @@ internal class PartFlaming : IPartBehavior
     private IntervalTimer _fireTimer = new IntervalTimer(0.05f);
     public static IPartBehavior Create() => new PartFlaming();
 
-    public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         
     }
 
-    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void OnDealDamage(Tower tower, TowerSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         
     }
 
-    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void Update(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         bool fire = _fireTimer.Update(time);
 

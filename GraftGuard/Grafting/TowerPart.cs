@@ -27,29 +27,29 @@ internal class TowerPart
     }
 
     public void BehaviorOnDealDamage(
-        float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time,
-        World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+        float damageModifier, Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
+        GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.OnDealDamage(damageModifier, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
+            behavior.OnDealDamage(tower, settings, damageModifier, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
         }
     }
 
-    public void UpdateBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time,
-        World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void UpdateBehavior(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation,
+        GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Update(tower, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
+            behavior.Update(tower, settings, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
         }
     }
 
-    public void DrawBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void DrawBehavior(Tower tower, TowerSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Draw(tower, part, partPosition, partRotation, time, batch, world, inputManager, state);
+            behavior.Draw(tower, settings, part, partPosition, partRotation, time, batch, world, inputManager, state);
         }
     }
 }

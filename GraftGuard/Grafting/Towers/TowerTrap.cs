@@ -22,8 +22,17 @@ internal class TowerTrap : Tower
 
     private IntervalTimer damageInterval;
 
-    public TowerTrap(Vector2 position) : base(position, new Vector2(96, 96), TexturePlaceholderGround, new Rectangle(new Point(-48, -48), new Point(96, 96)),
-        2.0f, [new Rectangle(-48, -48, 96, 96)])
+    public TowerTrap(Vector2 position) : base(
+        position,
+        new Vector2(96, 96),
+        TexturePlaceholderGround,
+        new Rectangle(new Point(-48, -48), new Point(96, 96)),
+        2.0f,
+        [new Rectangle(-48, -48, 96, 96)],
+        settings: new TowerSettings()
+        {
+            IsFacingUp = true,
+        })
     {
         damageInterval = new IntervalTimer(DamageInterval);
     }
@@ -53,11 +62,11 @@ internal class TowerTrap : Tower
                 Vector2 partPosition = GetPartPosition(time, part, x, y);
                 Point partSize = part.Definition.Texture.GetSizePoint();
 
-                part.UpdateBehavior(this, part.Definition, partPosition + partSize.ToVector(), 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                part.UpdateBehavior(this, Settings, part.Definition, partPosition + partSize.ToVector(), 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
                 if (dealDamage)
                 {
-                    part.BehaviorOnDealDamage(0.25f, this, part.Definition, partPosition, 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                    part.BehaviorOnDealDamage(0.25f, this, Settings, part.Definition, partPosition, 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
                 }
             }
         }
@@ -81,7 +90,7 @@ internal class TowerTrap : Tower
 
                 batch.Draw(part.Definition.Texture, partPosition, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
 
-                part.DrawBehavior(this, part.Definition, partPosition + partSize.ToVector() * 0.5f, 0.0f, time, batch, world, inputManager, state);
+                part.DrawBehavior(this, Settings, part.Definition, partPosition + partSize.ToVector() * 0.5f, 0.0f, time, batch, world, inputManager, state);
             }
         }
     }

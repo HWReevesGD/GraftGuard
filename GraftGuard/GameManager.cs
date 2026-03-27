@@ -20,18 +20,20 @@ namespace GraftGuard
         private readonly MainMenu _mainMenu;
         private readonly PauseMenu _pauseMenu;
         private readonly GameOverScreen _gameOverScreen;
+        private readonly GameHUD _hud;
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly InputManager inputManager;
 
         public static readonly float DawnTimeLength = 10f;
         public static readonly float NightTimeLength = 5f;
 
-        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, TowerGraftingGUI gui, InputManager input)
+        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, InputManager input)
         {
             _world = world;
             _mainMenu = menu;
             _pauseMenu = pause;
             _gameOverScreen = gameOver;
+            _hud = hud;
             _towerGrafting = gui;
             inputManager = input;
 
@@ -155,6 +157,8 @@ namespace GraftGuard
             // UI Draw (Screen space)
             spriteBatch.Begin(samplerState: SamplerState.PointWrap);
             if (session.Time == TimeState.Day) _towerGrafting.Draw(spriteBatch, gameTime, _world, inputManager);
+
+            _hud.Draw(spriteBatch, gameTime, session.Time != TimeState.Day);
 
             // HUD
             //spriteBatch.DrawString(Fonts.Arial, $"TIME: {session.Time}\nTIMER: {session.Timer:F1}", new Vector2(64, 0), Color.White);

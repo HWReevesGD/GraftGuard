@@ -2,6 +2,7 @@
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -23,13 +24,17 @@ delegate void NightButtonPressed();
 /// </summary>
 internal class TowerGraftingGUI
 {
-    // Constants for button sizing
+    // Constants / Readonlys
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
     private readonly Vector2 _currentTowerLabelSize = new Vector2(128, 128);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
     private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
     private readonly Vector2 _towerPartAttachmentSize = new Vector2(64, 64);
     private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
+    private const float _previewScale = 2.0f;
+
+    // Internal Projectile Manager
+    private ProjectileManager _projectiles;
 
     // All UI Elements
     private List<IMouseDetectable> _allUI = [];
@@ -126,7 +131,11 @@ internal class TowerGraftingGUI
         // Create default tower
         TowerDefinition defaultTower = TowerRegistry.Towers[0];
         _currentlyGraftingTower = defaultTower;
-        _previewTower = defaultTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / 3.0f);
+        _previewTower = defaultTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
+        _previewTower.AttachPart(PartRegistry.GetRandom());
+
+        // Create Projectile Manager
+        _projectiles = new ProjectileManager();
 
         // Populate All UI
         _allUI.AddRange(_towerChoiceButtons);
@@ -149,7 +158,12 @@ internal class TowerGraftingGUI
 
         if (!isOverUI)
         {
-            // TODO: Handle Part Attaching
+            if (inputManager.LeftMouseClicked() && _currentlyChosenPart is not null &&
+                _previewTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(),
+                    Matrix.CreateScale(1.0f / _previewScale))))
+            {
+                _previewTower.AttachPart(_currentlyChosenPart);
+            }
         }
 
         // Update Towers Selection
@@ -186,7 +200,10 @@ internal class TowerGraftingGUI
         }
 
         // Update Preview Tower
-        _previewTower.Update(time, world, inputManager, TimeState.Day);
+        _previewTower.Update(time, world, inputManager, TimeState.Day, projectileDiversion: _projectiles);
+
+        // Update Projectiles
+        _projectiles.Update(time, world, inputManager);
     }
 
     /// <summary>
@@ -208,11 +225,6 @@ internal class TowerGraftingGUI
         {
             button.Draw(batch);
         }
-        // Draw the preview of the chosen Tower
-        if (_currentlyGraftingTower is not null)
-        {
-            _currentlyGraftingTower.DrawPreview(batch, time, Mouse.GetState().Position.ToVector());
-        }
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)
         {
@@ -224,17 +236,21 @@ internal class TowerGraftingGUI
         // Draw Tower Display Border
         _towerDisplay.Draw(batch);
         
-        // Draw Part Attachment Buttons
-        foreach (PatchButton button in _towerPartAttachments)
-        {
-            button.Draw(batch);
-        }
+        //// Draw Part Attachment Buttons
+        //foreach (PatchButton button in _towerPartAttachments)
+        //{
+        //    button.Draw(batch);
+        //}
 
         // Custom Tower Drawing
         batch.End();
-        batch.Begin(transformMatrix: Matrix.CreateScale(3.0f), samplerState: SamplerState.PointWrap);
+        batch.Begin(transformMatrix: Matrix.CreateScale(_previewScale), samplerState: SamplerState.PointWrap);
 
-        _previewTower.Draw(time, batch, world , inputManager, TimeState.Day);
+        // Draw Tower
+        _previewTower.Draw(time, batch, world, inputManager, TimeState.Day);
+
+        // Draw Projectiles
+        _projectiles.Draw(batch, time, world, inputManager);
 
         batch.End();
         // This should match the GUI static call in Game1

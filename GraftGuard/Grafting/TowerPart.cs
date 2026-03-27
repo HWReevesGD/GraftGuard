@@ -4,6 +4,7 @@ using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -25,19 +26,22 @@ internal class TowerPart
         _partBehaviors = definition.PartBehaviorNames.Select((name) => PartBehaviorRegistry.GetFromName(name).Create()).ToArray();
     }
 
-    public void BehaviorOnDealDamage(float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void BehaviorOnDealDamage(
+        float damageModifier, Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time,
+        World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.OnDealDamage(damageModifier, part, partPosition, partRotation, time, world, inputManager, state);
+            behavior.OnDealDamage(damageModifier, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
         }
     }
 
-    public void UpdateBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void UpdateBehavior(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time,
+        World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Update(tower, part, partPosition, partRotation, time, world, inputManager, state);
+            behavior.Update(tower, part, partPosition, partRotation, time, world, inputManager, state, projectileManager);
         }
     }
 

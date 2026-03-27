@@ -2,6 +2,7 @@
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -24,7 +25,7 @@ internal class TowerSpinner : Tower
         _damageInterval = new IntervalTimer(DamageInterval);
     }
 
-    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state)
+    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileDiversion = null)
     {
         bool dealDamage = _damageInterval.Update(time);
 
@@ -36,7 +37,7 @@ internal class TowerSpinner : Tower
             float rotation = GetPartRotation(time, index);
             Vector2 partPosition = Position + SpinOffset + Vector2.Rotate(-Vector2.UnitY, rotation) * 48.0f;
 
-            part.UpdateBehavior(this, part.Definition, partPosition, rotation, time, world, inputManager, state);
+            part.UpdateBehavior(this, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
             if (dealDamage)
             {
@@ -46,7 +47,7 @@ internal class TowerSpinner : Tower
 
                 world.EnemyManager.DealDamageInAreas([], [damageCircle], damage);
 
-                part.BehaviorOnDealDamage(0.5f, this, part.Definition, partPosition, rotation, time, world, inputManager, state);
+                part.BehaviorOnDealDamage(0.5f, this, part.Definition, partPosition, rotation, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
             }
         }
     }

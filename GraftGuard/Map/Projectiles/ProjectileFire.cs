@@ -22,19 +22,19 @@ internal class ProjectileFire : Projectile
     {
     }
 
-    public override void Update(GameTime time, World world, InputManager inputManager)
+    public override void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)
     {
         _lifetime += (float)time.ElapsedGameTime.TotalSeconds;
 
         if (_lifetime >= FullLifetime)
         {
-            world.ProjectileManager.Remove(this);
+            manager.Remove(this);
         }
 
         Position += Velocity * time.Delta();
     }
 
-    public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
+    public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
         batch.DrawCentered(Texture, Position, scale: 1.0f + _lifetime * 0.1f, rotation: Velocity.Angle(),
             color: new Color(Color.White, MathF.Max(0.0f, 0.2f - _lifetime / FullLifetime)));

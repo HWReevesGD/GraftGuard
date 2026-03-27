@@ -17,7 +17,7 @@ internal class ProjectileManager
         // Update Projectiles
         foreach (Projectile projectile in Projectiles)
         {
-            projectile.Update(time, world, inputManager);
+            projectile.Update(this, time, world, inputManager);
         }
 
         // Remove Projectiles
@@ -30,7 +30,7 @@ internal class ProjectileManager
     {
         foreach (Projectile projectile in Projectiles)
         {
-            projectile.Draw(batch, time, world, inputManager);
+            projectile.Draw(batch, time, world, inputManager, this);
         }
     }
 

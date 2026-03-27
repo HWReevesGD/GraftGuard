@@ -3,6 +3,7 @@ using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -27,7 +28,7 @@ internal class TowerTrap : Tower
         damageInterval = new IntervalTimer(DamageInterval);
     }
 
-    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state)
+    public override void Update(GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileDiversion = null)
     {
         bool dealDamage = damageInterval.Update(time);
 
@@ -52,11 +53,11 @@ internal class TowerTrap : Tower
                 Vector2 partPosition = GetPartPosition(time, part, x, y);
                 Point partSize = part.Definition.Texture.GetSizePoint();
 
-                part.UpdateBehavior(this, part.Definition, partPosition + partSize.ToVector(), 0.0f, time, world, inputManager, state);
+                part.UpdateBehavior(this, part.Definition, partPosition + partSize.ToVector(), 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
                 if (dealDamage)
                 {
-                    part.BehaviorOnDealDamage(0.25f, this, part.Definition, partPosition, 0.0f, time, world, inputManager, state);
+                    part.BehaviorOnDealDamage(0.25f, this, part.Definition, partPosition, 0.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
                 }
             }
         }

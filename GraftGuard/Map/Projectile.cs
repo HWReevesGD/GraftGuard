@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Security.Cryptography;
+using GraftGuard.Map.Projectiles;
 
 namespace GraftGuard.Map;
 
@@ -71,12 +72,12 @@ internal class Projectile
         return false;
     }
 
-    public virtual void Update(GameTime time, World world, InputManager inputManager)
+    public virtual void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)
     {
 
     }
 
-    public virtual void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
+    public virtual void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
         batch.DrawCentered(Texture, Position);
     }

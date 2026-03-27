@@ -2,6 +2,7 @@
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -14,7 +15,7 @@ namespace GraftGuard.Grafting.Registry.Behaviors;
 internal delegate IPartBehavior CreatePartBehavior();
 internal interface IPartBehavior
 {
-    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state);
+    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
     public void Draw(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
-    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state);
+    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
 }

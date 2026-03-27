@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GraftGuard.Utility;
 using GraftGuard.Data;
+using GraftGuard.Map.Projectiles;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartSlashing : IPartBehavior
@@ -32,14 +33,14 @@ internal class PartSlashing : IPartBehavior
         batch.DrawCentered(Placeholders.TextureSlash, partPosition, rotation: (float)time.TotalGameTime.TotalSeconds * -24.0f % MathF.Tau, scale: _slashSize);
     }
 
-    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         _slashSize = 0.9f;
 
         world.EnemyManager.DealDamageInAreas([], [new Circle(partPosition, HitRadius)], part.BaseDamage * 0.5f);
     }
 
-    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         
     }

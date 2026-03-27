@@ -23,18 +23,18 @@ internal class PartFlaming : IPartBehavior
         
     }
 
-    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void OnDealDamage(float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         
     }
 
-    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state)
+    public void Update(Tower tower, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         bool fire = _fireTimer.Update(time);
 
         if (fire)
         {
-            world.ProjectileManager.Add(
+            projectileManager.Add(
                 new ProjectileFire(partPosition, partRotation, ProjectileTarget.Enemy)
                 );
         }

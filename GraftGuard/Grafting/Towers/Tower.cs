@@ -2,6 +2,7 @@
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -75,7 +76,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <summary>
     /// Empty Update for use in Child Classes
     /// </summary>
-    public virtual void Update(GameTime time, World world, InputManager inputManager, TimeState state)
+    public virtual void Update(GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileDiversion = null)
     {
 
     }
@@ -131,5 +132,15 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public bool IsMouseOver(InputManager inputManager)
     {
         return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(inputManager.MouseWorldPosition);
+    }
+
+    /// <summary>
+    /// Checks if the given Position is over this <see cref="Tower"/>. This should only be used for Mouse Detection, not collision
+    /// </summary>
+    /// <param name="inputManager"><see cref="InputManager"/> to use for the Mouse</param>
+    /// <returns><see cref="true"/> if the Mouse overlaps the <see cref="Tower"/>, <see cref="false"/> otherwise</returns>
+    public bool IsOver(Vector2 position)
+    {
+        return (MouseBox with { X = (int)Position.X + MouseBox.X, Y = (int)Position.Y + MouseBox.Y }).Contains(position);
     }
 }

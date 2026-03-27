@@ -144,7 +144,7 @@ namespace GraftGuard
 
             // UI Draw (Screen space)
             spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-            if (session.Time == TimeState.Day) _towerGrafting.Draw(spriteBatch, gameTime);
+            if (session.Time == TimeState.Day) _towerGrafting.Draw(spriteBatch, gameTime, _world, inputManager);
 
             // HUD
             //spriteBatch.DrawString(Fonts.Arial, $"TIME: {session.Time}\nTIMER: {session.Timer:F1}", new Vector2(64, 0), Color.White);

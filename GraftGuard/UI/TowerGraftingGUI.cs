@@ -52,6 +52,7 @@ internal class TowerGraftingGUI
     // Tracking currently selected parts and towers
     private TowerDefinition _currentlyGraftingTower = null;
     private PartDefinition _currentlyChosenPart = null;
+    private Tower _previewTower = null;
 
     // Night Button
     private PatchButton _nightButton;
@@ -122,6 +123,11 @@ internal class TowerGraftingGUI
             );
         }
 
+        // Create default tower
+        TowerDefinition defaultTower = TowerRegistry.Towers[0];
+        _currentlyGraftingTower = defaultTower;
+        _previewTower = defaultTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / 3.0f);
+
         // Populate All UI
         _allUI.AddRange(_towerChoiceButtons);
         _allUI.AddRange(_partChoiceButtons);
@@ -178,6 +184,9 @@ internal class TowerGraftingGUI
         {
             OnNightButtonPressed?.Invoke();
         }
+
+        // Update Preview Tower
+        _previewTower.Update(time, world, inputManager, TimeState.Day);
     }
 
     /// <summary>
@@ -220,5 +229,15 @@ internal class TowerGraftingGUI
         {
             button.Draw(batch);
         }
+
+        // Custom Tower Drawing
+        batch.End();
+        batch.Begin(transformMatrix: Matrix.CreateScale(3.0f), samplerState: SamplerState.PointWrap);
+
+        _previewTower.Draw(time, batch, world , inputManager, TimeState.Day);
+
+        batch.End();
+        // This should match the GUI static call in Game1
+        batch.Begin(samplerState: SamplerState.PointWrap);
     }
 }

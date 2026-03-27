@@ -32,6 +32,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     }
 
     protected TowerPart[] _attachedParts;
+    public PartDefinition[] Parts => _attachedParts.Select((part) => part?.Definition).ToArray();
 
     /// <summary>
     /// True if there is at least one non-null part attached
@@ -124,6 +125,26 @@ internal abstract class Tower : GameObject, IMouseDetectable
             }
         }
     }
+
+    /// <summary>
+    /// Removes and returns the last attached part of the <see cref="Tower"/>
+    /// </summary>
+    /// <returns><see cref="PartDefinition"/> of the removed part</returns>
+    public PartDefinition RemovePart()
+    {
+
+        for (int index = MaxParts - 1; index >= 0; index--)
+        {
+            if (_attachedParts[index] is TowerPart part)
+            {
+                _attachedParts[index] = null;
+                return part.Definition;
+            }
+        }
+
+        return null;
+    }
+
     /// <summary>
     /// Checks if the Mouse's Position is over this <see cref="Tower"/>
     /// </summary>

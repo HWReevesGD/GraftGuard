@@ -5,6 +5,7 @@ using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.UI;
+using GraftGuard.UI.Screens;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -74,6 +75,7 @@ public class Game1 : Game
         Tower.LoadContent(Content);
         MainMenu.LoadContent(Content);
         PauseMenu.LoadContent(Content);
+        GameOverScreen.LoadContent(Content);
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
@@ -85,8 +87,9 @@ public class Game1 : Game
 
         _gameManager = new GameManager(
             world,
-            new MainMenu(input),
+            new MainMenu(this, input),
             new PauseMenu(world, input),
+            new GameOverScreen(world),
             new TowerGraftingGUI(),
             input
         );
@@ -98,93 +101,7 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
-        //if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-        //    Exit();
-
-        //Yuxuan what you're looking for is now in GameManager. You can move specifics around but I'd like to keep Game1 as streamlined as possible.
-        //In theory we never have to touch this file again. I kept your old code here commented out
-
-        /*switch (gameState)
-        {
-            case GameState.MainMenu:
-                inputManager.Update();
-                if (inputManager.WasKeyPressStarted(Keys.Escape))
-                {
-                    Exit();
-                    break;
-                }
-                else if (inputManager.WasKeyPressStarted(Keys.Enter))
-                {
-                    gameState = GameState.Game;
-                    timeState = TimeState.Dawn;
-                    timer = DawnTimeLength;
-                }
-                mainMenu.Update(gameTime);
-                break;
-
-            case GameState.Paused:
-                inputManager.Update();
-                if (inputManager.WasKeyPressStarted(Keys.Escape))
-                {
-                    gameState = GameState.MainMenu;
-                    break;
-                }
-                else if (inputManager.WasKeyPressStarted(Keys.Enter))
-                {
-                    gameState = GameState.Game;
-                }
-                break;
-
-            case GameState.GameOver:
-                inputManager.Update();
-                if (inputManager.WasKeyPressStarted(Keys.Escape))
-                {
-                    gameState = GameState.MainMenu;
-                    break;
-                }
-                break;
-
-            case GameState.Game:
-                // TODO: handle gameplay inputs here
-
-                if (inputManager.WasKeyPressStarted(Keys.Escape))
-                {
-                    gameState = GameState.Paused;
-                    break;
-                }
-
-                _world.Update(gameTime, inputManager, timeState, true);
-
-                // handle game timers
-
-                switch (timeState)
-                {
-                    case TimeState.Night:
-                        timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        if (timer <= 0)
-                        {
-                            timeState = TimeState.Dawn;
-                            timer = DawnTimeLength;
-                        }
-                        break;
-
-                    case TimeState.Dawn:
-                        timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                        if (timer <= 0)
-                        {
-                            timeState = TimeState.Day;
-                        }
-                        break;
-
-                    case TimeState.Day:
-                        towerGrafting.Update(gameTime, inputManager, _world);
-                        break;
-                }
-                break;
-        }*/
-
         _gameManager.Update(gameTime);
-
         base.Update(gameTime);
     }
 
@@ -197,56 +114,6 @@ public class Game1 : Game
         // TODO: Add your drawing code here
 
         // TODO: call Draw for all GameObjects here
-        /*
-        switch (gameState)
-        {
-            case GameState.MainMenu:
-                //_spriteBatch.DrawString(Fonts.Arial, "MAIN MENU", Vector2.Zero, Color.White);
-                mainMenu.Draw(_spriteBatch, gameTime);
-                break;
-
-            case GameState.Paused:
-                pauseMenu.Draw(_spriteBatch, gameTime, timeState);
-                break;
-
-            case GameState.GameOver:
-                _spriteBatch.DrawString(Fonts.Arial, "GAME OVER", Vector2.Zero, Color.White);
-                break;
-
-            case GameState.Game:
-
-                _spriteBatch.End();
-
-                // Draw by the Camera's Position
-                _spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
-
-                _world.DrawCamera(_spriteBatch, gameTime, timeState, inputManager, true);
-
-                _spriteBatch.End();
-
-                // Drawn on the Screen Directly
-                _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-
-                // Draw Tower Grafting GUI
-                if (timeState == TimeState.Day)
-                {
-                    towerGrafting.Draw(_spriteBatch, gameTime, _world, inputManager);
-                }
-
-                // Mouse Debug
-                _spriteBatch.DrawString(Fonts.Arial, $"Mouse Screen: {Mouse.GetState().Position.ToVector2()}\nMouse World: {Vector2.Transform(Mouse.GetState().Position.ToVector2(), _world.Camera.ScreenToWorld)}", new Vector2(64, 128), Color.White);
-
-                _spriteBatch.DrawString(
-                    Fonts.Arial,
-                    $"GAME\n" +
-                    $"STATE: {timeState}\n" +
-                    $"TIMER: {timer}\n",
-                    new Vector2(64, 0),
-                    Color.White
-                );
-
-                break;
-        }*/
 
         _gameManager.Draw(_spriteBatch, gameTime);
 

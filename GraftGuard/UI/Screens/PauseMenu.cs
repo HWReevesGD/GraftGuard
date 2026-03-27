@@ -6,9 +6,9 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using System;
+using Microsoft.Xna.Framework.Input;
 
-namespace GraftGuard.UI;
+namespace GraftGuard.UI.Screens;
 internal class PauseMenu
 {
     private readonly World world;
@@ -16,7 +16,7 @@ internal class PauseMenu
     private readonly static string text = "< Press Enter to Return to Play >\n< Press Esc to Exit >";
 
     private static Texture2D backgroundTexture;
-    private InputManager _inputManager;
+    private InputManager inputManager;
 
     public static void LoadContent(ContentManager content)
     {
@@ -26,7 +26,18 @@ internal class PauseMenu
     public PauseMenu(World world, InputManager inputManager)
     {
         this.world = world;
-        _inputManager = inputManager;
+        this.inputManager = inputManager;
+    }
+
+    public void Update()
+    {
+        if (inputManager.WasKeyPressStarted(Keys.Enter))
+            PlayerData.CurrentState = GameState.Game;
+
+        if (inputManager.WasKeyPressStarted(Keys.Escape))
+            PlayerData.CurrentState = GameState.MainMenu;
+
+        inputManager.Update();
     }
 
     public void Draw(SpriteBatch batch, GameTime gameTime, TimeState timeState)
@@ -35,7 +46,7 @@ internal class PauseMenu
         batch.End();
         // Draw by the Camera's Position
         batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
-        world.DrawCamera(batch, gameTime, timeState, _inputManager, true);
+        world.DrawCamera(batch, gameTime, timeState, inputManager, true);
         batch.End();
 
         // draw menu items

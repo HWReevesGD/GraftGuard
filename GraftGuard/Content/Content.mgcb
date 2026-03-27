@@ -389,7 +389,7 @@
 /processorParam:TextureFormat=Color
 /build:UI/Heart-1.png.png;UI/Heart.png
 
-#begin UI/Timer-1.png.png
+#begin UI/Timer_Overlay.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -399,5 +399,17 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:UI/Timer-1.png.png;UI/Timer.png
+/build:UI/Timer_Overlay.png
+
+#begin UI/Timer.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Timer.png
 

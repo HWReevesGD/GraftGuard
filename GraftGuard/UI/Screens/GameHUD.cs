@@ -6,9 +6,6 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard.UI.Screens;
 
@@ -27,13 +24,13 @@ internal class GameHUD
     };
 
     private readonly static Vector2 heartSize = new Vector2(50, 50);
-    private readonly static float heartGap = 20;
+    private readonly static float heartGap = 10;
     private readonly static Vector2 heartMargin = new Vector2(40, 40);
 
     // timer progress bar
-    private readonly static float timerTopMargin = 20;
-    private readonly static float timerWidth = 300;
-    private readonly static float timerHeight = 100;
+    private readonly static float timerTopMargin = 10;
+    private readonly static float timerWidth = 345;
+    private readonly static float timerHeight = 115;
     private readonly static float timerBarHeightScale = 0.4f; // scale of timerHeight
     private readonly static float timerBarMargin = 8;
 
@@ -132,15 +129,14 @@ internal class GameHUD
 
         string timerText = active ? $"{displayMinutes}:{displaySeconds.ToString("D2")}" : "-:--";
 
-        int baseY = 10; 
+        int baseY = 5; 
 
-        new Text(Fonts.Arial, $"{timerText} Left")
+        new Text(Fonts.SubFont, $"{timerText} Left")
             .SetXOrigin(XOrigin.Center)
             .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 55 + baseY + timerTextYOffset + hudTopOffset));
 
-        new Text(Fonts.Arial, timeNames[PlayerData.CurrentGame.Time])
+        new Text(Fonts.SubFont, timeNames[PlayerData.CurrentGame.Time])
            .SetXOrigin(XOrigin.Center)
-           .SetScale(1.25f)
            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 75 + baseY + timerTextYOffset + hudTopOffset));
 
         // timer progress bar

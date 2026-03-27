@@ -57,9 +57,9 @@ internal class PauseMenu
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
 
-        Vector2 textSize = Fonts.Arial.MeasureString(text);
+        Vector2 textSize = Fonts.SubFont.MeasureString(text);
         Vector2 position = new Vector2(Interface.Width / 2 - textSize.X / 2, Interface.Height / 2 - textSize.Y / 2);
 
-        batch.DrawString(Fonts.Arial, text, position, Color.White);
+        batch.DrawString(Fonts.SubFont, text, position, Color.White);
     }
 }

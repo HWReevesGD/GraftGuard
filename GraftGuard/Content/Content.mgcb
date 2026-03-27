@@ -389,6 +389,26 @@
 /processorParam:DebugMode=Auto
 /build:Shaders/Outline.fx
 
+#begin UI/Fonts/ProtestRiot-Regular.ttf
+/copy:UI/Fonts/ProtestRiot-Regular.ttf
+
+#begin UI/Fonts/ProtestStrike-Regular.ttf
+/copy:UI/Fonts/ProtestStrike-Regular.ttf
+
+#begin UI/Fonts/SubFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:UI/Fonts/SubFont.spritefont
+
+#begin UI/Fonts/TitleFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Color
+/build:UI/Fonts/TitleFont.spritefont
+
 #begin UI/Heart-1.png.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -33,6 +33,7 @@ namespace GraftGuard.Data
         public TimeState Time { get; set; }
         public float Timer { get; set; }
         public int CurrentScore { get; set; }
+        public int Health { get; set; }
 
         public Difficulty CurrentDifficulty { get; set; }
 

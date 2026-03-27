@@ -76,6 +76,7 @@ public class Game1 : Game
         MainMenu.LoadContent(Content);
         PauseMenu.LoadContent(Content);
         GameOverScreen.LoadContent(Content);
+        GameHUD.LoadContent(Content);
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
@@ -90,6 +91,7 @@ public class Game1 : Game
             new MainMenu(this, input),
             new PauseMenu(world, input),
             new GameOverScreen(world),
+            new GameHUD(),
             new TowerGraftingGUI(),
             input
         );

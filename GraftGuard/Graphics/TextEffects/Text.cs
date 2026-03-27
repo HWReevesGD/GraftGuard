@@ -67,34 +67,19 @@ internal struct Text
     {
         get
         {
-            float x = 0;
-            float y = 0;
-
-            switch (XOrigin)
+            float x = XOrigin switch
             {
-                case XOrigin.Left:
-                    x = 0;
-                    break;
-                case XOrigin.Center:
-                    x = -Size.X / 2;
-                    break;
-                case XOrigin.Right:
-                    x = -Size.X;
-                    break;
-            }
+                XOrigin.Left => 0,
+                XOrigin.Center => -Size.X / 2,
+                XOrigin.Right => -Size.X
+            };
 
-            switch (YOrigin)
+            float y = YOrigin switch
             {
-                case YOrigin.Top:
-                    y = 0;
-                    break;
-                case YOrigin.Center:
-                    y = -Size.Y / 2;
-                    break;
-                case YOrigin.Bottom:
-                    y = -Size.Y;
-                    break;
-            }
+                YOrigin.Top => 0,
+                YOrigin.Center => -Size.Y / 2,
+                YOrigin.Bottom => -Size.Y
+            };
 
             return new Vector2(x, y);
         }

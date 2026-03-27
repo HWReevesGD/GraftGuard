@@ -203,6 +203,18 @@
 /processorParam:TextureFormat=Color
 /build:Placeholder/garage_patch_placeholder.png
 
+#begin Placeholder/garage.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Placeholder/garage.png
+
 #begin Placeholder/label_placeholder.png
 /importer:TextureImporter
 /processor:TextureProcessor

@@ -82,7 +82,7 @@ internal class GameOverScreen
         float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startShowingTime;
         float shakeMagnitude = titleShakeMagnitude * Math.Max(1 - elapsed / titleShakeDecayTime, 0);
 
-        new Text(Fonts.Arial, titleText).SetXOrigin(XOrigin.Center)
+        new Text(Fonts.SubFont, titleText).SetXOrigin(XOrigin.Center)
             .AddEffect(new ShakeTextEffect(shakeMagnitude))
             .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 100));
 
@@ -96,8 +96,8 @@ internal class GameOverScreen
         float scoreCountTime = Math.Min(score / (float)countRate, countUpMaxTime);
         float hiScoreCountTime = Math.Min(hiScore / (float)countRate, countUpMaxTime);
 
-        Vector2 scoreTextSize = Fonts.Arial.MeasureString(scoreText);
-        Vector2 hiScoreTextSize = Fonts.Arial.MeasureString(hiScoreText);
+        Vector2 scoreTextSize = Fonts.SubFont.MeasureString(scoreText);
+        Vector2 hiScoreTextSize = Fonts.SubFont.MeasureString(hiScoreText);
 
         // score text
 
@@ -113,13 +113,13 @@ internal class GameOverScreen
             scoreCountIsUp = false;
         }
 
-        batch.DrawString(Fonts.Arial, scoreText, new Vector2(
+        batch.DrawString(Fonts.SubFont, scoreText, new Vector2(
             Interface.Width / 2 - scoreTextSize.X - gap / 2,
             200
             ), Color.White);
 
         batch.DrawString(
-            Fonts.Arial,
+            Fonts.SubFont,
             $"{displayScore}",
             new Vector2(
                 Interface.Width / 2 + gap / 2,
@@ -145,13 +145,13 @@ internal class GameOverScreen
 
         if (scoreAlpha >= 1)
         {
-            batch.DrawString(Fonts.Arial, hiScoreText, new Vector2(
+            batch.DrawString(Fonts.SubFont, hiScoreText, new Vector2(
                 Interface.Width / 2 - hiScoreTextSize.X - gap / 2,
                 300
                 ), Color.White);
 
             batch.DrawString(
-                Fonts.Arial,
+                Fonts.SubFont,
                 $"{displayHiScore}",
                 new Vector2(
                     Interface.Width / 2 + gap / 2,

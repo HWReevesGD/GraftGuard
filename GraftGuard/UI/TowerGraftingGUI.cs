@@ -83,6 +83,8 @@ internal class TowerGraftingGUI
 
     // Created Tower Limit and Label
     private PatchLabel _maxTowersLabel;
+    
+
     public int MaxAllowedTowers { get; set; } = 6;
 
     /// <summary>
@@ -370,6 +372,13 @@ internal class TowerGraftingGUI
     /// <param name="time">Game Time</param>
     public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
     {
+        //draw garage background
+        batch.Draw(
+            Placeholders.GarageBackgroundTexture,
+            new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height),
+            Color.White
+        );
+
         // Draw Background for created towers
         batch.Draw(Placeholders.TexturePixel, new Rectangle(0, 0, (int)_createdTowerSize.X, (int)Interface.ScreenSize.Y), new Color(0.0f, 0.0f, 0.0f, 0.4f));
 

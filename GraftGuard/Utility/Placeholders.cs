@@ -20,6 +20,7 @@ internal static class Placeholders
         TextureSpinnerArm = content.Load<Texture2D>("Placeholder/spinner_arm");
         TextureCircle = content.Load<Texture2D>("Placeholder/circle");
         TextureSlash = content.Load<Texture2D>("Placeholder/slash");
+        GarageBackgroundTexture = content.Load<Texture2D>("Placeholder/garage");
     }
     public static Texture2D TextureButton;
     public static Texture2D TextureButtonPressed;
@@ -34,4 +35,5 @@ internal static class Placeholders
     public static Texture2D TextureSpinnerArm;
     public static Texture2D TextureCircle;
     public static Texture2D TextureSlash;
+    public static Texture2D GarageBackgroundTexture;
 }

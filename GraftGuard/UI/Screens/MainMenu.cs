@@ -186,7 +186,7 @@ internal class MainMenu {
 
             // render item on the bottom left yea
 
-            Text text = new Text(Fonts.Arial, menuItemOrder[i])
+            Text text = new Text(Fonts.SubFont, menuItemOrder[i])
                 .SetYOrigin(YOrigin.Bottom)
                 .SetKerning(2)
                 .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]));
@@ -198,14 +198,13 @@ internal class MainMenu {
         }
 
         // little arrow thing
-        new Text(Fonts.Arial, ">")
+        new Text(Fonts.SubFont, ">")
             .SetYOrigin(YOrigin.Bottom)
             .DrawRaw(batch, new Vector2(itemLeftPadding, arrowYPosition));
 
         // title text
-        new Text(Fonts.Arial, titleText)
+        new Text(Fonts.MainFont, titleText)
             .SetYOrigin(YOrigin.Bottom)
-            .SetScale(3)
             .SetKerning(3)
             .DrawRaw(batch, new Vector2(titleLeftPadding, yPosition));
 

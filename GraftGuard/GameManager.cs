@@ -26,8 +26,9 @@ namespace GraftGuard
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly NightPlacementGUI _nightPlacement;
         private readonly InputManager inputManager;
+        private readonly ScrollingGrid<PatchButton> _testingGrid;
 
-        public static readonly float DawnTimeLength = 10f;
+        public static readonly float DawnTimeLength = 100f;
         public static readonly float NightTimeLength = 50f;
 
         public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
@@ -40,6 +41,9 @@ namespace GraftGuard
             _towerGrafting = gui;
             _nightPlacement = nightPlacement;
             inputManager = input;
+            _testingGrid = new ScrollingGrid<PatchButton>(
+                Orientation.Vertical, new Vector2(200, 200), new Vector2(400, 200), new Vector2(74, 74), Corner.BottomOrLeft, 0.0f, Corner.TopOrRight
+                );
 
             _towerGrafting.OnNightButtonPressed += HandleStartNight;
         }
@@ -47,6 +51,12 @@ namespace GraftGuard
         public void Update(GameTime gameTime)
         {
             inputManager.Update(_world.Camera); //bad practice but it works
+            _testingGrid.Update(gameTime, (button) => button.Update());
+
+            if (inputManager.WasKeyPressStarted(Keys.OemCloseBrackets))
+            {
+                _testingGrid.Add(PatchButton.MakeBase(Vector2.One, Vector2.One, "HEELO!"));
+            }
 
             switch (PlayerData.CurrentState)
             {
@@ -170,6 +180,7 @@ namespace GraftGuard
                     _gameOverScreen.Draw(spriteBatch, gameTime);
                     break;
             }
+            _testingGrid.Draw(spriteBatch, (batch, button) => button.Draw(batch));
         }
 
         private void DrawGameSession(SpriteBatch spriteBatch, GameTime gameTime)

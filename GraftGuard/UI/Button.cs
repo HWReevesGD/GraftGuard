@@ -10,7 +10,7 @@ enum ButtonIconType
     Stretch,
     AspectStretch,
 }
-internal class Button : IMouseDetectable
+internal class Button : IMouseDetectable, IPositional, ISizeable
 {
     public Vector2 Position { get; set; }
     public Vector2 Size { get; set; }

@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace GraftGuard.UI;
-internal class PatchLabel : IMouseDetectable
+internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
 {
     public string Text { get; set; }
     public Vector2 Position { get; set; }

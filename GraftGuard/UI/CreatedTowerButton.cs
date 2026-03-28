@@ -13,13 +13,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.UI;
-internal class CreatedTowerButton
+internal class CreatedTowerButton : IPositional, ISizeable
 {
     public PatchButton Internal;
     public Tower Tower;
     public TowerDefinition Definition;
     public ProjectileManager Projectiles;
     public bool JustClicked => Internal.JustClicked;
+    public Vector2 Position { get => Internal.Position; set => Internal.Position = value; }
+    public Vector2 Size { get => Internal.Size; set => Internal.Size = value; }
     public CreatedTowerButton(Tower tower, TowerDefinition definition, Vector2 position, Vector2 size)
     {
         Internal = PatchButton.MakeBase(position, size);

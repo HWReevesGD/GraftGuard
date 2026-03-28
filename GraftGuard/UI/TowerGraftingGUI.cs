@@ -33,9 +33,9 @@ internal class TowerGraftingGUI
     private readonly Vector2 _createdTowerSize = new Vector2(72, 72);
     private readonly Vector2 _saveButtonSize = new Vector2(128, 56);
     private readonly Vector2 _removePartSize = new Vector2(112, 56);
-    private readonly Vector2 _arrowButtonSize = new Vector2(64, 32);
+    private readonly Vector2 _arrowCreatedTowerButtonSize = new Vector2(64, 32);
     private readonly Vector2 _maxTowersLabelSize = new Vector2(110, 56);
-    private readonly Vector2 _arrowButtonOffset = new Vector2(-256, 0);
+    private readonly Vector2 _arrowCreatedTowerButtonOffset = new Vector2(-256, 0);
     private const float _previewScale = 2.0f;
     private const float _arrowScrollSpeed = 256.0f;
 
@@ -149,13 +149,13 @@ internal class TowerGraftingGUI
 
         // Create Arrow Buttons
         _leftButton = PatchButton.MakeBase(
-            new Vector2(Interface.ScreenCenter.X - _arrowButtonSize.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowButtonSize.Y) + _arrowButtonOffset,
-            _arrowButtonSize,
+            new Vector2(Interface.ScreenCenter.X - _arrowCreatedTowerButtonSize.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowCreatedTowerButtonSize.Y) + _arrowCreatedTowerButtonOffset,
+            _arrowCreatedTowerButtonSize,
             text: @"<"
             );
         _rightButton = PatchButton.MakeBase(
-            new Vector2(Interface.ScreenCenter.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowButtonSize.Y) + _arrowButtonOffset,
-            _arrowButtonSize,
+            new Vector2(Interface.ScreenCenter.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowCreatedTowerButtonSize.Y) + _arrowCreatedTowerButtonOffset,
+            _arrowCreatedTowerButtonSize,
             text: @">"
             );
 

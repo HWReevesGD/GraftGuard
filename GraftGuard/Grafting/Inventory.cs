@@ -11,7 +11,7 @@ internal class Inventory
 {
     // Inventory Dictionary
     private Dictionary<string, int> _parts = [];
-    public List<TowerDesign> Designs = [];
+    public List<TowerDesign> StartingDesigns = [];
 
     /// <summary>
     /// Returns the count for the given <paramref name="part"/>

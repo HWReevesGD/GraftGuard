@@ -345,7 +345,7 @@ internal class TowerGraftingGUI
         if (_nightButton.JustClicked)
         {
             // Save Designs
-            world.Inventory.Designs.AddRange(
+            world.Inventory.StartingDesigns.AddRange(
                 _createdTowers.Select(
                     (tower) => new TowerDesign(tower.Definition, tower.Tower.Parts.ToList())
                     )

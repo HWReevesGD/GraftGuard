@@ -33,9 +33,25 @@ internal class TowerManager
         }
     }
 
-    public void MakeTower(TowerDefinition tower, Vector2 position)
+    public void MakeTower(TowerDefinition tower, Vector2 position, List<PartDefinition>? parts = null)
     {
-        _towers.Add(tower.Factory(position));
+        Tower placedTower = tower.Factory(position);
+
+        if (parts is not null)
+        {
+            foreach (PartDefinition part in parts)
+            {
+                if (part is null)
+                {
+                    continue;
+                }
+
+                placedTower.AttachPart(part);
+            }
+        }
+
+        _towers.Add(placedTower);
+
         _world.UpdatePaths();
     }
 

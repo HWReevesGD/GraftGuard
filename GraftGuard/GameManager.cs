@@ -2,7 +2,9 @@
 using GraftGuard.Grafting;
 using GraftGuard.Graphics;
 using GraftGuard.Map;
+using GraftGuard.UI;
 using GraftGuard.UI.Screens;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,12 +24,13 @@ namespace GraftGuard
         private readonly GameOverScreen _gameOverScreen;
         private readonly GameHUD _hud;
         private readonly TowerGraftingGUI _towerGrafting;
+        private readonly NightPlacementGUI _nightPlacement;
         private readonly InputManager inputManager;
 
         public static readonly float DawnTimeLength = 10f;
-        public static readonly float NightTimeLength = 5f;
+        public static readonly float NightTimeLength = 50f;
 
-        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, InputManager input)
+        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
         {
             _world = world;
             _mainMenu = menu;
@@ -35,6 +38,7 @@ namespace GraftGuard
             _gameOverScreen = gameOver;
             _hud = hud;
             _towerGrafting = gui;
+            _nightPlacement = nightPlacement;
             inputManager = input;
 
             _towerGrafting.OnNightButtonPressed += HandleStartNight;
@@ -87,9 +91,29 @@ namespace GraftGuard
             }
             else
             {
-                session.Timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                session.Timer -= gameTime.Delta();
                 if (session.Timer <= 0) HandleTimeTransition(gameTime, session);
             }
+
+            switch (session.Time)
+            {
+                case TimeState.Night:
+                    UpdateNightOnly(gameTime);
+                    break;
+                case TimeState.Dawn:
+                    break;
+                case TimeState.Day:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Updates systems which only should be updated during Night
+        /// </summary>
+        /// <param name="gameTime">Game Time</param>
+        private void UpdateNightOnly(GameTime gameTime)
+        {
+            _nightPlacement.Update(gameTime, _world, inputManager);
         }
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
@@ -108,11 +132,15 @@ namespace GraftGuard
 
         private void HandleStartNight()
         {
+            // Setup Player Data
             if (PlayerData.CurrentGame.Time == TimeState.Day)
             {
                 PlayerData.CurrentGame.Time = TimeState.Night;
                 PlayerData.CurrentGame.Timer = NightTimeLength; 
             }
+
+            // Setup Night Placement GUI
+            _nightPlacement.Setup(_world.Inventory);
         }
 
         private void UpdatePaused()
@@ -156,12 +184,32 @@ namespace GraftGuard
 
             // UI Draw (Screen space)
             spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-            if (session.Time == TimeState.Day) _towerGrafting.Draw(spriteBatch, gameTime, _world, inputManager);
+            switch (session.Time)
+            {
+                case TimeState.Dawn:
+                    break;
+                case TimeState.Day:
+                    _towerGrafting.Draw(spriteBatch, gameTime, _world, inputManager);
+                    break;
+                case TimeState.Night:
+                    DrawNightOnly(spriteBatch, gameTime);
+                    break;
+            }
 
             _hud.Draw(spriteBatch, gameTime, session.Time != TimeState.Day);
 
             // HUD
             //spriteBatch.DrawString(Fonts.Arial, $"TIME: {session.Time}\nTIMER: {session.Timer:F1}", new Vector2(64, 0), Color.White);
+        }
+
+        /// <summary>
+        /// Draws systems which only should be drawing during Nighttime
+        /// </summary>
+        /// <param name="batch">Batch to use</param>
+        /// <param name="gameTime">Game Time to use</param>
+        private void DrawNightOnly(SpriteBatch batch, GameTime gameTime)
+        {
+            _nightPlacement.Draw(batch, gameTime, _world, inputManager);
         }
     }
 }

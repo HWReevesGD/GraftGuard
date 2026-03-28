@@ -93,6 +93,7 @@ public class Game1 : Game
             new GameOverScreen(world),
             new GameHUD(),
             new TowerGraftingGUI(),
+            new NightPlacementGUI(),
             input
         );
 

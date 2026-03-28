@@ -26,9 +26,8 @@ namespace GraftGuard
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly NightPlacementGUI _nightPlacement;
         private readonly InputManager inputManager;
-        private readonly ScrollingGrid<PatchButton> _testingGrid;
 
-        public static readonly float DawnTimeLength = 100f;
+        public static readonly float DawnTimeLength = 12f;
         public static readonly float NightTimeLength = 50f;
 
         public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
@@ -41,22 +40,15 @@ namespace GraftGuard
             _towerGrafting = gui;
             _nightPlacement = nightPlacement;
             inputManager = input;
-            _testingGrid = new ScrollingGrid<PatchButton>(
-                Orientation.Vertical, new Vector2(200, 200), new Vector2(400, 200), new Vector2(74, 74), Corner.BottomOrLeft, 0.0f, Corner.TopOrRight
-                );
 
-            _towerGrafting.OnNightButtonPressed += HandleStartNight;
+            _mainMenu.NewGameStarted += OnNewGameStarted;
+
+            _towerGrafting.OnNightButtonPressed += OnStartingNight;
         }
 
         public void Update(GameTime gameTime)
         {
             inputManager.Update(_world.Camera); //bad practice but it works
-            _testingGrid.Update(gameTime, (button) => button.Update());
-
-            if (inputManager.WasKeyPressStarted(Keys.OemCloseBrackets))
-            {
-                _testingGrid.Add(PatchButton.MakeBase(Vector2.One, Vector2.One, "HEELO!"));
-            }
 
             switch (PlayerData.CurrentState)
             {
@@ -73,6 +65,43 @@ namespace GraftGuard
                     UpdateGameOver(gameTime);
                     break;
             }
+        }
+        private void OnNewGameStarted()
+        {
+            _world.OnNewGameStarted();
+            OnStartingDawn();
+        }
+
+        /// <summary>
+        /// Runs when Dawn is started
+        /// </summary>
+        private void OnStartingDawn()
+        {
+
+        }
+
+        /// <summary>
+        /// Runs when Day is started
+        /// </summary>
+        private void OnStartingDay()
+        {
+            _towerGrafting.Setup(_world.Inventory);
+        }
+
+        /// <summary>
+        /// Runs when Night is started
+        /// </summary>
+        private void OnStartingNight()
+        {
+            // Setup Player Data
+            if (PlayerData.CurrentGame.Time == TimeState.Day)
+            {
+                PlayerData.CurrentGame.Time = TimeState.Night;
+                PlayerData.CurrentGame.Timer = NightTimeLength;
+            }
+
+            // Setup Night Placement GUI
+            _nightPlacement.Setup(_world.Inventory);
         }
 
         private void UpdateMainMenu(GameTime gameTime)
@@ -137,20 +166,8 @@ namespace GraftGuard
             else if (session.Time == TimeState.Dawn)
             {
                 session.Time = TimeState.Day;
+                OnStartingDay();
             }
-        }
-
-        private void HandleStartNight()
-        {
-            // Setup Player Data
-            if (PlayerData.CurrentGame.Time == TimeState.Day)
-            {
-                PlayerData.CurrentGame.Time = TimeState.Night;
-                PlayerData.CurrentGame.Timer = NightTimeLength; 
-            }
-
-            // Setup Night Placement GUI
-            _nightPlacement.Setup(_world.Inventory);
         }
 
         private void UpdatePaused()
@@ -180,7 +197,6 @@ namespace GraftGuard
                     _gameOverScreen.Draw(spriteBatch, gameTime);
                     break;
             }
-            _testingGrid.Draw(spriteBatch, (batch, button) => button.Draw(batch));
         }
 
         private void DrawGameSession(SpriteBatch spriteBatch, GameTime gameTime)

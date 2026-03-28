@@ -13,6 +13,8 @@ using System;
 
 namespace GraftGuard.UI.Screens;
 
+internal delegate void ActionEvent();
+
 internal class MainMenu {
     private readonly World backgroundWorld;
     private readonly InputManager idleInputManager; // input manager that will never update, because it's for the background (world needs it)
@@ -48,6 +50,7 @@ internal class MainMenu {
     private float[] itemXOffests;
     private float[] itemWaveAmplitudes;
     private float arrowYPosition;
+    public event ActionEvent NewGameStarted;
 
     public MainMenu(Game1 game, InputManager inputManager)
     {
@@ -113,6 +116,7 @@ internal class MainMenu {
             {
                 case 0: // start new game
                     PlayerData.StartNewGame(GameManager.DawnTimeLength);
+                    NewGameStarted?.Invoke();
                     break;
                 case 1: // continue game
                     break;

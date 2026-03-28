@@ -66,6 +66,11 @@ internal class World
         Camera = new Camera();
     }
 
+    public void OnNewGameStarted()
+    {
+        Inventory.Clear();
+    }
+
     // Methods
     public void Update(GameTime gameTime, InputManager inputManager, TimeState state, bool allowPlayerControls)
     {

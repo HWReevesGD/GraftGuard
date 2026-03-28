@@ -270,11 +270,11 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
                         break;
                     case Corner.BottomOrLeft:
                         _negativeArrow = PatchButton.MakeBase(
-                            Position + new Vector2(Size.X * 0.5f, Size.Y) + _arrowHorizontalSize * new Vector2(-1, 1) + new Vector2(offset, 0),
+                            Position + new Vector2(Size.X * 0.5f, Size.Y) + _arrowHorizontalSize * new Vector2(-1, 0) + new Vector2(offset, 0),
                             _arrowHorizontalSize,
                             "<");
                         _positiveArrow = PatchButton.MakeBase(
-                            Position + new Vector2(Size.X * 0.5f, Size.Y) + Vector2.UnitY * _arrowHorizontalSize + new Vector2(offset, 0),
+                            Position + new Vector2(Size.X * 0.5f, Size.Y) + new Vector2(offset, 0),
                             _arrowHorizontalSize,
                             ">");
                         break;

@@ -95,32 +95,6 @@ internal class TowerGraftingGUI
     {
         _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentTowerLabelSize.X, 0), _currentTowerLabelSize);
 
-        // Populate Towers
-        for (int index = 0; index < TowerRegistry.Towers.Count; index++)
-        {
-            TowerDefinition towerDefinition = TowerRegistry.Towers[index];
-            _towerChoices.Add(towerDefinition);
-            _towerChoiceButtons.Add(
-                PatchButton.MakeBase(
-                    new Vector2(Interface.Width - _towerButtonSize.X, _currentTowerLabelSize.Y + _towerButtonSize.Y * index),
-                    _towerButtonSize,
-                    towerDefinition.Name
-                    ));
-        }
-
-        // Populate Parts
-        for (int index = 0; index < PartRegistry.Parts.Count; index++)
-        {
-            PartDefinition partDefinition = PartRegistry.Parts[index];
-            _partChoices.Add(partDefinition);
-            _partChoiceButtons.Add(
-                PatchButton.MakeBase(
-                    new Vector2(0, _partButtonSize.Y * index),
-                    _partButtonSize,
-                    icon: partDefinition.Texture
-                    ));
-        }
-
         // Create Night Button
         _nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y - _createdTowerSize.Y), _towerButtonSize, "Begin");
 
@@ -130,9 +104,6 @@ internal class TowerGraftingGUI
             position: Interface.ScreenCenter - _towerDisplayOffset,
             size: _towerDisplaySize
             );
-
-        // Create Projectile Manager
-        _projectiles = new ProjectileManager();
 
         // Create Save Button
         _saveButton = PatchButton.MakeBaseCentered(
@@ -175,6 +146,54 @@ internal class TowerGraftingGUI
         _allUI.Add(_leftButton);
         _allUI.Add(_rightButton);
         _allUI.Add(_maxTowersLabel);
+    }
+
+    public void Setup(Inventory inventory)
+    {
+        // Create Projectile Manager
+        _projectiles = new ProjectileManager();
+
+        _towerChoiceButtons = [];
+        _towerChoices = [];
+
+        _partChoiceButtons = [];
+        _partChoices = [];
+
+        _currentlyGraftingTower = null;
+        _currentlyChosenPart = null;
+        _editingTower = null;
+
+        _createdTowers = [];
+        _createdTowersOffset = 0.0f;
+
+        List<PartDefinition> availableParts = inventory.GetCollectedParts();
+        List<TowerDefinition> availableTowers = TowerRegistry.Towers.ToList();
+
+        // Populate Towers
+        for (int index = 0; index < availableTowers.Count; index++)
+        {
+            TowerDefinition towerDefinition = availableTowers[index];
+            _towerChoices.Add(towerDefinition);
+            _towerChoiceButtons.Add(
+                PatchButton.MakeBase(
+                    new Vector2(Interface.Width - _towerButtonSize.X, _currentTowerLabelSize.Y + _towerButtonSize.Y * index),
+                    _towerButtonSize,
+                    towerDefinition.Name
+                    ));
+        }
+
+        // Populate Parts
+        for (int index = 0; index < availableParts.Count; index++)
+        {
+            PartDefinition partDefinition = availableParts[index];
+            _partChoices.Add(partDefinition);
+            _partChoiceButtons.Add(
+                PatchButton.MakeBase(
+                    new Vector2(0, _partButtonSize.Y * index),
+                    _partButtonSize,
+                    icon: partDefinition.Texture
+                    ));
+        }
     }
 
     /// <summary>

@@ -14,11 +14,30 @@ internal class Inventory
     public List<TowerDesign> StartingDesigns = [];
 
     /// <summary>
+    /// Clears the <see cref="Inventory"/>
+    /// </summary>
+    public void Clear()
+    {
+        _parts = [];
+        StartingDesigns = [];
+    }
+
+    /// <summary>
+    /// Gets a list of all parts included in the <see cref="Inventory"/>
+    /// </summary>
+    /// <returns>List of <see cref="PartDefinition"/> of parts included in the <see cref="Inventory"/></returns>
+    public List<PartDefinition> GetCollectedParts()
+    {
+        return _parts.Where((pair) => pair.Value > 0).Select((pair) => PartRegistry.GetByName(pair.Key)).ToList();
+    }
+
+    /// <summary>
     /// Returns the count for the given <paramref name="part"/>
     /// </summary>
     /// <param name="part">Part to get count for</param>
     /// <returns>Number of this part in inventory</returns>
     public int GetPartCount(PartDefinition part) => GetPartCount(part.Name);
+
     /// <summary>
     /// Returns the count for the given <paramref name="partName"/>
     /// </summary>
@@ -29,6 +48,7 @@ internal class Inventory
         partName = partName.ToLower();
         return _parts.GetValueOrDefault(partName, 0);
     }
+
     /// <summary>
     /// Sets the count for the give <paramref name="part"/>
     /// </summary>
@@ -40,6 +60,7 @@ internal class Inventory
     /// </summary>
     /// <param name="partName">Part to set count for</param>
     /// <param name="value">Count value to set</param>
+    /// 
     public void SetPartCount(string partName, int value)
     {
         partName = partName.ToLower();
@@ -49,6 +70,7 @@ internal class Inventory
         }
         _parts[partName] = value;
     }
+
     /// <summary>
     /// Modifiers the count of the given <paramref name="part"/>
     /// </summary>

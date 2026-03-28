@@ -27,7 +27,7 @@ internal class TowerGraftingGUI
 {
     // Constants / Readonly
     private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
-    private readonly Vector2 _currentChosenLabelSize = new Vector2(128, 128);
+    private readonly Vector2 _currentChosenLabelSize = new Vector2(350, 48);
     private readonly Vector2 _partButtonSize = new Vector2(48, 48);
     private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
     private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
@@ -82,8 +82,6 @@ internal class TowerGraftingGUI
     /// </summary>
     public TowerGraftingGUI()
     {
-        _currentChosenLabel = PatchLabel.MakeBase("Current:\nNothing", Interface.TopRight - new Vector2(_currentChosenLabelSize.X, 0), _currentChosenLabelSize);
-
         // Create Night Button
         _nightButton = PatchButton.MakeBase(new Vector2(Interface.ScreenSize.X - _towerButtonSize.X, Interface.ScreenSize.Y - _towerButtonSize.Y - _createdTowerSize.Y), _towerButtonSize, "Begin");
 
@@ -93,6 +91,12 @@ internal class TowerGraftingGUI
             position: Interface.ScreenCenter - _towerDisplayOffset,
             size: _towerDisplaySize
             );
+
+        // Current Chosen Label
+        _currentChosenLabel = PatchLabel.MakeBase(
+            "Current: Nothing",
+            _towerDisplay.Position + (_towerDisplaySize - _currentChosenLabelSize) * Vector2.UnitY,
+            _currentChosenLabelSize);
 
         // Create Save Button
         _saveButton = PatchButton.MakeBaseCentered(
@@ -121,8 +125,8 @@ internal class TowerGraftingGUI
 
         _towerChoiceButtons = new ScrollingGrid<PatchButton>(
             orientation: Orientation.Vertical,
-            gridPosition: new Vector2(Interface.Width - _towerButtonSize.X, _currentChosenLabelSize.Y),
-            gridSize: new Vector2(_towerButtonSize.X, Interface.Height - _currentChosenLabelSize.Y - _createdTowerSize.Y),
+            gridPosition: new Vector2(Interface.Width - _towerButtonSize.X, 0),
+            gridSize: new Vector2(_towerButtonSize.X, Interface.Height - _createdTowerSize.Y),
             elementSize: _towerButtonSize,
             arrowSide: Corner.TopOrRight,
             arrowOffset: 0.0f,
@@ -236,7 +240,7 @@ internal class TowerGraftingGUI
                 {
                     // Select the part
                     _currentlyChosenPart = _partChoices[index];
-                    _currentChosenLabel.Text = "Current:\n" + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
+                    _currentChosenLabel.Text = "Current: " + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
                 }
             });
 
@@ -347,9 +351,6 @@ internal class TowerGraftingGUI
             Color.White
         );
 
-        // Draw the Label showing the Currently Grafting Tower
-        _currentChosenLabel.Draw(batch);
-
         // Scissor for Parts
         ReBatchWithScissor(batch, _towerChoiceButtons.GridRectangle);
         // Draw each Tower Button
@@ -403,6 +404,9 @@ internal class TowerGraftingGUI
 
         // Back to Normal
         ReBatchNormal(batch);
+
+        // Draw the Label showing the Currently Chosen Part
+        _currentChosenLabel.Draw(batch);
 
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)

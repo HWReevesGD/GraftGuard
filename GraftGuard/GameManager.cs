@@ -1,6 +1,5 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting;
-using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.UI.Screens;
@@ -8,11 +7,6 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GraftGuard
 {
@@ -28,8 +22,8 @@ namespace GraftGuard
         private readonly InputManager inputManager;
         private readonly ScrollingGrid<PatchButton> _testingGrid;
 
-        public static readonly float DawnTimeLength = 100f;
-        public static readonly float NightTimeLength = 50f;
+        public static readonly float DawnTimeLength = 10f;
+        public static readonly float NightTimeLength = 20f;
 
         public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
         {

@@ -96,24 +96,27 @@ internal class GameHUD
         }
 
         #region Health
-
-        float pulseCycle = (float)gameTime.TotalGameTime.TotalSeconds % 1;
-        float pulseScale = Math.Max(((0.5f - pulseCycle) / 0.5f), 0) * 0.25f + 1;
-
-        for (int i = 0; i < 3; i++)
+        if (PlayerData.CurrentGame.Time == TimeState.Night)
         {
-            float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
-            Vector2 size = i == 2 ? heartSize * pulseScale : heartSize;
-            Vector2 position = heartMargin + new Vector2((heartSize.X + heartGap) * i - size.X / 2, wave - size.Y / 2 + hudTopOffset);
-            
-            Rectangle rect = new Rectangle(
-                (int)(position.X),
-                (int)(position.Y),
-                (int)size.X,
-                (int)size.Y
-                );
-            //batch.Draw(heartTexture, rect, null, Color.White, 0, size / 2, SpriteEffects.None, 0);
-            batch.Draw(heartTexture, rect, Color.White);
+
+            float pulseCycle = (float)gameTime.TotalGameTime.TotalSeconds % 1;
+            float pulseScale = Math.Max(((0.5f - pulseCycle) / 0.5f), 0) * 0.25f + 1;
+
+            for (int i = 0; i < 3; i++)
+            {
+                float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
+                Vector2 size = i == 2 ? heartSize * pulseScale : heartSize;
+                Vector2 position = heartMargin + new Vector2((heartSize.X + heartGap) * i - size.X / 2, wave - size.Y / 2 + hudTopOffset);
+
+                Rectangle rect = new Rectangle(
+                    (int)(position.X),
+                    (int)(position.Y),
+                    (int)size.X,
+                    (int)size.Y
+                    );
+                //batch.Draw(heartTexture, rect, null, Color.White, 0, size / 2, SpriteEffects.None, 0);
+                batch.Draw(heartTexture, rect, Color.White);
+            }
         }
         #endregion
 

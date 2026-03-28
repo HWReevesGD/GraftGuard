@@ -46,8 +46,8 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     /// <summary>
     /// Updates the <see cref="ScrollingGrid{T}"/>. <paramref name="updateElement"/> can be used to run an <see cref="Action"/> on each element for updating
     /// </summary>
-    /// <param name="updateElement"><see cref="Action"/> to run on each element</param>
-    public void Update(GameTime time, Action<T> updateElement = null)
+    /// <param name="updateElement"><see cref="Action"/> to run on each element, with the element and the index provided</param>
+    public void Update(GameTime time, Action<T, int> updateElement = null)
     {
         // Get values for the current state
         float orientSize = GetAlong(Size, Orientation);
@@ -91,7 +91,7 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
             PositionElement(element, index);
 
             // Update Element Action
-            updateElement?.Invoke(element);
+            updateElement?.Invoke(element, index);
         }
     }
 
@@ -99,8 +99,8 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     /// Draws the <see cref="ScrollingGrid{T}"/>. <paramref name="drawElement"/> can be used to run an <see cref="Action"/> on each element for drawing
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
-    /// <param name="drawElement"><see cref="Action"/> to run on each element</param>
-    public void Draw(SpriteBatch batch, Action<SpriteBatch, T> drawElement = null)
+    /// <param name="drawElement"><see cref="Action"/> to run on each element, with the element and index provided</param>
+    public void Draw(SpriteBatch batch, Action<SpriteBatch, T, int> drawElement = null)
     {
         // Draw Back
         batch.Draw(Placeholders.TexturePixel, new Rectangle(Position.ToPoint(), Size.ToPoint()), new Color(Color.Black, 0.3f));
@@ -113,9 +113,10 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
         }
 
         // Draw Elements
-        foreach (T element in Elements)
+        for (int index = 0; index < Elements.Count; index++)
         {
-            drawElement?.Invoke(batch, element);
+            T element = Elements[index];
+            drawElement?.Invoke(batch, element, index);
         }
     }
 

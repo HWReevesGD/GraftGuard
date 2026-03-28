@@ -70,11 +70,12 @@ internal class World
     {
         Player.Setup();
         Inventory.Clear();
+        TowerManager.Setup();
     }
 
     public void OnStartingDawn()
     {
-
+        
     }
 
     public void OnStartingDay()

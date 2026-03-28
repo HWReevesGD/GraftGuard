@@ -33,11 +33,9 @@ internal class TowerGraftingGUI
     private readonly Vector2 _createdTowerSize = new Vector2(72, 72);
     private readonly Vector2 _saveButtonSize = new Vector2(128, 56);
     private readonly Vector2 _removePartSize = new Vector2(112, 56);
-    private readonly Vector2 _arrowCreatedTowerButtonSize = new Vector2(64, 32);
     private readonly Vector2 _maxTowersLabelSize = new Vector2(110, 56);
-    private readonly Vector2 _arrowCreatedTowerButtonOffset = new Vector2(-256, 0);
+    private const float _arrowCreatedTowerButtonOffset = -256.0f;
     private const float _previewScale = 2.0f;
-    private const float _arrowScrollSpeed = 256.0f;
 
     // Internal Projectile Manager
     private ProjectileManager _projectiles;
@@ -61,11 +59,6 @@ internal class TowerGraftingGUI
     private List<Button> _partChoiceButtons = [];
     private List<PartDefinition> _partChoices = [];
 
-    // Arrow Button and Boolean
-    private PatchButton _leftButton;
-    private PatchButton _rightButton;
-    private bool _showArrowButtons = false;
-
     // Label which displays the currently selected building option
     private PatchLabel _currentChosenLabel;
 
@@ -74,9 +67,8 @@ internal class TowerGraftingGUI
     private PartDefinition _currentlyChosenPart = null;
     private Tower _editingTower = null;
 
-    // Tracking Created Towers and Offset
-    private List<CreatedTowerButton> _createdTowers = [];
-    private float _createdTowersOffset = 0.0f;
+    // Created Towers Grid
+    private ScrollingGrid<CreatedTowerButton> _createdTowers;
 
     // Night Button
     private PatchButton _nightButton;
@@ -84,7 +76,6 @@ internal class TowerGraftingGUI
 
     // Created Tower Limit and Label
     private PatchLabel _maxTowersLabel;
-    
 
     public int MaxAllowedTowers { get; set; } = 20;
 
@@ -118,18 +109,6 @@ internal class TowerGraftingGUI
             text: "Remove Part"
             );
 
-        // Create Arrow Buttons
-        _leftButton = PatchButton.MakeBase(
-            new Vector2(Interface.ScreenCenter.X - _arrowCreatedTowerButtonSize.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowCreatedTowerButtonSize.Y) + _arrowCreatedTowerButtonOffset,
-            _arrowCreatedTowerButtonSize,
-            text: @"<"
-            );
-        _rightButton = PatchButton.MakeBase(
-            new Vector2(Interface.ScreenCenter.X, Interface.ScreenSize.Y - _createdTowerSize.Y - _arrowCreatedTowerButtonSize.Y) + _arrowCreatedTowerButtonOffset,
-            _arrowCreatedTowerButtonSize,
-            text: @">"
-            );
-
         // Create Max Towers Label
         _maxTowersLabel = PatchLabel.MakeBase(
             text: $"Towers: 0 / {MaxAllowedTowers}",
@@ -143,14 +122,11 @@ internal class TowerGraftingGUI
         _allUI.Add(_currentChosenLabel);
         _allUI.Add(_nightButton);
         _allUI.Add(_saveButton);
-        _allUI.Add(_leftButton);
-        _allUI.Add(_rightButton);
         _allUI.Add(_maxTowersLabel);
     }
 
     public void Setup(Inventory inventory)
     {
-        // Create Projectile Manager
         _projectiles = new ProjectileManager();
 
         _towerChoiceButtons = [];
@@ -163,8 +139,15 @@ internal class TowerGraftingGUI
         _currentlyChosenPart = null;
         _editingTower = null;
 
-        _createdTowers = [];
-        _createdTowersOffset = 0.0f;
+        _createdTowers = new ScrollingGrid<CreatedTowerButton>(
+            orientation: Orientation.Horizontal,
+            gridPosition: new Vector2(0, Interface.Height - _createdTowerSize.Y),
+            gridSize: new Vector2(Interface.Width, _createdTowerSize.Y),
+            elementSize: _createdTowerSize,
+            arrowSide: Corner.TopOrRight,
+            arrowOffset: _arrowCreatedTowerButtonOffset,
+            subgridSide: Corner.TopOrRight
+            );
 
         List<PartDefinition> availableParts = inventory.GetCollectedParts();
         List<TowerDefinition> availableTowers = TowerRegistry.Towers.ToList();
@@ -256,7 +239,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Max Towers Label
-        _maxTowersLabel.Text = $"Towers: {_createdTowers.Count} / {MaxAllowedTowers}";
+        _maxTowersLabel.Text = $"Towers: {_createdTowers.Elements.Count} / {MaxAllowedTowers}";
         // Move Max Towers Text Color towards white
         _maxTowersLabel.TextColor = _maxTowersLabel.TextColor with
         {
@@ -272,7 +255,7 @@ internal class TowerGraftingGUI
         if (_saveButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
         {
             // Allow saving if there is space
-            if (_createdTowers.Count < MaxAllowedTowers)
+            if (_createdTowers.Elements.Count < MaxAllowedTowers)
             {
                 _createdTowers.Add(
                 new CreatedTowerButton(_editingTower,
@@ -302,20 +285,12 @@ internal class TowerGraftingGUI
         }
 
         // Update Created Towers
-        for (int index = 0; index < _createdTowers.Count; index++)
-        {
-            CreatedTowerButton created = _createdTowers[index];
-            created.Update(time, world, inputManager);
-            created.Internal.Position = new Vector2(
-                _createdTowerSize.X * index - _createdTowersOffset,
-                Interface.ScreenSize.Y - _createdTowerSize.Y
-                );
-        }
+        _createdTowers.Update(time, (created, _) => created.Update(time, world, inputManager));
 
         // Handle Selecting Created Towers
-        for (int index = 0; index < _createdTowers.Count; index++)
+        for (int index = 0; index < _createdTowers.Elements.Count; index++)
         {
-            CreatedTowerButton button = _createdTowers[index];
+            CreatedTowerButton button = _createdTowers.Elements[index];
             
             if (button.Internal.JustClicked)
             {
@@ -335,37 +310,13 @@ internal class TowerGraftingGUI
             }
         }
 
-        // Calculate how much "beyond" the screen the created towers go
-        float createdBeyond = MathF.Max(0.0f, -(Interface.ScreenSize.X - _createdTowerSize.X * _createdTowers.Count));
-        _showArrowButtons = createdBeyond > 0.0f;
-
-        // Update Arrow Buttons (If there are enough created towers)
-        if (_showArrowButtons)
-        {
-            _leftButton.Update();
-            _rightButton.Update();
-
-            float delta = time.Delta();
-
-            if (_leftButton.IsPressed)
-            {
-                _createdTowersOffset -= delta * _arrowScrollSpeed;
-            }
-            if (_rightButton.IsPressed)
-            {
-                _createdTowersOffset += delta * _arrowScrollSpeed;
-            }
-        }
-        // Clamp Created Towers Offset
-        _createdTowersOffset = MathHelper.Clamp(_createdTowersOffset, 0.0f, createdBeyond);
-
         // Update Night Button
         _nightButton.Update();
         if (_nightButton.JustClicked)
         {
             // Save Designs
             world.Inventory.StartingDesigns.AddRange(
-                _createdTowers.Select(
+                _createdTowers.Elements.Select(
                     (tower) => new TowerDesign(tower.Definition, tower.Tower.Parts.ToList())
                     )
                 );
@@ -394,15 +345,9 @@ internal class TowerGraftingGUI
             Color.White
         );
 
-        // Draw Background for created towers
-        batch.Draw(
-            Placeholders.TexturePixel,
-            new Rectangle(0, (int)(Interface.ScreenSize.Y - _createdTowerSize.Y),
-                (int)Interface.ScreenSize.X, (int)_createdTowerSize.X),
-            new Color(0.0f, 0.0f, 0.0f, 0.4f));
-
         // Draw the Label showing the Currently Grafting Tower
         _currentChosenLabel.Draw(batch);
+
         // Draw each Tower Button
         foreach (Button button in _towerChoiceButtons)
         {
@@ -420,23 +365,13 @@ internal class TowerGraftingGUI
         _towerDisplay.Draw(batch);
 
         // Draw Created Towers
-        foreach (CreatedTowerButton created in _createdTowers)
-        {
-            created.Draw(batch, time, world, inputManager);
-        }
+        _createdTowers.Draw(batch, (batch, created, _) => created.Draw(batch, time, world, inputManager));
 
         // Draw Save Button
         _saveButton.Draw(batch);
 
         // Draw Remove Part Button
         _removePartButton.Draw(batch);
-
-        // Draw Arrow Buttons (If there are enough created towers)
-        if (_showArrowButtons)
-        {
-            _leftButton.Draw(batch);
-            _rightButton.Draw(batch);
-        }
 
         // Draw Tower Count Label
         _maxTowersLabel.Draw(batch);

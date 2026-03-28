@@ -17,6 +17,14 @@ internal class TowerManager
         _world = world;
     }
 
+    /// <summary>
+    /// Sets up the <see cref="TowerManager"/> for a new Session
+    /// </summary>
+    public void Setup()
+    {
+        _towers = [];
+    }
+
     public void Update(GameTime time, World world, InputManager inputManager, TimeState state)
     {
         foreach (Tower tower in _towers)

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace GraftGuard.Map;
 internal class Player : GameObject
 {
-    public const int MaxHeldParts = 4;
+    public const int MaxHeldParts = 8;
     public const float PickupRadius = 32;
     public const float Speed = 600.0f;
 

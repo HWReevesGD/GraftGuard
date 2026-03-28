@@ -12,6 +12,24 @@ internal class ProjectileManager
 {
     public List<Projectile> Projectiles = [];
     private Stack<Projectile> _toRemove = [];
+
+    /// <summary>
+    /// Sets up the <see cref="ProjectileManager"/> for a new Session
+    /// </summary>
+    public void Setup()
+    {
+        Projectiles = [];
+        _toRemove = [];
+    }
+
+    public void ClearProjectiles()
+    {
+        foreach (Projectile projectile in Projectiles)
+        {
+            _toRemove.Push(projectile);
+        }
+    }
+
     public void Update(GameTime time, World world, InputManager inputManager)
     {
         // Update Projectiles

@@ -12,17 +12,19 @@ internal class EnemyManager
     public List<Enemy> Enemies;
     public PathManager PathManager { get; set; }
 
+    public EnemyManager(World world) => Setup(world);
 
-    public EnemyManager(World world)
+    /// <summary>
+    /// Sets up the <see cref="EnemyManager"/> for a new Session
+    /// </summary>
+    public void Setup(World world)
     {
-
         PathManager = new PathManager();
         PathManager.BuildGrid(world);
 
         Enemies = [
             new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
             ];
-        
     }
 
     private List<PathNode> _debugPath;

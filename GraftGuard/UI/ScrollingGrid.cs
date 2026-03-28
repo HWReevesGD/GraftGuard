@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -18,6 +19,7 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     public const float ScrollSpeed = 256.0f;
     public Vector2 Position { get; init; }
     public Vector2 Size { get; init; }
+    public Rectangle GridRectangle => new Rectangle(Position.ToPoint(), Size.ToPoint());
     public Vector2 ElementSize { get; init; }
     public List<T> Elements { get; set; }
     public Orientation Orientation { get; init; }
@@ -26,6 +28,7 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     public Corner SubgridSide { get; init; }
     public float ScrollAmount { get; private set; }
     public bool IsScrollActive { get; private set; }
+    public bool IsMouseOver => GridRectangle.Contains(Mouse.GetState().Position);
     private PatchButton _negativeArrow;
     private PatchButton _positiveArrow;
     public ScrollingGrid(Orientation orientation, Vector2 gridPosition, Vector2 gridSize, Vector2 elementSize, Corner arrowSide, float arrowOffset, Corner subgridSide)
@@ -100,16 +103,24 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
     /// <param name="drawElement"><see cref="Action"/> to run on each element, with the element and index provided</param>
-    public void Draw(SpriteBatch batch, Action<SpriteBatch, T, int> drawElement = null)
+    public void Draw(SpriteBatch batch, Action<SpriteBatch, T, int> drawElement = null, bool skipBackground = false)
     {
         // Draw Back
-        batch.Draw(Placeholders.TexturePixel, new Rectangle(Position.ToPoint(), Size.ToPoint()), new Color(Color.Black, 0.3f));
+        if (!skipBackground)
+        {
+            batch.Draw(Placeholders.TexturePixel, new Rectangle(Position.ToPoint(), Size.ToPoint()), new Color(Color.Black, 0.3f));
+        }
 
         // Draw Arrows
         if (IsScrollActive)
         {
             _negativeArrow.Draw(batch);
             _positiveArrow.Draw(batch);
+        }
+
+        if (drawElement is null)
+        {
+            return;
         }
 
         // Draw Elements

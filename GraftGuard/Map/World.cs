@@ -71,6 +71,8 @@ internal class World
         Player.Setup();
         Inventory.Clear();
         TowerManager.Setup();
+        ProjectileManager.Setup();
+        EnemyManager.Setup(this);
     }
 
     public void OnStartingDawn()

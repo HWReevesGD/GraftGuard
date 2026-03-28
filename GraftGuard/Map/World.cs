@@ -68,7 +68,24 @@ internal class World
 
     public void OnNewGameStarted()
     {
+        Player.Setup();
         Inventory.Clear();
+    }
+
+    public void OnStartingDawn()
+    {
+
+    }
+
+    public void OnStartingDay()
+    {
+        Player.ClearHeldParts();
+        ScatteredParts = [];
+    }
+
+    public void OnStartingNight()
+    {
+
     }
 
     // Methods

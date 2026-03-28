@@ -71,7 +71,7 @@ namespace GraftGuard
         /// </summary>
         private void OnStartingDawn()
         {
-
+            _world.OnStartingDawn();
         }
 
         /// <summary>
@@ -79,6 +79,7 @@ namespace GraftGuard
         /// </summary>
         private void OnStartingDay()
         {
+            _world.OnStartingDay();
             _towerGrafting.Setup(_world.Inventory);
         }
 
@@ -93,6 +94,8 @@ namespace GraftGuard
                 PlayerData.CurrentGame.Time = TimeState.Night;
                 PlayerData.CurrentGame.Timer = NightTimeLength;
             }
+
+            _world.OnStartingNight();
 
             // Setup Night Placement GUI
             _nightPlacement.Setup(_world.Inventory);

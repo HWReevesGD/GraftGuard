@@ -28,7 +28,7 @@ internal class Player : GameObject
 
     public static void LoadContent(ContentManager content)
     {
-        //texture = content.Load<Texture2D>("playerplaceholder");
+        
     }
 
     public Player(Vector2 position) : base(position, new Vector2(25, 50), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
@@ -36,6 +36,15 @@ internal class Player : GameObject
         _collectionCircle = new Circle(CenterOffset, PickupRadius);
         HeldParts = [];
         playerVisual = new EnemyVisual(BaseRegistry.GetByName("Default"), 1, AnimationClips.Idle, position);
+    }
+
+    /// <summary>
+    /// Sets up the <see cref="Player"/> for a new Session
+    /// </summary>
+    public void Setup()
+    {
+        Position = Vector2.Zero;
+        ClearHeldParts();
     }
 
     public void Update(GameTime gameTime, InputManager inputManager, World world)

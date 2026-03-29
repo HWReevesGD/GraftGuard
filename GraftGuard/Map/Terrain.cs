@@ -34,6 +34,17 @@ internal class Terrain
         {
             TerrainPatch.Draw(batch, box);
         }
+
+        //test props
+        EnvironmentProps.Draw(batch, PropType.LargeTree1, new Vector2(200, 200));
+        EnvironmentProps.Draw(batch, PropType.LargeTree2, new Vector2(400, 200));
+        EnvironmentProps.Draw(batch, PropType.Flowers1, new Vector2(200, 400));
+        EnvironmentProps.Draw(batch, PropType.Flowers2, new Vector2(300, 400));
+        EnvironmentProps.Draw(batch, PropType.Flowers3, new Vector2(400, 400));
+
+        EnvironmentProps.Draw(batch, PropType.BushSpiky, new Vector2(200, 300));
+        EnvironmentProps.Draw(batch, PropType.BushSpiky, new Vector2(300, 300));
+        EnvironmentProps.Draw(batch, PropType.SmallBush, new Vector2(400, 300));
     }
     public bool Overlaps(Circle circle)
     {

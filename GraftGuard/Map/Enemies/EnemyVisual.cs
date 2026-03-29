@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Map.Enemies.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,11 +38,11 @@ namespace GraftGuard.Map.Enemies
         private void InitializeDefaultParts()
         {
 
-            List<PartDefinition> headPool = PartRegistry.Parts
+            List<PartDefinition> headPool = GraftLibrary.AllParts
                 .Where(p => p.Type == PartType.Head).ToList();
 
 
-            List<PartDefinition> limbPool = PartRegistry.Parts
+            List<PartDefinition> limbPool = GraftLibrary.AllParts
                 .Where(p => p.Type == PartType.Limb).ToList();
 
             // Select a random head (if any exist)

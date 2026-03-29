@@ -50,18 +50,18 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        // Register parts from JSON
-        PartRegistry.LoadFromLibrary(Content, "graft_library.json");
+        // Register Graft Library from JSON
+        GraftLibrary.LoadLibrary(Content, "graft_library.json");
 
-        // Register bases from JSON
-        BaseRegistry.LoadFromLibrary(Content, "graft_library.json");
-
+        /*
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
         PartBehaviorRegistry.Register("Flaming", PartFlaming.Create);
 
         // Serialize part behavior names
         PartBehaviorRegistry.Save(Content);
+
+        */
 
         // Content for Static classes
         Fonts.LoadContent(Content);
@@ -77,6 +77,9 @@ public class Game1 : Game
         PauseMenu.LoadContent(Content);
         GameOverScreen.LoadContent(Content);
         GameHUD.LoadContent(Content);
+
+        
+        EnvironmentProps.LoadContent(Content);
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);

@@ -35,7 +35,7 @@ internal class Player : GameObject
     {
         _collectionCircle = new Circle(CenterOffset, PickupRadius);
         HeldParts = [];
-        playerVisual = new EnemyVisual(BaseRegistry.GetByName("Default"), 1, AnimationClips.Idle, position);
+        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, position);
     }
 
     /// <summary>

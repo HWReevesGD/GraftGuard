@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using System.Linq;
 using GraftGuard.Utility;
+using GraftGuard.Grafting;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -23,7 +24,7 @@ internal class EnemyManager
         PathManager.BuildGrid(world);
 
         Enemies = [
-            new EnemyDummy(new Vector2(400, 350), BaseRegistry.GetRandom()),
+            new EnemyDummy(new Vector2(400, 350), GraftLibrary.GetRandomBase()),
             ];
     }
 

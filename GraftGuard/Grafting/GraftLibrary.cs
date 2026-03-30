@@ -26,7 +26,7 @@ namespace GraftGuard.Grafting
             {
                 using (StreamReader reader = new StreamReader(stream))
                 {
-                    string json = File.ReadAllText(jsonPath);
+                    string json = reader.ReadToEnd();
                     var library = JsonSerializer.Deserialize<GraftLibrary>(json);
 
 

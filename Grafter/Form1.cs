@@ -26,6 +26,9 @@ namespace Grafter
         {
             txtContentPath.Text = DataManager.ProjectContentPath;
 
+            DataManager.ProjectContentPath = @"..\..\..\..\GraftGuard\Content";
+            DataManager.ProjectRootPath = @"..\..\..\..\GraftGuard";
+
             bool isReady = await MgcbToolManager.EnsureMgcbReady();
 
             if (!isReady)

@@ -1,0 +1,138 @@
+{
+  "Parts": [
+    {
+      "Name": "knife",
+      "Type": 0,
+      "BaseDamage": 1,
+      "SpeedModifier": 1,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_1",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_1.png",
+      "PivotX": 0.4,
+      "PivotY": 0.0,
+      "PartBehaviorNames": [
+        "Slashing"
+      ]
+    },
+    {
+      "Name": "flamethrower",
+      "Type": 0,
+      "BaseDamage": 1,
+      "SpeedModifier": 1,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_2",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_2.png",
+      "PivotX": 0.47947213,
+      "PivotY": 0.20234604,
+      "PartBehaviorNames": [
+        "Flaming"
+      ]
+    },
+    {
+      "Name": "part3",
+      "Type": 0,
+      "BaseDamage": 1,
+      "SpeedModifier": 23,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_3",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_3.png",
+      "PivotX": 0.47947213,
+      "PivotY": 0.19354838,
+      "PartBehaviorNames": []
+    },
+    {
+      "Name": "part4",
+      "Type": 0,
+      "BaseDamage": 1,
+      "SpeedModifier": 1,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_4",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_4.png",
+      "PivotX": 0.48240468,
+      "PivotY": 0.19061583,
+      "PartBehaviorNames": []
+    },
+    {
+      "Name": "part6",
+      "Type": 0,
+      "BaseDamage": 1,
+      "SpeedModifier": 1,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_3",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_3.png",
+      "PivotX": 0.47947213,
+      "PivotY": 0.19354838,
+      "PartBehaviorNames": []
+    },
+    {
+      "Name": "head",
+      "Type": 1,
+      "BaseDamage": 1,
+      "SpeedModifier": 1,
+      "ArmorModifier": 1,
+      "RangeModifier": 1,
+      "CriticalModifier": 1,
+      "HealthModifier": 1,
+      "TextureName": "enemy_5",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_5.png",
+      "PivotX": 0.4612326,
+      "PivotY": 0.66302186,
+      "PartBehaviorNames": []
+    }
+  ],
+  "Bases": [
+    {
+      "Name": "Default",
+      "TextureName": "enemy_0",
+      "IsTorso": true,
+      "FullImagePath": "C:\\Users\\askhu\\OneDrive\\Desktop\\GraftGuard\\GraftGuard\\Content\\enemy_0.png",
+      "AttachPoints": [
+        {
+          "Name": "Arm_R",
+          "PivotX": 0.643695,
+          "PivotY": 0.28445747,
+          "ColorArgb": -16319527
+        },
+        {
+          "Name": "Arm_L",
+          "PivotX": 0.31524926,
+          "PivotY": 0.28445747,
+          "ColorArgb": -1426474
+        },
+        {
+          "Name": "Leg_L",
+          "PivotX": 0.29765397,
+          "PivotY": 0.7683284,
+          "ColorArgb": -8147589
+        },
+        {
+          "Name": "Leg_R",
+          "PivotX": 0.66129035,
+          "PivotY": 0.7859238,
+          "ColorArgb": -6842821
+        },
+        {
+          "Name": "Head",
+          "PivotX": 0.47947213,
+          "PivotY": 0.1319648,
+          "ColorArgb": -6816979
+        }
+      ]
+    }
+  ]
+}

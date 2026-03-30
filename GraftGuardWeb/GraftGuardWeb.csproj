@@ -1,0 +1,142 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <PropertyGroup>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <RootNamespace>GraftGuardWeb</RootNamespace>
+    <AssemblyName>GraftGuardWeb</AssemblyName>
+    <DefineConstants>$(DefineConstants);BLAZORGL</DefineConstants>
+	<KniPlatform>BlazorGL</KniPlatform>
+	<PublishTrimmed>false</PublishTrimmed>
+	<TrimMode>partial</TrimMode>
+  </PropertyGroup>
+  
+  <PropertyGroup>
+    <BlazorEnableTimeZoneSupport>false</BlazorEnableTimeZoneSupport>
+    <!--<InvariantGlobalization>true</InvariantGlobalization>-->
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="GraftGuard\Circle.cs" />
+    <Compile Include="GraftGuard\Data\GameData.cs" />
+    <Compile Include="GraftGuard\Data\PlayerData.cs" />
+    <Compile Include="GraftGuard\Game1.cs" />
+    <Compile Include="GraftGuard\GameManager.cs" />
+    <Compile Include="GraftGuard\GameObject.cs" />
+    <Compile Include="GraftGuard\Grafting\Damage.cs" />
+    <Compile Include="GraftGuard\Grafting\GraftLibrary.cs" />
+    <Compile Include="GraftGuard\Grafting\Inventory.cs" />
+    <Compile Include="GraftGuard\Grafting\PartSettings.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\BaseDefinition.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\Behaviors\IPartBehavior.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\Behaviors\PartFlaming.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\Behaviors\PartSlashing.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\PartAmount.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\PartBehaviorDefinition.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\PartBehaviorRegistry.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\PartDefinition.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\TowerDefinition.cs" />
+    <Compile Include="GraftGuard\Grafting\Registry\TowerRegistry.cs" />
+    <Compile Include="GraftGuard\Grafting\ScatteredPart.cs" />
+    <Compile Include="GraftGuard\Grafting\TowerDesign.cs" />
+    <Compile Include="GraftGuard\Grafting\TowerPart.cs" />
+    <Compile Include="GraftGuard\Grafting\Towers\Tower.cs" />
+    <Compile Include="GraftGuard\Grafting\Towers\TowerManager.cs" />
+    <Compile Include="GraftGuard\Grafting\Towers\TowerSpinner.cs" />
+    <Compile Include="GraftGuard\Grafting\Towers\TowerTrap.cs" />
+    <Compile Include="GraftGuard\Graphics\Camera.cs" />
+    <Compile Include="GraftGuard\Graphics\NinePatch.cs" />
+    <Compile Include="GraftGuard\Graphics\TextEffects\Effects\ShakeTextEffect.cs" />
+    <Compile Include="GraftGuard\Graphics\TextEffects\Effects\WavyTextEffect.cs" />
+    <Compile Include="GraftGuard\Graphics\TextEffects\ITextEffect.cs" />
+    <Compile Include="GraftGuard\Graphics\TextEffects\Letter.cs" />
+    <Compile Include="GraftGuard\Graphics\TextEffects\Text.cs" />
+    <Compile Include="GraftGuard\InputManager.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\Animation\AnimationClip.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\Animation\AnimationClips.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\Animation\Animator.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\Enemy.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\EnemyDummy.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\EnemyManager.cs" />
+    <Compile Include="GraftGuard\Map\Enemies\EnemyVisual.cs" />
+    <Compile Include="GraftGuard\Map\EnvironmentProps.cs" />
+    <Compile Include="GraftGuard\Map\Garage.cs" />
+    <Compile Include="GraftGuard\Map\Pathing\PathManager.cs" />
+    <Compile Include="GraftGuard\Map\Pathing\PathNode.cs" />
+    <Compile Include="GraftGuard\Map\Player.cs" />
+    <Compile Include="GraftGuard\Map\Projectile.cs" />
+    <Compile Include="GraftGuard\Map\Projectiles\ProjectileFire.cs" />
+    <Compile Include="GraftGuard\Map\Projectiles\ProjectileManager.cs" />
+    <Compile Include="GraftGuard\Map\Terrain.cs" />
+    <Compile Include="GraftGuard\Map\World.cs" />
+    <Compile Include="GraftGuard\ShapeBatch.cs" />
+    <Compile Include="GraftGuard\UI\Button.cs" />
+    <Compile Include="GraftGuard\UI\Corner.cs" />
+    <Compile Include="GraftGuard\UI\CreatedTowerButton.cs" />
+    <Compile Include="GraftGuard\UI\Fonts.cs" />
+    <Compile Include="GraftGuard\UI\IMouseDetectable.cs" />
+    <Compile Include="GraftGuard\UI\IPositionable.cs" />
+    <Compile Include="GraftGuard\UI\ISizeable.cs" />
+    <Compile Include="GraftGuard\UI\NightPlacementGUI.cs" />
+    <Compile Include="GraftGuard\UI\Orientation.cs" />
+    <Compile Include="GraftGuard\UI\PatchButton.cs" />
+    <Compile Include="GraftGuard\UI\PatchLabel.cs" />
+    <Compile Include="GraftGuard\UI\Screens\GameHUD.cs" />
+    <Compile Include="GraftGuard\UI\Screens\GameOverScreen.cs" />
+    <Compile Include="GraftGuard\UI\Screens\MainMenu.cs" />
+    <Compile Include="GraftGuard\UI\Screens\PauseMenu.cs" />
+    <Compile Include="GraftGuard\UI\ScrollingGrid.cs" />
+    <Compile Include="GraftGuard\UI\TowerGraftingGUI.cs" />
+    <Compile Include="GraftGuard\Utility\ClassExtensions.cs" />
+    <Compile Include="GraftGuard\Utility\Interface.cs" />
+    <Compile Include="GraftGuard\Utility\IntervalTimer.cs" />
+    <Compile Include="GraftGuard\Utility\Placeholders.cs" />
+    <Compile Include="Pages\Index.razor.cs" />
+    <Compile Include="Program.cs" />
+    <Compile Include="GraftGuardWebGame.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Content\Fonts\ProtestRiot-Regular.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Include="Content\Fonts\ProtestStrike-Regular.ttf">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="nkast.Xna.Framework" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Content" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Graphics" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Audio" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Media" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Input" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Game" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Devices" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Storage" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.XR" Version="4.2.9001" />
+    <PackageReference Include="nkast.Kni.Platform.Blazor.GL" Version="4.2.9001" />
+    <PackageReference Include="nkast.Xna.Framework.Content.Pipeline.Builder" Version="4.2.9001" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net8.0' ">
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.17" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.17" PrivateAssets="all" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <KniContentReference Include="Content\GraftGuardWebContent.mgcb" />
+  </ItemGroup>
+
+</Project>

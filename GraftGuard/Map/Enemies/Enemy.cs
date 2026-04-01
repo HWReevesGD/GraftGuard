@@ -14,6 +14,14 @@ internal class Enemy : GameObject
     private Vector2 dirUnitVec;
     private float speed;
 
+    // Fields for speed modification
+    private float speedMod;
+    private int speedModDuration;
+
+    // Fields for Damage over time
+    private float damageOverTime;
+    private int damageOverTimeDuration;
+
     public float Health { get; set; }
 
     public EnemyVisual Visual { get; private set; }
@@ -24,6 +32,11 @@ internal class Enemy : GameObject
         this.Health = health;
         this.speed = speed;
         dirUnitVec = new Vector2();
+
+        speedMod = 0;
+        speedModDuration = 0;
+        damageOverTime = 0;
+        damageOverTimeDuration = 0;
 
         // Attachment points logic could also be moved to a Factory or Registry later
         //SetupDefaultAttachmentPoints(torso);
@@ -57,8 +70,9 @@ internal class Enemy : GameObject
         Vector2 dirVec = target.WorldPosition - Position;
         dirUnitVec = dirVec / dirVec.Length();
 
-        // Move the enemy
-        Position += dirUnitVec * speed;
+        // Move the enemy after checking to ensure it won't move backwards (sufficiently large speed penalties should just freeze it)
+        if (speed - speedMod >= 0)
+            Position += dirUnitVec * (speed - speedMod);
     }
 
     public virtual void OnDeath()
@@ -68,6 +82,17 @@ internal class Enemy : GameObject
 
     public override void Update(GameTime gameTime, InputManager inputManager)
     {
+        // process speed modifier duration
+        if (speedModDuration > 0)
+            speedMod--;
+
+        // process DoT
+        if (damageOverTimeDuration > 0)
+        {
+            Health -= damageOverTime;
+            damageOverTimeDuration--;
+        }
+        
         Position = Position + new Vector2(1,0);
         Visual.Update(gameTime, Position);
     }
@@ -75,5 +100,27 @@ internal class Enemy : GameObject
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
     {
         Visual.Draw(spriteBatch, Position);
+    }
+
+    /// <summary>
+    /// Sets a speed modifier for a duration when called, meant to be called by tower attacks that hit the enemy
+    /// </summary>
+    /// <param name="modifier">the amount subtracted from move speed (larger number slows by more)</param>
+    /// <param name="duration">duration of the affect in game ticks</param>
+    public void setSpeedModifier(float modifier, int duration)
+    {
+        this.speedMod = modifier;
+        this.speedModDuration = duration;
+    }
+
+    /// <summary>
+    /// Sets damage over time for a duration when called, meant to be called by tower attacks that hit the enemy
+    /// </summary>
+    /// <param name="damage">the damage taken per tick</param>
+    /// <param name="duration">the duration of the effect</param>
+    public void setDamageOverTime(float damage, int duration)
+    {
+        this.damageOverTime = damage;
+        this.damageOverTimeDuration = duration;
     }
 }

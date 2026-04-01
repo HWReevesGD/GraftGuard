@@ -1,14 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://bb4rxn8gdwf5w"]
+[gd_scene load_steps=5 format=3 uid="uid://bb4rxn8gdwf5w"]
 
 [ext_resource type="Script" uid="uid://dpsq57qd5ri88" path="res://painter.gd" id="1_ea1xw"]
+[ext_resource type="Script" uid="uid://24rfy0fl56hp" path="res://circle_drawing.gd" id="2_p7u2u"]
+[ext_resource type="Script" uid="uid://b3a2ccojxw6b5" path="res://world_painting.gd" id="3_fq2sj"]
+[ext_resource type="Script" uid="uid://qhteidlibvc8" path="res://world_picker.gd" id="4_nuucx"]
 
 [node name="Painter" type="Control"]
+custom_minimum_size = Vector2(480, 0)
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
 script = ExtResource("1_ea1xw")
 
 [node name="Panel" type="Panel" parent="."]
@@ -70,6 +75,7 @@ text = "Cutout:"
 
 [node name="Vertical" type="VBoxContainer" parent="Panel/MainMargin/MainVertical/Rect"]
 layout_mode = 2
+size_flags_horizontal = 3
 
 [node name="Horizontal" type="HBoxContainer" parent="Panel/MainMargin/MainVertical/Rect/Vertical"]
 layout_mode = 2
@@ -102,6 +108,42 @@ rounded = true
 prefix = "H:"
 select_all_on_focus = true
 
+[node name="SortingOrigin" type="HBoxContainer" parent="Panel/MainMargin/MainVertical"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Panel/MainMargin/MainVertical/SortingOrigin"]
+layout_mode = 2
+text = "Sort Origin:"
+
+[node name="Vertical" type="VBoxContainer" parent="Panel/MainMargin/MainVertical/SortingOrigin"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Horizontal" type="HBoxContainer" parent="Panel/MainMargin/MainVertical/SortingOrigin/Vertical"]
+layout_mode = 2
+
+[node name="X" type="SpinBox" parent="Panel/MainMargin/MainVertical/SortingOrigin/Vertical/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -2560.0
+max_value = 2560.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+prefix = "X:"
+select_all_on_focus = true
+
+[node name="Y" type="SpinBox" parent="Panel/MainMargin/MainVertical/SortingOrigin/Vertical/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -2560.0
+max_value = 2560.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+prefix = "Y:"
+select_all_on_focus = true
+
 [node name="PropBackground" type="ColorRect" parent="Panel/MainMargin/MainVertical"]
 clip_children = 2
 custom_minimum_size = Vector2(320, 320)
@@ -128,6 +170,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.3390949, 0.3390949, 0.3390949, 1)
+
+[node name="SortOrigin" type="Marker2D" parent="Panel/MainMargin/MainVertical/PropBackground/PropTexture"]
+position = Vector2(-235, -319)
+script = ExtResource("2_p7u2u")
 
 [node name="Zoom" type="PanelContainer" parent="Panel/MainMargin/MainVertical"]
 self_modulate = Color(0.99116415, 0.99116427, 0.99116415, 1)
@@ -157,7 +203,7 @@ value = 1.1
 
 [node name="SaveButton" type="Button" parent="Panel/MainMargin/MainVertical"]
 layout_mode = 2
-text = "Save"
+text = "Save / Update"
 
 [node name="Panel" type="Panel" parent="Panel/MainMargin/MainVertical"]
 modulate = Color(0.22670749, 0.22670749, 0.22670746, 1)
@@ -169,3 +215,34 @@ layout_mode = 2
 size_flags_vertical = 3
 allow_search = false
 max_columns = 10
+icon_mode = 0
+
+[node name="World" type="Node2D" parent="."]
+script = ExtResource("3_fq2sj")
+
+[node name="Picker" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(360, 0)
+layout_mode = 1
+anchors_preset = 11
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("4_nuucx")
+
+[node name="Margin" type="MarginContainer" parent="Picker"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Vertical" type="VBoxContainer" parent="Picker/Margin"]
+layout_mode = 2
+
+[node name="PropPicker" type="ItemList" parent="Picker/Margin/Vertical"]
+layout_mode = 2
+size_flags_vertical = 3
+max_columns = 10
+icon_mode = 0

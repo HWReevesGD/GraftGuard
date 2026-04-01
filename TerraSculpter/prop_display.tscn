@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxun613vh6l53"]
+
+[ext_resource type="Script" uid="uid://byy6xlbxps2t8" path="res://prop_display.gd" id="1_my6v6"]
+
+[node name="PropDisplay" type="Node2D"]
+script = ExtResource("1_my6v6")
+
+[node name="Sprite" type="Sprite2D" parent="."]

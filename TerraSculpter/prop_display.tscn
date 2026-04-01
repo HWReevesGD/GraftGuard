@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://byy6xlbxps2t8" path="res://prop_display.gd" id="1_my6v6"]
 
 [node name="PropDisplay" type="Node2D"]
+y_sort_enabled = true
 script = ExtResource("1_my6v6")
 
 [node name="Sprite" type="Sprite2D" parent="."]
+y_sort_enabled = true

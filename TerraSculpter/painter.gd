@@ -2,19 +2,35 @@ extends Control
 class_name Painter
 
 @onready var name_entry: LineEdit = $Panel/MainMargin/MainVertical/Name/NameEntry
+
 @onready var x: SpinBox = $Panel/MainMargin/MainVertical/Rect/Vertical/Horizontal/X
 @onready var y: SpinBox = $Panel/MainMargin/MainVertical/Rect/Vertical/Horizontal/Y
 @onready var w: SpinBox = $Panel/MainMargin/MainVertical/Rect/Vertical/Horizontal/W
 @onready var h: SpinBox = $Panel/MainMargin/MainVertical/Rect/Vertical/Horizontal/H
+
 @onready var prop_texture: TextureRect = $Panel/MainMargin/MainVertical/PropBackground/PropTexture
+
 @onready var texture_picker: OptionButton = $Panel/MainMargin/MainVertical/Texture/TexturePicker
+
 @onready var zoom_slider: HSlider = $Panel/MainMargin/MainVertical/Zoom/MarginContainer/SliderBox/ZoomSlider
+
 @onready var save_button: Button = $Panel/MainMargin/MainVertical/SaveButton
+
 @onready var prop_list: ItemList = $Panel/MainMargin/MainVertical/PropList
+
 @onready var sort_x: SpinBox = $Panel/MainMargin/MainVertical/SortingOrigin/Vertical/Horizontal/X
 @onready var sort_y: SpinBox = $Panel/MainMargin/MainVertical/SortingOrigin/Vertical/Horizontal/Y
+
 @onready var sort_origin_display: Marker2D = $Panel/MainMargin/MainVertical/PropBackground/PropTexture/SortOrigin
+
 @onready var world_picker: WorldPicker = $Picker
+
+@onready var collision_check: CheckBox = $Panel/MainMargin/MainVertical/Collision/CollisionCheck
+@onready var collision_data: VBoxContainer = $Panel/MainMargin/MainVertical/Collision/CollisionData
+@onready var collision_x: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/X
+@onready var collision_y: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/Y
+@onready var collision_w: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/W
+@onready var collision_h: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/H
 
 var prop_name: String:
 	get(): return name_entry.text
@@ -51,6 +67,19 @@ func load_prop(loading_prop_name: String) -> void:
 	sort_x.value = prop.SortingOrigin.x
 	sort_y.value = prop.SortingOrigin.y
 	
+	collision_check.button_pressed = prop.EnableCollision
+	
+	if prop.EnableCollision:
+		collision_x.value = prop.Collision.position.x
+		collision_y.value = prop.Collision.position.y
+		collision_w.value = prop.Collision.size.x
+		collision_h.value = prop.Collision.size.y
+	else:
+		collision_x.value = 0.0
+		collision_y.value = 0.0
+		collision_w.value = 32.0
+		collision_h.value = 32.0
+	
 	print("Size: " + str(prop.Texture.get_size()))
 	print("Cutout: " + str(prop.Cutout))
 
@@ -59,13 +88,26 @@ func save_prop() -> void:
 		printerr("Must assign a name to a saved prop!")
 		return
 	
+	var collision_rect: Rect2i = Rect2i(0.0, 0.0, 32.0, 32.0)
+	
+	if collision_check.button_pressed:
+		collision_rect = Rect2i(
+			int(collision_x.value),
+			int(collision_y.value),
+			int(collision_w.value),
+			int(collision_h.value)
+		)
+	
 	var prop: Prop = Prop.Make(
 		prop_name,
 		texture_picker.get_item_text(texture_picker.selected),
 		prop_texture.texture.atlas,
 		Rect2i(prop_texture.texture.region),
-		Vector2i(int(sort_x.value), int(sort_y.value))
+		Vector2i(int(sort_x.value), int(sort_y.value)),
+		collision_check.button_pressed,
+		collision_rect
 	)
+	
 	PropRegistry.AddOrUpdateProp(prop)
 	update_prop_list()
 	
@@ -118,6 +160,23 @@ func _process(_delta: float) -> void:
 	prop_texture.scale = Vector2.ONE * zoom_slider.value
 	
 	sort_origin_display.global_position = prop_texture.global_position + Vector2(sort_x.value, sort_y.value) * zoom_slider.value
+	
+	collision_data.visible = collision_check.button_pressed
+	
+	queue_redraw()
 
 func get_prop_rect() -> Rect2:
 	return Rect2(x.value, y.value, w.value, h.value)
+
+func _draw() -> void:
+	var tex_pos: Vector2 = prop_texture.global_position - global_position
+	if collision_check.button_pressed:
+		draw_rect(
+		Rect2(
+			(Vector2(collision_x.value, collision_y.value) * zoom_slider.value + tex_pos),
+			Vector2(collision_w.value, collision_h.value) * zoom_slider.value
+			),
+		Color.RED,
+		false,
+		2.0
+		)

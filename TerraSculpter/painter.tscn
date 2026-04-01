@@ -144,6 +144,65 @@ allow_lesser = true
 prefix = "Y:"
 select_all_on_focus = true
 
+[node name="Collision" type="HBoxContainer" parent="Panel/MainMargin/MainVertical"]
+layout_mode = 2
+
+[node name="CollisionCheck" type="CheckBox" parent="Panel/MainMargin/MainVertical/Collision"]
+layout_mode = 2
+button_pressed = true
+text = "Collision"
+
+[node name="CollisionData" type="VBoxContainer" parent="Panel/MainMargin/MainVertical/Collision"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Horizontal" type="HBoxContainer" parent="Panel/MainMargin/MainVertical/Collision/CollisionData"]
+layout_mode = 2
+
+[node name="X" type="SpinBox" parent="Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000000.0
+max_value = 1000000.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+prefix = "X:"
+select_all_on_focus = true
+
+[node name="Y" type="SpinBox" parent="Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -1000000.0
+max_value = 1000000.0
+rounded = true
+allow_greater = true
+allow_lesser = true
+prefix = "Y:"
+select_all_on_focus = true
+
+[node name="W" type="SpinBox" parent="Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1000000.0
+value = 32.0
+rounded = true
+allow_greater = true
+prefix = "W:"
+select_all_on_focus = true
+
+[node name="H" type="SpinBox" parent="Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 1.0
+max_value = 1000000.0
+value = 32.0
+rounded = true
+allow_greater = true
+prefix = "H:"
+select_all_on_focus = true
+
 [node name="PropBackground" type="ColorRect" parent="Panel/MainMargin/MainVertical"]
 clip_children = 2
 custom_minimum_size = Vector2(320, 320)
@@ -218,6 +277,7 @@ max_columns = 10
 icon_mode = 0
 
 [node name="World" type="Node2D" parent="."]
+y_sort_enabled = true
 script = ExtResource("3_fq2sj")
 
 [node name="Picker" type="PanelContainer" parent="."]

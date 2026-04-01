@@ -12,5 +12,4 @@ func setup(source_prop: Prop) -> void:
 	sprite.texture = AtlasTexture.new()
 	sprite.texture.atlas = prop.Texture
 	sprite.texture.region = prop.Cutout
-	sprite.position = -prop.SortingOrigin
-	y_sort_enabled = true
+	sprite.offset = -prop.SortingOrigin

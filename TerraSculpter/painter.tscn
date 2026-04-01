@@ -207,6 +207,7 @@ select_all_on_focus = true
 clip_children = 2
 custom_minimum_size = Vector2(320, 320)
 layout_mode = 2
+mouse_filter = 1
 color = Color(0.0035191667, 0.0035191681, 0.0035191672, 1)
 
 [node name="PropTexture" type="TextureRect" parent="Panel/MainMargin/MainVertical/PropBackground"]
@@ -276,6 +277,10 @@ allow_search = false
 max_columns = 10
 icon_mode = 0
 
+[node name="ExportButton" type="Button" parent="Panel/MainMargin/MainVertical"]
+layout_mode = 2
+text = "Export Props"
+
 [node name="World" type="Node2D" parent="."]
 y_sort_enabled = true
 script = ExtResource("3_fq2sj")
@@ -301,6 +306,13 @@ theme_override_constants/margin_bottom = 5
 [node name="Vertical" type="VBoxContainer" parent="Picker/Margin"]
 layout_mode = 2
 
+[node name="TilePicker" type="ItemList" parent="Picker/Margin/Vertical"]
+layout_mode = 2
+size_flags_vertical = 3
+max_columns = 10
+icon_mode = 0
+fixed_icon_size = Vector2i(64, 64)
+
 [node name="PropPicker" type="ItemList" parent="Picker/Margin/Vertical"]
 layout_mode = 2
 size_flags_vertical = 3
@@ -310,3 +322,5 @@ icon_mode = 0
 [node name="ExportButton" type="Button" parent="Picker/Margin/Vertical"]
 layout_mode = 2
 text = "Export Map"
+
+[connection signal="pressed" from="Panel/MainMargin/MainVertical/ExportButton" to="." method="export_prop_definitions"]

@@ -10,6 +10,6 @@ func setup(source_prop: Prop) -> void:
 	
 	sprite.centered = false
 	sprite.texture = AtlasTexture.new()
-	sprite.texture.atlas = prop.Texture
-	sprite.texture.region = prop.Cutout
-	sprite.offset = -prop.SortingOrigin
+	sprite.texture.atlas = prop.texture
+	sprite.texture.region = prop.cutout
+	sprite.offset = -prop.sorting_origin

@@ -38,50 +38,55 @@ var prop_name: String:
 var textures: Array[Texture2D] = []
 
 func _ready() -> void:
-	PropRegistry.LoadTextures()
+	Registry.load_textures()
+	Registry.load_tiles()
+	
 	populate_textues()
 	save_button.pressed.connect(save_prop)
 	prop_list.item_selected.connect(func(index: int): load_prop(prop_list.get_item_text(index)))
+	
 	update_prop_list()
+	world_picker.update_tiles()
 
 func update_prop_list() -> void:
 	prop_list.clear()
 	
-	for prop: Prop in PropRegistry.GetProps():
+	for prop: Prop in Registry.props:
 		var texture: AtlasTexture = AtlasTexture.new()
-		texture.atlas = prop.Texture
-		texture.region = prop.Cutout
+		texture.atlas = prop.texture
+		texture.region = prop.cutout
 		
 		prop_list.add_item(
-			prop.Name,
+			prop.prop_name,
 			texture
 		)
+	
 	world_picker.update_props()
 
 func load_prop(loading_prop_name: String) -> void:
-	var prop: Prop = PropRegistry.GetByName(loading_prop_name)
+	var prop: Prop = Registry.from_name(loading_prop_name)
 	name_entry.text = loading_prop_name
-	load_texture(prop.Texture)
-	prop_texture.texture.region = prop.Cutout
-	set_cutout(prop.Cutout)
-	sort_x.value = prop.SortingOrigin.x
-	sort_y.value = prop.SortingOrigin.y
+	load_texture(prop.texture)
+	prop_texture.texture.region = prop.cutout
+	set_cutout(prop.cutout)
+	sort_x.value = prop.sorting_origin.x
+	sort_y.value = prop.sorting_origin.y
 	
-	collision_check.button_pressed = prop.EnableCollision
+	collision_check.button_pressed = prop.use_collision
 	
-	if prop.EnableCollision:
-		collision_x.value = prop.Collision.position.x
-		collision_y.value = prop.Collision.position.y
-		collision_w.value = prop.Collision.size.x
-		collision_h.value = prop.Collision.size.y
+	if prop.use_collision:
+		collision_x.value = prop.collision.position.x
+		collision_y.value = prop.collision.position.y
+		collision_w.value = prop.collision.size.x
+		collision_h.value = prop.collision.size.y
 	else:
 		collision_x.value = 0.0
 		collision_y.value = 0.0
 		collision_w.value = 32.0
 		collision_h.value = 32.0
 	
-	print("Size: " + str(prop.Texture.get_size()))
-	print("Cutout: " + str(prop.Cutout))
+	print("Size: " + str(prop.texture.get_size()))
+	print("Cutout: " + str(prop.cutout))
 
 func save_prop() -> void:
 	if (prop_name == ""):
@@ -98,7 +103,7 @@ func save_prop() -> void:
 			int(collision_h.value)
 		)
 	
-	var prop: Prop = Prop.Make(
+	var prop: Prop = Prop.new(
 		prop_name,
 		texture_picker.get_item_text(texture_picker.selected),
 		prop_texture.texture.atlas,
@@ -108,17 +113,17 @@ func save_prop() -> void:
 		collision_rect
 	)
 	
-	PropRegistry.AddOrUpdateProp(prop)
+	Registry.add_or_update(prop)
 	update_prop_list()
 	
-	print("Size: " + str(prop.Texture.get_size()))
-	print("Cutout: " + str(prop.Cutout))
+	print("Size: " + str(prop.texture.get_size()))
+	print("Cutout: " + str(prop.cutout))
 
 func populate_textues() -> void:
 	texture_picker.clear()
 	
-	textures = PropRegistry.GetTextures()
-	var names: Array[StringName] = PropRegistry.GetNames()
+	textures = Registry.textures
+	var names: Array[String] = Registry.names
 	
 	for index: int in range(names.size()):
 		texture_picker.add_item(names[index])
@@ -148,7 +153,7 @@ func set_cutout(cutout: Rect2i) -> void:
 	h.value = cutout.size.y
 
 func load_texture_from_name(texture_name: StringName) -> void:
-	load_texture(PropRegistry.GetTextureFromName(texture_name))
+	load_texture(Registry.texture_from_name(texture_name))
 
 func _process(_delta: float) -> void:
 	w.max_value = x.max_value - x.value
@@ -180,3 +185,41 @@ func _draw() -> void:
 		false,
 		2.0
 		)
+
+func export_all():
+	export_prop_definitions()
+
+func export_prop_definitions() -> void:
+	var exported_props: Array[Dictionary] = []
+	
+	for prop: Prop in Registry.props:
+		var exported: Dictionary = {
+			"name": prop.prop_name,
+			"texture_file": prop.texture_name.get_file().get_basename(),
+			"cutout_rectangle": rect_serialize(prop.cutout),
+			"sorting_origin": vector_serialize(prop.sorting_origin),
+			"uses_collision": prop.use_collision,
+			"collision_rectangle": rect_serialize(prop.collision),
+		}
+		exported_props.append(exported)
+	
+	var save_directory: String = Registry.get_content_directory() + "Environment/"
+	var json: String = JSON.stringify(exported_props, "\t", false)
+	
+	var file: FileAccess = FileAccess.open(save_directory + "prop_definitions.json", FileAccess.WRITE)
+	file.store_string(json)
+	file.close()
+	
+	print("Exported to: " + save_directory + "prop_definitions.json")
+
+func rect_serialize(rect: Rect2) -> Dictionary:
+	return {
+		"position": vector_serialize(rect.position),
+		"size": vector_serialize(rect.size),
+	}
+
+func vector_serialize(vector: Vector2) -> Dictionary:
+	return {
+		"X": vector.x,
+		"Y": vector.y,
+	}

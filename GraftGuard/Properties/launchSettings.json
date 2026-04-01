@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "GraftGuard": {
+      "commandName": "Project"
+    },
+    "Terra Sculpter": {
+      "commandName": "Executable",
+      "executablePath": "..\\..\\..\\..\\TerraSculpter\\Terra Sculpter.exe"
+    }
+  }
+}

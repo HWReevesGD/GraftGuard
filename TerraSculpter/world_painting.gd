@@ -118,3 +118,86 @@ func get_prop_mode() -> Mode:
 		"Place": return Mode.Draw
 		"Erase": return Mode.Erase
 	return Mode.None
+
+func export_world() -> void:
+	
+	var props: Dictionary = serialize_placed_props()
+	var tiles: Dictionary = serialize_tiles()
+	
+	var json: String = JSON.stringify({
+		"props": props,
+		"tiles": tiles,
+	}, "   ", false)
+	
+	var save_directory: String = Registry.get_content_directory() + "Environment/"
+	var file: FileAccess = FileAccess.open(save_directory + "map.json", FileAccess.WRITE)
+	file.store_string(json)
+	file.close()
+	print("Exported Map to: " + save_directory)
+
+func serialize_placed_props() -> Dictionary:
+	var next_id: int = 0
+	var prop_library: Dictionary[int, String] = {}
+	var inverted_prop_library: Dictionary[String, int] = {}
+	for prop in Registry.props:
+		prop_library[next_id] = prop.prop_name
+		inverted_prop_library[prop.prop_name] = next_id
+		next_id += 1
+	
+	var placed_prop_positions: Array[Vector2] = []
+	var placed_prop_ids: Array[int] = []
+	
+	for display in displays:
+		placed_prop_positions.append(display.position)
+		placed_prop_ids.append(inverted_prop_library[display.prop.prop_name])
+	
+	return {
+		"library": prop_library,
+		"placed_ids": placed_prop_ids,
+		"placed_positions": placed_prop_positions,
+	}
+
+const SAVE_CHUNK_BITS: int = 4
+const SAVE_CHUNK_SIZE: int = 1 << SAVE_CHUNK_BITS
+const SAVE_CHUNK_MASK: int = SAVE_CHUNK_SIZE - 1
+const SAVE_CHUNK_AREA: int = SAVE_CHUNK_SIZE << SAVE_CHUNK_BITS
+
+func serialize_tiles() -> Dictionary:
+	var serialized_tiles: Array[Dictionary] = []
+	for tile in Registry.tiles:
+		serialized_tiles.append({
+			"id": tile.id,
+			"texture": tile.texture_name,
+			"cutout": Painter.rect_serialize(tile.texture_cutout),
+			"is_solid": tile.solid,
+		})
+	
+	var placed_tiles: Dictionary[Vector2i, Array] = {}
+	for coordinate: Vector2i in map.tiles:
+		var tile: Tile = map.tiles[coordinate]
+		var chunk_coordinate: Vector2i = _tile_to_save_chunk(coordinate)
+		var array: Array = placed_tiles.get_or_add(chunk_coordinate, [])
+		if array.is_empty():
+			array.resize(SAVE_CHUNK_AREA)
+			array.fill(0)
+		array[_tile_to_local_linear_chunk(coordinate)] = tile.id
+		placed_tiles[chunk_coordinate] = array
+	
+	var chunks: Array[Dictionary] = []
+	for coordinate: Vector2i in placed_tiles:
+		var array: Array = placed_tiles[coordinate]
+		chunks.append({
+			"coordinate": Painter.vector_serialize(coordinate),
+			"tiles": array
+		})
+	
+	return {
+		"source": serialized_tiles,
+		"chunks": chunks,
+	}
+
+func _tile_to_save_chunk(coordinate: Vector2i) -> Vector2i:
+	return Vector2i(coordinate.x >> SAVE_CHUNK_BITS, coordinate.y >> SAVE_CHUNK_BITS)
+
+func _tile_to_local_linear_chunk(coordinate: Vector2i) -> int:
+	return (coordinate.x & SAVE_CHUNK_MASK) + ((coordinate.y & SAVE_CHUNK_MASK) << SAVE_CHUNK_BITS)

@@ -64,6 +64,8 @@ func _ready() -> void:
 	Registry.load_textures()
 	Registry.load_tiles()
 	
+	import_prop_definitions()
+	
 	populate_textues()
 	save_button.pressed.connect(save_prop)
 	prop_list.item_selected.connect(func(index: int): load_prop(prop_list.get_item_text(index)))
@@ -341,14 +343,44 @@ func export_prop_definitions() -> void:
 	
 	print("Exported to: " + save_directory + "prop_definitions.json")
 
-func rect_serialize(rect: Rect2) -> Dictionary:
+func import_prop_definitions() -> void:
+	var import_file: String = Registry.get_content_directory() + "Environment/prop_definitions.json"
+	if not FileAccess.file_exists(import_file + ""):
+		return
+	
+	var json: String = FileAccess.get_file_as_string(import_file)
+	var data = JSON.parse_string(json)
+	
+	for prop_data: Dictionary in data:
+		Registry.add_or_update(Prop.new(
+			prop_data["name"],
+			prop_data["texture_file"] + ".png",
+			Registry.texture_from_name(prop_data["texture_file"] + ".png"),
+			rect_deserialize(prop_data["cutout_rectangle"]),
+			vector_deserialize(prop_data["sorting_origin"]),
+			prop_data["uses_collision"],
+			rect_deserialize(prop_data["collision_rectangle"])
+		))
+
+static func rect_serialize(rect: Rect2) -> Dictionary:
 	return {
 		"position": vector_serialize(rect.position),
 		"size": vector_serialize(rect.size),
 	}
 
-func vector_serialize(vector: Vector2) -> Dictionary:
+static func vector_serialize(vector: Vector2) -> Dictionary:
 	return {
 		"X": vector.x,
 		"Y": vector.y,
 	}
+
+static func vector_deserialize(vector_dictionary: Dictionary) -> Vector2:
+	return Vector2(vector_dictionary["X"], vector_dictionary["Y"])
+
+static func rect_deserialize(rect_dictionary: Dictionary) -> Rect2:
+	var rect_position: Dictionary = rect_dictionary["position"]
+	var rect_size: Dictionary = rect_dictionary["size"]
+	return Rect2(
+		rect_position["X"], rect_position["Y"],
+		rect_size["X"], rect_size["Y"]
+	)

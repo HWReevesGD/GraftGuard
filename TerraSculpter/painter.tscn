@@ -433,3 +433,4 @@ script = SubResource("GDScript_h7ybx")
 
 [connection signal="pressed" from="Panel/MainMargin/MainVertical/Name/DeleteButton" to="." method="erase_prop"]
 [connection signal="pressed" from="Panel/MainMargin/MainVertical/ExportButton" to="." method="export_prop_definitions"]
+[connection signal="pressed" from="Picker/Margin/Vertical/ExportButton" to="World" method="export_world"]

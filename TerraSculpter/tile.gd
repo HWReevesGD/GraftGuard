@@ -13,6 +13,7 @@ func _init(atlas: Texture2D, atlas_name: String, atlas_cutout: Rect2i, is_solid:
 	texture = AtlasTexture.new()
 	texture.atlas = atlas
 	texture.region = atlas_cutout
+	texture_cutout = atlas_cutout
 	texture_name = atlas_name
 	solid = is_solid
 	id = next_id

@@ -8,11 +8,14 @@ const PROP_DISPLAY = preload("uid://cxun613vh6l53")
 @onready var painter: Painter = $".."
 @onready var world_picker: WorldPicker = $"../Picker"
 @onready var map: Map = $Map
+@onready var zoom_slider: HSlider = $"../Picker/Margin/Vertical/Zoom/MarginContainer/SliderBox/ZoomSlider"
 
+var pan_position: Vector2
 var displays: Array[PropDisplay] = []
 var last_mouse_tile: Vector2i
 
 var clicked_inside: bool = false
+var held_inside: bool = false
 
 enum Mode {
 	Draw,
@@ -23,24 +26,36 @@ enum Mode {
 
 func _unhandled_input(event: InputEvent) -> void:
 	clicked_inside = event.is_action_pressed("left_click")
-
-func _physics_process(delta: float) -> void:
-	var input: Vector2 = Input.get_vector("pan_left", "pan_right", "pan_up", "pan_down")
-	global_position -= input * delta * pan_speed
+	held_inside = event.is_action("left_click")
 
 func update_prop_data() -> void:
 	var to_remove: Array[PropDisplay] = []
 	
 	for display in displays:
-		var prop: Prop = Registry.props.get(Registry.props.find_custom(func(p: Prop): return p.name == display.prop.name))
-		
-		if prop == null:
+		var index: int = Registry.props.find_custom(func(p: Prop): return p.prop_name == display.prop.prop_name)
+		if index == -1:
 			to_remove.append(display)
 			continue
-		
+		var prop: Prop = Registry.props[index]
 		display.setup(prop)
+	
+	for display in to_remove:
+		displays.erase(display)
+		display.queue_free()
 
-func _process(_delta: float) -> void:
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("zoom_in"):
+		zoom_slider.value += 0.2
+	if event.is_action_pressed("zoom_out"):
+		zoom_slider.value -= 0.2
+
+func _process(delta: float) -> void:
+	var input: Vector2 = Input.get_vector("pan_left", "pan_right", "pan_up", "pan_down")
+	pan_position -= input * delta * pan_speed
+	
+	scale = Vector2.ONE * zoom_slider.value
+	global_position = pan_position * zoom_slider.value + get_viewport_rect().size * 0.5
+	
 	var mouse_tile: Vector2i = map.global_to_tile(get_global_mouse_position())
 	
 	var tile: Tile = world_picker.selected_tile

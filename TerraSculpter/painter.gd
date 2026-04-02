@@ -124,10 +124,11 @@ func save_prop() -> void:
 	print("Cutout: " + str(prop.cutout))
 
 func erase_prop() -> void:
-	if (prop_name == ""):
+	if prop_name == "":
 		return
-	Registry.remove(prop_name)
+	var removed: bool = Registry.remove(prop_name)
 	update_all_props()
+	print("Removed " + prop_name + "?: " + str(removed))
 
 func populate_textues() -> void:
 	texture_picker.clear()

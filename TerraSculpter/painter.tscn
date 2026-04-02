@@ -287,11 +287,12 @@ layout_mode = 2
 text = "Export Props"
 
 [node name="World" type="Node2D" parent="."]
-z_index = -1
+z_index = -2
 y_sort_enabled = true
 script = ExtResource("3_fq2sj")
 
 [node name="Map" type="Node2D" parent="World"]
+z_index = -1
 script = ExtResource("4_h7ybx")
 
 [node name="Picker" type="PanelContainer" parent="."]
@@ -314,6 +315,32 @@ theme_override_constants/margin_bottom = 5
 
 [node name="Vertical" type="VBoxContainer" parent="Picker/Margin"]
 layout_mode = 2
+
+[node name="Zoom" type="PanelContainer" parent="Picker/Margin/Vertical"]
+self_modulate = Color(0.99116415, 0.99116427, 0.99116415, 1)
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Picker/Margin/Vertical/Zoom"]
+layout_mode = 2
+theme_override_constants/margin_left = 3
+theme_override_constants/margin_top = 3
+theme_override_constants/margin_right = 3
+theme_override_constants/margin_bottom = 3
+
+[node name="SliderBox" type="HBoxContainer" parent="Picker/Margin/Vertical/Zoom/MarginContainer"]
+layout_mode = 2
+
+[node name="ZoomLabel" type="Label" parent="Picker/Margin/Vertical/Zoom/MarginContainer/SliderBox"]
+layout_mode = 2
+text = "Zoom:"
+
+[node name="ZoomSlider" type="HSlider" parent="Picker/Margin/Vertical/Zoom/MarginContainer/SliderBox"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = 0.1
+max_value = 4.0
+step = 0.1
+value = 1.1
 
 [node name="GridContainer" type="HBoxContainer" parent="Picker/Margin/Vertical"]
 layout_mode = 2

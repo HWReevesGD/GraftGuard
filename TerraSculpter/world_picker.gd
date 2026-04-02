@@ -9,19 +9,7 @@ class_name WorldPicker
 var selected_prop: Prop = null
 var selected_tile: Tile = null
 
-func update_props() -> void:
-	prop_picker.clear()
-	
-	for prop: Prop in Registry.props:
-		var texture: AtlasTexture = AtlasTexture.new()
-		texture.atlas = prop.texture
-		texture.region = prop.cutout
-		
-		prop_picker.add_item(
-			prop.prop_name,
-			texture
-		)
-	
+func _ready() -> void:
 	prop_picker.item_selected.connect(
 		func(index: int):
 			tile_picker.deselect_all()
@@ -34,6 +22,19 @@ func update_props() -> void:
 			selected_prop = null
 			selected_tile = Registry.tiles[index]
 	)
+
+func update_props() -> void:
+	prop_picker.clear()
+	
+	for prop: Prop in Registry.props:
+		var texture: AtlasTexture = AtlasTexture.new()
+		texture.atlas = prop.texture
+		texture.region = prop.cutout
+		
+		prop_picker.add_item(
+			prop.prop_name,
+			texture
+		)
 
 func update_tiles() -> void:
 	tile_picker.clear()

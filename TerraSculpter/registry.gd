@@ -88,11 +88,12 @@ static func add_or_update(prop: Prop) -> void:
 	else:
 		props.append(prop)
 
-static func remove(prop_name: String) -> void:
-	var index: int = props.find_custom(func(prop: Prop): return prop.name == prop_name)
+static func remove(prop_name: String) -> bool:
+	var index: int = props.find_custom(func(prop: Prop): return prop.prop_name == prop_name)
 	if index == -1:
-		return
+		return false
 	props.remove_at(index)
+	return true
 
 static func from_name(name: String) -> Prop:
 	return props.get(props.find_custom(func(prop: Prop): return prop.prop_name == name))

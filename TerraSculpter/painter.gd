@@ -9,6 +9,7 @@ class_name Painter
 @onready var h: SpinBox = $Panel/MainMargin/MainVertical/Rect/Vertical/Horizontal/H
 
 @onready var prop_texture: TextureRect = $Panel/MainMargin/MainVertical/PropBackground/PropTexture
+@onready var prop_background: ColorRect = $Panel/MainMargin/MainVertical/PropBackground
 
 @onready var texture_picker: OptionButton = $Panel/MainMargin/MainVertical/Texture/TexturePicker
 
@@ -31,12 +32,27 @@ class_name Painter
 @onready var collision_y: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/Y
 @onready var collision_w: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/W
 @onready var collision_h: SpinBox = $Panel/MainMargin/MainVertical/Collision/CollisionData/Horizontal/H
+@onready var inspector_panel: Panel = $Panel
 
 var prop_name: String:
 	get(): return name_entry.text
+var world_rect: Rect2:
+	get(): return Rect2(
+		inspector_panel.size.x,
+		0,
+		get_viewport_rect().size.x - inspector_panel.size.x - world_picker.size.x,
+		get_viewport_rect().size.y)
 
 var textures: Array[Texture2D] = []
 @onready var world: WorldPainting = $World
+
+var is_collison_dragging: bool = false
+var collision_drag_start: Vector2
+var collision_drag_end: Vector2
+
+var is_size_dragging: bool = false
+var size_drag_start: Vector2
+var size_drag_end: Vector2
 
 func update_all_props() -> void:
 	update_prop_list()
@@ -179,7 +195,76 @@ func _process(_delta: float) -> void:
 	
 	collision_data.visible = collision_check.button_pressed
 	
+	update_collision_dragging()
+	update_origin_setting()
+	update_cutout_dragging()
+	
 	queue_redraw()
+
+func set_collision_rect(collision_rect: Rect2i) -> void:
+	collision_rect = collision_rect.abs()
+	collision_x.value = collision_rect.position.x
+	collision_y.value = collision_rect.position.y
+	collision_w.value = collision_rect.size.x
+	collision_h.value = collision_rect.size.y
+
+func update_collision_dragging() -> void:
+	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
+		prop_background.get_global_rect().has_point(get_global_mouse_position()))
+	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("left_click") and not Input.is_action_pressed("ctrl")
+	var mouse_down: bool = Input.is_action_pressed("left_click")
+	
+	if mouse_clicked:
+		is_collison_dragging = true
+		collision_drag_start = prop_texture.get_local_mouse_position()
+	if not mouse_down:
+		is_collison_dragging = false
+	
+	if is_collison_dragging:
+		collision_drag_end = prop_texture.get_local_mouse_position()
+		set_collision_rect(Rect2i(
+			collision_drag_start,
+			collision_drag_end - collision_drag_start
+		))
+
+func update_origin_setting() -> void:
+	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
+		prop_background.get_global_rect().has_point(get_global_mouse_position()))
+	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("right_click")
+	if mouse_clicked:
+		sort_x.value = prop_texture.get_local_mouse_position().x
+		sort_y.value = prop_texture.get_local_mouse_position().y
+
+func set_size_rect(size_rect: Rect2) -> void:
+	size_rect = size_rect.abs()
+	x.value = size_rect.position.x
+	y.value = size_rect.position.y
+	w.value = size_rect.size.x
+	h.value = size_rect.size.y
+
+func update_cutout_dragging() -> void:
+	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
+		prop_background.get_global_rect().has_point(get_global_mouse_position()))
+	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("left_click") and Input.is_action_pressed("ctrl") 
+	var mouse_down: bool = Input.is_action_pressed("left_click")
+	
+	if mouse_clicked:
+		is_size_dragging = true
+		var mouse: Vector2 = prop_texture.get_local_mouse_position()
+		var size_x = x.value + mouse.x
+		var size_y = y.value + mouse.y
+		size_drag_start = Vector2(size_x, size_y)
+	if not mouse_down:
+		is_size_dragging = false
+	
+	if is_size_dragging:
+		size_drag_end = prop_texture.get_local_mouse_position()
+		set_size_rect(
+			Rect2i(
+				size_drag_start,
+				size_drag_end - size_drag_start,
+			)
+		)
 
 func get_prop_rect() -> Rect2:
 	return Rect2(x.value, y.value, w.value, h.value)

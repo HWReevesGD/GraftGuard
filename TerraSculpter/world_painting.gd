@@ -14,8 +14,9 @@ var pan_position: Vector2
 var displays: Array[PropDisplay] = []
 var last_mouse_tile: Vector2i
 
-var clicked_inside: bool = false
 var held_inside: bool = false
+var mouse_inside: bool:
+	get(): return painter.world_rect.has_point(get_global_mouse_position())
 
 enum Mode {
 	Draw,
@@ -25,8 +26,8 @@ enum Mode {
 }
 
 func _unhandled_input(event: InputEvent) -> void:
-	clicked_inside = event.is_action_pressed("left_click")
-	held_inside = event.is_action("left_click")
+	if event.is_action("left_click"):
+		held_inside = true
 
 func update_prop_data() -> void:
 	var to_remove: Array[PropDisplay] = []
@@ -50,6 +51,9 @@ func _input(event: InputEvent) -> void:
 		zoom_slider.value -= 0.2
 
 func _process(delta: float) -> void:
+	if not Input.is_action_pressed("left_click"):
+		held_inside = false
+	queue_redraw()
 	var input: Vector2 = Input.get_vector("pan_left", "pan_right", "pan_up", "pan_down")
 	pan_position -= input * delta * pan_speed
 	
@@ -60,8 +64,9 @@ func _process(delta: float) -> void:
 	
 	var tile: Tile = world_picker.selected_tile
 	var prop: Prop = world_picker.selected_prop
+	var clicked_inside: bool = Input.is_action_just_pressed("left_click") and mouse_inside
 	
-	if tile != null:
+	if tile != null and held_inside:
 		match get_tile_mode():
 			Mode.Draw:
 				if clicked_inside:
@@ -77,8 +82,8 @@ func _process(delta: float) -> void:
 				if clicked_inside:
 					map.fill_at_mouse(tile)
 	
-	if prop != null:
-		if clicked_inside and Input.is_action_just_pressed("left_click"):
+	if prop != null and held_inside:
+		if clicked_inside and Input.is_action_just_pressed("left_click") and mouse_inside:
 			match get_prop_mode():
 				Mode.Draw:
 					var display: PropDisplay = PROP_DISPLAY.instantiate()

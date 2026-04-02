@@ -17,8 +17,13 @@ func set_at_mouse(tile: Tile) -> void:
 
 func set_line(start: Vector2i, end: Vector2i, tile: Tile):
 	
-	_set_low_slope_line(start, end, tile)
-	_set_high_slope_line(start, end, tile)
+	var x_diff: float = abs(start.x - end.x)
+	var y_diff: float = abs(start.y - end.y)
+	
+	if x_diff >= y_diff:
+		_set_low_slope_line(start, end, tile)
+	else:
+		_set_high_slope_line(start, end, tile)
 	
 	queue_redraw()
 

@@ -1,30 +1,30 @@
 [
 	{
 		"name": "Tree 1",
-		"texture_file": "trees-and-bushes_transparent",
+		"texture_file": "trees_and_bushes",
 		"cutout_rectangle": {
 			"position": {
 				"X": 0.0,
 				"Y": 0.0
 			},
 			"size": {
-				"X": 116.0,
-				"Y": 132.0
+				"X": 288.0,
+				"Y": 160.0
 			}
 		},
 		"sorting_origin": {
-			"X": 58.0,
-			"Y": 111.0
+			"X": 0.0,
+			"Y": 0.0
 		},
 		"uses_collision": true,
 		"collision_rectangle": {
 			"position": {
-				"X": 42.0,
-				"Y": 106.0
+				"X": 0.0,
+				"Y": 0.0
 			},
 			"size": {
-				"X": 30.0,
-				"Y": 18.0
+				"X": 32.0,
+				"Y": 32.0
 			}
 		}
 	}

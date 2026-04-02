@@ -13,3 +13,6 @@ func setup(source_prop: Prop) -> void:
 	sprite.texture.atlas = prop.texture
 	sprite.texture.region = prop.cutout
 	sprite.offset = -prop.sorting_origin
+
+func is_mouse_over() -> bool:
+	return Rect2(global_position + sprite.offset, sprite.texture.get_size()).has_point(get_global_mouse_position())

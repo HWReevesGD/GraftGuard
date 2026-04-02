@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://bb4rxn8gdwf5w"]
+[gd_scene load_steps=6 format=3 uid="uid://bb4rxn8gdwf5w"]
 
 [ext_resource type="Script" uid="uid://dpsq57qd5ri88" path="res://painter.gd" id="1_ea1xw"]
 [ext_resource type="Script" uid="uid://24rfy0fl56hp" path="res://circle_drawing.gd" id="2_p7u2u"]
 [ext_resource type="Script" uid="uid://b3a2ccojxw6b5" path="res://world_painting.gd" id="3_fq2sj"]
+[ext_resource type="Script" uid="uid://fgj17re46n6m" path="res://map.gd" id="4_h7ybx"]
 [ext_resource type="Script" uid="uid://qhteidlibvc8" path="res://world_picker.gd" id="4_nuucx"]
 
 [node name="Painter" type="Control"]
@@ -54,6 +55,10 @@ text = "Name:"
 [node name="NameEntry" type="LineEdit" parent="Panel/MainMargin/MainVertical/Name"]
 layout_mode = 2
 size_flags_horizontal = 3
+
+[node name="DeleteButton" type="Button" parent="Panel/MainMargin/MainVertical/Name"]
+layout_mode = 2
+text = "Delete Prop"
 
 [node name="Texture" type="HBoxContainer" parent="Panel/MainMargin/MainVertical"]
 layout_mode = 2
@@ -282,8 +287,12 @@ layout_mode = 2
 text = "Export Props"
 
 [node name="World" type="Node2D" parent="."]
+z_index = -1
 y_sort_enabled = true
 script = ExtResource("3_fq2sj")
+
+[node name="Map" type="Node2D" parent="World"]
+script = ExtResource("4_h7ybx")
 
 [node name="Picker" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(360, 0)
@@ -306,12 +315,45 @@ theme_override_constants/margin_bottom = 5
 [node name="Vertical" type="VBoxContainer" parent="Picker/Margin"]
 layout_mode = 2
 
+[node name="GridContainer" type="HBoxContainer" parent="Picker/Margin/Vertical"]
+layout_mode = 2
+
+[node name="ModeLabel" type="Label" parent="Picker/Margin/Vertical/GridContainer"]
+layout_mode = 2
+text = "Tile Mode:"
+
+[node name="DrawMode" type="TabBar" parent="Picker/Margin/Vertical/GridContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+tab_count = 3
+tab_0/title = "Draw"
+tab_1/title = "Erase"
+tab_2/title = "Fill"
+
 [node name="TilePicker" type="ItemList" parent="Picker/Margin/Vertical"]
 layout_mode = 2
 size_flags_vertical = 3
 max_columns = 10
 icon_mode = 0
 fixed_icon_size = Vector2i(64, 64)
+
+[node name="GridContainer2" type="HBoxContainer" parent="Picker/Margin/Vertical"]
+layout_mode = 2
+
+[node name="ModeLabel" type="Label" parent="Picker/Margin/Vertical/GridContainer2"]
+layout_mode = 2
+text = "Prop Mode:"
+
+[node name="PropMode" type="TabBar" parent="Picker/Margin/Vertical/GridContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+current_tab = 0
+tab_count = 2
+tab_0/title = "Place"
+tab_1/title = "Erase"
 
 [node name="PropPicker" type="ItemList" parent="Picker/Margin/Vertical"]
 layout_mode = 2
@@ -323,4 +365,5 @@ icon_mode = 0
 layout_mode = 2
 text = "Export Map"
 
+[connection signal="pressed" from="Panel/MainMargin/MainVertical/Name/DeleteButton" to="." method="erase_prop"]
 [connection signal="pressed" from="Panel/MainMargin/MainVertical/ExportButton" to="." method="export_prop_definitions"]

@@ -36,6 +36,12 @@ var prop_name: String:
 	get(): return name_entry.text
 
 var textures: Array[Texture2D] = []
+@onready var world: WorldPainting = $World
+
+func update_all_props() -> void:
+	update_prop_list()
+	world.world_picker.update_props()
+	world.update_prop_data()
 
 func _ready() -> void:
 	Registry.load_textures()
@@ -60,8 +66,6 @@ func update_prop_list() -> void:
 			prop.prop_name,
 			texture
 		)
-	
-	world_picker.update_props()
 
 func load_prop(loading_prop_name: String) -> void:
 	var prop: Prop = Registry.from_name(loading_prop_name)
@@ -114,10 +118,16 @@ func save_prop() -> void:
 	)
 	
 	Registry.add_or_update(prop)
-	update_prop_list()
+	update_all_props()
 	
 	print("Size: " + str(prop.texture.get_size()))
 	print("Cutout: " + str(prop.cutout))
+
+func erase_prop() -> void:
+	if (prop_name == ""):
+		return
+	Registry.remove(prop_name)
+	update_all_props()
 
 func populate_textues() -> void:
 	texture_picker.clear()

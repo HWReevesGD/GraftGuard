@@ -228,7 +228,16 @@ select_all_on_focus = true
 clip_children = 2
 custom_minimum_size = Vector2(320, 320)
 layout_mode = 2
+mouse_default_cursor_shape = 3
 color = Color(0.0035191667, 0.0035191681, 0.0035191672, 1)
+
+[node name="PropTextureBack" type="TextureRect" parent="Panel/MainMargin/MainVertical/PropBackground"]
+self_modulate = Color(1, 1, 1, 0.44313726)
+layout_mode = 0
+offset_left = -5.0
+offset_top = -199.0
+offset_right = 35.0
+offset_bottom = -159.0
 
 [node name="PropTexture" type="TextureRect" parent="Panel/MainMargin/MainVertical/PropBackground"]
 layout_mode = 1
@@ -259,7 +268,7 @@ position = Vector2(-235, -319)
 script = ExtResource("2_p7u2u")
 
 [node name="Zoom" type="PanelContainer" parent="Panel/MainMargin/MainVertical"]
-self_modulate = Color(0.99116415, 0.99116427, 0.99116415, 1)
+self_modulate = Color(1, 1, 1, 0.41568628)
 z_index = 1
 layout_mode = 2
 

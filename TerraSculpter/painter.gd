@@ -10,6 +10,7 @@ class_name Painter
 
 @onready var prop_texture: TextureRect = $Panel/MainMargin/MainVertical/PropBackground/PropTexture
 @onready var prop_background: ColorRect = $Panel/MainMargin/MainVertical/PropBackground
+@onready var prop_texture_back: TextureRect = $Panel/MainMargin/MainVertical/PropBackground/PropTextureBack
 
 @onready var texture_picker: OptionButton = $Panel/MainMargin/MainVertical/Texture/TexturePicker
 
@@ -197,9 +198,16 @@ func _process(_delta: float) -> void:
 	
 	update_collision_dragging()
 	update_origin_setting()
-	update_cutout_dragging()
+	#update_cutout_dragging()
+	update_background()
 	
 	queue_redraw()
+
+func update_background() -> void:
+	prop_texture_back.texture = prop_texture.texture.atlas
+	prop_texture_back.global_position = prop_texture.global_position - Vector2(x.value, y.value) * zoom_slider.value
+	prop_texture_back.scale = prop_texture.scale
+	prop_texture_back.pivot_offset = prop_texture.pivot_offset
 
 func set_collision_rect(collision_rect: Rect2i) -> void:
 	collision_rect = collision_rect.abs()
@@ -211,7 +219,7 @@ func set_collision_rect(collision_rect: Rect2i) -> void:
 func update_collision_dragging() -> void:
 	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
 		prop_background.get_global_rect().has_point(get_global_mouse_position()))
-	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("left_click") and not Input.is_action_pressed("ctrl")
+	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("left_click")# and not Input.is_action_pressed("ctrl")
 	var mouse_down: bool = Input.is_action_pressed("left_click")
 	
 	if mouse_clicked:
@@ -228,8 +236,7 @@ func update_collision_dragging() -> void:
 		))
 
 func update_origin_setting() -> void:
-	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
-		prop_background.get_global_rect().has_point(get_global_mouse_position()))
+	var mouse_inside: bool = prop_background.get_global_rect().has_point(get_global_mouse_position())
 	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("right_click")
 	if mouse_clicked:
 		sort_x.value = prop_texture.get_local_mouse_position().x
@@ -242,29 +249,45 @@ func set_size_rect(size_rect: Rect2) -> void:
 	w.value = size_rect.size.x
 	h.value = size_rect.size.y
 
+func get_size_rect() -> Rect2i:
+	@warning_ignore("narrowing_conversion")
+	return Rect2i(
+		x.value,
+		y.value,
+		w.value,
+		h.value
+	)
+
+func rect_closest_point(rect: Rect2, point: Vector2) -> Vector2:
+	var clamped_point = point.clamp(rect.position, rect.end)
+	if rect.has_point(point):
+		return point
+	return clamped_point
+
 func update_cutout_dragging() -> void:
-	var mouse_inside: bool = (prop_texture.get_global_rect().has_point(get_global_mouse_position()) and 
-		prop_background.get_global_rect().has_point(get_global_mouse_position()))
+	var mouse_inside: bool = prop_background.get_global_rect().has_point(get_global_mouse_position())
 	var mouse_clicked: bool = mouse_inside and Input.is_action_just_pressed("left_click") and Input.is_action_pressed("ctrl") 
 	var mouse_down: bool = Input.is_action_pressed("left_click")
+	var mouse_local: Vector2 = prop_texture.get_local_mouse_position().clamp(
+		-Vector2(x.value, y.value),
+		prop_texture_back.size - Vector2(x.value, y.value)
+	)
 	
 	if mouse_clicked:
 		is_size_dragging = true
-		var mouse: Vector2 = prop_texture.get_local_mouse_position()
-		var size_x = x.value + mouse.x
-		var size_y = y.value + mouse.y
-		size_drag_start = Vector2(size_x, size_y)
+		size_drag_start = mouse_local
 	if not mouse_down:
-		is_size_dragging = false
+		if is_size_dragging:
+			is_size_dragging = false
+			set_size_rect(
+				Rect2i(
+					get_size_rect().position + Vector2i(size_drag_start),
+					size_drag_end - size_drag_start
+				)
+			)
 	
 	if is_size_dragging:
-		size_drag_end = prop_texture.get_local_mouse_position()
-		set_size_rect(
-			Rect2i(
-				size_drag_start,
-				size_drag_end - size_drag_start,
-			)
-		)
+		size_drag_end = mouse_local
 
 func get_prop_rect() -> Rect2:
 	return Rect2(x.value, y.value, w.value, h.value)
@@ -278,6 +301,16 @@ func _draw() -> void:
 			Vector2(collision_w.value, collision_h.value) * zoom_slider.value
 			),
 		Color.RED,
+		false,
+		2.0
+		)
+	if is_size_dragging:
+		draw_rect(
+		Rect2(
+			(size_drag_start * zoom_slider.value + tex_pos),
+			(size_drag_end - size_drag_start) * zoom_slider.value
+			).abs(),
+		Color.GREEN,
 		false,
 		2.0
 		)

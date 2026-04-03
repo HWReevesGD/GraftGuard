@@ -100,3 +100,25 @@ static func from_name(name: String) -> Prop:
 
 static func texture_from_name(name: String) -> Texture2D:
 	return textures.get(names.find(name))
+
+#"id": tile.id,
+			#"texture": tile.texture_name,
+			#"cutout": Painter.rect_serialize(tile.texture_cutout),
+			#"is_solid": tile.solid,
+
+static func tile_from_serialized(data: Dictionary) -> Tile:
+	var texture_name: String = data["texture"] + ".png"
+	var cutout: Rect2i = Rect2i(Painter.rect_deserialize(data["cutout"]))
+	var solid: bool = data["is_solid"]
+	
+	var index: int = tiles.find_custom(
+		func(tile: Tile):
+			return (
+				tile.texture_name == texture_name and
+				tile.texture_cutout == cutout and
+				tile.solid == solid
+			))
+	
+	if index == -1:
+		return null
+	return tiles[index]

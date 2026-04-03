@@ -64,14 +64,16 @@ func _ready() -> void:
 	Registry.load_textures()
 	Registry.load_tiles()
 	
-	import_all()
-	populate_textues()
-	world.update_picker()
-	
 	save_button.pressed.connect(save_prop)
 	prop_list.item_selected.connect(func(index: int): load_prop(prop_list.get_item_text(index)))
 	
+	import_all()
+	update_all()
+
+func update_all() -> void:
+	world.update_picker()
 	update_all_props()
+	populate_textues()
 
 func update_prop_list() -> void:
 	prop_list.clear()

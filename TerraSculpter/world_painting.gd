@@ -133,18 +133,46 @@ func serialize_world() -> Dictionary:
 	}
 
 func deserialize_world(serialized_world: Dictionary) -> void:
-	var library: Dictionary =  serialized_world["props"]["library"]
-	var placed_ids: Array = serialized_world["props"]["placed_ids"]
-	var placed_positions: Array = serialized_world["props"]["placed_positions"]
 	
-	for index: int in range(placed_ids.size()):
-		var prop: Prop = Registry.from_name(library[str(int(placed_ids[index]))])
-		var prop_position: Vector2 = Painter.vector_deserialize(placed_positions[index])
+	# Deserialize Props
+	var props: Dictionary = serialized_world["props"]
+	var prop_library: Dictionary =  props["library"]
+	var placed_prop_ids: Array = props["placed_ids"]
+	var placed_prop_positions: Array = props["placed_positions"]
+	
+	for index: int in range(placed_prop_ids.size()):
+		var prop: Prop = Registry.from_name(prop_library[str(int(placed_prop_ids[index]))])
+		var prop_position: Vector2 = Painter.vector_deserialize(placed_prop_positions[index])
 		var display: PropDisplay = PROP_DISPLAY.instantiate()
 		add_child(display)
 		displays.append(display)
 		display.setup(prop)
 		display.position = prop_position
+	
+	# Deserialize Tiles
+	var tiles: Dictionary = serialized_world["tiles"]
+	var tile_serialized_library: Array = tiles["source"]
+	var serialized_chunks: Array = tiles["chunks"]
+	var tile_library: Dictionary[int, Tile] = {}
+	
+	for tile_definition: Dictionary in tile_serialized_library:
+		var tile: Tile = Registry.tile_from_serialized(tile_definition)
+		if tile == null:
+			print("Unknown tile: " + str(tile_definition))
+			continue
+		tile_library[int(tile_definition["id"])] = tile
+	
+	for chunk: Dictionary in serialized_chunks:
+		var coordinate: Vector2i = Painter.vector_deserialize(chunk["coordinate"])
+		var chunk_tile_coordinate: Vector2i = _save_chunk_to_tile(coordinate)
+		var tile_ids: Array = chunk["tiles"]
+		var index: int = -1
+		for id: int in tile_ids:
+			index += 1
+			var tile: Tile = tile_library.get(id, null)
+			if tile == null:
+				continue
+			map.tiles[chunk_tile_coordinate + _tile_local_linear_to_local(index)] = tile
 
 func serialize_placed_props() -> Dictionary:
 	var next_id: int = 0
@@ -178,7 +206,7 @@ func serialize_tiles() -> Dictionary:
 	for tile in Registry.tiles:
 		serialized_tiles.append({
 			"id": tile.id,
-			"texture": tile.texture_name,
+			"texture": tile.texture_name.get_basename(),
 			"cutout": Painter.rect_serialize(tile.texture_cutout),
 			"is_solid": tile.solid,
 		})
@@ -210,5 +238,11 @@ func serialize_tiles() -> Dictionary:
 func _tile_to_save_chunk(coordinate: Vector2i) -> Vector2i:
 	return Vector2i(coordinate.x >> SAVE_CHUNK_BITS, coordinate.y >> SAVE_CHUNK_BITS)
 
+func _save_chunk_to_tile(coordinate: Vector2i) -> Vector2i:
+	return Vector2i(coordinate.x << SAVE_CHUNK_BITS, coordinate.y << SAVE_CHUNK_BITS)
+
 func _tile_to_local_linear_chunk(coordinate: Vector2i) -> int:
 	return (coordinate.x & SAVE_CHUNK_MASK) + ((coordinate.y & SAVE_CHUNK_MASK) << SAVE_CHUNK_BITS)
+
+func _tile_local_linear_to_local(local_linear: int) -> Vector2i:
+	return Vector2i(local_linear & SAVE_CHUNK_MASK, local_linear >> SAVE_CHUNK_BITS)

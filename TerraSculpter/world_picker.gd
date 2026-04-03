@@ -9,6 +9,13 @@ class_name WorldPicker
 var selected_prop: Prop = null
 var selected_tile: Tile = null
 
+func deselect_all() -> void:
+	selected_prop = null
+	selected_tile = null
+	
+	tile_picker.deselect_all()
+	prop_picker.deselect_all()
+
 func _ready() -> void:
 	prop_picker.item_selected.connect(
 		func(index: int):

@@ -13,6 +13,7 @@ const PROP_DISPLAY = preload("uid://cxun613vh6l53")
 var pan_position: Vector2
 var displays: Array[PropDisplay] = []
 var last_mouse_tile: Vector2i
+var enemy_spawns: Array[Vector2i] = []
 
 var held_inside: bool = false
 var mouse_inside: bool:
@@ -22,8 +23,13 @@ enum Mode {
 	Draw,
 	Fill,
 	Erase,
+	Spawn,
 	None,
 }
+
+func _draw() -> void:
+	for spawn: Vector2i in enemy_spawns:
+		draw_circle(spawn, 16.0, Color.RED, false, 2)
 
 func update_picker() -> void:
 	world_picker.update_props()
@@ -69,8 +75,9 @@ func _process(delta: float) -> void:
 	var tile: Tile = world_picker.selected_tile
 	var prop: Prop = world_picker.selected_prop
 	var clicked_inside: bool = Input.is_action_just_pressed("left_click") and mouse_inside
+	var right_clicked_inside: bool = Input.is_action_just_pressed("right_click") and mouse_inside
 	
-	if tile != null and held_inside:
+	if ((tile != null and held_inside) or (get_tile_mode() == Mode.Spawn and prop == null)):
 		match get_tile_mode():
 			Mode.Draw:
 				if clicked_inside:
@@ -85,6 +92,18 @@ func _process(delta: float) -> void:
 			Mode.Fill:
 				if clicked_inside:
 					map.fill_at_mouse(tile)
+			Mode.Spawn:
+				if clicked_inside:
+					enemy_spawns.append(Vector2i(get_local_mouse_position()))
+					queue_redraw()
+				if right_clicked_inside:
+					var index: int = 0
+					while index < enemy_spawns.size():
+						if enemy_spawns[index].distance_to(Vector2i(get_local_mouse_position())) < 16.0:
+							enemy_spawns.remove_at(index)
+							index -= 1
+						index += 1
+					queue_redraw()
 	
 	if prop != null and held_inside:
 		if clicked_inside and Input.is_action_just_pressed("left_click") and mouse_inside:
@@ -114,6 +133,7 @@ func get_tile_mode() -> Mode:
 		"Draw": return Mode.Draw
 		"Fill": return Mode.Fill
 		"Erase": return Mode.Erase
+		"Spawns": return Mode.Spawn
 	return Mode.None
 
 func get_prop_mode() -> Mode:
@@ -126,13 +146,19 @@ func get_prop_mode() -> Mode:
 func serialize_world() -> Dictionary:
 	var props: Dictionary = serialize_placed_props()
 	var tiles: Dictionary = serialize_tiles()
+	var spawns: Array[Dictionary] = serialize_enemy_spawns()
 	
 	return {
 		"props": props,
 		"tiles": tiles,
+		"spawns": spawns,
 	}
 
 func deserialize_world(serialized_world: Dictionary) -> void:
+	# Deserialize Spawns
+	var spawns: Array = serialized_world["spawns"]
+	for spawn in spawns:
+		enemy_spawns.append(Vector2i(Painter.vector_deserialize(spawn)))
 	
 	# Deserialize Props
 	var props: Dictionary = serialized_world["props"]
@@ -173,6 +199,12 @@ func deserialize_world(serialized_world: Dictionary) -> void:
 			if tile == null:
 				continue
 			map.tiles[chunk_tile_coordinate + _tile_local_linear_to_local(index)] = tile
+
+func serialize_enemy_spawns() -> Array[Dictionary]:
+	var spawns: Array[Dictionary] = []
+	for spawn in enemy_spawns:
+		spawns.append(Painter.vector_serialize(spawn))
+	return spawns
 
 func serialize_placed_props() -> Dictionary:
 	var next_id: int = 0
@@ -246,3 +278,8 @@ func _tile_to_local_linear_chunk(coordinate: Vector2i) -> int:
 
 func _tile_local_linear_to_local(local_linear: int) -> Vector2i:
 	return Vector2i(local_linear & SAVE_CHUNK_MASK, local_linear >> SAVE_CHUNK_BITS)
+
+
+func tile_tab_changed(tab: int) -> void:
+	if world_picker.draw_mode.get_tab_title(tab) == "Spawns":
+		world_picker.deselect_all()

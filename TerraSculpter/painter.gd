@@ -74,6 +74,7 @@ func update_all() -> void:
 	world.update_picker()
 	update_all_props()
 	populate_textues()
+	world.queue_redraw()
 
 func update_prop_list() -> void:
 	prop_list.clear()

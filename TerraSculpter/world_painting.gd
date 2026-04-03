@@ -77,21 +77,25 @@ func _process(delta: float) -> void:
 	var clicked_inside: bool = Input.is_action_just_pressed("left_click") and mouse_inside
 	var right_clicked_inside: bool = Input.is_action_just_pressed("right_click") and mouse_inside
 	
-	if ((tile != null and held_inside) or (get_tile_mode() == Mode.Spawn and prop == null)):
+	if ((tile != null) or (get_tile_mode() == Mode.Spawn and prop == null)):
 		match get_tile_mode():
 			Mode.Draw:
-				if clicked_inside:
-					map.set_at_mouse(tile)
-				elif Input.is_action_pressed("left_click"):
-					map.set_line(last_mouse_tile, mouse_tile, tile)
+				if held_inside:
+					if clicked_inside:
+						map.set_at_mouse(tile)
+					elif Input.is_action_pressed("left_click"):
+						map.set_line(last_mouse_tile, mouse_tile, tile)
 			Mode.Erase:
-				if clicked_inside:
-					map.set_at_mouse(null)
-				elif Input.is_action_pressed("left_click"):
-					map.set_line(last_mouse_tile, mouse_tile, null)
+				if held_inside:
+					if clicked_inside:
+						map.set_at_mouse(null)
+					elif Input.is_action_pressed("left_click"):
+						map.set_line(last_mouse_tile, mouse_tile, null)
 			Mode.Fill:
 				if clicked_inside:
 					map.fill_at_mouse(tile)
+				if right_clicked_inside:
+					map.fill_at_mouse(null)
 			Mode.Spawn:
 				if clicked_inside:
 					enemy_spawns.append(Vector2i(get_local_mouse_position()))

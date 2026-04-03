@@ -80,9 +80,9 @@ func fill_at_mouse(tile: Tile) -> void:
 	var to_fill: Tile = tiles.get(mouse)
 	var interations: int = 0
 	
-	if to_fill != null && to_fill.id == tile.id:
+	if to_fill == null && tile == null:
 		return
-	if to_fill == tile:
+	if to_fill != null && tile != null && to_fill.id == tile.id:
 		return
 	
 	var is_inside: Callable

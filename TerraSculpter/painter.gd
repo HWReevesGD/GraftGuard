@@ -64,14 +64,14 @@ func _ready() -> void:
 	Registry.load_textures()
 	Registry.load_tiles()
 	
-	import_prop_definitions()
-	
+	import_all()
 	populate_textues()
+	world.update_picker()
+	
 	save_button.pressed.connect(save_prop)
 	prop_list.item_selected.connect(func(index: int): load_prop(prop_list.get_item_text(index)))
 	
-	update_prop_list()
-	world_picker.update_tiles()
+	update_all_props()
 
 func update_prop_list() -> void:
 	prop_list.clear()
@@ -318,9 +318,34 @@ func _draw() -> void:
 		)
 
 func export_all():
-	export_prop_definitions()
+	var prop_definitions: Array[Dictionary] = serialize_prop_definitions()
+	var serialized_world: Dictionary = world.serialize_world()
+	
+	var save_directory: String = Registry.get_content_directory() + "Environment/"
+	
+	var json: String = JSON.stringify({
+		"prop_definitions": prop_definitions,
+		"world": serialized_world
+	}, "\t", false)
+	
+	var file: FileAccess = FileAccess.open(save_directory + "environment.json", FileAccess.WRITE)
+	file.store_string(json)
+	file.close()
+	
+	print("Exported to: " + save_directory + "environment.json")
 
-func export_prop_definitions() -> void:
+func import_all() -> void:
+	var import_file: String = Registry.get_content_directory() + "Environment/environment.json"
+	if not FileAccess.file_exists(import_file + ""):
+		return
+	
+	var json: String = FileAccess.get_file_as_string(import_file)
+	var data = JSON.parse_string(json)
+	
+	deserialize_prop_definitions(data["prop_definitions"])
+	world.deserialize_world(data["world"])
+
+func serialize_prop_definitions() -> Array[Dictionary]:
 	var exported_props: Array[Dictionary] = []
 	
 	for prop: Prop in Registry.props:
@@ -334,24 +359,11 @@ func export_prop_definitions() -> void:
 		}
 		exported_props.append(exported)
 	
-	var save_directory: String = Registry.get_content_directory() + "Environment/"
-	var json: String = JSON.stringify(exported_props, "\t", false)
 	
-	var file: FileAccess = FileAccess.open(save_directory + "prop_definitions.json", FileAccess.WRITE)
-	file.store_string(json)
-	file.close()
-	
-	print("Exported to: " + save_directory + "prop_definitions.json")
+	return exported_props
 
-func import_prop_definitions() -> void:
-	var import_file: String = Registry.get_content_directory() + "Environment/prop_definitions.json"
-	if not FileAccess.file_exists(import_file + ""):
-		return
-	
-	var json: String = FileAccess.get_file_as_string(import_file)
-	var data = JSON.parse_string(json)
-	
-	for prop_data: Dictionary in data:
+func deserialize_prop_definitions(serialized_prop_definitions: Array) -> void:	
+	for prop_data: Dictionary in serialized_prop_definitions:
 		Registry.add_or_update(Prop.new(
 			prop_data["name"],
 			prop_data["texture_file"] + ".png",

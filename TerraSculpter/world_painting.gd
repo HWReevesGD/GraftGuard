@@ -25,6 +25,10 @@ enum Mode {
 	None,
 }
 
+func update_picker() -> void:
+	world_picker.update_props()
+	world_picker.update_tiles()
+
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action("left_click"):
 		held_inside = true
@@ -119,21 +123,28 @@ func get_prop_mode() -> Mode:
 		"Erase": return Mode.Erase
 	return Mode.None
 
-func export_world() -> void:
-	
+func serialize_world() -> Dictionary:
 	var props: Dictionary = serialize_placed_props()
 	var tiles: Dictionary = serialize_tiles()
 	
-	var json: String = JSON.stringify({
+	return {
 		"props": props,
 		"tiles": tiles,
-	}, "   ", false)
+	}
+
+func deserialize_world(serialized_world: Dictionary) -> void:
+	var library: Dictionary =  serialized_world["props"]["library"]
+	var placed_ids: Array = serialized_world["props"]["placed_ids"]
+	var placed_positions: Array = serialized_world["props"]["placed_positions"]
 	
-	var save_directory: String = Registry.get_content_directory() + "Environment/"
-	var file: FileAccess = FileAccess.open(save_directory + "map.json", FileAccess.WRITE)
-	file.store_string(json)
-	file.close()
-	print("Exported Map to: " + save_directory)
+	for index: int in range(placed_ids.size()):
+		var prop: Prop = Registry.from_name(library[str(int(placed_ids[index]))])
+		var prop_position: Vector2 = Painter.vector_deserialize(placed_positions[index])
+		var display: PropDisplay = PROP_DISPLAY.instantiate()
+		add_child(display)
+		displays.append(display)
+		display.setup(prop)
+		display.position = prop_position
 
 func serialize_placed_props() -> Dictionary:
 	var next_id: int = 0
@@ -144,11 +155,11 @@ func serialize_placed_props() -> Dictionary:
 		inverted_prop_library[prop.prop_name] = next_id
 		next_id += 1
 	
-	var placed_prop_positions: Array[Vector2] = []
+	var placed_prop_positions: Array[Dictionary] = []
 	var placed_prop_ids: Array[int] = []
 	
 	for display in displays:
-		placed_prop_positions.append(display.position)
+		placed_prop_positions.append(Painter.vector_serialize(display.position))
 		placed_prop_ids.append(inverted_prop_library[display.prop.prop_name])
 	
 	return {

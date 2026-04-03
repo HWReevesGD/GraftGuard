@@ -313,11 +313,6 @@ allow_search = false
 max_columns = 10
 icon_mode = 0
 
-[node name="ExportButton" type="Button" parent="Panel/MainMargin/MainVertical"]
-z_index = 1
-layout_mode = 2
-text = "Export Props"
-
 [node name="World" type="Node2D" parent="."]
 z_index = -2
 y_sort_enabled = true
@@ -422,7 +417,7 @@ icon_mode = 0
 
 [node name="ExportButton" type="Button" parent="Picker/Margin/Vertical"]
 layout_mode = 2
-text = "Export Map"
+text = "Export All"
 
 [node name="WorldRectDebug" type="ColorRect" parent="."]
 visible = false
@@ -432,5 +427,4 @@ offset_bottom = 40.0
 script = SubResource("GDScript_h7ybx")
 
 [connection signal="pressed" from="Panel/MainMargin/MainVertical/Name/DeleteButton" to="." method="erase_prop"]
-[connection signal="pressed" from="Panel/MainMargin/MainVertical/ExportButton" to="." method="export_prop_definitions"]
-[connection signal="pressed" from="Picker/Margin/Vertical/ExportButton" to="World" method="export_world"]
+[connection signal="pressed" from="Picker/Margin/Vertical/ExportButton" to="." method="export_all"]

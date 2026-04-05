@@ -43,7 +43,7 @@ static func load_tiles() -> void:
 			continue
 		print("   Loading Tileset: " + file_path)
 		
-		var is_tileset_solid: bool = file_path.get_file().get_basename().rfind("solid")
+		var is_tileset_solid: bool = file_path.get_file().get_basename().rfind("solid") != -1
 		var atlas_image: Image = Image.load_from_file(directory.path_join(file_path))
 		var atlas: Texture2D = ImageTexture.create_from_image(atlas_image)
 		assert(atlas != null)

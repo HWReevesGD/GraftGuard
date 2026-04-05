@@ -47,6 +47,18 @@
 /processorParam:TextureFormat=Color
 /build:Environment/Props/trees_and_bushes.png
 
+#begin Environment/Tilesets/solid_walls_1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Environment/Tilesets/solid_walls_1.png
+
 #begin Environment/Tilesets/tileset_rocky.png
 /importer:TextureImporter
 /processor:TextureProcessor

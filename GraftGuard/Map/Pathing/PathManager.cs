@@ -11,8 +11,6 @@ using System.Threading.Tasks;
 namespace GraftGuard.Map.Pathing;
 internal class PathManager
 {
-    public readonly Vector2 Start = new Vector2(0, 0);
-    public readonly Vector2 End = new Vector2(1000, 1000);
     public readonly Point[] Directions = [
         new Point(1, 0), // Right
         new Point(1, 1), // Down-Right
@@ -28,6 +26,8 @@ internal class PathManager
         ];
     public static readonly float SquareRootOfTwo = MathF.Sqrt(2);
 
+    public Vector2 Start { get; set; } = new Vector2(0, 0);
+    public Vector2 End { get; set; } = new Vector2(1000, 1000);
     public PathNode[,] Nodes { get; set; }
     
     public bool CheckGetNode(Point gridPosition, out PathNode node)

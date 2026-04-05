@@ -21,6 +21,9 @@ internal class EnemyManager
     public void Setup(World world)
     {
         PathManager = new PathManager();
+        PathManager.Start = world.Terrain.PathingArea.Location.ToVector();
+        PathManager.End = (world.Terrain.PathingArea.Location + world.Terrain.PathingArea.Size).ToVector();
+
         PathManager.BuildGrid(world);
 
         Enemies = [

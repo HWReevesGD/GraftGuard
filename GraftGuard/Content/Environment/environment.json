@@ -75,15 +75,15 @@
 				"X": 21.0,
 				"Y": 39.0
 			},
-			"uses_collision": true,
+			"uses_collision": false,
 			"collision_rectangle": {
 				"position": {
-					"X": 14.0,
-					"Y": 30.0
+					"X": 0.0,
+					"Y": 0.0
 				},
 				"size": {
-					"X": 15.0,
-					"Y": 17.0
+					"X": 32.0,
+					"Y": 32.0
 				}
 			}
 		}

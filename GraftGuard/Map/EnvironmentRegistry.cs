@@ -97,6 +97,9 @@ internal class EnvironmentRegistry
                 );
         }
 
+        // Parse Pathing Area
+        Rectangle pathingArea = ImportRectangle(world.GetProperty("pathing_area"));
+
         // Parse Placed Tiles
         Dictionary<Point, ReadOnlyCollection<TileDefinition>> tileChunks = [];
         JsonElement chunks = tiles.GetProperty("chunks");
@@ -118,7 +121,8 @@ internal class EnvironmentRegistry
         {
             PlacedProps = placedProps.AsReadOnly(),
             EnemySpawns = enemySpawns.AsReadOnly(),
-            TileChunks = tileChunks.ToFrozenDictionary()
+            TileChunks = tileChunks.ToFrozenDictionary(),
+            PathingArea = pathingArea,
         };
     }
 

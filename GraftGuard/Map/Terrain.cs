@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Graphics;
+using GraftGuard.Map.Props;
 using GraftGuard.Map.Tiles;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -13,11 +14,15 @@ using System.Xml.Schema;
 namespace GraftGuard.Map;
 internal class Terrain
 {
-    public FrozenDictionary<Point, ReadOnlyCollection<TileDefinition>> Chunks;
+    public Dictionary<Point, TileDefinition[]> Chunks;
+    public List<PlacedProp> Props;
+    public Rectangle PathingArea;
 
     public void LoadMap(MapDefinition map)
     {
-        Chunks = map.TileChunks;
+        Chunks = map.TileChunks.ToDictionary((pair) => pair.Key, (pair) => pair.Value.ToArray());
+        Props = map.PlacedProps.ToList();
+        PathingArea = map.PathingArea;
     }
 
     public void Update(GameTime time)
@@ -51,23 +56,33 @@ internal class Terrain
                 index++;
             }
         }
+
+        foreach (PlacedProp prop in Props)
+        {
+            prop.Draw(batch);
+        }
     }
 
     public bool Overlaps(Circle circle)
     {
         if (Chunks is null || Chunks.Count == 0)
         {
-            return false;
+            if (Props is null)
+            {
+                return false;
+            }
+
+            return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle));
         }
 
-        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        IEnumerable<(Point chunkCoordinate, TileDefinition[])> overlappingChunks = Chunks.Keys.Where((coordinate) =>
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             return circle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
         }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
 
         int tileSize = EnvironmentRegistry.TileSize;
-        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in overlappingChunks)
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             int index = 0;
@@ -95,23 +110,29 @@ internal class Terrain
                 index++;
             }
         }
-        return false;
+
+        return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle));
     }
     public bool Overlaps(Rectangle rectangle)
     {
         if (Chunks is null || Chunks.Count == 0)
         {
-            return false;
+            if (Props is null)
+            {
+                return false;
+            }
+
+            return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle));
         }
 
-        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        IEnumerable<(Point chunkCoordinate, TileDefinition[])> overlappingChunks = Chunks.Keys.Where((coordinate) =>
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             return rectangle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
         }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
 
         int tileSize = EnvironmentRegistry.TileSize;
-        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in overlappingChunks)
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             int index = 0;
@@ -139,16 +160,22 @@ internal class Terrain
                 index++;
             }
         }
-        return false;
+
+        return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle));
     }
     public List<Rectangle> GetOverlappingBoxes(Rectangle rectangle)
     {
         if (Chunks is null || Chunks.Count == 0)
         {
-            return [];
+            if (Props is null)
+            {
+                return [];
+            }
+
+            return Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle)).Select((prop) => prop.Collision).ToList();
         }
 
-        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        IEnumerable<(Point chunkCoordinate, TileDefinition[])> overlappingChunks = Chunks.Keys.Where((coordinate) =>
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             return rectangle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
@@ -156,7 +183,7 @@ internal class Terrain
 
         int tileSize = EnvironmentRegistry.TileSize;
         List<Rectangle> overlapping = [];
-        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in overlappingChunks)
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             int index = 0;
@@ -184,16 +211,23 @@ internal class Terrain
                 index++;
             }
         }
+
+        overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle)).Select((prop) => prop.Collision));
         return overlapping;
     }
     public List<Rectangle> GetOverlappingBoxes(Circle circle)
     {
         if (Chunks is null || Chunks.Count == 0)
         {
-            return [];
+            if (Props is null)
+            {
+                return [];
+            }
+
+            return Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle)).Select((prop) => prop.Collision).ToList();
         }
 
-        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        IEnumerable<(Point chunkCoordinate, TileDefinition[])> overlappingChunks = Chunks.Keys.Where((coordinate) =>
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             return circle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
@@ -201,7 +235,7 @@ internal class Terrain
 
         int tileSize = EnvironmentRegistry.TileSize;
         List<Rectangle> overlapping = [];
-        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in overlappingChunks)
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             int index = 0;
@@ -229,6 +263,8 @@ internal class Terrain
                 index++;
             }
         }
+
+        overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle)).Select((prop) => prop.Collision));
         return overlapping;
     }
 
@@ -241,7 +277,7 @@ internal class Terrain
 
         List<Rectangle> boxes = [];
         int tileSize = EnvironmentRegistry.TileSize;
-        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in Chunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in Chunks)
         {
             Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
             int index = 0;

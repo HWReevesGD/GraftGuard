@@ -15,4 +15,5 @@ internal class MapDefinition
     public ReadOnlyCollection<Vector2> EnemySpawns { get; init; }
     public ReadOnlyCollection<PlacedProp> PlacedProps { get; init; }
     public FrozenDictionary<Point, ReadOnlyCollection<TileDefinition>> TileChunks { get; init; }
+    public Rectangle PathingArea { get; init; }
 }

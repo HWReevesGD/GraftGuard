@@ -15,6 +15,7 @@ var pan_position: Vector2
 var displays: Array[PropDisplay] = []
 var last_mouse_tile: Vector2i
 var enemy_spawns: Array[Vector2i] = []
+var pathfinding_area: Rect2
 
 var held_inside: bool = false
 var held_right_inside: bool = false
@@ -24,6 +25,7 @@ var mouse_inside: bool:
 func _draw() -> void:
 	for spawn: Vector2i in enemy_spawns:
 		draw_circle(spawn, 16.0, Color.RED, false, 2)
+	draw_rect(pathfinding_area, Color.GREEN, false, 3.0)
 
 func update_picker() -> void:
 	world_picker.update_props()
@@ -57,11 +59,11 @@ func _input(event: InputEvent) -> void:
 		zoom_slider.value -= 0.2
 
 func _process(delta: float) -> void:
+	queue_redraw()
 	if not Input.is_action_pressed("left_click"):
 		held_inside = false
 	if not Input.is_action_pressed("right_click"):
 		held_right_inside = false
-	queue_redraw()
 	var input: Vector2 = Input.get_vector("pan_left", "pan_right", "pan_up", "pan_down")
 	pan_position -= input * delta * pan_speed
 	
@@ -138,20 +140,29 @@ func _process(delta: float) -> void:
 						index += 1
 					queue_redraw()
 			"Pathfinding Area":
-				pass
-				
-
+				# Set start of area on Left Click
+				if clicked_inside:
+					pathfinding_area.position = get_local_mouse_position()
+				# While Left Dragging, set end of area
+				if held_inside:
+					pathfinding_area.end = get_local_mouse_position()
+				else:
+					# Normalize the area on release
+					pathfinding_area = pathfinding_area.abs()
+	
 	last_mouse_tile = mouse_tile
 
 func serialize_world() -> Dictionary:
 	var props: Dictionary = serialize_placed_props()
 	var tiles: Dictionary = serialize_tiles()
 	var spawns: Array[Dictionary] = serialize_enemy_spawns()
+	var pathing_area: Dictionary = serialize_pathfinding_area()
 	
 	return {
 		"props": props,
 		"tiles": tiles,
 		"spawns": spawns,
+		"pathing_area": pathing_area,
 	}
 
 func deserialize_world(serialized_world: Dictionary) -> void:
@@ -159,6 +170,9 @@ func deserialize_world(serialized_world: Dictionary) -> void:
 	var spawns: Array = serialized_world["spawns"]
 	for spawn in spawns:
 		enemy_spawns.append(Vector2i(Painter.vector_deserialize(spawn)))
+	
+	# Deserialize Pathing Area
+	pathfinding_area = deserialize_pathfinding_area(serialized_world["pathing_area"])
 	
 	# Deserialize Props
 	var props: Dictionary = serialized_world["props"]
@@ -205,6 +219,12 @@ func serialize_enemy_spawns() -> Array[Dictionary]:
 	for spawn in enemy_spawns:
 		spawns.append(Painter.vector_serialize(spawn))
 	return spawns
+
+func serialize_pathfinding_area() -> Dictionary:
+	return Painter.rect_serialize(pathfinding_area)
+
+func deserialize_pathfinding_area(serialized_pathfinding_area: Dictionary) -> Rect2:
+	return Painter.rect_deserialize(serialized_pathfinding_area)
 
 func serialize_placed_props() -> Dictionary:
 	var next_id: int = 0

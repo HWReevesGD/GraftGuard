@@ -369,7 +369,52 @@ max_value = 4.0
 step = 0.1
 value = 1.1
 
+[node name="TabBar" type="TabContainer" parent="Picker/Margin/Vertical"]
+layout_mode = 2
+size_flags_vertical = 3
+current_tab = 0
+
+[node name="Tiles" type="VBoxContainer" parent="Picker/Margin/Vertical/TabBar"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="FillCheck" type="CheckButton" parent="Picker/Margin/Vertical/TabBar/Tiles"]
+layout_mode = 2
+text = "Fill"
+
+[node name="TilePicker" type="ItemList" parent="Picker/Margin/Vertical/TabBar/Tiles"]
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 1
+max_columns = 10
+icon_mode = 0
+fixed_icon_size = Vector2i(64, 64)
+
+[node name="Props" type="VBoxContainer" parent="Picker/Margin/Vertical/TabBar"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="PropPicker" type="ItemList" parent="Picker/Margin/Vertical/TabBar/Props"]
+layout_mode = 2
+size_flags_vertical = 3
+max_columns = 10
+icon_mode = 0
+
+[node name="Data" type="VBoxContainer" parent="Picker/Margin/Vertical/TabBar"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="DataPicker" type="ItemList" parent="Picker/Margin/Vertical/TabBar/Data"]
+layout_mode = 2
+size_flags_vertical = 3
+item_count = 2
+item_0/text = "Enemy Spawns"
+item_1/text = "Pathfinding Area"
+
 [node name="GridContainer" type="HBoxContainer" parent="Picker/Margin/Vertical"]
+visible = false
 layout_mode = 2
 
 [node name="ModeLabel" type="Label" parent="Picker/Margin/Vertical/GridContainer"]
@@ -386,35 +431,6 @@ tab_0/title = "Draw"
 tab_1/title = "Erase"
 tab_2/title = "Fill"
 tab_3/title = "Spawns"
-
-[node name="TilePicker" type="ItemList" parent="Picker/Margin/Vertical"]
-layout_mode = 2
-size_flags_vertical = 3
-max_columns = 10
-icon_mode = 0
-fixed_icon_size = Vector2i(64, 64)
-
-[node name="GridContainer2" type="HBoxContainer" parent="Picker/Margin/Vertical"]
-layout_mode = 2
-
-[node name="ModeLabel" type="Label" parent="Picker/Margin/Vertical/GridContainer2"]
-layout_mode = 2
-text = "Prop Mode:"
-
-[node name="PropMode" type="TabBar" parent="Picker/Margin/Vertical/GridContainer2"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-current_tab = 0
-tab_count = 2
-tab_0/title = "Place"
-tab_1/title = "Erase"
-
-[node name="PropPicker" type="ItemList" parent="Picker/Margin/Vertical"]
-layout_mode = 2
-size_flags_vertical = 3
-max_columns = 10
-icon_mode = 0
 
 [node name="ExportButton" type="Button" parent="Picker/Margin/Vertical"]
 layout_mode = 2

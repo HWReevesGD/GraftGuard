@@ -39,7 +39,7 @@ internal class Projectile
     /// <returns>Returns true if the projectile is overlapping <see cref="Terrain"/></returns>
     public bool IsCollidingTerrain(World world)
     {
-        return world.Terrain.Boxes.Any((box) => box.Intersects(HitCircle));
+        return world.Terrain.Overlaps(HitCircle);
     }
 
     /// <summary>

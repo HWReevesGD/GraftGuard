@@ -69,4 +69,18 @@ internal struct Circle
     {
         return new Circle(Center + offset, Radius);
     }
+
+    /// <summary>
+    /// Creates a <see cref="Rectangle"/> which closely (but technically not completely perfectly) encloses the <see cref="Circle"/>
+    /// </summary>
+    /// <returns>Returns a <see cref="Rectangle"/> which mostly encloses the <see cref="Circle"/></returns>
+    public Rectangle GetEnclosingRectangle()
+    {
+        return new Rectangle(
+            (int)CenterX - (int)Radius,
+            (int)CenterY - (int)Radius,
+            (int)Radius * 2,
+            (int)Radius * 2
+            );
+    }
 }

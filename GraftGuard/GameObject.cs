@@ -87,16 +87,16 @@ internal class GameObject
         // Collide with Terrain
         if (CollisionMasks.HasFlag(CollisionLayer.Terrain))
         {
-            objectBox = DoIntersections(objectBox, world.Terrain.Boxes);
+            objectBox = DoIntersections(objectBox, world.Terrain);
         }
 
         Position = objectBox.Location.ToVector();
     }
 
-    protected virtual Rectangle DoIntersections(Rectangle currentBox, List<Rectangle> boxesToIntersect)
+    protected virtual Rectangle DoIntersections(Rectangle currentBox, Terrain terrain)
     {
         // Horizontals First
-        List<Rectangle> intersections = boxesToIntersect.Where((obstacle) => obstacle.Intersects(currentBox)).ToList();
+        List<Rectangle> intersections = terrain.GetOverlappingBoxes(currentBox);
 
         // Horizontal
         foreach (Rectangle obstacle in intersections)
@@ -109,7 +109,7 @@ internal class GameObject
             currentBox.X += intersect.Width * MathF.Sign(currentBox.X - obstacle.X);
         }
 
-        intersections = boxesToIntersect.Where((obstacle) => obstacle.Intersects(currentBox)).ToList();
+        intersections = terrain.GetOverlappingBoxes(currentBox);
 
         // Vertical
         foreach (Rectangle obstacle in intersections)

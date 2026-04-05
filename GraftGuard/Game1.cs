@@ -61,14 +61,15 @@ public class Game1 : Game
         // Serialize part behavior names
         PartBehaviorRegistry.Save(Content);
 
-        
-
         // Content for Static classes
         Fonts.LoadContent(Content);
         Placeholders.LoadContent(Content);
 
         Projectile.LoadContent(Content);
         Player.LoadContent(Content);
+
+        // Import and Load the Environment
+        EnvironmentRegistry.LoadContent(Content);
 
         // TODO: use this.Content to load your game content here
         // Loading Tower Content

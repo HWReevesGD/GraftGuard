@@ -44,6 +44,24 @@ internal static class ClassExtensions
         const float xSize = 0.00001f;
         return vector.Y * ySize + vector.X * xSize;
     }
+    public static Point Multiply(this Point point, int scale)
+    {
+        return new Point(point.X * scale, point.Y * scale);
+    }
+    public static Point ShiftRight(this Point point, int shift)
+    {
+        return new Point(point.X >> shift, point.Y >> shift);
+    }
+    public static Point ShiftLeft(this Point point, int shift)
+    {
+        return new Point(point.X << shift, point.Y << shift);
+    }
+    public static Point BitMask(this Point point, int mask)
+    {
+        return new Point(point.X & mask, point.Y & mask);
+    }
+
+
     #endregion
 
     #region Rectangle

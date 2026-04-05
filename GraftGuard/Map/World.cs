@@ -57,6 +57,7 @@ internal class World
 
         TowerManager = new TowerManager(this);
         Terrain = new Terrain();
+        Terrain.LoadMap(EnvironmentRegistry.Map);
         EnemyManager = new EnemyManager(this);
         ProjectileManager = new ProjectileManager();
         Garage = new Garage();

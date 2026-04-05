@@ -56,6 +56,11 @@ internal class EnemyManager
 
         foreach (PathNode node in _debugPath ?? [])
         {
+            // TEMP: This is to stop a crash that was happening, I don't know how this code works yet - Harrison L
+            if (node is null)
+            {
+                continue;
+            }
             batch.DrawCircle(node.CheckCircle, Color.Green);
         }
     }

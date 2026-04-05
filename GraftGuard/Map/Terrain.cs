@@ -1,53 +1,270 @@
 ﻿using GraftGuard.Graphics;
+using GraftGuard.Map.Tiles;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Xml.Schema;
 
 namespace GraftGuard.Map;
 internal class Terrain
 {
-    public List<Rectangle> Boxes { get; set; } = [];
-    public NinePatch TerrainPatch;
-    public Terrain()
+    public FrozenDictionary<Point, ReadOnlyCollection<TileDefinition>> Chunks;
+
+    public void LoadMap(MapDefinition map)
     {
-        TerrainPatch = new NinePatch(Placeholders.TextureTerrain, 15, 15, 15, 15);
-        Boxes = [
-            new Rectangle(-128, -1280, 1280, 1280),
-            new Rectangle(-1280, -128, 1280, 1280),
-            new Rectangle(960, 0, 1280, 1280),
-            new Rectangle(0, 960, 320, 1280),
-            new Rectangle(0, 960 + 320, 1280, 1280),
-            new Rectangle(312 + 480, 960, 1280, 1280),
-            new Rectangle(320, 421, 320, 149),
-            ];
+        Chunks = map.TileChunks;
     }
 
     public void Update(GameTime time)
     {
 
     }
+
     public void Draw(SpriteBatch batch, GameTime time)
     {
-        foreach (Rectangle box in Boxes)
+        if (Chunks is null)
         {
-            TerrainPatch.Draw(batch, box);
+            return;
         }
 
-        //test props
-        EnvironmentProps.Draw(batch, PropType.LargeTree1, new Vector2(200, 200));
-        EnvironmentProps.Draw(batch, PropType.LargeTree2, new Vector2(400, 200));
-        EnvironmentProps.Draw(batch, PropType.Flowers1, new Vector2(200, 400));
-        EnvironmentProps.Draw(batch, PropType.Flowers2, new Vector2(300, 400));
-        EnvironmentProps.Draw(batch, PropType.Flowers3, new Vector2(400, 400));
+        foreach ((Point coordinate, IEnumerable<TileDefinition> chunk) in Chunks)
+        {
+            Vector2 chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits).ToVector();
+            int index = 0;
+            foreach (TileDefinition tile in chunk)
+            {
+                if (tile is null)
+                {
+                    index++;
+                    continue;
+                }
 
-        EnvironmentProps.Draw(batch, PropType.BushSpiky, new Vector2(200, 300));
-        EnvironmentProps.Draw(batch, PropType.BushSpiky, new Vector2(300, 300));
-        EnvironmentProps.Draw(batch, PropType.SmallBush, new Vector2(400, 300));
+                float x = ((index & EnvironmentRegistry.ChunkMask) << EnvironmentRegistry.TileBits) + chunkPosition.X;
+                float y = ((index >> EnvironmentRegistry.ChunkBits) << EnvironmentRegistry.TileBits) + chunkPosition.Y;
+
+                batch.Draw(tile.Texture, new Vector2(x, y), tile.Cutout, Color.White);
+                index++;
+            }
+        }
     }
+
     public bool Overlaps(Circle circle)
     {
-        return Boxes.Any((box) => box.Intersects(circle));
+        if (Chunks is null || Chunks.Count == 0)
+        {
+            return false;
+        }
+
+        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            return circle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
+        }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
+
+        int tileSize = EnvironmentRegistry.TileSize;
+        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            int index = 0;
+            foreach (TileDefinition definition in chunk)
+            {
+                int x = index & EnvironmentRegistry.ChunkMask;
+                int y = index >> EnvironmentRegistry.ChunkBits;
+
+                if (definition is null || !definition.IsSolid)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle tile = new Rectangle(
+                    tileSize * x, tileSize * y,
+                    tileSize, tileSize);
+                tile.Offset(chunkPosition);
+
+                if (tile.Intersects(circle))
+                {
+                    return true;
+                }
+
+                index++;
+            }
+        }
+        return false;
+    }
+    public bool Overlaps(Rectangle rectangle)
+    {
+        if (Chunks is null || Chunks.Count == 0)
+        {
+            return false;
+        }
+
+        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            return rectangle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
+        }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
+
+        int tileSize = EnvironmentRegistry.TileSize;
+        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            int index = 0;
+            foreach (TileDefinition definition in chunk)
+            {
+                int x = index & EnvironmentRegistry.ChunkMask;
+                int y = index >> EnvironmentRegistry.ChunkBits;
+
+                if (definition is null || !definition.IsSolid)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle tile = new Rectangle(
+                    tileSize * x, tileSize * y,
+                    tileSize, tileSize);
+                tile.Offset(chunkPosition);
+
+                if (tile.Intersects(rectangle))
+                {
+                    return true;
+                }
+
+                index++;
+            }
+        }
+        return false;
+    }
+    public List<Rectangle> GetOverlappingBoxes(Rectangle rectangle)
+    {
+        if (Chunks is null || Chunks.Count == 0)
+        {
+            return [];
+        }
+
+        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            return rectangle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
+        }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
+
+        int tileSize = EnvironmentRegistry.TileSize;
+        List<Rectangle> overlapping = [];
+        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            int index = 0;
+            foreach (TileDefinition definition in chunk)
+            {
+                int x = index & EnvironmentRegistry.ChunkMask;
+                int y = index >> EnvironmentRegistry.ChunkBits;
+
+                if (definition is null || !definition.IsSolid)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle tile = new Rectangle(
+                    tileSize * x, tileSize * y,
+                    tileSize, tileSize);
+                tile.Offset(chunkPosition);
+
+                if (tile.Intersects(rectangle))
+                {
+                    overlapping.Add(tile);
+                }
+
+                index++;
+            }
+        }
+        return overlapping;
+    }
+    public List<Rectangle> GetOverlappingBoxes(Circle circle)
+    {
+        if (Chunks is null || Chunks.Count == 0)
+        {
+            return [];
+        }
+
+        IEnumerable<(Point chunkCoordinate, ReadOnlyCollection<TileDefinition>)> overlappingChunks = Chunks.Keys.Where((coordinate) =>
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            return circle.Intersects(new Rectangle(chunkPosition, new Point(EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits)));
+        }).Select((chunkCoordinate) => (chunkCoordinate, Chunks[chunkCoordinate]));
+
+        int tileSize = EnvironmentRegistry.TileSize;
+        List<Rectangle> overlapping = [];
+        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in overlappingChunks)
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            int index = 0;
+            foreach (TileDefinition definition in chunk)
+            {
+                int x = index & EnvironmentRegistry.ChunkMask;
+                int y = index >> EnvironmentRegistry.ChunkBits;
+
+                if (definition is null || !definition.IsSolid)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle tile = new Rectangle(
+                    tileSize * x, tileSize * y,
+                    tileSize, tileSize);
+                tile.Offset(chunkPosition);
+
+                if (tile.Intersects(circle))
+                {
+                    overlapping.Add(tile);
+                }
+
+                index++;
+            }
+        }
+        return overlapping;
+    }
+
+    public List<Rectangle> GetTileBoxes()
+    {
+        if (Chunks is null || Chunks.Count == 0)
+        {
+            return [];
+        }
+
+        List<Rectangle> boxes = [];
+        int tileSize = EnvironmentRegistry.TileSize;
+        foreach ((Point coordinate, ReadOnlyCollection<TileDefinition> chunk) in Chunks)
+        {
+            Point chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits);
+            int index = 0;
+            foreach (TileDefinition definition in chunk)
+            {
+                int x = index & EnvironmentRegistry.ChunkMask;
+                int y = index >> EnvironmentRegistry.ChunkBits;
+
+                if (definition is null || !definition.IsSolid)
+                {
+                    index++;
+                    continue;
+                }
+
+                Rectangle tile = new Rectangle(
+                    tileSize * x, tileSize * y,
+                    tileSize, tileSize);
+                tile.Offset(chunkPosition);
+
+                boxes.Add(tile);
+                index++;
+            }
+        }
+        return boxes;
     }
 }

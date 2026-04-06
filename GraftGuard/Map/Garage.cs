@@ -15,7 +15,7 @@ internal class Garage
     public Garage()
     {
         MainPatch = new NinePatch(Placeholders.TextureGaragePatch, 15, 15, 15, 15);
-        Position = new Vector2(312, 960);
+        Position = new Vector2(-312, 0);
         Size = new Vector2(480, 320);
         ReceptacleBounds = new Rectangle((Position + new Vector2(Size.X * 0.5f - (96 * 0.5f), Size.Y - 64)).ToPoint(), new Point(96, 64));
     }

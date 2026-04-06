@@ -25,7 +25,7 @@ internal class World
     public Terrain Terrain { get; set; }
     public Camera Camera { get; set; }
     public Garage Garage { get; set; }
-    public List<ScatteredPart> ScatteredParts { get; set; }
+    public static List<ScatteredPart> ScatteredParts { get; set; }
 
     // Constructor
     public World()
@@ -90,7 +90,7 @@ internal class World
 
     public void OnStartingNight()
     {
-
+        EnemyManager.BeginNight();
     }
 
     // Methods
@@ -141,6 +141,11 @@ internal class World
         {
             Player.Draw(gameTime, batch);
         }
+    }
+
+    public static void ScatterPart(Vector2 location, PartDefinition part)
+    {
+        ScatteredParts.Add(new ScatteredPart(location, part));
     }
     public void UpdatePaths()
     {

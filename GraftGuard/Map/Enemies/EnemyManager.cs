@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using GraftGuard.Utility;
 using GraftGuard.Grafting;
+using GraftGuard.Data;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -33,6 +34,17 @@ internal class EnemyManager
             ];
     }
 
+    public void BeginNight()
+    {
+        foreach(Vector2 spawn in Spawns)
+        {
+            for(int i = 0; i <= (int) PlayerData.CurrentGame.CurrentDifficulty; i++)
+            {
+                Enemies.Add(new EnemyDummy(spawn, GraftLibrary.GetRandomBase()));
+            }
+        }
+    }
+
     private List<PathNode> _debugPath;
     public void Update(GameTime time, World world, InputManager inputManager)
     {
@@ -41,9 +53,15 @@ internal class EnemyManager
             Enemy enemy = Enemies[index];
             enemy.Update(time, inputManager);
 
-            if (enemy.Health <= 0.0f)
+            // Check if the enemy just died this frame
+            if (enemy.Health <= 0.0f && !enemy.IsDead)
             {
-                enemy.OnDeath();
+                enemy.OnDeath(); 
+            }
+
+            // Only remove if it's dead AND all visual effects (parts) are done
+            if (enemy.IsDead && enemy.Visual.AllPartsLanded)
+            {
                 Enemies.RemoveAt(index);
                 index--;
             }

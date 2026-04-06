@@ -21,6 +21,11 @@ namespace GraftGuard.Map.Enemies
 
         private float speedMultiplier = 1f;
 
+        //handle death
+        private List<FallingPart> fallingParts = new();
+        public bool AllPartsLanded => IsDead && fallingParts.Count == 0;
+        public bool IsDead { get; private set; } = false;
+
         public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos)
         {
             rng = new Random();
@@ -75,54 +80,101 @@ namespace GraftGuard.Map.Enemies
 
         }
 
+        public void VisualDeath(Vector2 deathPosition)
+        {
+            IsDead = true;
+
+            Random rnd = new Random();
+
+            // Explode Limbs and Head
+            foreach (var entry in EquippedParts)
+            {
+                // Calculate a vector pointing away from the center
+                Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
+                fallingParts.Add(new FallingPart(entry.Value, deathPosition, direction));
+            }
+
+            // Clear the equipped parts so they stop drawing in the normal Draw call
+            EquippedParts.Clear();
+        }
+
         public void Update(GameTime gameTime, Vector2 position, float speedMultiplier = 1)
         {
-            Animator.Update(gameTime, position, speedMultiplier);
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!IsDead)
+            {
+                Animator.Update(gameTime, position, speedMultiplier);
+            }
+            else
+            {
+                for (int i = fallingParts.Count - 1; i >= 0; i--)
+                {
+                    fallingParts[i].Update(dt);
+
+                    if (fallingParts[i].HasLanded)
+                    {
+                        World.ScatterPart(fallingParts[i].GetLandingPosition(), fallingParts[i].Definition);
+
+                        fallingParts.RemoveAt(i);
+                    }
+                }
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            float timer = Animator.AnimationTimer;
-            AnimationClip clip = Animator.CurrentClip;
-            float bodyRotation = Animator.GetRotation();
-
-            float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
-            float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
-            Vector2 animatedPos = new Vector2(position.X + sideSway, position.Y + walkBob);
-
-            float squash = (float)Math.Sin(timer * 2f) * 0.05f;
-            Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
-
-            // Draw Torso
-            spriteBatch.Draw(Base.Texture, animatedPos, null, Color.White, bodyRotation,
-                new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
-                dynamicScale, SpriteEffects.None, 0f);
-
-            var ctx = new LimbDrawContext
+            if (!IsDead)
             {
-                SpriteBatch = spriteBatch,
-                BodyPos = animatedPos,
-                BodyRot = bodyRotation,
-                DynamicScale = dynamicScale,
-                Timer = timer,
-                Clip = clip
-            };
+                float timer = Animator.AnimationTimer;
+                AnimationClip clip = Animator.CurrentClip;
+                float bodyRotation = Animator.GetRotation();
 
+                float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
+                float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
+                Vector2 animatedPos = new Vector2(position.X + sideSway, position.Y + walkBob);
 
+                float squash = (float)Math.Sin(timer * 2f) * 0.05f;
+                Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
 
-            // Draw Limbs
-            int count = 0;
-            foreach (var slot in Base.AttachmentPoints)
-            {
-                if (EquippedParts.TryGetValue(slot.Key, out var part))
+                // Draw Torso
+                spriteBatch.Draw(Base.Texture, animatedPos, null, Color.White, bodyRotation,
+                    new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
+                    dynamicScale, SpriteEffects.None, 0f);
+
+                var ctx = new LimbDrawContext
                 {
-                    //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
-                    Vector2 pixelOffset = new Vector2(
-                        (slot.Value.X - 0.5f) * Base.Texture.Width,
-                        (slot.Value.Y - 0.5f) * Base.Texture.Height
-                    );
+                    SpriteBatch = spriteBatch,
+                    BodyPos = animatedPos,
+                    BodyRot = bodyRotation,
+                    DynamicScale = dynamicScale,
+                    Timer = timer,
+                    Clip = clip
+                };
 
-                    DrawLimb(part.Name, pixelOffset, part, count++, ctx);
+
+
+                // Draw Limbs
+                int count = 0;
+                foreach (var slot in Base.AttachmentPoints)
+                {
+                    if (EquippedParts.TryGetValue(slot.Key, out var part))
+                    {
+                        //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+                        Vector2 pixelOffset = new Vector2(
+                            (slot.Value.X - 0.5f) * Base.Texture.Width,
+                            (slot.Value.Y - 0.5f) * Base.Texture.Height
+                        );
+
+                        DrawLimb(part.Name, pixelOffset, part, count++, ctx);
+                    }
+                }
+            }
+            else
+            {
+                foreach (var part in fallingParts)
+                {
+                    part.Draw(spriteBatch);
                 }
             }
         }

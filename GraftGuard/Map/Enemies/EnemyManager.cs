@@ -29,14 +29,13 @@ internal class EnemyManager
         PathManager.BuildGrid(world);
 
         Enemies = [
-            new EnemyDummy(new Vector2(400, 350), GraftLibrary.GetRandomBase()),
+            new EnemyDummy(new Vector2(-200, -200), GraftLibrary.GetRandomBase()),
             ];
     }
 
     private List<PathNode> _debugPath;
     public void Update(GameTime time, World world, InputManager inputManager)
     {
-        _debugPath = PathManager.FindPath(new Point(1, 1), ((inputManager.MouseWorldPosition.ToVector() - PathManager.Start) / (PathNode.GridDistance)).ToPoint(), false);
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];
@@ -57,16 +56,6 @@ internal class EnemyManager
         foreach (Enemy enemy in Enemies)
         {
             enemy.Draw(time, batch);
-        }
-
-        foreach (PathNode node in _debugPath ?? [])
-        {
-            // TEMP: This is to stop a crash that was happening, I don't know how this code works yet - Harrison L
-            if (node is null)
-            {
-                continue;
-            }
-            batch.DrawCircle(node.CheckCircle, Color.Green);
         }
     }
 

@@ -21,7 +21,7 @@ internal class PartSlashing : IPartBehavior
 
     public static IPartBehavior Create() => new PartSlashing();
 
-    public void Draw(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         if (_slashSize <= 0.0f)
         {
@@ -33,14 +33,14 @@ internal class PartSlashing : IPartBehavior
         batch.DrawCentered(Placeholders.TextureSlash, partPosition, rotation: (float)time.TotalGameTime.TotalSeconds * -24.0f % MathF.Tau, scale: _slashSize, color: new Color(Color.White, 0.3f));
     }
 
-    public void OnDealDamage(Tower tower, PartSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         _slashSize = 0.9f;
 
         world.EnemyManager.DealDamageInAreas([], [new Circle(partPosition, HitRadius)], part.BaseDamage * 0.5f);
     }
 
-    public void Update(Tower tower, PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void Update(PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         
     }

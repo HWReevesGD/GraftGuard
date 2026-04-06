@@ -89,7 +89,7 @@ internal class Player : GameObject
         List<ScatteredPart> scatteredParts = GetIntersects(
             _collectionCircle.Translated(Position),
             layers: CollisionLayer.ScatteredPart,
-            world.ScatteredParts
+            World.ScatteredParts
             );
 
         // Pickup overlapping parts
@@ -121,7 +121,7 @@ internal class Player : GameObject
         HeldParts.Add(scatteredPart.Definition);
 
         // Remove ScatteredPart from the World
-        world.ScatteredParts.Remove(scatteredPart);
+        World.ScatteredParts.Remove(scatteredPart);
     }
 
     public void ClearHeldParts() => HeldParts.Clear();

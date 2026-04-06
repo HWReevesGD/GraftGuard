@@ -24,6 +24,8 @@ internal class Enemy : GameObject
 
     public float Health { get; set; }
 
+    public bool IsDead { get; private set; } = false;
+
     public EnemyVisual Visual { get; private set; }
 
     public Enemy(Vector2 position, BaseDefinition torso, Vector2 hitboxSize, float health, float speed)
@@ -46,17 +48,6 @@ internal class Enemy : GameObject
         Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle, position);
     }
 
-    /*
-    private static void SetupDefaultAttachmentPoints(BaseDefinition torso)
-    {
-        if (torso.AttachmentPoints.Count > 0) return;
-        torso.AttachmentPoints.Add("Head", new Vector2(-1, -10));
-        torso.AttachmentPoints.Add("RightArm", new Vector2(5, -10));
-        torso.AttachmentPoints.Add("LeftArm", new Vector2(-6.75f, -10));
-        torso.AttachmentPoints.Add("RightLeg", new Vector2(5.75f, 8.25f));
-        torso.AttachmentPoints.Add("LeftLeg", new Vector2(-6.5f, 8.25f));
-    }*/
-
     // Methods
     /// <summary>
     /// Moves the enemy object by having it navigate along a list of PathNodes
@@ -77,7 +68,10 @@ internal class Enemy : GameObject
 
     public virtual void OnDeath()
     {
+        if (IsDead) return;
 
+        IsDead = true;
+        Visual.VisualDeath(Position);
     }
 
     public override void Update(GameTime gameTime, InputManager inputManager)
@@ -92,8 +86,11 @@ internal class Enemy : GameObject
             Health -= damageOverTime;
             damageOverTimeDuration--;
         }
-        
-        Position = Position + new Vector2(1,0);
+
+        if (!IsDead)
+        {
+            Position = Position + new Vector2(1, 0);
+        }
         Visual.Update(gameTime, Position);
     }
 

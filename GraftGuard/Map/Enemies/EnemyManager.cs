@@ -12,17 +12,19 @@ internal class EnemyManager
 {
     public List<Enemy> Enemies;
     public PathManager PathManager { get; set; }
-
-    public EnemyManager(World world) => Setup(world);
+    public List<Vector2> Spawns { get; set; }
+    public EnemyManager(World world, MapDefinition map) => Setup(world, map);
 
     /// <summary>
     /// Sets up the <see cref="EnemyManager"/> for a new Session
     /// </summary>
-    public void Setup(World world)
+    public void Setup(World world, MapDefinition map)
     {
         PathManager = new PathManager();
-        PathManager.Start = world.Terrain.PathingArea.Location.ToVector();
-        PathManager.End = (world.Terrain.PathingArea.Location + world.Terrain.PathingArea.Size).ToVector();
+        Rectangle pathingArea = map.PathingArea;
+        PathManager.Start = pathingArea.Location.ToVector();
+        PathManager.End = (pathingArea.Location + pathingArea.Size).ToVector();
+        Spawns = map.EnemySpawns.ToList();
 
         PathManager.BuildGrid(world);
 

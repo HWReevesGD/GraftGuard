@@ -16,13 +16,11 @@ internal class Terrain
 {
     public Dictionary<Point, TileDefinition[]> Chunks;
     public List<PlacedProp> Props;
-    public Rectangle PathingArea;
 
     public void LoadMap(MapDefinition map)
     {
         Chunks = map.TileChunks.ToDictionary((pair) => pair.Key, (pair) => pair.Value.ToArray());
         Props = map.PlacedProps.ToList();
-        PathingArea = map.PathingArea;
     }
 
     public void Update(GameTime time)
@@ -57,9 +55,12 @@ internal class Terrain
             }
         }
 
-        foreach (PlacedProp prop in Props)
+        if (Props is not null)
         {
-            prop.Draw(batch);
+            foreach (PlacedProp prop in Props)
+            {
+                prop.Draw(batch);
+            }
         }
     }
 
@@ -111,7 +112,7 @@ internal class Terrain
             }
         }
 
-        return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle));
+        return Props is not null && Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle));
     }
     public bool Overlaps(Rectangle rectangle)
     {
@@ -161,7 +162,7 @@ internal class Terrain
             }
         }
 
-        return Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle));
+        return Props is not null && Props.Any((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle));
     }
     public List<Rectangle> GetOverlappingBoxes(Rectangle rectangle)
     {
@@ -212,7 +213,11 @@ internal class Terrain
             }
         }
 
-        overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle)).Select((prop) => prop.Collision));
+        if (Props is not null)
+        {
+            overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(rectangle)).Select((prop) => prop.Collision));
+        }
+
         return overlapping;
     }
     public List<Rectangle> GetOverlappingBoxes(Circle circle)
@@ -264,7 +269,11 @@ internal class Terrain
             }
         }
 
-        overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle)).Select((prop) => prop.Collision));
+        if (Props is not null)
+        {
+            overlapping.AddRange(Props.Where((prop) => prop.Definition.UsesCollision && prop.Collision.Intersects(circle)).Select((prop) => prop.Collision));
+        }
+
         return overlapping;
     }
 

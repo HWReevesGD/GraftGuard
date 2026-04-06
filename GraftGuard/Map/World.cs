@@ -57,8 +57,9 @@ internal class World
 
         TowerManager = new TowerManager(this);
         Terrain = new Terrain();
-        Terrain.LoadMap(EnvironmentRegistry.Map);
-        EnemyManager = new EnemyManager(this);
+        MapDefinition map = EnvironmentRegistry.Map;
+        Terrain.LoadMap(map);
+        EnemyManager = new EnemyManager(this, map);
         ProjectileManager = new ProjectileManager();
         Garage = new Garage();
         Inventory = new Inventory();
@@ -73,7 +74,7 @@ internal class World
         Inventory.Clear();
         TowerManager.Setup();
         ProjectileManager.Setup();
-        EnemyManager.Setup(this);
+        EnemyManager.Setup(this, EnvironmentRegistry.Map);
     }
 
     public void OnStartingDawn()

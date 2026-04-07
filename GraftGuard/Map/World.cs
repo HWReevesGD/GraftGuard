@@ -26,6 +26,7 @@ internal class World
     public Camera Camera { get; set; }
     public Garage Garage { get; set; }
     public static List<ScatteredPart> ScatteredParts { get; set; }
+    public MapDefinition CurrentMap { get; set; }
 
     // Constructor
     public World()
@@ -55,13 +56,14 @@ internal class World
             new ScatteredPart(new Vector2(720, 220), GraftLibrary.GetRandomPart()),
             ];
 
+        CurrentMap = EnvironmentRegistry.Map;
+
         TowerManager = new TowerManager(this);
         Terrain = new Terrain();
-        MapDefinition map = EnvironmentRegistry.Map;
-        Terrain.LoadMap(map);
-        EnemyManager = new EnemyManager(this, map);
+        Terrain.LoadMap(CurrentMap);
+        EnemyManager = new EnemyManager(this, CurrentMap);
         ProjectileManager = new ProjectileManager();
-        Garage = new Garage();
+        Garage = new Garage(CurrentMap);
         Inventory = new Inventory();
 
         Player = new Player(Vector2.Zero);
@@ -74,7 +76,7 @@ internal class World
         Inventory.Clear();
         TowerManager.Setup();
         ProjectileManager.Setup();
-        EnemyManager.Setup(this, EnvironmentRegistry.Map);
+        EnemyManager.Setup(this, CurrentMap);
     }
 
     public void OnStartingDawn()

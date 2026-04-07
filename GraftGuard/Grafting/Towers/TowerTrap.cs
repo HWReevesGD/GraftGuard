@@ -55,7 +55,7 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                TowerPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
+                AttachedPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
 
                 if (part is null) continue;
 
@@ -81,7 +81,7 @@ internal class TowerTrap : Tower
         {
             for (int y = 0; y < GridSize; y++)
             {
-                TowerPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
+                AttachedPart part = GetPart((x + y) % _attachedParts.Length, shiftIfNull: false);
                 if (part is null) continue;
 
                 Vector2 partPosition = GetPartPosition(time, part, x, y);
@@ -95,7 +95,7 @@ internal class TowerTrap : Tower
         }
     }
 
-    public Vector2 GetPartPosition(GameTime time, TowerPart part, int partX, int partY)
+    public Vector2 GetPartPosition(GameTime time, AttachedPart part, int partX, int partY)
     {
         Point partSize = part.Definition.Texture.GetSizePoint();
 

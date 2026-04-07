@@ -31,7 +31,7 @@ internal class TowerSpinner : Tower
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
-            TowerPart part = _attachedParts[index];
+            AttachedPart part = _attachedParts[index];
             if (part is null) continue;
 
             float rotation = GetPartRotation(time, index);
@@ -58,7 +58,7 @@ internal class TowerSpinner : Tower
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
-            TowerPart part = _attachedParts[index];
+            AttachedPart part = _attachedParts[index];
             if (part is null) continue;
 
             float rotation = GetPartRotation(time, index);

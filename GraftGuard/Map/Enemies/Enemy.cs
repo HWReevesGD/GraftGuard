@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Reflection.Metadata;
 using GraftGuard.Utility;
 using GraftGuard.Map.Pathing;
+using GraftGuard.Grafting.Registry.Behaviors;
 
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
@@ -91,6 +92,13 @@ internal class Enemy : GameObject
         {
             Position = Position + new Vector2(1, 0);
         }
+
+        // Update attached parts
+        foreach (PartDefinition part in Visual.EquippedParts.Values)
+        {
+            
+        }
+
         Visual.Update(gameTime, Position);
     }
 

@@ -372,9 +372,10 @@ value = 1.1
 [node name="TabBar" type="TabContainer" parent="Picker/Margin/Vertical"]
 layout_mode = 2
 size_flags_vertical = 3
-current_tab = 0
+current_tab = 2
 
 [node name="Tiles" type="VBoxContainer" parent="Picker/Margin/Vertical/TabBar"]
+visible = false
 layout_mode = 2
 metadata/_tab_index = 0
 
@@ -402,16 +403,16 @@ max_columns = 10
 icon_mode = 0
 
 [node name="Data" type="VBoxContainer" parent="Picker/Margin/Vertical/TabBar"]
-visible = false
 layout_mode = 2
 metadata/_tab_index = 2
 
 [node name="DataPicker" type="ItemList" parent="Picker/Margin/Vertical/TabBar/Data"]
 layout_mode = 2
 size_flags_vertical = 3
-item_count = 2
+item_count = 3
 item_0/text = "Enemy Spawns"
 item_1/text = "Pathfinding Area"
+item_2/text = "Garage Positioning"
 
 [node name="GridContainer" type="HBoxContainer" parent="Picker/Margin/Vertical"]
 visible = false

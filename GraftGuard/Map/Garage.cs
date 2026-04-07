@@ -10,13 +10,12 @@ internal class Garage
     public readonly NinePatch MainPatch;
     public Vector2 Position { get; set; }
     public Vector2 Center => Position + Size * 0.5f;
-    public Vector2 Size { get; set; }
+    public readonly Vector2 Size = new Vector2(480, 320);
     public Rectangle ReceptacleBounds { get; set; }
-    public Garage()
+    public Garage(MapDefinition map)
     {
         MainPatch = new NinePatch(Placeholders.TextureGaragePatch, 15, 15, 15, 15);
-        Position = new Vector2(-312, 0);
-        Size = new Vector2(480, 320);
+        Position = map.GaragePosition;
         ReceptacleBounds = new Rectangle((Position + new Vector2(Size.X * 0.5f - (96 * 0.5f), Size.Y - 64)).ToPoint(), new Point(96, 64));
     }
     public void Update(GameTime time, World world)

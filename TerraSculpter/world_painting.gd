@@ -14,8 +14,14 @@ const PROP_DISPLAY = preload("uid://cxun613vh6l53")
 var pan_position: Vector2
 var displays: Array[PropDisplay] = []
 var last_mouse_tile: Vector2i
+
+# Constants from Graft Guard
+const GARAGE_SIZE: Vector2 = Vector2(480, 320)
+
+# Saved Data for the Map
 var enemy_spawns: Array[Vector2i] = []
 var pathfinding_area: Rect2
+var garage_start: Vector2
 
 var held_inside: bool = false
 var held_right_inside: bool = false
@@ -23,9 +29,14 @@ var mouse_inside: bool:
 	get(): return painter.world_rect.has_point(get_global_mouse_position())
 
 func _draw() -> void:
+	# Draw Spawns
 	for spawn: Vector2i in enemy_spawns:
 		draw_circle(spawn, 16.0, Color.RED, false, 2)
+	# Draw Pathing Area
 	draw_rect(pathfinding_area, Color.GREEN, false, 3.0)
+	# Draw Garage
+	draw_rect(Rect2(garage_start, GARAGE_SIZE * Vector2(1, 0.2)), Color.BLUE * Color(1, 1, 1, 0.4))
+	draw_rect(Rect2(garage_start, GARAGE_SIZE), Color.BLUE, false, 5.0)
 
 func update_picker() -> void:
 	world_picker.update_props()
@@ -149,20 +160,20 @@ func _process(delta: float) -> void:
 				else:
 					# Normalize the area on release
 					pathfinding_area = pathfinding_area.abs()
+			"Garage Positioning":
+				# Set Garage start position of Left Click
+				if clicked_inside:
+					garage_start = get_local_mouse_position().snappedf(Tile.SIZE)
 	
 	last_mouse_tile = mouse_tile
 
 func serialize_world() -> Dictionary:
-	var props: Dictionary = serialize_placed_props()
-	var tiles: Dictionary = serialize_tiles()
-	var spawns: Array[Dictionary] = serialize_enemy_spawns()
-	var pathing_area: Dictionary = serialize_pathfinding_area()
-	
 	return {
-		"props": props,
-		"tiles": tiles,
-		"spawns": spawns,
-		"pathing_area": pathing_area,
+		"props": serialize_placed_props(),
+		"tiles": serialize_tiles(),
+		"spawns": serialize_enemy_spawns(),
+		"pathing_area": serialize_pathfinding_area(),
+		"garage_position": serialize_garage_position(),
 	}
 
 func deserialize_world(serialized_world: Dictionary) -> void:
@@ -173,6 +184,8 @@ func deserialize_world(serialized_world: Dictionary) -> void:
 	
 	# Deserialize Pathing Area
 	pathfinding_area = deserialize_pathfinding_area(serialized_world["pathing_area"])
+	# Deserialize Garage Position
+	garage_start = deserialize_garage_position(serialized_world["garage_position"])
 	
 	# Deserialize Props
 	var props: Dictionary = serialized_world["props"]
@@ -213,6 +226,12 @@ func deserialize_world(serialized_world: Dictionary) -> void:
 			if tile == null:
 				continue
 			map.tiles[chunk_tile_coordinate + _tile_local_linear_to_local(index)] = tile
+
+func serialize_garage_position() -> Dictionary:
+	return Painter.vector_serialize(garage_start)
+
+func deserialize_garage_position(serialized_garage_position: Dictionary) -> Vector2:
+	return Painter.vector_deserialize(serialized_garage_position)
 
 func serialize_enemy_spawns() -> Array[Dictionary]:
 	var spawns: Array[Dictionary] = []

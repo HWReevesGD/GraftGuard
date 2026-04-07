@@ -116,6 +116,9 @@ internal class EnvironmentRegistry
             tileChunks[coordinate] = chunkTiles.AsReadOnly();
         }
 
+        // Parse Garage Position
+        Vector2 garagePosition = ImportVector2(world.GetProperty("garage_position"));
+
         // Save a new Map
         Map = new MapDefinition()
         {
@@ -123,6 +126,7 @@ internal class EnvironmentRegistry
             EnemySpawns = enemySpawns.AsReadOnly(),
             TileChunks = tileChunks.ToFrozenDictionary(),
             PathingArea = pathingArea,
+            GaragePosition = garagePosition,
         };
     }
 

@@ -14,12 +14,12 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting;
-internal class TowerPart
+internal class AttachedPart
 {
     private IPartBehavior[] _partBehaviors;
     public PartDefinition Definition { get; init; }
     public ReadOnlySpan<IPartBehavior> Behaviors => _partBehaviors;
-    public TowerPart(PartDefinition definition)
+    public AttachedPart(PartDefinition definition)
     {
         Definition = definition;
 

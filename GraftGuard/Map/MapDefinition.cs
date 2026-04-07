@@ -16,4 +16,5 @@ internal class MapDefinition
     public ReadOnlyCollection<PlacedProp> PlacedProps { get; init; }
     public FrozenDictionary<Point, ReadOnlyCollection<TileDefinition>> TileChunks { get; init; }
     public Rectangle PathingArea { get; init; }
+    public Vector2 GaragePosition { get; init; }
 }

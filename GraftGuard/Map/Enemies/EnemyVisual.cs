@@ -14,6 +14,7 @@ namespace GraftGuard.Map.Enemies
     {
         public BaseDefinition Base { get; private set; }
         public Dictionary<string, PartDefinition> EquippedParts { get; private set; } = new();
+        internal List<AttachedPart> AttachedParts = [];
         public Animator Animator { get; private set; }
         public float Scale { get; set; }
 
@@ -54,6 +55,15 @@ namespace GraftGuard.Map.Enemies
             PartDefinition selectedHead = headPool.Count > 0
                 ? headPool[rng.Next(0, headPool.Count)]
                 : null;
+
+            // Setup Attached Parts. These parts hold data for Behaviors,
+            // and handle updating them
+            foreach ((_, PartDefinition definition) in EquippedParts)
+            {
+                AttachedParts.Add(
+                    new AttachedPart(definition)
+                    );
+            }
 
             // Iterate through sockets and assign
             int limbIndex = 0;

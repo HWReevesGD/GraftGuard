@@ -31,7 +31,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
     }
 
-    protected TowerPart[] _attachedParts;
+    protected AttachedPart[] _attachedParts;
     public PartDefinition[] Parts => _attachedParts.Select((part) => part?.Definition).ToArray();
 
     /// <summary>
@@ -61,7 +61,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="texture">Tower's Texture</param>
     public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, PartSettings settings = null) : base(position, size, texture)
     {
-        _attachedParts = new TowerPart[MaxParts];
+        _attachedParts = new AttachedPart[MaxParts];
 
         random = new Random();
         MouseBox = mouseBox;
@@ -95,12 +95,12 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="index">Index of the part</param>
     /// <param name="shiftIfNull">Attempts to shift to another part if the part at the index is null</param>
     /// <returns></returns>
-    public TowerPart GetPart(int index, bool shiftIfNull)
+    public AttachedPart GetPart(int index, bool shiftIfNull)
     {
-        TowerPart part = _attachedParts[index];
+        AttachedPart part = _attachedParts[index];
         if (shiftIfNull && part is null)
         {
-            foreach (TowerPart otherPart in _attachedParts)
+            foreach (AttachedPart otherPart in _attachedParts)
             {
                 if (otherPart is not null)
                 {
@@ -122,7 +122,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         {
             if (_attachedParts[index] is null)
             {
-                _attachedParts[index] = new TowerPart(part);
+                _attachedParts[index] = new AttachedPart(part);
                 return;
             }
         }
@@ -137,7 +137,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
         for (int index = MaxParts - 1; index >= 0; index--)
         {
-            if (_attachedParts[index] is TowerPart part)
+            if (_attachedParts[index] is AttachedPart part)
             {
                 _attachedParts[index] = null;
                 return part.Definition;

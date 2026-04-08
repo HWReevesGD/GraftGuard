@@ -136,33 +136,12 @@ namespace GraftGuard.Map.Enemies
         {
             if (!IsDead)
             {
-                float timer = Animator.AnimationTimer;
-                AnimationClip clip = Animator.CurrentClip;
-                float bodyRotation = Animator.GetRotation();
-
-                float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
-                float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
-                Vector2 animatedPos = new Vector2(position.X + sideSway, position.Y + walkBob);
-
-                float squash = (float)Math.Sin(timer * 2f) * 0.05f;
-                Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
+                LimbDrawContext ctx = GetContext(spriteBatch, position);
 
                 // Draw Torso
-                spriteBatch.Draw(Base.Texture, animatedPos, null, Color.White, bodyRotation,
+                spriteBatch.Draw(Base.Texture, ctx.BodyPos, null, Color.White, ctx.BodyRot,
                     new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
-                    dynamicScale, SpriteEffects.None, 0f);
-
-                var ctx = new LimbDrawContext
-                {
-                    SpriteBatch = spriteBatch,
-                    BodyPos = animatedPos,
-                    BodyRot = bodyRotation,
-                    DynamicScale = dynamicScale,
-                    Timer = timer,
-                    Clip = clip
-                };
-
-
+                    ctx.DynamicScale, SpriteEffects.None, 0f);
 
                 // Draw Limbs
                 int count = 0;
@@ -187,6 +166,30 @@ namespace GraftGuard.Map.Enemies
                     part.Draw(spriteBatch);
                 }
             }
+        }
+
+        public LimbDrawContext GetContext(SpriteBatch spriteBatch, Vector2 enemyPosition)
+        {
+            float timer = Animator.AnimationTimer;
+            AnimationClip clip = Animator.CurrentClip;
+            float bodyRotation = Animator.GetRotation();
+
+            float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
+            float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
+            Vector2 animatedPos = new Vector2(enemyPosition.X + sideSway, enemyPosition.Y + walkBob);
+
+            float squash = (float)Math.Sin(timer * 2f) * 0.05f;
+            Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
+
+            return new LimbDrawContext
+            {
+                SpriteBatch = spriteBatch,
+                BodyPos = animatedPos,
+                BodyRot = bodyRotation,
+                DynamicScale = dynamicScale,
+                Timer = timer,
+                Clip = clip
+            };
         }
 
         public struct LimbDrawContext

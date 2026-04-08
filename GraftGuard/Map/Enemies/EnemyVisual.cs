@@ -65,6 +65,7 @@ namespace GraftGuard.Map.Enemies
                     if (selectedHead != null)
                     {
                         AttachedPart part = new AttachedPart(selectedHead, slotName);
+                        AttachedParts.Add(part);
                     }
                 }
                 else
@@ -73,6 +74,7 @@ namespace GraftGuard.Map.Enemies
                     if (limbIndex < limbPool.Count)
                     {
                         AttachedPart part = new AttachedPart(limbPool[limbIndex], slotName);
+                        AttachedParts.Add(part);
                         limbIndex++;
                     }
                 }

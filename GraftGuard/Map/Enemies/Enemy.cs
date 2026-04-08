@@ -13,6 +13,7 @@ using static GraftGuard.Map.Enemies.EnemyVisual;
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
 {
+    double timer = 0;
     // Fields
     private Vector2 dirUnitVec;
     private float speed;
@@ -79,16 +80,28 @@ internal class Enemy : GameObject
 
     public override void Update(GameTime gameTime, InputManager inputManager)
     {
-        // process speed modifier duration
-        if (speedModDuration > 0)
-            speedMod--;
+        // code for processing DoT and speed modifier status effects
+        // increment timer
+        timer += gameTime.ElapsedGameTime.TotalSeconds;
 
-        // process DoT
-        if (damageOverTimeDuration > 0)
+        // If a second passed
+        if (timer >= 1)
         {
-            Health -= damageOverTime;
-            damageOverTimeDuration--;
+            // process speed modifier duration
+            if (speedModDuration > 0)
+                speedMod--;
+
+            // process DoT
+            if (damageOverTimeDuration > 0)
+            {
+                Health -= damageOverTime;
+                damageOverTimeDuration--;
+            }
+
+            // reset timer
+            timer = 0;
         }
+        
 
         if (!IsDead)
         {
@@ -113,7 +126,7 @@ internal class Enemy : GameObject
     /// Sets a speed modifier for a duration when called, meant to be called by tower attacks that hit the enemy
     /// </summary>
     /// <param name="modifier">the amount subtracted from move speed (larger number slows by more)</param>
-    /// <param name="duration">duration of the affect in game ticks</param>
+    /// <param name="duration">duration of the affect in seconds</param>
     public void setSpeedModifier(float modifier, int duration)
     {
         this.speedMod = modifier;
@@ -124,7 +137,7 @@ internal class Enemy : GameObject
     /// Sets damage over time for a duration when called, meant to be called by tower attacks that hit the enemy
     /// </summary>
     /// <param name="damage">the damage taken per tick</param>
-    /// <param name="duration">the duration of the effect</param>
+    /// <param name="duration">the duration of the effect in seconds</param>
     public void setDamageOverTime(float damage, int duration)
     {
         this.damageOverTime = damage;

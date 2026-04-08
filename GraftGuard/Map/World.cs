@@ -16,6 +16,8 @@ using System.Collections.Generic;
 namespace GraftGuard.Map;
 internal class World
 {
+    public static World CurrentWorld { get; private set; }
+
     // Properties
     public Player Player { get; set; }
     public EnemyManager EnemyManager { get; set; }
@@ -31,6 +33,7 @@ internal class World
     // Constructor
     public World()
     {
+        CurrentWorld = this;
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
@@ -103,13 +106,13 @@ internal class World
             case TimeState.Night:
                 if (allowPlayerControls)
                 {
-                    Player.Update(gameTime, inputManager, this);
+                    Player.Update(gameTime, inputManager);
                 }
                 break;
             case TimeState.Dawn:
                 if (allowPlayerControls)
                 {
-                    Player.Update(gameTime, inputManager, this);
+                    Player.Update(gameTime, inputManager);
                 }
                 break;
             case TimeState.Day:
@@ -117,12 +120,16 @@ internal class World
                 break;
         }
 
-        Camera.Update(gameTime);
+        
         EnemyManager.Update(gameTime, this, inputManager);
         TowerManager.Update(gameTime, this, inputManager, state);
         ProjectileManager.Update(gameTime, this, inputManager);
         Terrain.Update(gameTime);
         Garage.Update(gameTime, this);
+
+        Camera.Position = Player.Position;
+        Camera.Update(gameTime);
+
     }
 
     public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager, bool renderPlayer)
@@ -143,6 +150,7 @@ internal class World
         {
             Player.Draw(gameTime, batch);
         }
+
     }
 
     public static void ScatterPart(Vector2 location, PartDefinition part)

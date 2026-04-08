@@ -29,4 +29,9 @@ internal class EnemyDummy : Enemy
         string text = $"HP: {Health}";
         batch.DrawString(Fonts.Arial, text, Position - Fonts.Arial.MeasureString(text) * 0.5f, Color.White);
     }
+
+    public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world)
+    {
+        
+    }
 }

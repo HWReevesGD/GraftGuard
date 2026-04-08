@@ -12,7 +12,7 @@ using static GraftGuard.Map.Enemies.EnemyVisual;
 using System;
 
 namespace GraftGuard.Map.Enemies;
-internal class Enemy : GameObject
+internal abstract class Enemy : GameObject
 {
     double timer = 0;
     // Fields
@@ -134,7 +134,14 @@ internal class Enemy : GameObject
         }
 
         Visual.Update(gameTime, Position);
+
+        if (!IsDead)
+        {
+            UpdatePathing(gameTime, inputManager, world);
+        }
     }
+
+    public abstract void UpdatePathing(GameTime gameTime, InputManager inputManager, World world);
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {

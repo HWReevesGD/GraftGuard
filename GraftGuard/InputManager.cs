@@ -13,6 +13,8 @@ internal class InputManager
     private MouseState prevMouseState;
     private Matrix _currentScreenToWorld = Matrix.Identity;
 
+    public MouseState CurrentMouse => currentMouseState;
+
     public Matrix ResolutionScaleMatrix { get; set; } = Matrix.Identity;
 
     // Drag and Drop Properties

@@ -66,9 +66,9 @@ internal class PatchButton : Button
     /// <summary>
     /// Updates the current State of the button
     /// </summary>
-    public override void Update()
+    public override void Update(InputManager inputManager)
     {
-        base.Update();
+        base.Update(inputManager);
 
         // Update Texture based on Button and Mouse States
         if (IsMouseHovered && IsPressed)

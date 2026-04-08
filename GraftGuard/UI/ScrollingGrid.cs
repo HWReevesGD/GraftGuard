@@ -28,9 +28,10 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     public Corner SubgridSide { get; init; }
     public float ScrollAmount { get; private set; }
     public bool IsScrollActive { get; private set; }
-    public bool IsMouseOver => GridRectangle.Contains(Mouse.GetState().Position);
+    public bool IsMouseOver => GridRectangle.Contains(_inputManager?.CurrentMouse.Position ?? Mouse.GetState().Position);
     private PatchButton _negativeArrow;
     private PatchButton _positiveArrow;
+    private InputManager _inputManager;
     public ScrollingGrid(Orientation orientation, Vector2 gridPosition, Vector2 gridSize, Vector2 elementSize, Corner arrowSide, float arrowOffset, Corner subgridSide)
     {
         Elements = [];
@@ -50,8 +51,9 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     /// Updates the <see cref="ScrollingGrid{T}"/>. <paramref name="updateElement"/> can be used to run an <see cref="Action"/> on each element for updating
     /// </summary>
     /// <param name="updateElement"><see cref="Action"/> to run on each element, with the element and the index provided</param>
-    public void Update(GameTime time, Action<T, int> updateElement = null)
+    public void Update(GameTime time, InputManager input, Action<T, int> updateElement = null)
     {
+        _inputManager = input;
         // Get values for the current state
         float orientSize = GetAlong(Size, Orientation);
         float elementOrientSize = GetAlong(ElementSize, Orientation);
@@ -66,8 +68,8 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
         if (IsScrollActive)
         {
             // Update Arrows
-            _negativeArrow.Update();
-            _positiveArrow.Update();
+            _negativeArrow.Update(input);
+            _positiveArrow.Update(input);
 
             // Get Frame Delta
             float delta = time.Delta();

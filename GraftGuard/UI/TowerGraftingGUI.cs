@@ -215,9 +215,9 @@ internal class TowerGraftingGUI
         // Update Towers Selection
         bool mouseOverTowers = _towerChoiceButtons.IsMouseOver;
         _towerChoiceButtons.Update(time,
-            (button, index) =>
+            inputManager, (button, index) =>
             {
-                button.Update();
+                button.Update(inputManager);
                 if (button.JustClicked && mouseOverTowers)
                 {
                     // Create the new Tower
@@ -233,11 +233,11 @@ internal class TowerGraftingGUI
         // Update Parts Selection
         bool mouseOverParts = _partChoiceButtons.IsMouseOver;
         _partChoiceButtons.Update(time,
-            (button, index) =>
+            inputManager, (button, index) =>
             {
                 button.Text = $"{world.Inventory.GetPartCount(_partChoices[index])}";
 
-                button.Update();
+                button.Update(inputManager);
                 if (button.JustClicked && mouseOverParts)
                 {
                     // Select the part
@@ -257,7 +257,7 @@ internal class TowerGraftingGUI
         };
 
         // Update Save Button
-        _saveButton.Update();
+        _saveButton.Update(inputManager);
 
         // Handle Saving
         if (_saveButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
@@ -283,7 +283,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Remove Part Button
-        _removePartButton.Update();
+        _removePartButton.Update(inputManager);
 
         // Handle Part Removal
         if (_removePartButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
@@ -293,7 +293,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Created Towers
-        _createdTowers.Update(time, (created, _) => created.Update(time, world, inputManager));
+        _createdTowers.Update(time, inputManager, (created, _) => created.Update(time, world, inputManager));
 
         // Handle Selecting Created Towers
         for (int index = 0; index < _createdTowers.Elements.Count; index++)
@@ -319,7 +319,7 @@ internal class TowerGraftingGUI
         }
 
         // Update Night Button
-        _nightButton.Update();
+        _nightButton.Update(inputManager);
         if (_nightButton.JustClicked)
         {
             // Save Designs
@@ -413,7 +413,7 @@ internal class TowerGraftingGUI
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)
         {
-            batch.DrawCentered(_currentlyChosenPart.Texture, Mouse.GetState().Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+            batch.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
         }
     }
 

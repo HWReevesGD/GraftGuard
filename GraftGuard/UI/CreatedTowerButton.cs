@@ -33,7 +33,7 @@ internal class CreatedTowerButton : IPositional, ISizeable
     public void Update(GameTime time, World world, InputManager input, TimeState state = TimeState.Day)
     {
         Tower.Position = Internal.Position + Internal.Size * 0.5f;
-        Internal.Update();
+        Internal.Update(input);
         Tower.Update(time, world, input, state, Projectiles);
         Projectiles.Update(time, world, input);
     }

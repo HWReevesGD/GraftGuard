@@ -55,11 +55,11 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
     /// <summary>
     /// Updates the current State of the button
     /// </summary>
-    public virtual void Update()
+    public virtual void Update(InputManager inputManager)
     {
         // Update Mouse States
         _lastMouseState = _thisMouseState;
-        _thisMouseState = Mouse.GetState();
+        _thisMouseState = inputManager.CurrentMouse;
     }
 
     public virtual void Draw(SpriteBatch batch, Color? color = null)

@@ -70,7 +70,7 @@ internal class NightPlacementGUI
     {
         // Update Designs
         _designButtons.Update(time,
-            (button, index) =>
+            input, (button, index) =>
             {
                 button.Update(time, world, input);
 

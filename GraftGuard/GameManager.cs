@@ -63,6 +63,7 @@ namespace GraftGuard
         private void OnNewGameStarted()
         {
             _world.OnNewGameStarted();
+            PlayerData.CurrentGame = new();
             OnStartingDawn();
         }
 

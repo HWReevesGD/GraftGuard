@@ -37,5 +37,14 @@ namespace GraftGuard.Data
 
         public Difficulty CurrentDifficulty { get; set; }
 
+        public GameData()
+        {
+            Time = TimeState.Dawn;
+            Timer = 15;
+            CurrentScore = 0;
+            Health = 3;
+            CurrentDifficulty = Difficulty.Medium;
+        }
+
     }
 }

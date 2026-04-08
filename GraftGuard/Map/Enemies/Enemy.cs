@@ -105,7 +105,16 @@ internal class Enemy : GameObject
 
         if (!IsDead)
         {
-            Position = Position + new Vector2(1, 0);
+            Position += new Vector2(1, 0);
+
+            Player player = World.CurrentWorld.Player;
+
+            if (Hitbox.Intersects(player.Hitbox))
+            {
+                // Trigger damage and knockback
+                player.TakeDamage(Position, 10, 50f);
+            }
+
         }
 
         // Update attached parts

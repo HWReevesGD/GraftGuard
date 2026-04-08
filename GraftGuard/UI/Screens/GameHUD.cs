@@ -102,7 +102,7 @@ internal class GameHUD
             float pulseCycle = (float)gameTime.TotalGameTime.TotalSeconds % 1;
             float pulseScale = Math.Max(((0.5f - pulseCycle) / 0.5f), 0) * 0.25f + 1;
 
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < PlayerData.CurrentGame.Health; i++)
             {
                 float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
                 Vector2 size = i == 2 ? heartSize * pulseScale : heartSize;

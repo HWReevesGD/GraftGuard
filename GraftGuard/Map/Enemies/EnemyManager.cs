@@ -51,7 +51,7 @@ internal class EnemyManager
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];
-            enemy.Update(time, inputManager);
+            enemy.Update(time, inputManager, world);
 
             // Check if the enemy just died this frame
             if (enemy.Health <= 0.0f && !enemy.IsDead)
@@ -68,12 +68,12 @@ internal class EnemyManager
         }
     }
 
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
     {
         PathManager.Draw(batch, time);
         foreach (Enemy enemy in Enemies)
         {
-            enemy.Draw(time, batch);
+            enemy.Draw(time, batch, inputManager, world);
         }
     }
 

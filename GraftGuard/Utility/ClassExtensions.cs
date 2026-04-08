@@ -60,7 +60,10 @@ internal static class ClassExtensions
     {
         return new Point(point.X & mask, point.Y & mask);
     }
-
+    public static float Average(this Vector2 vector)
+    {
+        return (vector.X + vector.Y) / 2.0f;
+    }
 
     #endregion
 
@@ -104,6 +107,12 @@ internal static class ClassExtensions
 
     #region SpriteBatch
     public static void DrawCentered(this SpriteBatch batch, Texture2D texture, Vector2 position, Rectangle? sourceRectangle = null, Color? color = null, float rotation = 0.0f, Vector2? origin = null, float scale = 1.0f, SpriteEffects effects = SpriteEffects.None, float layerDepth = 0.0f)
+    {
+        color ??= Color.White;
+        origin ??= Vector2.Zero;
+        batch.Draw(texture, position, sourceRectangle, color.Value, rotation, origin.Value + texture.GetSize() * 0.5f, scale, effects, layerDepth);
+    }
+    public static void DrawCenteredScaled(this SpriteBatch batch, Texture2D texture, Vector2 position, Vector2 scale, Rectangle ? sourceRectangle = null, Color? color = null, float rotation = 0.0f, Vector2? origin = null, SpriteEffects effects = SpriteEffects.None, float layerDepth = 0.0f)
     {
         color ??= Color.White;
         origin ??= Vector2.Zero;

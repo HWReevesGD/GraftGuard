@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Drawing;
 using System.Text.Json.Serialization;
 
 namespace GraftGuard.Grafting.Registry;
@@ -18,7 +19,7 @@ public class PartDefinition
 {
     //public static Texture2D TexturePlaceholderArm;
     //public static Texture2D TexturePlaceholderKnife;
-
+    public readonly Vector2 Size = new Vector2(16, 24);
     public string Name { get; set; }
     public PartType Type { get; set; }
     public float BaseDamage { get; set; } 

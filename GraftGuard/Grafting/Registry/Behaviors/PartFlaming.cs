@@ -18,24 +18,24 @@ internal class PartFlaming : IPartBehavior
     private IntervalTimer _fireTimer = new IntervalTimer(0.05f);
     public static IPartBehavior Create() => new PartFlaming();
 
-    public void Draw(PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         
     }
 
-    public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         
     }
 
-    public void Update(PartSettings settings, PartDefinition part, Vector2 partPosition, float partRotation, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
+    public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         bool fire = _fireTimer.Update(time);
 
         if (fire)
         {
             projectileManager.Add(
-                new ProjectileFire(partPosition, partRotation, ProjectileTarget.Enemy,
+                new ProjectileFire(transform.Position + Vector2.Rotate(Vector2.UnitY * part.Size * transform.Scale, transform.Rotation), transform.Scale.Average(), transform.Rotation + MathF.PI / 2.0f, ProjectileTarget.Enemy,
                 speedModifier: settings.PartsAreVertical ? 0.5f : 1.0f,
                 lifetimeModifier: settings.PartsAreVertical ? 0.5f : 1.0f
                 )

@@ -19,17 +19,19 @@ internal class Projectile
 {
     public Vector2 Position { get; set; }
     public Vector2 Velocity { get; set; }
+    public float Scale { get; set; }
     public float Radius { get; set; }
     public Circle HitCircle => new Circle(Position, Radius);
     public ProjectileTarget Targeting { get; set; }
     public Texture2D Texture { get; set; }
-    public Projectile(Vector2 position, float radius, Vector2 velocity, Texture2D texture, ProjectileTarget targeting)
+    public Projectile(Vector2 position, float radius, Vector2 velocity, float scale, Texture2D texture, ProjectileTarget targeting)
     {
         Position = position;
         Velocity = velocity;
         Radius = radius;
         Texture = texture;
         Targeting = targeting;
+        Scale = scale;
     }
 
     /// <summary>
@@ -79,7 +81,7 @@ internal class Projectile
 
     public virtual void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
-        batch.DrawCentered(Texture, Position);
+        batch.DrawCentered(Texture, Position, scale: Scale);
     }
 
     public static Texture2D TFire;

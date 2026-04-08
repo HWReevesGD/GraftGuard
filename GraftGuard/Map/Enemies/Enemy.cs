@@ -9,6 +9,7 @@ using GraftGuard.Map.Pathing;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting;
 using static GraftGuard.Map.Enemies.EnemyVisual;
+using System;
 
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
@@ -77,7 +78,7 @@ internal class Enemy : GameObject
         Visual.VisualDeath(Position);
     }
 
-    public override void Update(GameTime gameTime, InputManager inputManager)
+    public void Update(GameTime gameTime, InputManager inputManager, World world)
     {
         // process speed modifier duration
         if (speedModDuration > 0)
@@ -96,17 +97,41 @@ internal class Enemy : GameObject
         }
 
         // Update attached parts
+        int index = 0;
         foreach (AttachedPart part in Visual.AttachedParts)
         {
-            LimbDrawContext context = Visual.GetContext(null, Position);
+            PartTransform transform = Visual.GetPartTransform(part, Position, index++);
+            part.UpdateBehavior(
+                settings: PartSettings.Default,
+                transform: transform,
+                time: gameTime,
+                inputManager: inputManager,
+                state: Data.TimeState.Night,
+                world: world,
+                projectileManager: world.ProjectileManager);
         }
 
         Visual.Update(gameTime, Position);
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
+    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {
         Visual.Draw(spriteBatch, Position);
+
+        // Draw attached part behaviors
+        int index = 0;
+        foreach (AttachedPart part in Visual.AttachedParts)
+        {
+            PartTransform transform = Visual.GetPartTransform(part, Position, index++, physical: true);
+            part.DrawBehavior(
+                batch: spriteBatch,
+                settings: PartSettings.Default,
+                transform: transform,
+                time: gameTime,
+                inputManager: inputManager,
+                state: Data.TimeState.Night,
+                world: world);
+        }
     }
 
     /// <summary>

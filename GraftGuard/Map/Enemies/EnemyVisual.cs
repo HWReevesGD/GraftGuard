@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 
 namespace GraftGuard.Map.Enemies
 {
@@ -181,6 +182,43 @@ namespace GraftGuard.Map.Enemies
             };
         }
 
+        public PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
+        {
+            // Use ctx.Timer, ctx.BodyPos, etc.
+            Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(context.BodyRot));
+            Vector2 worldAttachPos = context.BodyPos + rotatedOffset;
+
+            float phaseShift = index * 0.5f;
+            float rawSine = (float)Math.Sin(context.Timer + phaseShift);
+            float snappyWobble = Math.Sign(rawSine) * (float)Math.Pow(Math.Abs(rawSine), 0.5f) * context.Clip.LimbWobbleScale;
+
+            return new PartTransform()
+            {
+                Position = worldAttachPos,
+                Rotation = context.BodyRot + snappyWobble,
+                Origin = new Vector2(part.Texture.Width * part.PivotX, part.Texture.Height * part.PivotY),
+                Scale = context.DynamicScale
+            };
+        }
+
+        internal PartTransform GetPartTransform(AttachedPart part, Vector2 enemyPosition, int index, bool physical = false)
+        {
+            Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+            //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+            Vector2 pixelOffset = new Vector2(
+                (slotPosition.X - 0.5f) * Base.Texture.Width,
+                (slotPosition.Y - 0.5f) * Base.Texture.Height
+            );
+
+            LimbDrawContext context = GetContext(null, enemyPosition);
+            PartTransform transform = GetPartTransform(part.Definition, pixelOffset, context, index);
+            if (physical)
+            {
+                transform.Rotation += MathF.PI / 2.0f;
+            }
+            return transform;
+        }
+
         public struct LimbDrawContext
         {
             public SpriteBatch SpriteBatch;
@@ -191,20 +229,13 @@ namespace GraftGuard.Map.Enemies
             public AnimationClip Clip;
         }
 
-
         private void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx)
         {
-            // Use ctx.Timer, ctx.BodyPos, etc.
-            Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(ctx.BodyRot));
-            Vector2 worldAttachPos = ctx.BodyPos + rotatedOffset;
+            PartTransform transform = GetPartTransform(part, offset, ctx, index);
 
-            float phaseShift = index * 0.5f;
-            float rawSine = (float)Math.Sin(ctx.Timer + phaseShift);
-            float snappyWobble = Math.Sign(rawSine) * (float)Math.Pow(Math.Abs(rawSine), 0.5f) * ctx.Clip.LimbWobbleScale;
-
-            ctx.SpriteBatch.Draw(part.Texture, worldAttachPos, null, Color.White, ctx.BodyRot + snappyWobble,
-                new Vector2(part.Texture.Width * part.PivotX, part.Texture.Height * part.PivotY),
-                ctx.DynamicScale, SpriteEffects.None, 0f);
+            ctx.SpriteBatch.Draw(part.Texture, transform.Position, null, Color.White, transform.Rotation,
+                transform.Origin,
+                transform.Scale, SpriteEffects.None, 0f);
         }
     }
 }

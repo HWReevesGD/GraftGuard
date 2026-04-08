@@ -62,11 +62,17 @@ internal class TowerTrap : Tower
                 Vector2 partPosition = GetPartPosition(time, part, x, y);
                 Vector2 partSize = part.Definition.Texture.GetSize();
 
-                part.UpdateBehavior(Settings, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                PartTransform transform = new PartTransform()
+                {
+                    Position = partPosition + partSize * 0.5f,
+                    Rotation = -MathF.PI / 2.0f,
+                };
+
+                part.UpdateBehavior(Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
                 if (dealDamage)
                 {
-                    part.BehaviorOnDealDamage(0.25f, Settings, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                    part.BehaviorOnDealDamage(0.25f, Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
                 }
             }
         }
@@ -88,9 +94,20 @@ internal class TowerTrap : Tower
                 Point partSize = part.Definition.Texture.GetSizePoint();
                 float sinHeight = MathF.Sin(x + y + (float)time.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
 
-                batch.Draw(part.Definition.Texture, partPosition, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
+                batch.Draw(part.Definition.Texture, partPosition, new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White,
+                    effects: SpriteEffects.FlipVertically,
+                    rotation: 0.0f,
+                    scale: 1.0f,
+                    origin: Vector2.Zero,
+                    layerDepth: 0.0f);
 
-                part.DrawBehavior(Settings, partPosition + partSize.ToVector() * 0.5f, -MathF.PI / 2.0f, time, batch, world, inputManager, state);
+                PartTransform transform = new PartTransform()
+                {
+                    Position = partPosition + partSize.ToVector() * 0.5f,
+                    Rotation = -MathF.PI / 2.0f,
+                };
+
+                part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
             }
         }
     }

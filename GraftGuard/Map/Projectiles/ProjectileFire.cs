@@ -17,10 +17,10 @@ internal class ProjectileFire : Projectile
     private const float FullLifetime = 0.5f;
     private float _lifetime = 0.0f;
     private float _speedModifier;
-    private float _lifetimeModifier;
+    private float _lifetimeModifier; 
 
-    public ProjectileFire(Vector2 position, float direction, ProjectileTarget targeting, float speedModifier = 1.0f, float lifetimeModifier = 1.0f)
-        : base(position, FireRadius, new Vector2(MathF.Cos(direction), MathF.Sin(direction)) * FireSpeed * speedModifier, TFire, targeting)
+    public ProjectileFire(Vector2 position, float scale, float direction, ProjectileTarget targeting, float speedModifier = 1.0f, float lifetimeModifier = 1.0f)
+        : base(position, FireRadius, new Vector2(MathF.Cos(direction), MathF.Sin(direction)) * FireSpeed * speedModifier, scale, TFire, targeting)
     {
         _speedModifier = speedModifier;
         _lifetimeModifier = lifetimeModifier;
@@ -35,12 +35,12 @@ internal class ProjectileFire : Projectile
             manager.Remove(this);
         }
 
-        Position += Velocity * time.Delta();
+        Position += Velocity * time.Delta() * Scale;
     }
 
     public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
-        batch.DrawCentered(Texture, Position, scale: MathF.Log(_lifetime + 1.0f), rotation: Velocity.Angle(),
+        batch.DrawCentered(Texture, Position, scale: MathF.Log(_lifetime + 1.0f) * Scale, rotation: Velocity.Angle(),
             color: new Color(Color.White, MathF.Max(0.0f, 0.2f - _lifetime / (FullLifetime * _lifetimeModifier))));
     }
 }

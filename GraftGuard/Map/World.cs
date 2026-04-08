@@ -34,26 +34,26 @@ internal class World
 
         // These parts are just for testing, this will normally start empty
         ScatteredParts = [
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(520, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(620, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(720, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(520, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(620, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(720, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(520, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(620, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(720, 320), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(420, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(520, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(620, 220), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(720, 220), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
             ];
 
         CurrentMap = EnvironmentRegistry.Map;
@@ -137,7 +137,7 @@ internal class World
         Garage.Draw(batch, gameTime);
 
         TowerManager.Draw(batch, gameTime, this, inputManager, state);
-        EnemyManager.Draw(batch, gameTime);
+        EnemyManager.Draw(batch, gameTime, this, inputManager);
         ProjectileManager.Draw(batch, gameTime, this, inputManager);
         if (renderPlayer)
         {

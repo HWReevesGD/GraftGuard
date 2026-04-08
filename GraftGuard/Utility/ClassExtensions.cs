@@ -81,6 +81,10 @@ internal static class ClassExtensions
         }
         return vector + (goal - vector).Normalized() * delta;
     }
+    public static float AngleBetween(this Vector2 thisVector, Vector2 vector)
+    {
+        return vector.Angle() - thisVector.Angle();
+    }
 
     #endregion
 

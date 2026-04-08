@@ -11,6 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Xml.XPath;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace GraftGuard.Grafting.Towers;
@@ -29,7 +30,7 @@ internal class TowerTrap : Tower
         new Rectangle(new Point(-48, -48), new Point(96, 96)),
         2.0f,
         [new Rectangle(-48, -48, 96, 96)],
-        settings: new PartSettings()
+        settings: PartSettings.DefaultTower with
         {
             PartsAreVertical = true,
         })

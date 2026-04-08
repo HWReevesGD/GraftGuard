@@ -20,6 +20,8 @@ namespace GraftGuard.Grafting;
 internal struct PartSettings
 {
     public PartSettings() {}
-    public static PartSettings Default => new PartSettings();
+    public static PartSettings DefaultEnemy => new PartSettings() { Source = Source.Enemy };
+    public static PartSettings DefaultTower => new PartSettings() { Source = Source.Player };
+    public required Source Source;
     public bool PartsAreVertical = false;
 }

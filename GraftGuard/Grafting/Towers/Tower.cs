@@ -73,7 +73,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         }
 
         PathAreas = pathAreas ?? [];
-        Settings = settings ?? new PartSettings();
+        Settings = settings ?? PartSettings.DefaultTower;
     }
 
     /// <summary>

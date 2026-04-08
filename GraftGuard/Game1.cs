@@ -57,6 +57,7 @@ public class Game1 : Game
         // Register (and save) part behaviors
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
         PartBehaviorRegistry.Register("Flaming", PartFlaming.Create);
+        PartBehaviorRegistry.Register("Zapping", PartZapping.Create);
 
         // Serialize part behavior names
         PartBehaviorRegistry.Save(Content);

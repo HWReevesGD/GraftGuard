@@ -71,4 +71,9 @@ internal class ProjectileManager
     {
         Projectiles.Add(projectile);
     }
+
+    public void AddAll(IEnumerable<Projectile> projectiles)
+    {
+        Projectiles.AddRange(projectiles);
+    }
 }

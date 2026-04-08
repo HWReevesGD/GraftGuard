@@ -50,7 +50,7 @@ internal abstract class Enemy : GameObject
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle, position);
+        Visual = new EnemyVisual(torso, 1f, AnimationClips.Idle, position);
     }
 
     // Methods
@@ -123,7 +123,7 @@ internal abstract class Enemy : GameObject
         {
             PartTransform transform = Visual.GetPartTransform(part, Position, index++);
             part.UpdateBehavior(
-                settings: PartSettings.Default,
+                settings: PartSettings.DefaultEnemy,
                 transform: transform,
                 time: gameTime,
                 inputManager: inputManager,
@@ -153,7 +153,7 @@ internal abstract class Enemy : GameObject
             PartTransform transform = Visual.GetPartTransform(part, Position, index++, physical: true);
             part.DrawBehavior(
                 batch: spriteBatch,
-                settings: PartSettings.Default,
+                settings: PartSettings.DefaultEnemy,
                 transform: transform,
                 time: gameTime,
                 inputManager: inputManager,

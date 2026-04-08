@@ -85,8 +85,12 @@ internal class Projectile
     }
 
     public static Texture2D TFire;
+    public static Texture2D TZap;
+    public static Texture2D TLightning;
     public static void LoadContent(ContentManager content)
     {
         TFire = content.Load<Texture2D>("Projectile/fire");
+        TZap = content.Load<Texture2D>("Projectile/lightning_node");
+        TLightning = content.Load<Texture2D>("Projectile/lightning_connect");
     }
 }

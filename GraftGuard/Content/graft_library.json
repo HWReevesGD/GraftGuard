@@ -12,7 +12,7 @@
       "TextureName": "enemy_1",
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_1.png",
       "PivotX": 0.4,
-      "PivotY": 0.0,
+      "PivotY": 0,
       "PartBehaviorNames": [
         "Slashing"
       ]
@@ -28,8 +28,8 @@
       "HealthModifier": 1,
       "TextureName": "enemy_2",
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_2.png",
-      "PivotX": 0.47947213,
-      "PivotY": 0.20234604,
+      "PivotX": 0.49235475,
+      "PivotY": 0.17966361,
       "PartBehaviorNames": [
         "Flaming"
       ]
@@ -80,19 +80,21 @@
       "PartBehaviorNames": []
     },
     {
-      "Name": "head",
+      "Name": "tesla coil",
       "Type": 1,
       "BaseDamage": 1,
-      "SpeedModifier": 1,
+      "SpeedModifier": 0.5,
       "ArmorModifier": 1,
       "RangeModifier": 1,
       "CriticalModifier": 1,
       "HealthModifier": 1,
-      "TextureName": "enemy_5",
-      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_5.png",
-      "PivotX": 0.4612326,
-      "PivotY": 0.66302186,
-      "PartBehaviorNames": []
+      "TextureName": "tesla_coil",
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\tesla_coil.png",
+      "PivotX": 0.48929664,
+      "PivotY": 0.691896,
+      "PartBehaviorNames": [
+        "Zapping"
+      ]
     }
   ],
   "Bases": [

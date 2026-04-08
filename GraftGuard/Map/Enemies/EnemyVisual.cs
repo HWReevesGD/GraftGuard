@@ -133,7 +133,6 @@ namespace GraftGuard.Map.Enemies
                     ctx.DynamicScale, SpriteEffects.None, 0f);
 
                 // Draw Limbs
-
                 int count = 0;
                 foreach (AttachedPart part in AttachedParts)
                 {
@@ -144,17 +143,7 @@ namespace GraftGuard.Map.Enemies
                         (slotPosition.Y - 0.5f) * Base.Texture.Height
                     );
 
-                    DrawLimb(part.Name, pixelOffset, part, count++, ctx);
-                }
-
-
-                int count = 0;
-                foreach (var slot in Base.AttachmentPoints)
-                {
-                    if (EquippedParts.TryGetValue(slot.Key, out var part))
-                    {
-                        
-                    }
+                    DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx);
                 }
             }
             else

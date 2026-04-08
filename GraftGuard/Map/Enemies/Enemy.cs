@@ -99,7 +99,7 @@ internal class Enemy : GameObject
         foreach (AttachedPart part in Visual.AttachedParts)
         {
             LimbDrawContext context = Visual.GetContext(null, Position);
-            //part.UpdateBehavior(PartSettings.Default, )
+
         }
 
         Visual.Update(gameTime, Position);

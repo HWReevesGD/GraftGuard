@@ -21,6 +21,7 @@ internal class MainMenu {
     private readonly InputManager inputManager;
     private readonly TimeState timeState;
 
+
     private readonly static float cameraPanSpeed = 0.5f;
 
     private readonly static float titleLeftPadding = 20;

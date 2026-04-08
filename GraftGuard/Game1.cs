@@ -20,20 +20,20 @@ public class Game1 : Game
 
     private InputManager input;
 
-
-    //private static readonly float NightTimeLength = 5;
-    //private static readonly float DawnTimeLength = 10;
-    //private World world;
-
-    //private MainMenu mainMenu;
-    //private PauseMenu pauseMenu;
-    //private TowerGraftingGUI towerGrafting;
+    private RenderTarget2D _renderTarget;
+    private readonly int _virtualWidth = 1920;  
+    private readonly int _virtualHeight = 1080; 
 
     public Game1()
     {
         Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+
+        Graphics.PreferredBackBufferWidth = 1920;
+        Graphics.PreferredBackBufferHeight = 1080;
+
+        Graphics.ApplyChanges();
     }
 
     protected override void Initialize()
@@ -43,7 +43,18 @@ public class Game1 : Game
         input = new InputManager();
         Interface.Initialize(this);
 
+        _renderTarget = new RenderTarget2D(GraphicsDevice, _virtualWidth, _virtualHeight);
+
+        Window.AllowUserResizing = true;
+
         base.Initialize();
+    }
+
+    public Matrix GetScaleMatrix()
+    {
+        float scaleX = (float)GraphicsDevice.Viewport.Width / _virtualWidth;
+        float scaleY = (float)GraphicsDevice.Viewport.Height / _virtualHeight;
+        return Matrix.CreateScale(scaleX, scaleY, 1.0f);
     }
 
     protected override void LoadContent()
@@ -109,6 +120,7 @@ public class Game1 : Game
 
     protected override void Update(GameTime gameTime)
     {
+        input.ResolutionScaleMatrix = GetScaleMatrix();
         _gameManager.Update(gameTime);
         base.Update(gameTime);
     }
@@ -116,17 +128,23 @@ public class Game1 : Game
     protected override void Draw(GameTime gameTime)
     {
         //GraphicsDevice.Clear(ClearOptions.Target, Color.ForestGreen, -100, 0);
+        
+        GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.ForestGreen);
 
         _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
 
-        // TODO: Add your drawing code here
-
-        // TODO: call Draw for all GameObjects here
-
         _gameManager.Draw(_spriteBatch, gameTime);
 
-        _spriteBatch.End(); 
+        _spriteBatch.End();
+
+        GraphicsDevice.SetRenderTarget(null); 
+        GraphicsDevice.Clear(Color.Black);    
+
+        _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: GetScaleMatrix());
+        _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);
+        _spriteBatch.End();
+
         base.Draw(gameTime);
     }
 

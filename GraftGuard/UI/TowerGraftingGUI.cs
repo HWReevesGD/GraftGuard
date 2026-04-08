@@ -26,17 +26,19 @@ delegate void NightButtonPressed();
 internal class TowerGraftingGUI
 {
     // Constants / Readonly
-    private readonly Vector2 _towerButtonSize = new Vector2(72, 48);
-    private readonly Vector2 _currentChosenLabelSize = new Vector2(350, 48);
-    private readonly Vector2 _partButtonSize = new Vector2(48, 48);
-    private readonly Vector2 _towerDisplaySize = new Vector2(350, 350);
-    private readonly Vector2 _towerDisplayOffset = new Vector2(0, 64);
-    private readonly Vector2 _createdTowerSize = new Vector2(72, 72);
-    private readonly Vector2 _saveButtonSize = new Vector2(128, 56);
-    private readonly Vector2 _removePartSize = new Vector2(112, 56);
-    private readonly Vector2 _maxTowersLabelSize = new Vector2(110, 56);
-    private const float _arrowCreatedTowerButtonOffset = -256.0f;
-    private const float _previewScale = 2.0f;
+    private readonly static float guiScale = 2.0f;
+
+    private readonly static Vector2 _towerButtonSize = new Vector2(72, 48) * guiScale;
+    private readonly static Vector2 _currentChosenLabelSize = new Vector2(350, 48) * guiScale;
+    private readonly static Vector2 _partButtonSize = new Vector2(48, 48) * guiScale;
+    private readonly static Vector2 _towerDisplaySize = new Vector2(350, 350) * guiScale;
+    private readonly static Vector2 _towerDisplayOffset = new Vector2(0, 64) * guiScale;
+    private readonly static Vector2 _createdTowerSize = new Vector2(72, 72) * guiScale;
+    private readonly static Vector2 _saveButtonSize = new Vector2(128, 56) * guiScale;
+    private readonly static Vector2 _removePartSize = new Vector2(112, 56) * guiScale;
+    private readonly static Vector2 _maxTowersLabelSize = new Vector2(110, 56) * guiScale;
+    private const float _arrowCreatedTowerButtonOffset = -256.0f * 2;
+    private const float _previewScale = 4.0f;
 
     // Internal Projectile Manager
     private ProjectileManager _projectiles;
@@ -131,7 +133,7 @@ internal class TowerGraftingGUI
             arrowSide: Corner.TopOrRight,
             arrowOffset: 0.0f,
             subgridSide: Corner.BottomOrLeft
-            );
+        );
         _towerChoices = [];
 
         _partChoiceButtons = new ScrollingGrid<PatchButton>(
@@ -142,7 +144,7 @@ internal class TowerGraftingGUI
             arrowSide: Corner.BottomOrLeft,
             arrowOffset: 0.0f,
             subgridSide: Corner.TopOrRight
-            );
+        );
         _partChoices = [];
 
         _currentlyGraftingTower = null;
@@ -157,7 +159,7 @@ internal class TowerGraftingGUI
             arrowSide: Corner.TopOrRight,
             arrowOffset: _arrowCreatedTowerButtonOffset,
             subgridSide: Corner.TopOrRight
-            );
+        );
 
         List<PartDefinition> availableParts = inventory.GetCollectedParts();
         List<TowerDefinition> availableTowers = TowerRegistry.Towers.ToList();

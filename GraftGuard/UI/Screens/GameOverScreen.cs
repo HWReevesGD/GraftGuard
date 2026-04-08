@@ -77,6 +77,10 @@ internal class GameOverScreen
         Color bgColor = new Color(0, 0, 0, 0.75f);
         batch.Draw(backgroundTexture, fullScreenRect, bgColor);
 
+        float screenScale = 2.0f;
+        float centerX = Interface.Width / 2;
+        float centerY = Interface.Height / 2;
+
         // title
 
         float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startShowingTime;
@@ -84,7 +88,7 @@ internal class GameOverScreen
 
         new Text(Fonts.SubFont, titleText).SetXOrigin(XOrigin.Center)
             .AddEffect(new ShakeTextEffect(shakeMagnitude))
-            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 100));
+            .Draw(batch, gameTime, new Vector2(centerX, centerY - (150 * screenScale)));
 
         // score stuff
 
@@ -113,17 +117,21 @@ internal class GameOverScreen
             scoreCountIsUp = false;
         }
 
+        float scoreY = centerY - (25 * screenScale);
+        float scaledGap = gap * screenScale;
+        float scaledJump = scoreNumJumpDist * screenScale;
+
         batch.DrawString(Fonts.SubFont, scoreText, new Vector2(
-            Interface.Width / 2 - scoreTextSize.X - gap / 2,
-            200
+            centerX - scoreTextSize.X - scaledGap / 2,
+            scoreY
             ), Color.White);
 
         batch.DrawString(
             Fonts.SubFont,
             $"{displayScore}",
             new Vector2(
-                Interface.Width / 2 + gap / 2,
-                200 + (scoreCountIsUp ? -scoreNumJumpDist : 0)
+                centerX + scaledGap / 2,
+                scoreY + (scoreCountIsUp ? -scaledJump : 0)
                 ),
             Color.White
             );
@@ -145,17 +153,19 @@ internal class GameOverScreen
 
         if (scoreAlpha >= 1)
         {
+            float hiScoreY = centerY + (75 * screenScale);
+
             batch.DrawString(Fonts.SubFont, hiScoreText, new Vector2(
-                Interface.Width / 2 - hiScoreTextSize.X - gap / 2,
-                300
+                centerX - hiScoreTextSize.X - scaledGap / 2,
+                hiScoreY
                 ), Color.White);
 
             batch.DrawString(
                 Fonts.SubFont,
                 $"{displayHiScore}",
                 new Vector2(
-                    Interface.Width / 2 + gap / 2,
-                    300 + (hiScoreCountIsUp ? -scoreNumJumpDist : 0)
+                    centerX + scaledGap / 2,
+                    hiScoreY + (hiScoreCountIsUp ? -scaledJump : 0)
                     ),
                Color.White
                );

@@ -112,7 +112,7 @@ internal abstract class Enemy : GameObject
             if (Hitbox.Intersects(player.Hitbox))
             {
                 // Trigger damage and knockback
-                player.TakeDamage(Position, 10, 50f);
+                player.TakeDamage(Position, 1, 50f);
             }
 
         }

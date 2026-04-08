@@ -14,6 +14,7 @@ using System;
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
 {
+    double timer = 0;
     // Fields
     private Vector2 dirUnitVec;
     private float speed;
@@ -80,20 +81,41 @@ internal class Enemy : GameObject
 
     public void Update(GameTime gameTime, InputManager inputManager, World world)
     {
-        // process speed modifier duration
-        if (speedModDuration > 0)
-            speedMod--;
+        // code for processing DoT and speed modifier status effects
+        // increment timer
+        timer += gameTime.ElapsedGameTime.TotalSeconds;
 
-        // process DoT
-        if (damageOverTimeDuration > 0)
+        // If a second passed
+        if (timer >= 1)
         {
-            Health -= damageOverTime;
-            damageOverTimeDuration--;
+            // process speed modifier duration
+            if (speedModDuration > 0)
+                speedMod--;
+
+            // process DoT
+            if (damageOverTimeDuration > 0)
+            {
+                Health -= damageOverTime;
+                damageOverTimeDuration--;
+            }
+
+            // reset timer
+            timer = 0;
         }
+        
 
         if (!IsDead)
         {
-            Position = Position + new Vector2(1, 0);
+            Position += new Vector2(1, 0);
+
+            Player player = World.CurrentWorld.Player;
+
+            if (Hitbox.Intersects(player.Hitbox))
+            {
+                // Trigger damage and knockback
+                player.TakeDamage(Position, 10, 50f);
+            }
+
         }
 
         // Update attached parts
@@ -138,7 +160,7 @@ internal class Enemy : GameObject
     /// Sets a speed modifier for a duration when called, meant to be called by tower attacks that hit the enemy
     /// </summary>
     /// <param name="modifier">the amount subtracted from move speed (larger number slows by more)</param>
-    /// <param name="duration">duration of the affect in game ticks</param>
+    /// <param name="duration">duration of the affect in seconds</param>
     public void setSpeedModifier(float modifier, int duration)
     {
         this.speedMod = modifier;
@@ -149,7 +171,7 @@ internal class Enemy : GameObject
     /// Sets damage over time for a duration when called, meant to be called by tower attacks that hit the enemy
     /// </summary>
     /// <param name="damage">the damage taken per tick</param>
-    /// <param name="duration">the duration of the effect</param>
+    /// <param name="duration">the duration of the effect in seconds</param>
     public void setDamageOverTime(float damage, int duration)
     {
         this.damageOverTime = damage;

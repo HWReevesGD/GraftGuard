@@ -114,6 +114,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
+        //GraphicsDevice.Clear(ClearOptions.Target, Color.ForestGreen, -100, 0);
         GraphicsDevice.Clear(Color.ForestGreen);
 
         _spriteBatch.Begin(samplerState: SamplerState.PointWrap);

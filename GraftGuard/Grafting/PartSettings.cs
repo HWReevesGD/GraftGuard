@@ -17,7 +17,9 @@ namespace GraftGuard.Grafting;
 /// }
 /// </code>
 /// </summary>
-internal class PartSettings
+internal struct PartSettings
 {
+    public PartSettings() {}
+    public static PartSettings Default => new PartSettings();
     public bool PartsAreVertical = false;
 }

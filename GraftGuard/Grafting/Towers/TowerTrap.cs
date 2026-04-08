@@ -62,11 +62,11 @@ internal class TowerTrap : Tower
                 Vector2 partPosition = GetPartPosition(time, part, x, y);
                 Vector2 partSize = part.Definition.Texture.GetSize();
 
-                part.UpdateBehavior(Settings, part.Definition, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                part.UpdateBehavior(Settings, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
 
                 if (dealDamage)
                 {
-                    part.BehaviorOnDealDamage(0.25f, Settings, part.Definition, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
+                    part.BehaviorOnDealDamage(0.25f, Settings, partPosition + partSize * 0.5f, -MathF.PI / 2.0f, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
                 }
             }
         }
@@ -90,7 +90,7 @@ internal class TowerTrap : Tower
 
                 batch.Draw(part.Definition.Texture, partPosition, new Rectangle(Point.Zero, new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White);
 
-                part.DrawBehavior(Settings, part.Definition, partPosition + partSize.ToVector() * 0.5f, -MathF.PI / 2.0f, time, batch, world, inputManager, state);
+                part.DrawBehavior(Settings, partPosition + partSize.ToVector() * 0.5f, -MathF.PI / 2.0f, time, batch, world, inputManager, state);
             }
         }
     }

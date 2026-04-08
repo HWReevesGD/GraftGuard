@@ -59,7 +59,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="position">Tower's Initial Position</param>
     /// <param name="size">Tower's Drawing Size</param>
     /// <param name="texture">Tower's Texture</param>
-    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, PartSettings settings = null) : base(position, size, texture)
+    public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, PartSettings? settings = null) : base(position, size, texture)
     {
         _attachedParts = new AttachedPart[MaxParts];
 

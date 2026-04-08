@@ -30,10 +30,25 @@ namespace GraftGuard.Data
 
     public class GameData
     {
+        public event Action OnPlayerDied;
+        private int _health;
+
         public TimeState Time { get; set; }
         public float Timer { get; set; }
         public int CurrentScore { get; set; }
-        public int Health { get; set; }
+        public int Health
+        {
+            get => _health;
+            set
+            {
+                _health = value;
+                if (_health <= 0)
+                {
+                    _health = 0; // Clamp it
+                    OnPlayerDied?.Invoke(); // Fire the event!
+                }
+            }
+        }
 
         public Difficulty CurrentDifficulty { get; set; }
 

@@ -29,9 +29,7 @@ internal class EnemyManager
 
         PathManager.BuildGrid(world);
 
-        Enemies = [
-            new EnemyDummy(new Vector2(-200, -200), GraftLibrary.GetRandomBase()),
-            ];
+        Enemies = [];
     }
 
     public void BeginNight()

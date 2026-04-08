@@ -7,6 +7,7 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace GraftGuard
 {
@@ -24,6 +25,7 @@ namespace GraftGuard
         public static readonly float DawnTimeLength = 10f;
         public static readonly float NightTimeLength = 20f;
 
+        private GameTime lastGameTime;
         public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
         {
             _world = world;
@@ -40,9 +42,18 @@ namespace GraftGuard
             _towerGrafting.OnNightButtonPressed += OnStartingNight;
         }
 
+        private void HandleDeath()
+        {
+            if (PlayerData.CurrentState == GameState.Game)
+            {
+                ToggleGameOver(lastGameTime, PlayerData.CurrentGame);
+            }
+
+        }
+
         public void Update(GameTime gameTime)
         {
-            inputManager.Update(_world.Camera); //bad practice but it works
+            inputManager.Update(_world.Camera); 
 
             switch (PlayerData.CurrentState)
             {
@@ -59,12 +70,16 @@ namespace GraftGuard
                     UpdateGameOver(gameTime);
                     break;
             }
+
+            lastGameTime = gameTime;
         }
         private void OnNewGameStarted()
         {
             _world.OnNewGameStarted();
             PlayerData.CurrentGame = new();
             OnStartingDawn();
+
+            PlayerData.CurrentGame.OnPlayerDied += HandleDeath;
         }
 
         /// <summary>
@@ -155,17 +170,23 @@ namespace GraftGuard
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
+            //if time ran out at night it's game over for now probably rethink this
             if (session.Time == TimeState.Night)
             {
                 //Game Over
-                PlayerData.CurrentState = GameState.GameOver;
-                _gameOverScreen.SetSession(gameTime, session);
+                ToggleGameOver(gameTime, session);
             }
             else if (session.Time == TimeState.Dawn)
             {
                 session.Time = TimeState.Day;
                 OnStartingDay();
             }
+        }
+
+        private void ToggleGameOver(GameTime gameTime, GameData session)
+        {
+            PlayerData.CurrentState = GameState.GameOver;
+            _gameOverScreen.SetSession(gameTime, session);
         }
 
         private void UpdatePaused()

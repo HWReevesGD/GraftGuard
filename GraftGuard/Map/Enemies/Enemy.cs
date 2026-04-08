@@ -50,7 +50,7 @@ internal abstract class Enemy : GameObject
 
 
         // Initialize the visual component
-        Visual = new EnemyVisual(torso, 4f, AnimationClips.Idle, position);
+        Visual = new EnemyVisual(torso, 1, AnimationClips.Idle, position);
     }
 
     // Methods
@@ -112,7 +112,7 @@ internal abstract class Enemy : GameObject
             if (Hitbox.Intersects(player.Hitbox))
             {
                 // Trigger damage and knockback
-                player.TakeDamage(Position, 10, 50f);
+                player.TakeDamage(Position, 1, 50f);
             }
 
         }

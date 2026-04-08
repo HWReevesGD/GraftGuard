@@ -13,6 +13,8 @@ internal class InputManager
     private MouseState prevMouseState;
     private Matrix _currentScreenToWorld = Matrix.Identity;
 
+    public Matrix ResolutionScaleMatrix { get; set; } = Matrix.Identity;
+
     // Drag and Drop Properties
     public bool IsDragging { get; private set; }
     private Vector2 dragStartPosition;
@@ -30,7 +32,26 @@ internal class InputManager
         prevMouseState = currentMouseState;
 
         currentKeyState = Keyboard.GetState();
-        currentMouseState = Mouse.GetState();
+
+        MouseState rawMouseState = Mouse.GetState();
+
+        // transform the raw position into your virtual coordinate space for scaling
+        Vector2 virtualPos = Vector2.Transform(
+            rawMouseState.Position.ToVector2(),
+            Matrix.Invert(ResolutionScaleMatrix)
+        );
+
+        // overwrite currentMouseState with the virtual version
+        currentMouseState = new MouseState(
+            (int)virtualPos.X,
+            (int)virtualPos.Y,
+            rawMouseState.ScrollWheelValue,
+            rawMouseState.LeftButton,
+            rawMouseState.MiddleButton,
+            rawMouseState.RightButton,
+            rawMouseState.XButton1,
+            rawMouseState.XButton2
+        );
 
         if (camera is not null)
         {

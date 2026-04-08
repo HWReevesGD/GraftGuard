@@ -23,6 +23,8 @@ internal class GameHUD
         { TimeState.Night, "Night" }
     };
 
+    private readonly static float hudScale = 2.0f; 
+
     private readonly static Vector2 heartSize = new Vector2(50, 50);
     private readonly static float heartGap = 10;
     private readonly static Vector2 heartMargin = new Vector2(40, 40);
@@ -85,14 +87,16 @@ internal class GameHUD
         float hudTopOffset;
         float baseAlpha = Math.Min(((float)gameTime.TotalGameTime.TotalSeconds - hudActiveChangeTime) / hudMoveTime, 1);
 
+        float scaledInactiveTop = hudInactiveTopPosition * hudScale;
+
         if (active)
         {
             float easeOutAlpha = 1 - (float)Math.Pow(1 - baseAlpha, 2);
-            hudTopOffset = MathHelper.Lerp(hudInactiveTopPosition, 0, easeOutAlpha);
+            hudTopOffset = MathHelper.Lerp(scaledInactiveTop, 0, easeOutAlpha);
         } else
         {
             float easeInAlpha = (float)Math.Pow(baseAlpha, 2);
-            hudTopOffset = MathHelper.Lerp(0, hudInactiveTopPosition, easeInAlpha);
+            hudTopOffset = MathHelper.Lerp(0, scaledInactiveTop, easeInAlpha);
         }
 
         #region Health
@@ -105,14 +109,24 @@ internal class GameHUD
             for (int i = 0; i < PlayerData.CurrentGame.Health; i++)
             {
                 float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
-                Vector2 size = i == 2 ? heartSize * pulseScale : heartSize;
-                Vector2 position = heartMargin + new Vector2((heartSize.X + heartGap) * i - size.X / 2, wave - size.Y / 2 + hudTopOffset);
+
+                Vector2 baseSize = heartSize * hudScale;
+
+                Vector2 finalSize = i == 2 ? baseSize * pulseScale : baseSize;
+
+                Vector2 scaledMargin = heartMargin * hudScale;
+                float scaledGap = heartGap * hudScale;
+
+                Vector2 position = scaledMargin + new Vector2(
+                    (baseSize.X + scaledGap) * i - finalSize.X / 2,
+                    wave - finalSize.Y / 2 + hudTopOffset
+                );
 
                 Rectangle rect = new Rectangle(
                     (int)(position.X),
                     (int)(position.Y),
-                    (int)size.X,
-                    (int)size.Y
+                    (int)finalSize.X,
+                    (int)finalSize.Y
                     );
                 //batch.Draw(heartTexture, rect, null, Color.White, 0, size / 2, SpriteEffects.None, 0);
                 batch.Draw(heartTexture, rect, Color.White);
@@ -123,24 +137,30 @@ internal class GameHUD
 
         #region Timer HUD
 
+        float sWidth = timerWidth * hudScale;
+        float sHeight = timerHeight * hudScale;
+        float sTopMargin = timerTopMargin * hudScale;
+
         batch.Draw(timerTexture, new Rectangle(
-            (int)(Interface.Width / 2 - timerWidth / 2),
-            (int)(timerTopMargin + hudTopOffset),
-            (int)timerWidth,
-            (int)timerHeight
+            (int)(Interface.Width / 2 - sWidth / 2),
+            (int)(sTopMargin + hudTopOffset),
+            (int)sWidth,
+            (int)sHeight
             ), Color.White);
 
         string timerText = active ? $"{displayMinutes}:{displaySeconds.ToString("D2")}" : "-:--";
 
-        int baseY = 5; 
+        float baseY = 5 * hudScale;
+        float textY1 = (50 * hudScale) + baseY + (timerTextYOffset * hudScale) + hudTopOffset;
+        float textY2 = (70 * hudScale) + baseY + (timerTextYOffset * hudScale) + hudTopOffset;
 
         new Text(Fonts.SubFont, $"{timerText} Left")
             .SetXOrigin(XOrigin.Center)
-            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 55 + baseY + timerTextYOffset + hudTopOffset));
+            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset));
 
         new Text(Fonts.SubFont, timeNames[PlayerData.CurrentGame.Time])
            .SetXOrigin(XOrigin.Center)
-           .Draw(batch, gameTime, new Vector2(Interface.Width / 2, 75 + baseY + timerTextYOffset + hudTopOffset));
+           .Draw(batch, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset));
 
         // timer progress bar
 
@@ -153,20 +173,21 @@ internal class GameHUD
             timeLength = 1;
 
         float timerProgressBarScale = PlayerData.CurrentGame.Timer / timeLength;
+        float sBarMargin = timerBarMargin * hudScale;
 
-        // green bar
+        // Scale the internal progress bar rectangle
         batch.Draw(pixelTexture, new Rectangle(
-            (int)(Interface.Width / 2 - timerWidth / 2 + timerBarMargin),
-            (int)(timerTopMargin + timerBarMargin + hudTopOffset),
-            (int)((timerWidth - timerBarMargin * 2) * timerProgressBarScale),
-            (int)(timerHeight * timerBarHeightScale - timerBarMargin * 2)
+            (int)(Interface.Width / 2 - sWidth / 2 + sBarMargin),
+            (int)(sTopMargin + sBarMargin + hudTopOffset),
+            (int)((sWidth - sBarMargin * 2) * timerProgressBarScale),
+            (int)(sHeight * timerBarHeightScale - sBarMargin * 2)
             ), Color.Purple);
 
         batch.Draw(timerOverlayTexture, new Rectangle(
-            (int)(Interface.Width / 2 - timerWidth / 2),
-            (int)(timerTopMargin + hudTopOffset),
-            (int)timerWidth,
-            (int)timerHeight
+            (int)(Interface.Width / 2 - sWidth / 2),
+            (int)(sTopMargin + hudTopOffset),
+            (int)sWidth,
+            (int)sHeight
             ), Color.White);
         #endregion
     }

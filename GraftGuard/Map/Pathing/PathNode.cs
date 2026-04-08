@@ -12,6 +12,7 @@ internal class PathNode
     public const float CheckRadius = 24.0f;
     // Properties
     public Vector2 WorldPosition { get; private set; }
+    public Point GridPosition { get; private set; }
     public float Cost { get; set; }
     public Circle CheckCircle => new Circle(WorldPosition, CheckRadius);
     public Color DebugColor = Color.Red;
@@ -21,8 +22,9 @@ internal class PathNode
     /// PathNode objects are used as navigation points for enemies
     /// </summary>
     /// <param name="worldPosition">the node's position</param>
-    public PathNode(Vector2 worldPosition)
+    public PathNode(Vector2 worldPosition, Point gridPosition)
     {
+        GridPosition = gridPosition;
         WorldPosition = worldPosition;
         Cost = 1.0f;
     }

@@ -64,6 +64,23 @@ internal static class ClassExtensions
     {
         return (vector.X + vector.Y) / 2.0f;
     }
+    public static Vector2 Normalized(this Vector2 vector)
+    {
+        if (vector == Vector2.Zero) return Vector2.Zero;
+        return vector / vector.Length();
+    } 
+    public static Vector2 MovedTowards(this Vector2 vector, Vector2 goal, float delta)
+    {
+        if (vector == goal)
+        {
+            return goal;
+        }
+        if (Vector2.Distance(vector, goal) <= delta)
+        {
+            return goal;
+        }
+        return vector + (goal - vector).Normalized() * delta;
+    }
 
     #endregion
 

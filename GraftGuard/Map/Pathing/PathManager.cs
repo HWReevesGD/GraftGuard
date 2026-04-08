@@ -70,7 +70,7 @@ internal class PathManager
             for (float y = Start.Y; y < End.Y; y += PathNode.GridDistance)
             {
                 gridPosition.Y += 1;
-                PathNode node = new PathNode(new Vector2(x, y));
+                PathNode node = new PathNode(new Vector2(x, y), gridPosition);
 
                 if (world.Terrain.Overlaps(node.CheckCircle))
                 {
@@ -105,7 +105,60 @@ internal class PathManager
         }
     }
 
-    public List<PathNode> FindPath(Point start, Point goal, bool crashIfNotFound = true)
+    public PathNode FindNearestNode(Vector2 position)
+    {
+        PathNode closest = null;
+        float minDistance = float.PositiveInfinity;
+        foreach (PathNode node in Nodes)
+        {
+            if (node is null)
+            {
+                continue;
+            }
+
+            float distance = Vector2.DistanceSquared(position, node.WorldPosition);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                closest = node;
+            }
+        }
+
+        if (closest is null)
+        {
+            throw new NullReferenceException("FindNearestNode was called without any nodes generated!");
+        }
+
+        return closest;
+    }
+
+    public List<PathNode> FindPath(World world, Vector2 start, PathSettings settings)
+    {
+        switch (settings.Goal)
+        {
+            case PathGoal.Garage:
+                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Garage.Center).GridPosition);
+            case PathGoal.Player:
+                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Player.Position).GridPosition);
+            case PathGoal.NearestTower:
+                break;
+        }
+        return null;
+    }
+
+    public struct PathSettings
+    {
+        public required PathGoal Goal;
+    }
+
+    public enum PathGoal
+    {
+        Garage,
+        Player,
+        NearestTower,
+    }
+
+    public List<PathNode> FindPointPath(Point start, Point goal, bool crashIfNotFound = true)
     {
         // Priority Queue of Points with a float priority
         PriorityQueue<Point, float> frontier = new PriorityQueue<Point, float>();

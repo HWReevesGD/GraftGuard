@@ -79,7 +79,7 @@ internal abstract class Enemy : GameObject
         Visual.VisualDeath(Position);
     }
 
-    public void Update(GameTime gameTime, InputManager inputManager, World world)
+    public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
         // code for processing DoT and speed modifier status effects
         // increment timer
@@ -106,9 +106,8 @@ internal abstract class Enemy : GameObject
 
         if (!IsDead)
         {
-            Position += new Vector2(1, 0);
 
-            Player player = World.CurrentWorld.Player;
+            Player player = world.Player;
 
             if (Hitbox.Intersects(player.Hitbox))
             {
@@ -137,11 +136,11 @@ internal abstract class Enemy : GameObject
 
         if (!IsDead)
         {
-            UpdatePathing(gameTime, inputManager, world);
+            UpdatePathing(gameTime, inputManager, world, pathManager);
         }
     }
 
-    public abstract void UpdatePathing(GameTime gameTime, InputManager inputManager, World world);
+    public abstract void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager);
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {

@@ -51,7 +51,7 @@ internal class EnemyManager
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];
-            enemy.Update(time, inputManager, world);
+            enemy.Update(time, inputManager, world, PathManager);
 
             // Check if the enemy just died this frame
             if (enemy.Health <= 0.0f && !enemy.IsDead)

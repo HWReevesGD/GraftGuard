@@ -8,6 +8,7 @@ using GraftGuard.Utility;
 using GraftGuard.Map.Pathing;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting;
+using static GraftGuard.Map.Enemies.EnemyVisual;
 
 namespace GraftGuard.Map.Enemies;
 internal class Enemy : GameObject
@@ -97,6 +98,7 @@ internal class Enemy : GameObject
         // Update attached parts
         foreach (AttachedPart part in Visual.AttachedParts)
         {
+            LimbDrawContext context = Visual.GetContext(null, Position);
             //part.UpdateBehavior(PartSettings.Default, )
         }
 

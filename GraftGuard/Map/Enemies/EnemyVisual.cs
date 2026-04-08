@@ -13,7 +13,6 @@ namespace GraftGuard.Map.Enemies
     public class EnemyVisual
     {
         public BaseDefinition Base { get; private set; }
-        public Dictionary<string, PartDefinition> EquippedParts { get; private set; } = new();
         internal List<AttachedPart> AttachedParts = [];
         public Animator Animator { get; private set; }
         public float Scale { get; set; }
@@ -56,15 +55,6 @@ namespace GraftGuard.Map.Enemies
                 ? headPool[rng.Next(0, headPool.Count)]
                 : null;
 
-            // Setup Attached Parts. These parts hold data for Behaviors,
-            // and handle updating them
-            foreach ((_, PartDefinition definition) in EquippedParts)
-            {
-                AttachedParts.Add(
-                    new AttachedPart(definition)
-                    );
-            }
-
             // Iterate through sockets and assign
             int limbIndex = 0;
             foreach (string slotName in Base.AttachmentPoints.Keys)
@@ -74,7 +64,7 @@ namespace GraftGuard.Map.Enemies
                     // Assign the pre-selected random head
                     if (selectedHead != null)
                     {
-                        EquippedParts[slotName] = selectedHead;
+                        AttachedPart part = new AttachedPart(selectedHead, slotName);
                     }
                 }
                 else
@@ -82,12 +72,11 @@ namespace GraftGuard.Map.Enemies
                     // Fill all other slots with limbs
                     if (limbIndex < limbPool.Count)
                     {
-                        EquippedParts[slotName] = limbPool[limbIndex];
+                        AttachedPart part = new AttachedPart(limbPool[limbIndex], slotName);
                         limbIndex++;
                     }
                 }
             }
-
         }
 
         public void VisualDeath(Vector2 deathPosition)
@@ -97,15 +86,15 @@ namespace GraftGuard.Map.Enemies
             Random rnd = new Random();
 
             // Explode Limbs and Head
-            foreach (var entry in EquippedParts)
+            foreach (AttachedPart part in AttachedParts)
             {
                 // Calculate a vector pointing away from the center
                 Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
-                fallingParts.Add(new FallingPart(entry.Value, deathPosition, direction));
+                fallingParts.Add(new FallingPart(part.Definition, deathPosition, direction));
             }
 
             // Clear the equipped parts so they stop drawing in the normal Draw call
-            EquippedParts.Clear();
+            AttachedParts.Clear();
         }
 
         public void Update(GameTime gameTime, Vector2 position, float speedMultiplier = 1)
@@ -144,18 +133,27 @@ namespace GraftGuard.Map.Enemies
                     ctx.DynamicScale, SpriteEffects.None, 0f);
 
                 // Draw Limbs
+
+                int count = 0;
+                foreach (AttachedPart part in AttachedParts)
+                {
+                    Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+                    //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+                    Vector2 pixelOffset = new Vector2(
+                        (slotPosition.X - 0.5f) * Base.Texture.Width,
+                        (slotPosition.Y - 0.5f) * Base.Texture.Height
+                    );
+
+                    DrawLimb(part.Name, pixelOffset, part, count++, ctx);
+                }
+
+
                 int count = 0;
                 foreach (var slot in Base.AttachmentPoints)
                 {
                     if (EquippedParts.TryGetValue(slot.Key, out var part))
                     {
-                        //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
-                        Vector2 pixelOffset = new Vector2(
-                            (slot.Value.X - 0.5f) * Base.Texture.Width,
-                            (slot.Value.Y - 0.5f) * Base.Texture.Height
-                        );
-
-                        DrawLimb(part.Name, pixelOffset, part, count++, ctx);
+                        
                     }
                 }
             }

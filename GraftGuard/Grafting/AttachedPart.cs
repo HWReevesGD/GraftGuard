@@ -19,11 +19,13 @@ internal class AttachedPart
     private IPartBehavior[] _partBehaviors;
     public PartDefinition Definition { get; init; }
     public ReadOnlySpan<IPartBehavior> Behaviors => _partBehaviors;
-    public AttachedPart(PartDefinition definition)
+    public string? SlotName;
+    public AttachedPart(PartDefinition definition, string? slotName = null)
     {
         Definition = definition;
 
         _partBehaviors = definition.PartBehaviorNames.Select((name) => PartBehaviorRegistry.GetFromName(name).Create()).ToArray();
+        SlotName = slotName;
     }
 
     public void BehaviorOnDealDamage(

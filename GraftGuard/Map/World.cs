@@ -58,16 +58,16 @@ internal class World
 
         CurrentMap = EnvironmentRegistry.Map;
 
+        Player = new Player(Vector2.Zero);
+        Camera = new Camera();
+
         TowerManager = new TowerManager(this);
-        Terrain = new Terrain();
+        Terrain = new Terrain(Player);
         Terrain.LoadMap(CurrentMap);
         EnemyManager = new EnemyManager(this, CurrentMap);
         ProjectileManager = new ProjectileManager();
         Garage = new Garage(CurrentMap);
         Inventory = new Inventory();
-
-        Player = new Player(Vector2.Zero);
-        Camera = new Camera();
     }
 
     public void OnNewGameStarted()

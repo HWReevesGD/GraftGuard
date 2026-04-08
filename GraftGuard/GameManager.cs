@@ -202,6 +202,7 @@ namespace GraftGuard
 
             // World Draw (Camera space)
             spriteBatch.End();
+            //spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen, sortMode: SpriteSortMode.FrontToBack);
             spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
             _world.DrawCamera(spriteBatch, gameTime, session.Time, inputManager, true);
             spriteBatch.End();

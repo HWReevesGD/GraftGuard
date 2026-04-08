@@ -16,6 +16,12 @@ internal class Terrain
 {
     public Dictionary<Point, TileDefinition[]> Chunks;
     public List<PlacedProp> Props;
+    private Player player;
+
+    public Terrain(Player player)
+    {
+        this.player = player;
+    }
 
     public void LoadMap(MapDefinition map)
     {
@@ -50,7 +56,7 @@ internal class Terrain
                 float x = ((index & EnvironmentRegistry.ChunkMask) << EnvironmentRegistry.TileBits) + chunkPosition.X;
                 float y = ((index >> EnvironmentRegistry.ChunkBits) << EnvironmentRegistry.TileBits) + chunkPosition.Y;
 
-                batch.Draw(tile.Texture, new Vector2(x, y), tile.Cutout, Color.White);
+                batch.Draw(tile.Texture, new Vector2(x, y), tile.Cutout, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, -0f);
                 index++;
             }
         }
@@ -59,7 +65,7 @@ internal class Terrain
         {
             foreach (PlacedProp prop in Props)
             {
-                prop.Draw(batch);
+                prop.Draw(batch, player);
             }
         }
     }

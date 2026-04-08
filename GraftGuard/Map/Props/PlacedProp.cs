@@ -18,18 +18,35 @@ internal class PlacedProp
         Definition = definition;
         Position = position;
     }
-    public void Draw(SpriteBatch batch)
+    public void Draw(SpriteBatch batch, Player player)
     {
+        //Rectangle rect = new Rectangle(
+        //    (int)(Position.X - Definition.Origin.X),
+        //    (int)(Position.Y - Definition.Origin.Y),
+        //    (int)(Definition.Cutout.Width * 0.8f),
+        //    (int)(Definition.Cutout.Height * 0.8f)
+        //    );
+        //rect.AddX((int)(Position.X - rect.Width * Definition.Origin.X));
+        //rect.AddY((int)(Position.Y - rect.Height * Definition.Origin.Y));
+        //rect.AddX((int)Position.X);
+        //rect.AddY((int)Position.Y);
+
+        //bool isPlayerInFront = player.Position.Y >= Position.Y;
+        //bool isPlayerColliding = rect.Intersects(player.Hitbox);
         batch.Draw(
             texture: Definition.Texture,
             position: Position,
             sourceRectangle: Definition.Cutout,
             origin: Definition.Origin,
+            //color: !isPlayerInFront && isPlayerColliding ? new Color(255, 255, 255, 175) : Color.White,
             color: Color.White,
             rotation: 0.0f,
             scale: 1.0f,
             effects: SpriteEffects.None,
-            layerDepth: 1.0f
+            //layerDepth: isPlayerInFront && isPlayerColliding ? 0f : 1f
+            layerDepth: 0f
             );
+
+        //batch.Draw(Placeholders.TexturePixel, rect, new Color(255, 0, 0, 25));
     }
 }

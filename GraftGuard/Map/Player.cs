@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Enemies.Animation;
@@ -8,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraftGuard.Map;
 internal class Player : GameObject
@@ -25,6 +27,7 @@ internal class Player : GameObject
     public bool InventoryFull => HeldParts.Count >= MaxHeldParts;
 
     private EnemyVisual playerVisual;
+
 
     public static void LoadContent(ContentManager content)
     {
@@ -47,8 +50,9 @@ internal class Player : GameObject
         ClearHeldParts();
     }
 
-    public void Update(GameTime gameTime, InputManager inputManager, World world)
+    public override void Update(GameTime gameTime, InputManager inputManager)
     {
+        Debug.WriteLine($"Health: {PlayerData.CurrentGame.Health}");
         // Delta Time
         float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -56,12 +60,12 @@ internal class Player : GameObject
         Vector2 moveVector = inputManager.GetMovementDirection();
 
         // Move with Collision
-        Move(moveVector * Speed * delta, world);
+        Move(moveVector * Speed * delta, World.CurrentWorld);
 
         // Set the Camera's position
-        world.Camera.Position = Position;
+        World.CurrentWorld.Camera.Position = Position;
 
-        HandlePartPickups(world);
+        HandlePartPickups(World.CurrentWorld);
 
         playerVisual.Update(gameTime, Position, .1f);
     }
@@ -77,6 +81,30 @@ internal class Player : GameObject
             Texture2D part = HeldParts[index].Texture;
             batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, null, Color.White, -MathF.PI / 2.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
         }
+    }
+
+    
+    /// <summary>
+    /// Player takes damage from an enemy and gets knocked back to avoid double damage
+    /// </summary>
+    /// <param name="sourcePosition">Position of contact to move away from</param>
+    /// <param name="damageAmount">Amount of damage to deal. Likely only ever 1</param>
+    /// <param name="knockbackForce">Amount of force to be knocked back by. Perhaps bigger for bigger foes</param>
+    public void TakeDamage(Vector2 sourcePosition, int damageAmount, float knockbackForce)
+    {
+        // Deduct Health
+        if (PlayerData.CurrentGame != null)
+        {
+            PlayerData.CurrentGame.Health -= damageAmount;
+        }
+
+        // Calculate Knockback Direction
+        Vector2 pushDirection = Position - sourcePosition;
+        if (pushDirection == Vector2.Zero) pushDirection = -Vector2.UnitY; 
+        pushDirection.Normalize();
+
+        // Apply Knockback
+        Move(pushDirection * knockbackForce, World.CurrentWorld);
     }
 
     /// <summary>

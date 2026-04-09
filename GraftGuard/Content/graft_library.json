@@ -35,19 +35,21 @@
       ]
     },
     {
-      "Name": "part3",
+      "Name": "shotgun",
       "Type": 0,
-      "BaseDamage": 1,
-      "SpeedModifier": 23,
+      "BaseDamage": 2,
+      "SpeedModifier": 10,
       "ArmorModifier": 1,
-      "RangeModifier": 1,
-      "CriticalModifier": 1,
+      "RangeModifier": 2,
+      "CriticalModifier": 2,
       "HealthModifier": 1,
       "TextureName": "enemy_3",
       "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\enemy_3.png",
       "PivotX": 0.47947213,
       "PivotY": 0.19354838,
-      "PartBehaviorNames": []
+      "PartBehaviorNames": [
+        "Shotgunning"
+      ]
     },
     {
       "Name": "part4",
@@ -106,8 +108,8 @@
       "AttachPoints": [
         {
           "Name": "Arm_R",
-          "PivotX": 0.643695,
-          "PivotY": 0.28445747,
+          "PivotX": 0.47859326,
+          "PivotY": 0.016055046,
           "ColorArgb": -16319527
         },
         {
@@ -133,6 +135,26 @@
           "PivotX": 0.47947213,
           "PivotY": 0.1319648,
           "ColorArgb": -6816979
+        }
+      ]
+    },
+    {
+      "Name": "Shell",
+      "TextureName": "centipede_torso",
+      "IsTorso": true,
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\centipede_torso.png",
+      "AttachPoints": [
+        {
+          "Name": "Socket_0",
+          "PivotX": 0.06422018,
+          "PivotY": 0.48088685,
+          "ColorArgb": -15609511
+        },
+        {
+          "Name": "Socket_1",
+          "PivotX": 0.882263,
+          "PivotY": 0.4824159,
+          "ColorArgb": -9112217
         }
       ]
     }

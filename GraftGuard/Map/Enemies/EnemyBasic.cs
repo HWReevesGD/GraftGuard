@@ -33,7 +33,7 @@ internal class EnemyBasic : Enemy
     {
         base.Draw(gameTime, batch);
         string text = $"HP: {Health}";
-        batch.DrawString(Fonts.Arial, text, Position - Fonts.Arial.MeasureString(text) * 0.5f, Color.White);
+        batch.DrawString(Fonts.Arial, text, Position - Fonts.Arial.MeasureString(text) * 0.5f, Color.Red);
     }
 
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)

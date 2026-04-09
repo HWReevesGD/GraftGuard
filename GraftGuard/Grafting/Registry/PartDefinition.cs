@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Map;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -82,5 +83,8 @@ public class PartDefinition
         PartBehaviorNames = partBehaviorNames ?? [];
     }
 
-   
+    public Vector2 GetEndpoint(PartTransform transform)
+    {
+        return transform.Position + Vector2.Rotate(Vector2.UnitY * Size * transform.Scale, transform.Rotation);
+    }
 }

@@ -1,5 +1,4 @@
 ﻿using GraftGuard.Data;
-using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
@@ -7,18 +6,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GraftGuard.Grafting.Registry.Behaviors;
-internal class PartFlaming : IPartBehavior
+internal class PartShotgunning : IPartBehavior
 {
-    private IntervalTimer _fireTimer = new IntervalTimer(0.05f);
-    public static IPartBehavior Create() => new PartFlaming();
-
+    public IntervalTimer ShotTimer = new IntervalTimer(1.2f);
+    public static IPartBehavior Create() => new PartShotgunning();
+    public static Random random = new Random();
+    public const int ShotAmount = 5;
+    public const float SeparationAngle = 0.4f;
+    public const float SeparationRandomness = 0.1f;
     public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
         
@@ -31,16 +31,22 @@ internal class PartFlaming : IPartBehavior
 
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
-        bool fire = _fireTimer.Update(time);
+        bool shoot = ShotTimer.Update(time);
 
-        if (fire)
+        if (!shoot)
         {
+            return;
+        }
+
+        for (int i = 0; i < ShotAmount; i++)
+        {
+            int index = i - (ShotAmount / 2);
+            float angle = transform.Rotation;
             projectileManager.Add(
-                new ProjectileFire(part.GetEndpoint(transform), transform.Scale.Average(), transform.Rotation + MathF.PI / 2.0f, settings.Source.GetTarget(),
-                speedModifier: settings.PartsAreVertical ? 0.5f : 1.0f,
-                lifetimeModifier: settings.PartsAreVertical ? 0.5f : 1.0f,
-                isBlueprint: !ReferenceEquals(world.ProjectileManager, projectileManager))
-                );
+                new ProjectileBullet(
+                    part.GetEndpoint(transform),
+                    angle + (index * SeparationAngle * random.NextSingle()),
+                    settings.Source.GetTarget()));
         }
     }
 }

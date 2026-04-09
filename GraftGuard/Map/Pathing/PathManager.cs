@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 namespace GraftGuard.Map.Pathing;
 internal class PathManager
 {
+    public static Random random = new Random();
     public readonly Point[] Directions = [
         new Point(1, 0), // Right
         new Point(1, 1), // Down-Right
@@ -132,18 +133,23 @@ internal class PathManager
         return closest;
     }
 
-    public List<PathNode> FindPath(World world, Vector2 start, PathSettings settings)
+    public List<PathNode> FindPath(World world, Vector2 start, PathSettings settings, Func<Vector2, float> getExtraPathingCost = null)
     {
         switch (settings.Goal)
         {
             case PathGoal.Garage:
-                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Garage.Center).GridPosition);
+                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Garage.Center).GridPosition, true, getExtraPathingCost);
             case PathGoal.Player:
-                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Player.Position).GridPosition);
+                return FindPointPath(FindNearestNode(start).GridPosition, FindNearestNode(world.Player.Position).GridPosition, true, getExtraPathingCost);
             case PathGoal.NearestTower:
                 break;
         }
         return null;
+    }
+
+    private Vector2 NodeGridToWorld(Point grid)
+    {
+        return Nodes[grid.X, grid.Y].WorldPosition;
     }
 
     public struct PathSettings
@@ -158,8 +164,10 @@ internal class PathManager
         NearestTower,
     }
 
-    public List<PathNode> FindPointPath(Point start, Point goal, bool crashIfNotFound = true)
+    public List<PathNode> FindPointPath(Point start, Point goal, bool crashIfNotFound = true, Func<Vector2, float> getExtraCost = null)
     {
+        Point[] directions = Directions.ToArray();
+        random.Shuffle(directions);
         // Priority Queue of Points with a float priority
         PriorityQueue<Point, float> frontier = new PriorityQueue<Point, float>();
         // Maps paths of Grid Locations
@@ -213,6 +221,12 @@ internal class PathManager
                 // The cost to move to this next node
                 float costToNext = node.Cost;
 
+                // Calculate any extra cost
+                if (getExtraCost is not null)
+                {
+                    costToNext += getExtraCost(NodeGridToWorld(next));
+                }
+
                 // Multiply move costs for diagonals by Sqrt 2
                 if (isDiagonal)
                 {
@@ -264,6 +278,7 @@ internal class PathManager
             // And set the new position
             currentPosition = cameFromPoint;
         }
+        path.RemoveAt(path.Count - 1);
         // We reverse the list since it's currently backwards
         path.Reverse();
 

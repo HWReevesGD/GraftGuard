@@ -1,20 +1,25 @@
-﻿using GraftGuard.Grafting.Registry;
+﻿using GraftGuard.Grafting;
+using GraftGuard.Grafting.Registry;
+using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map.Enemies.Animation;
+using GraftGuard.Map.Pathing;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.Collections.Generic;
-using System.Reflection.Metadata;
-using GraftGuard.Utility;
-using GraftGuard.Map.Pathing;
-using GraftGuard.Grafting.Registry.Behaviors;
-using GraftGuard.Grafting;
-using static GraftGuard.Map.Enemies.EnemyVisual;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection.Metadata;
+using static GraftGuard.Map.Enemies.EnemyVisual;
+using static GraftGuard.Map.Pathing.PathManager;
 
 namespace GraftGuard.Map.Enemies;
 internal abstract class Enemy : GameObject
 {
     double timer = 0;
+    public static readonly float NearDistanceSquared = MathF.Pow(32.0f, 2.0f);
+
     // Fields
     private Vector2 dirUnitVec;
     private float speed;
@@ -28,10 +33,16 @@ internal abstract class Enemy : GameObject
     private int damageOverTimeDuration;
 
     public float Health { get; set; }
-
     public bool IsDead { get; private set; } = false;
-
     public EnemyVisual Visual { get; private set; }
+
+    public List<PathNode> Path { get; set; } = [];
+    public IntervalTimer PathTimer { get; set; }
+    public Vector2 Velocity { get; set; }
+    /// <summary>
+    /// Mass Affects how fast an Enemy can change direction
+    /// </summary>
+    public float Mass { get; set; } = 2.0f;
 
     public Enemy(Vector2 position, BaseDefinition torso, Vector2 hitboxSize, float health, float speed)
         : base(position, hitboxSize, torso.Texture, collisionLayers: CollisionLayer.Enemy)
@@ -51,24 +62,6 @@ internal abstract class Enemy : GameObject
 
         // Initialize the visual component
         Visual = new EnemyVisual(torso, 1f, AnimationClips.Idle, position);
-    }
-
-    // Methods
-    /// <summary>
-    /// Moves the enemy object by having it navigate along a list of PathNodes
-    /// </summary>
-    /// <param name="route">the PathNode objects that it is moving along</param>
-    public void Move(List<PathNode> route)
-    {
-        PathNode target = route[0]; // Temp
-
-        // Get the unit vector of the direction from the enemy to the node
-        Vector2 dirVec = target.WorldPosition - Position;
-        dirUnitVec = dirVec / dirVec.Length();
-
-        // Move the enemy after checking to ensure it won't move backwards (sufficiently large speed penalties should just freeze it)
-        if (speed - speedMod >= 0)
-            Position += dirUnitVec * (speed - speedMod);
     }
 
     public virtual void OnDeath()
@@ -141,6 +134,51 @@ internal abstract class Enemy : GameObject
     }
 
     public abstract void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager);
+
+    /// <summary>
+    /// Returns a steering velocity from basic pathing logic
+    /// </summary>
+    /// <param name="gameTime"></param>
+    /// <param name="world"></param>
+    /// <param name="pathManager"></param>
+    /// <returns></returns>
+    public Vector2 BasicPathing(GameTime gameTime, World world, PathManager pathManager)
+    {
+        bool recalculate = PathTimer.Update(gameTime);
+        if (Path.Count == 0 || recalculate)
+        {
+            Path = pathManager.FindPath(world, Position,
+                new PathSettings()
+                {
+                    Goal = PathGoal.Player,
+                });
+        }
+
+        IEnumerable<Enemy> nearbyEnemies = world.EnemyManager.Enemies.Where((enemy) =>
+        {
+            return !ReferenceEquals(enemy, this) && Vector2.DistanceSquared(enemy.Position, Position) < NearDistanceSquared;
+        });
+
+        PathNode goal = Path[0];
+        Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * speed) - Position;
+
+        Vector2 steering = pathingVelocity - Velocity;
+        steering /= Mass;
+
+        foreach (Enemy near in nearbyEnemies)
+        {
+            Vector2 avoidVelocity = ((Position - near.Position).Normalized() * speed / MathF.Max((Position - near.Position).Length(), 0.01f)).Truncated(speed);
+            Vector2 avoidSteering = (avoidVelocity - Velocity) / Mass;
+            steering += avoidSteering;
+        }
+
+        if (Vector2.Distance(Position, goal.WorldPosition) <= 8.0f)
+        {
+            Path.RemoveAt(0);
+        }
+
+        return steering.Truncated(speed);
+    }
 
     public void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {

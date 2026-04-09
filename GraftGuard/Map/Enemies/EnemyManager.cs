@@ -38,7 +38,7 @@ internal class EnemyManager
         {
             for(int i = 0; i <= (int) PlayerData.CurrentGame.CurrentDifficulty; i++)
             {
-                Enemies.Add(new EnemyDummy(spawn, GraftLibrary.GetRandomBase()));
+                Enemies.Add(new EnemyBasic(spawn, GraftLibrary.GetRandomBase()));
             }
         }
     }

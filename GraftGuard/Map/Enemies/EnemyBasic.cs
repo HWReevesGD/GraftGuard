@@ -11,9 +11,9 @@ using System.Linq;
 using static GraftGuard.Map.Pathing.PathManager;
 
 namespace GraftGuard.Map.Enemies;
-internal class EnemyDummy : Enemy
+internal class EnemyBasic : Enemy
 {
-    public EnemyDummy(Vector2 position, BaseDefinition torso)
+    public EnemyBasic(Vector2 position, BaseDefinition torso)
         : base(position, torso, hitboxSize: new Vector2(32, 48), 30.0f, 128.0f)
     {
         PathTimer = new IntervalTimer(0.5f);

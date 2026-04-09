@@ -48,8 +48,11 @@ namespace GraftGuard.Map.Enemies
                 .Where(p => p.Type == PartType.Head).ToList();
 
 
-            List<PartDefinition> limbPool = GraftLibrary.AllParts
-                .Where(p => p.Type == PartType.Limb).ToList();
+            PartDefinition[] limbArray = GraftLibrary.AllParts
+                .Where(p => p.Type == PartType.Limb).ToArray();
+            rng.Shuffle(limbArray);
+            List<PartDefinition> limbPool = limbArray.ToList();
+
 
             // Select a random head (if any exist)
             PartDefinition selectedHead = headPool.Count > 0

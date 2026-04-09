@@ -123,7 +123,7 @@ internal class PartZapping : IPartBehavior
         {
             if (zappedObject is Player player)
             {
-                player.TakeDamage(transform.Position, 1, 0.0f);
+                //player.TakeDamage(transform.Position, 1, 0.0f);
             }
             if (zappedObject is Enemy enemy)
             {

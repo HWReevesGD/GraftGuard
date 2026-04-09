@@ -148,7 +148,7 @@ internal abstract class Enemy : GameObject
     /// <param name="world"></param>
     /// <param name="pathManager"></param>
     /// <returns></returns>
-    public Vector2 BasicPathing(GameTime gameTime, World world, PathManager pathManager)
+    public Vector2 BasicGaragePathing(GameTime gameTime, World world, PathManager pathManager)
     {
         bool recalculate = PathTimer.Update(gameTime);
         if (Path.Count == 0 || recalculate)
@@ -156,7 +156,7 @@ internal abstract class Enemy : GameObject
             Path = pathManager.FindPath(world, Position,
                 new PathSettings()
                 {
-                    Goal = PathGoal.Player,
+                    Goal = PathGoal.Garage,
                 });
         }
 
@@ -164,6 +164,11 @@ internal abstract class Enemy : GameObject
         {
             return !ReferenceEquals(enemy, this) && Vector2.DistanceSquared(enemy.Position, Position) < NearDistanceSquared;
         });
+
+        if (Path.Count == 0)
+        {
+            return Vector2.Zero;
+        }
 
         PathNode goal = Path[0];
         Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * speed) - Position;

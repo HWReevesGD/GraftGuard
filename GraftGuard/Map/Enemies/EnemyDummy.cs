@@ -38,7 +38,7 @@ internal class EnemyDummy : Enemy
 
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
-        Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager);
+        Vector2 steeringPathing = BasicGaragePathing(gameTime, world, pathManager);
         Position += steeringPathing;
     }
 }

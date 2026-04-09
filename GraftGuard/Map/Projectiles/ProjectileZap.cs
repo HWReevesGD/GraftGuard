@@ -28,7 +28,7 @@ internal class ProjectileZap : Projectile
     public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
         float lifeFactor = 1.0f - Lifetime / MaxLifetime;
-        batch.DrawCentered(Texture, Position, scale: Scale, rotation: (time.Total() % MathF.Tau) * 3.0f);
+        batch.DrawCentered(Texture, Position, scale: Scale * 0.5f * lifeFactor, rotation: (time.Total() % MathF.Tau) * 3.0f);
 
         foreach (ProjectileZap zap in Next)
         {

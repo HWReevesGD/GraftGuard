@@ -98,7 +98,7 @@ internal class EnemyManager
         List<Enemy> enemies = GetEnemiesInAreas(boxes, circles);
         foreach (Enemy enemy in enemies)
         {
-            enemy.DealDamage(damage);
+            enemy.TakeDamage(damage);
         }
     }
 }

@@ -72,7 +72,7 @@ internal abstract class Enemy : GameObject
         Visual.VisualDeath(Position);
     }
 
-    public void DealDamage(float amount)
+    public void TakeDamage(float amount)
     {
         System.Diagnostics.Debug.WriteLine("Damaged for!: " + amount);
         Health -= amount;

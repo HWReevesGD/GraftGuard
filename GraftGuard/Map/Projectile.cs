@@ -72,7 +72,7 @@ internal class Projectile
                     if (enemy.Hitbox.Intersects(HitCircle))
                     {
                         overlapsEnemy = true;
-                        enemy.DealDamage(amount);
+                        enemy.TakeDamage(amount);
                     }
                 }
                 return overlapsEnemy;

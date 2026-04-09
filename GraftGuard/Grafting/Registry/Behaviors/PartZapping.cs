@@ -18,6 +18,7 @@ internal class PartZapping : IPartBehavior
     public const float ZapSearchRadius = 192.0f;
     public const int MaxZaps = 1;
     public const int MaxChain = 10;
+    public const float ZapDamage = 1.0f;
     public static IPartBehavior Create() => new PartZapping();
     public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
@@ -51,6 +52,9 @@ internal class PartZapping : IPartBehavior
                         settings,
                         transform,
                         world);
+                    ProjectileZap first = new ProjectileZap(transform.Position, settings.Source.GetTarget());
+                    allZaps.Add(first);
+                    first.Next.AddRange(currentZaps);
                     allZaps.AddRange(currentZaps);
                     chain++;
                     continue;
@@ -83,15 +87,19 @@ internal class PartZapping : IPartBehavior
         List<ProjectileZap> zaps = [];
         GameObject next = null;
 
+        Func<Vector2, World, List<GameObject>, GameObject> Find = null;
+
         switch (settings.Source)
         {
             case Source.Player:
-                next = FindEnemy(zapSource?.Position ?? transform.Position, world, previousZapped);
+                Find = FindEnemy;
                 break;
             case Source.Enemy:
+                Find = (position, world, _) => FindPlayer(position, world);
                 break;
-                // TODO: Implement Enemy Part
         }
+
+        next = Find?.Invoke(zapSource?.Position ?? transform.Position, world, previousZapped);
 
         while (next is not null && zapped.Count < MaxZaps)
         {
@@ -109,6 +117,18 @@ internal class PartZapping : IPartBehavior
             zap.Position = next.Position;
             zapSource?.Next.Add(zap);
             zaps.Add(zap);
+        }
+
+        foreach(GameObject zappedObject in zapped)
+        {
+            if (zappedObject is Player player)
+            {
+                player.TakeDamage(transform.Position, 1, 0.0f);
+            }
+            if (zappedObject is Enemy enemy)
+            {
+                enemy.TakeDamage(ZapDamage);
+            }
         }
 
         return (zaps, zapped);
@@ -133,5 +153,11 @@ internal class PartZapping : IPartBehavior
             }
         }
         return chosen;
+    }
+
+    public Player? FindPlayer(Vector2 position, World world)
+    {
+        float maxDistance = ZapSearchRadius * ZapSearchRadius;
+        return Vector2.DistanceSquared(world.Player.Position, position) <= maxDistance ? world.Player : null;
     }
 }

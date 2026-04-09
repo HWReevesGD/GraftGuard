@@ -28,6 +28,7 @@ internal class GameObject
     public Vector2 Position { get; set; }
     public Vector2 HitboxSize { get; set; }
     public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)HitboxSize.X, (int)HitboxSize.Y);
+    public Vector2 Center => Position + HitboxSize * 0.5f;
     public Texture2D Texture { get; set; }
     public CollisionLayer CollisionLayers { get; set; }
     public CollisionLayer CollisionMasks { get; set; }
@@ -92,7 +93,6 @@ internal class GameObject
 
         Position = objectBox.Location.ToVector();
     }
-
     protected virtual Rectangle DoIntersections(Rectangle currentBox, Terrain terrain)
     {
         // Horizontals First

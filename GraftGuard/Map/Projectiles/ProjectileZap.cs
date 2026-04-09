@@ -27,20 +27,20 @@ internal class ProjectileZap : Projectile
 
     public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
-        base.Draw(batch, time, world, inputManager, manager);
-        
+        float lifeFactor = 1.0f - Lifetime / MaxLifetime;
+        batch.DrawCentered(Texture, Position, scale: Scale, rotation: (time.Total() % MathF.Tau) * 3.0f);
+
         foreach (ProjectileZap zap in Next)
         {
             batch.Draw(
                 TLightning,
-                Position,
+                destinationRectangle: new Rectangle(Position.ToPoint() - new Point(0, (int)(16 * lifeFactor)), new Point((int)Vector2.Distance(Position, zap.Position) + 8, (int)(32 * lifeFactor))),
                 sourceRectangle: null,
                 new Color(Color.White, (MaxLifetime - Lifetime) / MaxLifetime),
                 rotation: (zap.Position - Position).Angle(),
                 origin: new Vector2(0, 16),
-                scale: 1.0f,
                 SpriteEffects.None,
-                layerDepth: 1.0f);
+                layerDepth: 0.0f);
         }
     }
 

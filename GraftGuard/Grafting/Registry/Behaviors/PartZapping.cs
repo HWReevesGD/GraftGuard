@@ -15,9 +15,9 @@ namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartZapping : IPartBehavior
 {
     public IntervalTimer ZapInterval = new IntervalTimer(interval: 1.0f);
-    public const float ZapSearchRadius = 96.0f;
-    public const int MaxZaps = 2;
-    public const int MaxChain = 3;
+    public const float ZapSearchRadius = 192.0f;
+    public const int MaxZaps = 1;
+    public const int MaxChain = 10;
     public static IPartBehavior Create() => new PartZapping();
     public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
@@ -65,14 +65,14 @@ internal class PartZapping : IPartBehavior
                         transform,
                         world,
                         zap);
+                    currentZaps = zaps;
                     allZaps.AddRange(zaps);
-
                     allZapped.AddRange(zapped);
                 }
-
-                projectileManager.AddAll(allZaps);
                 chain++;
             }
+
+            projectileManager.AddAll(allZaps);
         }
 
     }
@@ -81,29 +81,34 @@ internal class PartZapping : IPartBehavior
     {
         List<GameObject> zapped = [];
         List<ProjectileZap> zaps = [];
+        GameObject next = null;
 
         switch (settings.Source)
         {
             case Source.Player:
-
-                Enemy next = FindEnemy(transform.Position, world, previousZapped);
-                while (next is not null && zapped.Count < MaxZaps)
-                {
-                    zapped.Add(next);
-                    ProjectileZap zap = new ProjectileZap(zapSource?.Position ?? transform.Position, ProjectileTarget.Enemy);
-
-                    List<GameObject> allZapped = zapped;
-                    allZapped.AddRange(previousZapped);
-                    next = FindEnemy(transform.Position, world, allZapped);
-
-                    zapSource?.Next.Add(zap);
-                    zaps.Add(zap);
-                }
-
+                next = FindEnemy(zapSource?.Position ?? transform.Position, world, previousZapped);
                 break;
             case Source.Enemy:
-                return ([], []);
+                break;
                 // TODO: Implement Enemy Part
+        }
+
+        while (next is not null && zapped.Count < MaxZaps)
+        {
+            zapped.Add(next);
+            ProjectileZap zap = new ProjectileZap(zapSource?.Position ?? transform.Position, ProjectileTarget.Enemy);
+
+            List<GameObject> allZapped = zapped;
+            allZapped.AddRange(previousZapped);
+            next = FindEnemy(zapSource?.Position ?? transform.Position, world, allZapped);
+
+            if (next is null)
+            {
+                continue;
+            }
+            zap.Position = next.Position;
+            zapSource?.Next.Add(zap);
+            zaps.Add(zap);
         }
 
         return (zaps, zapped);

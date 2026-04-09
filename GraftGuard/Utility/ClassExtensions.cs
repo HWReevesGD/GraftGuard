@@ -180,6 +180,10 @@ internal static class ClassExtensions
     {
         return (float)time.ElapsedGameTime.TotalSeconds;
     }
+    public static float Total(this GameTime time)
+    {
+        return (float)time.TotalGameTime.TotalSeconds;
+    }
     #endregion
 
     #region MISC

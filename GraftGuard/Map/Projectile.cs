@@ -24,7 +24,8 @@ internal class Projectile
     public Circle HitCircle => new Circle(Position, Radius);
     public ProjectileTarget Targeting { get; set; }
     public Texture2D Texture { get; set; }
-    public Projectile(Vector2 position, float radius, Vector2 velocity, float scale, Texture2D texture, ProjectileTarget targeting)
+    public bool IsBlueprint { get; set; }
+    public Projectile(Vector2 position, float radius, Vector2 velocity, float scale, Texture2D texture, ProjectileTarget targeting, bool isBlueprint = false)
     {
         Position = position;
         Velocity = velocity;
@@ -32,6 +33,7 @@ internal class Projectile
         Texture = texture;
         Targeting = targeting;
         Scale = scale;
+        IsBlueprint = isBlueprint;
     }
 
     /// <summary>
@@ -53,6 +55,10 @@ internal class Projectile
     /// <returns>True if any target was overlapping <see cref="HitCircle"/>, false otherwise</returns>
     public bool DealDamage(World world, float amount)
     {
+        if (IsBlueprint)
+        {
+            return false;
+        }
         switch (Targeting)
         {
             case ProjectileTarget.Player:
@@ -66,7 +72,7 @@ internal class Projectile
                     if (enemy.Hitbox.Intersects(HitCircle))
                     {
                         overlapsEnemy = true;
-                        enemy.Health -= amount;
+                        enemy.DealDamage(amount);
                     }
                 }
                 return overlapsEnemy;

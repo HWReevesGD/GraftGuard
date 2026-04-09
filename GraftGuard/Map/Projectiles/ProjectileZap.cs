@@ -14,13 +14,13 @@ internal class ProjectileZap : Projectile
     public List<ProjectileZap> Next;
     public float Lifetime = 0.0f;
     public const float MaxLifetime = 0.5f;
-    public ProjectileZap(Vector2 position, ProjectileTarget targeting)
+    public ProjectileZap(Vector2 position, ProjectileTarget targeting, bool isBlueprint = false)
         : base(position,
                radius: 32.0f,
                velocity: Vector2.Zero,
                scale: 1.0f,
                texture: TZap,
-               targeting)
+               targeting: targeting, isBlueprint: isBlueprint)
     {
         Next = [];
     }

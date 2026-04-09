@@ -13,14 +13,16 @@ internal class ProjectileFire : Projectile
 {
     public const float FireSpeed = 256.0f;
     public const float FireRadius = 16.0f;
+    public const float Damage = 1.0f;
 
     private const float FullLifetime = 0.5f;
     private float _lifetime = 0.0f;
     private float _speedModifier;
-    private float _lifetimeModifier; 
+    private float _lifetimeModifier;
+    private IntervalTimer DamageInterval = new IntervalTimer(0.2f);
 
-    public ProjectileFire(Vector2 position, float scale, float direction, ProjectileTarget targeting, float speedModifier = 1.0f, float lifetimeModifier = 1.0f)
-        : base(position, FireRadius, new Vector2(MathF.Cos(direction), MathF.Sin(direction)) * FireSpeed * speedModifier, scale, TFire, targeting)
+    public ProjectileFire(Vector2 position, float scale, float direction, ProjectileTarget targeting, float speedModifier = 1.0f, float lifetimeModifier = 1.0f, bool isBlueprint = false)
+        : base(position, FireRadius, new Vector2(MathF.Cos(direction), MathF.Sin(direction)) * FireSpeed * speedModifier, scale, TFire, targeting, isBlueprint)
     {
         _speedModifier = speedModifier;
         _lifetimeModifier = lifetimeModifier;
@@ -36,6 +38,12 @@ internal class ProjectileFire : Projectile
         }
 
         Position += Velocity * time.Delta() * Scale;
+
+        bool dealDamage = DamageInterval.Update(time);
+        if (dealDamage)
+        {
+            DealDamage(world, Damage);
+        }
     }
 
     public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)

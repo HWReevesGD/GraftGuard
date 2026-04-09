@@ -72,6 +72,12 @@ internal abstract class Enemy : GameObject
         Visual.VisualDeath(Position);
     }
 
+    public void DealDamage(float amount)
+    {
+        System.Diagnostics.Debug.WriteLine("Damaged for!: " + amount);
+        Health -= amount;
+    }
+
     public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
         // code for processing DoT and speed modifier status effects

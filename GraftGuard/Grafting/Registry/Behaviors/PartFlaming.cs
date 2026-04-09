@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
@@ -35,10 +36,10 @@ internal class PartFlaming : IPartBehavior
         if (fire)
         {
             projectileManager.Add(
-                new ProjectileFire(transform.Position + Vector2.Rotate(Vector2.UnitY * part.Size * transform.Scale, transform.Rotation), transform.Scale.Average(), transform.Rotation + MathF.PI / 2.0f, ProjectileTarget.Enemy,
+                new ProjectileFire(transform.Position + Vector2.Rotate(Vector2.UnitY * part.Size * transform.Scale, transform.Rotation), transform.Scale.Average(), transform.Rotation + MathF.PI / 2.0f, settings.Source.GetTarget(),
                 speedModifier: settings.PartsAreVertical ? 0.5f : 1.0f,
-                lifetimeModifier: settings.PartsAreVertical ? 0.5f : 1.0f
-                )
+                lifetimeModifier: settings.PartsAreVertical ? 0.5f : 1.0f,
+                isBlueprint: !ReferenceEquals(world.ProjectileManager, projectileManager))
                 );
         }
     }

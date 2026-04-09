@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Grafting;
+using GraftGuard.Map;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 namespace GraftGuard.Utility;
 /// <summary>
@@ -176,5 +180,21 @@ internal static class ClassExtensions
     {
         return (float)time.ElapsedGameTime.TotalSeconds;
     }
+    #endregion
+
+    #region MISC
+
+    public static ProjectileTarget GetTarget(this Source source)
+    {
+        switch (source)
+        {
+            case Source.Player:
+                return ProjectileTarget.Enemy;
+            case Source.Enemy:
+                return ProjectileTarget.Player;
+        }
+        throw new UnreachableException();
+    }
+
     #endregion
 }

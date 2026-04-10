@@ -1,6 +1,7 @@
 ﻿// render main menu
 
 using GraftGuard.Data;
+using GraftGuard.Graphics.Particles;
 using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Map;
@@ -214,7 +215,5 @@ internal class MainMenu {
             .SetKerning(3)
             .AddEffect(new WavyTextEffect(7, -3))
             .Draw(batch, gameTime, new Vector2(titleLeftPadding, yPosition));
-
-        
     }
 }

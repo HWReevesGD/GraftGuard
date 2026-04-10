@@ -186,6 +186,17 @@ internal static class ClassExtensions
     }
     #endregion
 
+    #region Color
+    public static Color Lerp(this Color color1, Color color2, float delta)
+    {
+        float r = MathHelper.Lerp(color1.R, color2.R, delta);
+        float g = MathHelper.Lerp(color1.G, color2.G, delta);
+        float b = MathHelper.Lerp(color1.B, color2.B, delta);
+        float a = MathHelper.Lerp(color1.A, color2.A, delta);
+        return new Color(r, g, b, a);
+    }
+    #endregion
+
     #region MISC
 
     public static ProjectileTarget GetTarget(this Source source)

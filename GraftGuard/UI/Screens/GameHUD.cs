@@ -167,20 +167,30 @@ internal class GameHUD
 
                 // draw other hearts
 
-                Texture2D textureToDraw = heartTexture;
+                Texture2D textureToDraw = heartSpriteSheet;
                 int spritesheetIndex = 0;
+                
 
                 // render current heart in fractions
                 if (i == currentHearts - 1)
                 {
-
-                } else
+                    float healthSectionSize = (float)PlayerData.CurrentGame.MaxHealth / numHeartSegments;
+                    float prevSegment = (float)Math.Floor(PlayerData.CurrentGame.Health / healthSectionSize);
+                    float currentSegment = (float)(PlayerData.CurrentGame.Health / healthSectionSize);
+                    float prog = (currentSegment - prevSegment) / healthSectionSize;
+                    //spritesheetIndex = PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHeartSegments;
+                    spritesheetIndex = (int)Math.Round(prog);
+                }
+                else
                 {
-                    spritesheetIndex = numHeartSegments;
+                    // full heart
+                    spritesheetIndex = numHeartSegments - 1;
                 }
 
+                int xSegmentSize = heartSpriteSheet.Bounds.Width / numHeartSegments;
+
+                Rectangle sourceRect = new Rectangle(spritesheetIndex * xSegmentSize, (spritesheetIndex + 1) * xSegmentSize, xSegmentSize, heartSpriteSheet.Bounds.Height);
                 Vector2 finalSize = i == currentHearts - 1 ? baseSize * pulseScale : baseSize;
-                
                 Vector2 position = scaledMargin + new Vector2(
                     (baseSize.X + scaledGap) * i - finalSize.X / 2,
                     wave - finalSize.Y / 2 + hudTopOffset
@@ -192,8 +202,8 @@ internal class GameHUD
                     (int)finalSize.X,
                     (int)finalSize.Y
                     );
-                //batch.Draw(heartTexture, rect, null, Color.White, 0, size / 2, SpriteEffects.None, 0);
-                batch.Draw(textureToDraw, rect, Color.White);
+
+                batch.Draw(textureToDraw, rect, sourceRect, Color.White);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;

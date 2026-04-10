@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
 
 namespace GraftGuard.Utility;
 /// <summary>
@@ -121,6 +120,135 @@ internal static class ClassExtensions
     {
         return circle.Intersects(rectangle);
     }
+    public static Point End(this Rectangle rectangle)
+    {
+        return rectangle.Location + rectangle.Size;
+    }
+    public static Rectangle MinkowskiDifference(this Rectangle rectangle, Rectangle other)
+    {
+        Point location = rectangle.Location - other.End();
+        Point size = rectangle.Size + other.Size;
+        return new Rectangle(
+            location + size.Divided(2),
+            size.Divided(2)
+            );
+    }
+    public static Vector2 ClosestPosition(this Rectangle rectangle, Vector2 position)
+    {
+        return new Vector2(
+            MathHelper.Clamp(position.X, rectangle.Location.X, rectangle.Location.X + rectangle.Size.X),
+            MathHelper.Clamp(position.Y, rectangle.Location.Y, rectangle.Location.Y + rectangle.Size.Y)
+            );
+    }
+    public static Point ClosestPoint(this Rectangle rectangle, Point point)
+    {
+        return new Point(
+            MathHelper.Clamp(point.X, rectangle.Location.X, rectangle.Location.X + rectangle.Size.X),
+            MathHelper.Clamp(point.Y, rectangle.Location.Y, rectangle.Location.Y + rectangle.Size.Y)
+            );
+    }
+    public static Point ClosestBoundsPoint(this Rectangle rectangle, Point point)
+    {
+        Point min = rectangle.Location;
+        Point max = rectangle.Location + rectangle.Size;
+
+        float minDistance = Math.Abs(point.X - min.X);
+        Point boundsPoint = new Point(min.X, point.Y);
+
+        if (Math.Abs(max.X - point.X) < minDistance)
+        {
+            minDistance = Math.Abs(max.X - point.X);
+            boundsPoint = new Point(max.X, point.Y);
+        }
+
+        if (Math.Abs(max.Y - point.Y) < minDistance)
+        {
+            minDistance = Math.Abs(max.Y - point.Y);
+            boundsPoint = new Point(point.X, max.Y);
+        }
+
+        if (Math.Abs(min.Y - point.Y) < minDistance)
+        {
+            minDistance = Math.Abs(min.Y - point.Y);
+            boundsPoint = new Point(point.X, min.Y);
+        }
+
+        return boundsPoint;
+    }
+    public static Vector2 ClosestBoundsPosition(this Rectangle rectangle, Vector2 position)
+    {
+        Vector2 min = rectangle.Location.ToVector();
+        Vector2 max = (rectangle.Location + rectangle.Size).ToVector();
+
+        float minDistance = Math.Abs(position.X - min.X);
+        Vector2 boundsPoint = new Vector2(min.X, position.Y);
+
+        if (Math.Abs(max.X - position.X) < minDistance)
+        {
+            minDistance = Math.Abs(max.X - position.X);
+            boundsPoint = new Vector2(max.X, position.Y);
+        }
+
+        if (Math.Abs(max.Y - position.Y) < minDistance)
+        {
+            minDistance = Math.Abs(max.Y - position.Y);
+            boundsPoint = new Vector2(position.X, max.Y);
+        }
+
+        if (Math.Abs(min.Y - position.Y) < minDistance)
+        {
+            minDistance = Math.Abs(min.Y - position.Y);
+            boundsPoint = new Vector2(position.X, min.Y);
+        }
+
+        return boundsPoint;
+    }
+    public static bool RaycastFraction(this Rectangle rectangle, Vector2 position, Vector2 vector, out float fraction)
+    {
+        Point min = rectangle.Location;
+        Point max = rectangle.End();
+
+        float minXPlane = (min.X - position.X) / vector.X;
+        float maxXPlane = (max.X - position.X) / vector.X;
+        float minYPlane = (min.Y - position.Y) / vector.Y;
+        float maxYPlane = (max.Y - position.Y) / vector.Y;
+
+        float minPlane = MathF.Max(MathF.Min(minXPlane, maxXPlane), MathF.Min(minYPlane, maxYPlane));
+        float maxPlane = MathF.Min(MathF.Max(minXPlane, maxXPlane), MathF.Max(minYPlane, maxYPlane));
+
+        // If the location of the Max Place is negative,
+        // the ray would be interesting only if it was pointing the opposite direction
+        if (maxPlane < 0)
+        {
+            fraction = float.NegativeInfinity;
+            return false;
+        }
+
+        // if the Min Plane's location is larger than the Max Plane's location, the ray doesn't intersect the Rectangle
+        if (minPlane > maxPlane)
+        {
+            fraction = float.PositiveInfinity;
+            return false;
+        }
+
+        if (minPlane < 0f)
+        {
+            fraction = maxPlane;
+            return true;
+        }
+        fraction = minPlane;
+        return true;
+    }
+    public static bool ContainsOrigin(this Rectangle rectangle)
+    {
+        Point min = rectangle.Location;
+        Point max = rectangle.End();
+        return
+            min.X <= 0 &&
+            max.X >= 0 &&
+            min.Y <= 0 &&
+            max.Y >= 0;
+    }
     #endregion
 
     #region Texture
@@ -221,6 +349,11 @@ internal static class ClassExtensions
     private static float MoveTowards(this float value, float goal, float delta)
     {
         return MathF.Max(value - delta, MathF.Min(value + delta, goal));
+    }
+
+    public static Vector2 AngleToVector(this float angle)
+    {
+        return new Vector2(MathF.Cos(angle), MathF.Sin(angle));
     }
 
     #endregion

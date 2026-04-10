@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GraftGuard;
@@ -76,23 +77,69 @@ internal class GameObject
     }
 
     /// <summary>
-    /// Moves the <see cref="GameObject"/> while colliding with objects with any Collison Layers that match any of this object's Collision Masks.
-    /// Currently only interacts with terrain, but will interact with other objects later
+    /// Moves the <see cref="GameObject"/> while colliding with terrain
     /// </summary>
     /// <param name="movement"></param>
-    public virtual void Move(Vector2 movement, World world)
+    public virtual void MoveAndCollide(Vector2 movement, World world)
     {
-        Position += movement;
-        Rectangle objectBox = Hitbox;
-
-        // Collide with Terrain
-        if (CollisionMasks.HasFlag(CollisionLayer.Terrain))
-        {
-            objectBox = DoIntersections(objectBox, world.Terrain);
-        }
-
-        Position = objectBox.Location.ToVector();
+        Position += CollisionSweep(movement, Hitbox, world.Terrain);
     }
+    protected virtual Vector2 CollisionSweep(Vector2 movement, Rectangle box, Terrain terrain)
+    {
+        float moveDistance = movement.Length();
+        if (moveDistance == 0.0f)
+        {
+            return Vector2.Zero;
+        }
+        foreach (Rectangle other in terrain.GetTileBoxes())
+        {
+            Rectangle difference = box.MinkowskiDifference(other);
+
+            // If the MinkowskiDifference contains the origin, then the boxes are colliding,
+            // so we just do normal "Push Out" collisions
+            if (difference.ContainsOrigin())
+            {
+                box = MovedOut(box, difference);
+                continue;
+            }
+
+            // Otherwise, we do swept collision
+            bool collides = difference.RaycastFraction(Vector2.Zero, movement, out float fraction);
+
+            // If there is no collision, skip this
+            if (!collides)
+            {
+                continue;
+            }
+
+            float distance = movement.Length() * fraction;
+            if (distance < moveDistance)
+            {
+                moveDistance = distance;
+            }
+
+            Debug.WriteLine(difference);
+            Debug.WriteLine(fraction);
+            return movement;
+        }
+        return movement;
+    }
+    
+    /// <summary>
+    /// Given a <paramref name="box"/>, and it's COLLIDING <paramref name="minkowskiDifference"/>,
+    /// returns the given <paramref name="box"/> moved out of the original other box that was used
+    /// to create the given <paramref name="minkowskiDifference"/>
+    /// </summary>
+    /// <param name="box">Box to use</param>
+    /// <param name="minkowskiDifference">Difference to use</param>
+    /// <returns>Moved out box</returns>
+    protected virtual Rectangle MovedOut(Rectangle box, Rectangle minkowskiDifference)
+    {
+        Point penetrationVector = minkowskiDifference.ClosestBoundsPoint(Point.Zero);
+        box.Location += penetrationVector;
+        return box;
+    }
+
     protected virtual Rectangle DoIntersections(Rectangle currentBox, Terrain terrain)
     {
         // Horizontals First
@@ -104,7 +151,10 @@ internal class GameObject
             Rectangle intersect = Rectangle.Intersect(currentBox, obstacle);
 
             // Only Horizontally process intersections with equal or smaller widths
-            if (intersect.Height < intersect.Width) continue;
+            if (intersect.Height < intersect.Width)
+            {
+                continue;
+            }
 
             currentBox.X += intersect.Width * MathF.Sign(currentBox.X - obstacle.X);
         }
@@ -117,7 +167,10 @@ internal class GameObject
             Rectangle intersect = Rectangle.Intersect(currentBox, obstacle);
 
             // Only Vertically process intersections with smaller heights
-            if (intersect.Height >= intersect.Width) continue;
+            if (intersect.Height >= intersect.Width)
+            {
+                continue;
+            }
 
             currentBox.Y += intersect.Height * MathF.Sign(currentBox.Y - obstacle.Y);
         }

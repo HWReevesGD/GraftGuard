@@ -19,8 +19,6 @@ internal class Player : GameObject
     public const float PickupRadius = 32;
     public const float Speed = 600.0f;
 
-    public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
-
     private static Texture2D texture;
     private Circle _collectionCircle;
     private EnemyVisual playerVisual;
@@ -35,11 +33,11 @@ internal class Player : GameObject
         
     }
 
-    public Player(Vector2 position) : base(position, new Vector2(25, 50), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
+    public Player(Vector2 position) : base(position, new Vector2(24, 48), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
     {
-        _collectionCircle = new Circle(CenterOffset, PickupRadius);
+        _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
-        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, position);
+        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, Center);
         previousHealth = PlayerData.CurrentGame.Health;
     }
 
@@ -61,19 +59,19 @@ internal class Player : GameObject
         Vector2 moveVector = inputManager.GetMovementDirection();
 
         // Move with Collision
-        Move(moveVector * Speed * delta, World.CurrentWorld);
+        MoveAndCollide(moveVector * Speed * delta, World.CurrentWorld);
 
         // Set the Camera's position
         World.CurrentWorld.Camera.Position = Position;
 
         HandlePartPickups(World.CurrentWorld);
 
-        playerVisual.Update(gameTime, Position, .1f);
+        playerVisual.Update(gameTime, Center, .1f);
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {
-        playerVisual.Draw(batch, Position);
+        playerVisual.Draw(batch, Center);
         //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
         // Draw Held Parts
@@ -82,6 +80,8 @@ internal class Player : GameObject
             Texture2D part = HeldParts[index].Texture;
             batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, null, Color.White, -MathF.PI / 2.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
         }
+
+        batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
     }
 
     
@@ -105,7 +105,7 @@ internal class Player : GameObject
         pushDirection.Normalize();
 
         // Apply Knockback
-        Move(pushDirection * knockbackForce, World.CurrentWorld);
+        MoveAndCollide(pushDirection * knockbackForce, World.CurrentWorld);
 
         OnDamaged.Invoke();
     }

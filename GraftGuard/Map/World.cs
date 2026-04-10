@@ -40,28 +40,7 @@ internal class World
         CurrentWorld = this;
 
         // These parts are just for testing, this will normally start empty
-        ScatteredParts = [
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
-            ];
+       
 
         CurrentMap = EnvironmentRegistry.Map;
 
@@ -109,6 +88,28 @@ internal class World
         ProjectileManager.Setup();
         EnemyManager.Setup(this, CurrentMap);
         Particles.Clear();
+        ScatteredParts = [
+           new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            new ScatteredPart(new Vector2(0, 0), GraftLibrary.GetRandomPart()),
+            ];
     }
 
     public void OnStartingDawn()

@@ -2,17 +2,18 @@
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using System;
+using System.Diagnostics;
 
 namespace GraftGuard.Graphics;
 internal class Camera
 {
     public Vector2 Position { get; set; } = Vector2.Zero;
-    public float Zoom { get; private set; } = 1f;           
-    public float MinZoom { get; set; } = 0.5f;
-    public float MaxZoom { get; set; } = 5.0f;
+    public float Zoom { get; private set; } = 3f;           
+    public float MinZoom { get; set; } = 1.5f;
+    public float MaxZoom { get; set; } = 5f;
     public float ZoomSpeed { get; set; } = 8f;
 
-    private float targetZoom = 1f;
+    private float targetZoom = 3f;
 
     public Matrix ScreenToWorld => Matrix.Invert(WorldToScreen);
     public Matrix WorldToScreen =>
@@ -33,6 +34,7 @@ internal class Camera
 
         // Smoothly move Zoom toward targetZoom
         Zoom = MathHelper.Lerp(Zoom, targetZoom, ZoomSpeed * dt);
+
 
         if (Math.Abs(Zoom - targetZoom) < 0.001f) Zoom = targetZoom;
     }

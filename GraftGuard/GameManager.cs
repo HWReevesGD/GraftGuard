@@ -87,6 +87,7 @@ namespace GraftGuard
         /// </summary>
         private void OnStartingDawn()
         {
+            PlayerData.CurrentGame.Timer = DawnTimeLength;
             _world.OnStartingDawn();
         }
 
@@ -104,6 +105,7 @@ namespace GraftGuard
         /// </summary>
         private void OnStartingNight()
         {
+            PlayerData.CurrentGame.Timer = NightTimeLength;
             // Setup Player Data
             if (PlayerData.CurrentGame.Time == TimeState.Day)
             {
@@ -225,12 +227,27 @@ namespace GraftGuard
             // World Draw (Camera space)
             spriteBatch.End();
             //spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen, sortMode: SpriteSortMode.FrontToBack);
-            spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen);
+            spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen, blendState: BlendState.NonPremultiplied);
             _world.DrawCamera(spriteBatch, gameTime, session.Time, inputManager, true);
             spriteBatch.End();
 
+            // Draw Time Overlay
+            spriteBatch.Begin(samplerState: SamplerState.PointWrap, blendState: BlendState.NonPremultiplied);
+            switch (PlayerData.CurrentGame.Time)
+            {
+                case TimeState.Night:
+                    spriteBatch.Draw(Placeholders.TexturePixel, new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), new Color(0.1f, 0f, 0.4f, 0.1f));
+                    break;
+                case TimeState.Dawn:
+                    spriteBatch.Draw(Placeholders.TexturePixel, new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), new Color(0.8f, 0.6f, 0.3f, 0.01f));
+                    break;
+                case TimeState.Day:
+                    break;
+            }
+            spriteBatch.End();
+
             // UI Draw (Screen space)
-            spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+            spriteBatch.Begin(samplerState: SamplerState.PointWrap, blendState: BlendState.NonPremultiplied);
             switch (session.Time)
             {
                 case TimeState.Dawn:

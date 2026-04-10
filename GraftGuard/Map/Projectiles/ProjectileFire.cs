@@ -48,7 +48,8 @@ internal class ProjectileFire : Projectile
 
     public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
+        float lifetimeFactor = _lifetime / (FullLifetime * _lifetimeModifier);
         batch.DrawCentered(Texture, Position, scale: MathF.Log(_lifetime + 1.0f) * Scale, rotation: Velocity.Angle(),
-            color: new Color(Color.White, MathF.Max(0.0f, 0.2f - _lifetime / (FullLifetime * _lifetimeModifier))));
+            color: new Color(Color.White, (1.0f - lifetimeFactor) * 4.0f));
     }
 }

@@ -23,12 +23,14 @@ internal abstract class Tower : GameObject, IMouseDetectable
 {
     public static Texture2D TexturePlaceholderTower { get; private set; }
     public static Texture2D TexturePlaceholderGround { get; private set; }
+    public static Texture2D TTurret { get; private set; }
     public const int MaxParts = 4;
 
     public static void LoadContent(ContentManager content)
     {
         TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder");
         TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
+        TTurret = content.Load<Texture2D>("Tower/turret");
     }
 
     protected AttachedPart[] _attachedParts;
@@ -52,6 +54,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public float PathCost => HasParts ? _basePathCost : 0;
     public Rectangle[] PathAreas { get; init; }
     public PartSettings Settings { get; init; }
+    public int NightsUsed { get; set; }
 
     /// <summary>
     /// Constructs a Tower with Empty Parts
@@ -61,6 +64,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// <param name="texture">Tower's Texture</param>
     public Tower(Vector2 position, Vector2 size, Texture2D texture, Rectangle mouseBox, float pathCost, Rectangle[] pathAreas = null, PartSettings? settings = null) : base(position, size, texture)
     {
+        NightsUsed = 0;
         _attachedParts = new AttachedPart[MaxParts];
 
         random = new Random();

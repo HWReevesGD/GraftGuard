@@ -98,6 +98,7 @@ public class Game1 : Game
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview, Tower.TexturePlaceholderGround);
+        TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
 
 
         // Add Testing World

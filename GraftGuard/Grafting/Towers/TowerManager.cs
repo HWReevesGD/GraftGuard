@@ -79,4 +79,23 @@ internal class TowerManager
         }
         return null;
     }
+
+    public void DegradeAndDestroy()
+    {
+        Stack<Tower> toRemove = [];
+        foreach (Tower tower in _towers)
+        {
+            if (tower.NightsUsed >= 3)
+            {
+                toRemove.Push(tower);
+                continue;
+            }
+            tower.NightsUsed++;
+        }
+        while (toRemove.Count > 0)
+        {
+            Tower tower = toRemove.Pop();
+            _towers.Remove(tower);
+        }
+    }
 }

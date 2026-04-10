@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics.Particles;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Utility;
@@ -21,13 +22,13 @@ internal class Player : GameObject
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
 
     private static Texture2D texture;
+    private Circle _collectionCircle;
+    private EnemyVisual playerVisual;
+    private int previousHealth;
 
     public List<PartDefinition> HeldParts { get; private set; }
-    private Circle _collectionCircle;
     public bool InventoryFull => HeldParts.Count >= MaxHeldParts;
-
-    private EnemyVisual playerVisual;
-
+    public event Action OnDamaged;
 
     public static void LoadContent(ContentManager content)
     {
@@ -39,6 +40,7 @@ internal class Player : GameObject
         _collectionCircle = new Circle(CenterOffset, PickupRadius);
         HeldParts = [];
         playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, position);
+        previousHealth = PlayerData.CurrentGame.Health;
     }
 
     /// <summary>
@@ -52,7 +54,6 @@ internal class Player : GameObject
 
     public override void Update(GameTime gameTime, InputManager inputManager)
     {
-        Debug.WriteLine($"Health: {PlayerData.CurrentGame.Health}");
         // Delta Time
         float delta = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -105,6 +106,8 @@ internal class Player : GameObject
 
         // Apply Knockback
         Move(pushDirection * knockbackForce, World.CurrentWorld);
+
+        OnDamaged.Invoke();
     }
 
     /// <summary>

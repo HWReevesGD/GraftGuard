@@ -186,6 +186,17 @@ internal static class ClassExtensions
     }
     #endregion
 
+    #region Color
+    public static Color Lerp(this Color color1, Color color2, float delta)
+    {
+        float r = MathHelper.Lerp(color1.R, color2.R, delta);
+        float g = MathHelper.Lerp(color1.G, color2.G, delta);
+        float b = MathHelper.Lerp(color1.B, color2.B, delta);
+        float a = MathHelper.Lerp(color1.A, color2.A, delta);
+        return new Color(r, g, b, a);
+    }
+    #endregion
+
     #region MISC
 
     public static ProjectileTarget GetTarget(this Source source)
@@ -198,6 +209,18 @@ internal static class ClassExtensions
                 return ProjectileTarget.Player;
         }
         throw new UnreachableException();
+    }
+
+    public static float MoveTowardsAngle(this float value, float goal, float delta)
+    {
+        value = MathHelper.WrapAngle(value);
+        goal = MathHelper.WrapAngle(goal);
+        return value.MoveTowards(goal, delta);
+    }
+
+    private static float MoveTowards(this float value, float goal, float delta)
+    {
+        return MathF.Max(value - delta, MathF.Min(value + delta, goal));
     }
 
     #endregion

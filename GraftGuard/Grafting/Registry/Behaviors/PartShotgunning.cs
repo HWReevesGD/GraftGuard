@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 namespace GraftGuard.Grafting.Registry.Behaviors;
 internal class PartShotgunning : IPartBehavior
 {
-    public IntervalTimer ShotTimer = new IntervalTimer(1.2f);
+    public IntervalTimer ShotTimer = new IntervalTimer(1.2f, random.NextSingle() * 0.3f);
     public static IPartBehavior Create() => new PartShotgunning();
     public static Random random = new Random();
     public const int ShotAmount = 5;
@@ -41,7 +41,7 @@ internal class PartShotgunning : IPartBehavior
         for (int i = 0; i < ShotAmount; i++)
         {
             int index = i - (ShotAmount / 2);
-            float angle = transform.Rotation;
+            float angle = transform.Rotation + MathF.PI / 2.0f;
             projectileManager.Add(
                 new ProjectileBullet(
                     part.GetEndpoint(transform),

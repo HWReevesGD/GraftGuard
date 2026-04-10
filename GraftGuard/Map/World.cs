@@ -89,8 +89,7 @@ internal class World
 
     public void OnStartingDay()
     {
-        Player.ClearHeldParts();
-        ScatteredParts = [];
+        
     }
 
     public void OnStartingNight()
@@ -107,6 +106,10 @@ internal class World
                 if (allowPlayerControls)
                 {
                     Player.Update(gameTime, inputManager);
+                }
+                if (EnemyManager.Enemies.Count == 0)
+                {
+                    PlayerData.CurrentGame.Time = TimeState.Dawn;
                 }
                 break;
             case TimeState.Dawn:

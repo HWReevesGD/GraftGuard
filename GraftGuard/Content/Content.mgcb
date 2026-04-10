@@ -194,6 +194,18 @@
 /processorParam:TextureFormat=Color
 /build:Parts/Mood board.png
 
+#begin Parts/shotgun.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Parts/shotgun.png
+
 #begin Parts/tesla_coil.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -544,6 +556,18 @@
 /processorParam:TextureFormat=Color
 /build:UI/Fonts/TitleFont.spritefont
 
+#begin UI/Heart_Spritesheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Heart_Spritesheet.png
+
 #begin UI/Heart-1.png.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -579,14 +603,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:UI/Timer.png
-
-#begin Parts/shotgun.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Color
-/build:Parts/shotgun.png
 

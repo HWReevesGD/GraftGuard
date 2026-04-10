@@ -12,6 +12,9 @@ internal class ProjectileBullet : Projectile
 {
     public const float Speed = 480.0f;
     public IntervalTimer DamageTimer;
+
+    private ProjectileDamage damage = new ProjectileDamage(4.0f, 0, 0, 0, 0);
+
     public ProjectileBullet(Vector2 position, float direction, ProjectileTarget targeting, bool isBlueprint = false)
         : base(position, 12.0f, Vector2.Rotate(Vector2.UnitX, direction) * Speed, 1.0f, TBullet, targeting, isBlueprint)
     {
@@ -28,7 +31,7 @@ internal class ProjectileBullet : Projectile
         Position += Velocity * time.Delta();
         if (DamageTimer.Update(time))
         {
-            DealDamage(world, 4.0f);
+            DealDamage(world, damage);
         }
     }
 }

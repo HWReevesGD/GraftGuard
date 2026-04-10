@@ -49,8 +49,11 @@ internal class GameHUD
     private float hudActiveChangeTime = 0;
     private bool hudPrevInactive = false;
 
+    private readonly int numHearts = 3; // full health number split across this amount of visual hearts
+
     private ParticleManager particles;
     private int previousHealth;
+    private int previousHearts;
 
     public static void LoadContent(ContentManager content)
     {
@@ -64,6 +67,7 @@ internal class GameHUD
     {
         particles = new ParticleManager();
         previousHealth = PlayerData.CurrentGame.Health;
+        previousHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHearts);
     }
 
     public void Draw(SpriteBatch batch, GameTime gameTime, bool active)
@@ -108,10 +112,12 @@ internal class GameHUD
         if (PlayerData.CurrentGame.Time == TimeState.Night)
         {
 
+            int currentHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth  * numHearts);
+
             float pulseCycle = (float)gameTime.TotalGameTime.TotalSeconds % 1;
             float pulseScale = Math.Max(((0.5f - pulseCycle) / 0.5f), 0) * 0.25f + 1;
 
-            for (int i = 0; i < Math.Max(previousHealth, PlayerData.CurrentGame.Health); i++)
+            for (int i = 0; i < Math.Max(previousHearts, currentHearts); i++)
             {
                 Vector2 baseSize = heartSize * hudScale;
                 Vector2 scaledMargin = heartMargin * hudScale;
@@ -120,7 +126,7 @@ internal class GameHUD
                 float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
 
                 // hearts that have been lost
-                if (i >= PlayerData.CurrentGame.Health)
+                if (i >= currentHearts)
                 {
                     Vector2 particleOrigin = scaledMargin + new Vector2(
                         (baseSize.X + scaledGap) * i - baseSize.X / 2,
@@ -174,6 +180,7 @@ internal class GameHUD
             }
 
             previousHealth = PlayerData.CurrentGame.Health;
+            previousHearts = currentHearts;
         }
         #endregion
 

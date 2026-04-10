@@ -40,7 +40,7 @@ internal class TowerSpinner : Tower
             PartTransform transform = new PartTransform()
             {
                 Position = partPosition,
-                Rotation = rotation,
+                Rotation = rotation + MathF.PI,
             };
 
             part.UpdateBehavior(Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
@@ -78,7 +78,7 @@ internal class TowerSpinner : Tower
             PartTransform transform = new PartTransform()
             {
                 Position = Position + SpinOffset + new Vector2(MathF.Cos(rotation - MathF.PI * 0.5f), MathF.Sin(rotation - MathF.PI * 0.5f)) * 48.0f,
-                Rotation = rotation,
+                Rotation = rotation + MathF.PI,
             };
 
             part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);

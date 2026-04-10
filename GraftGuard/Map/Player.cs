@@ -20,11 +20,13 @@ internal class Player : GameObject
     public const float Speed = 600.0f;
 
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
+    private static readonly float invincibilityFrameTime = 0.5f; // in seconds
 
     private static Texture2D texture;
     private Circle _collectionCircle;
     private EnemyVisual playerVisual;
     private int previousHealth;
+    private float invincibilityTimer;
 
     public List<PartDefinition> HeldParts { get; private set; }
     public bool InventoryFull => HeldParts.Count >= MaxHeldParts;
@@ -69,10 +71,20 @@ internal class Player : GameObject
         HandlePartPickups(World.CurrentWorld);
 
         playerVisual.Update(gameTime, Position, .1f);
+
+        if (invincibilityTimer > 0)
+            invincibilityTimer -= delta;
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch batch)
     {
+        if (invincibilityTimer > 0)
+        {
+            int phase = (int)(invincibilityTimer / 0.025f);
+            if (phase % 2 == 0) // skip drawing for this frame to make the flashing effect
+                return;
+        }
+
         playerVisual.Draw(batch, Position);
         //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
@@ -93,6 +105,9 @@ internal class Player : GameObject
     /// <param name="knockbackForce">Amount of force to be knocked back by. Perhaps bigger for bigger foes</param>
     public void TakeDamage(Vector2 sourcePosition, int damageAmount, float knockbackForce)
     {
+        if (invincibilityTimer > 0)
+            return;
+
         // Deduct Health
         if (PlayerData.CurrentGame != null)
         {
@@ -108,6 +123,7 @@ internal class Player : GameObject
         Move(pushDirection * knockbackForce, World.CurrentWorld);
 
         OnDamaged.Invoke();
+        invincibilityTimer = invincibilityFrameTime;
     }
 
     /// <summary>

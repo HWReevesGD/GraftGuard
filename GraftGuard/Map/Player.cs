@@ -41,7 +41,6 @@ internal class Player : GameObject
         _collectionCircle = new Circle(CenterOffset, PickupRadius);
         HeldParts = [];
         playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, position);
-        previousHealth = PlayerData.CurrentGame.Health;
     }
 
     /// <summary>

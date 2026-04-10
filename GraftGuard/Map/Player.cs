@@ -25,7 +25,6 @@ internal class Player : GameObject
     private static Texture2D texture;
     private Circle _collectionCircle;
     private EnemyVisual playerVisual;
-    private int previousHealth;
     private float invincibilityTimer;
 
     public List<PartDefinition> HeldParts { get; private set; }

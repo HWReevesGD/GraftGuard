@@ -113,7 +113,7 @@ internal class World
 
     public void OnStartingDawn()
     {
-        
+        TowerManager.DegradeAndDestroy();
     }
 
     public void OnStartingDay()

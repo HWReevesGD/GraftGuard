@@ -211,5 +211,17 @@ internal static class ClassExtensions
         throw new UnreachableException();
     }
 
+    public static float MoveTowardsAngle(this float value, float goal, float delta)
+    {
+        value = MathHelper.WrapAngle(value);
+        goal = MathHelper.WrapAngle(goal);
+        return value.MoveTowards(goal, delta);
+    }
+
+    private static float MoveTowards(this float value, float goal, float delta)
+    {
+        return MathF.Max(value - delta, MathF.Min(value + delta, goal));
+    }
+
     #endregion
 }

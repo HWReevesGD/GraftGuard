@@ -11,10 +11,10 @@ internal class IntervalTimer
     public float Interval { get; init; }
     private float _timeSinceLastInterval;
 
-    public IntervalTimer(float interval)
+    public IntervalTimer(float interval, float initialTimeOffset = 0.0f)
     {
         Interval = interval;
-        _timeSinceLastInterval = 0.0f;
+        _timeSinceLastInterval = 0.0f + initialTimeOffset;
     }
 
     public bool Update(GameTime time)

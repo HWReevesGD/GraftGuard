@@ -92,6 +92,7 @@ internal class NightPlacementGUI
 
                 _designButtons.RemoveAt(designIndex);
                 _designs.RemoveAt(designIndex);
+                world.Inventory.StartingDesigns.RemoveAt(designIndex);
 
                 world.TowerManager.MakeTower(
                     design.Definition,

@@ -23,12 +23,14 @@ internal abstract class Tower : GameObject, IMouseDetectable
 {
     public static Texture2D TexturePlaceholderTower { get; private set; }
     public static Texture2D TexturePlaceholderGround { get; private set; }
+    public static Texture2D TTurret { get; private set; }
     public const int MaxParts = 4;
 
     public static void LoadContent(ContentManager content)
     {
         TexturePlaceholderTower = content.Load<Texture2D>("Placeholder/tower_placeholder");
         TexturePlaceholderGround = content.Load<Texture2D>("Placeholder/tower_placeholder_2");
+        TTurret = content.Load<Texture2D>("Tower/turret");
     }
 
     protected AttachedPart[] _attachedParts;

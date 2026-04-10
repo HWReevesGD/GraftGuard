@@ -164,15 +164,7 @@ internal class GameHUD
 
         // timer progress bar
 
-        float timeLength;
-        if (PlayerData.CurrentGame.Time == TimeState.Dawn)
-            timeLength = GameManager.DawnTimeLength;
-        else if (PlayerData.CurrentGame.Time == TimeState.Night)
-            timeLength = GameManager.NightTimeLength;
-        else
-            timeLength = 1;
-
-        float timerProgressBarScale = PlayerData.CurrentGame.Timer / timeLength;
+        float timerProgressBarScale = PlayerData.CurrentGame.Timer / PlayerData.CurrentGame.PhaseTimeLength;
         float sBarMargin = timerBarMargin * hudScale;
 
         // Scale the internal progress bar rectangle

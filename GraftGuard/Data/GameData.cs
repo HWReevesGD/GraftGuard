@@ -35,6 +35,7 @@ namespace GraftGuard.Data
 
         public TimeState Time { get; set; }
         public float Timer { get; set; }
+        public float PhaseTimeLength { get; set; }
         public int CurrentScore { get; set; }
         public int Health
         {
@@ -55,7 +56,8 @@ namespace GraftGuard.Data
         public GameData()
         {
             Time = TimeState.Dawn;
-            Timer = 15;
+            PhaseTimeLength = 15;
+            Timer = PhaseTimeLength;
             CurrentScore = 0;
             Health = 3;
             CurrentDifficulty = Difficulty.Medium;

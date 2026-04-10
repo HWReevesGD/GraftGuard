@@ -108,6 +108,7 @@ namespace GraftGuard
             if (PlayerData.CurrentGame.Time == TimeState.Day)
             {
                 PlayerData.CurrentGame.Time = TimeState.Night;
+                PlayerData.CurrentGame.PhaseTimeLength = NightTimeLength;
                 PlayerData.CurrentGame.Timer = NightTimeLength;
             }
 

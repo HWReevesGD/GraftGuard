@@ -28,7 +28,8 @@ internal class MainMenu {
     private readonly static float itemLeftPadding = 40;
     private readonly static float itemBottomPadding = 20;
     private readonly static float itemGap = 10;
-    private readonly static float itemShakeIntensity = 1;
+    private readonly static float itemShakeIntensity = 3;
+    private readonly static float selectedItemLeftOffset = 34;
     private readonly static float lerpSpeed = 15;
 
     private static Texture2D backgroundTexture;
@@ -176,7 +177,7 @@ internal class MainMenu {
 
             if (i == selectedItemIndex)
             {
-                targetXOffset = 15;
+                targetXOffset = selectedItemLeftOffset;
                 targetWaveAmplitude = itemShakeIntensity;
                 arrowYPosition = MathHelper.Lerp(arrowYPosition, yPosition, alpha);
             }
@@ -211,7 +212,8 @@ internal class MainMenu {
         new Text(Fonts.MainFont, titleText)
             .SetYOrigin(YOrigin.Bottom)
             .SetKerning(3)
-            .DrawRaw(batch, new Vector2(titleLeftPadding, yPosition));
+            .AddEffect(new WavyTextEffect(7, -3))
+            .Draw(batch, gameTime, new Vector2(titleLeftPadding, yPosition));
 
         
     }

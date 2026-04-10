@@ -13,6 +13,7 @@ namespace GraftGuard.UI.Screens;
 internal class GameHUD
 {
     private static Texture2D heartTexture;
+    private static Texture2D heartSpriteSheet;
     private static Texture2D timerTexture;
     private static Texture2D timerOverlayTexture;
     private static Texture2D pixelTexture;
@@ -49,12 +50,17 @@ internal class GameHUD
     private float hudActiveChangeTime = 0;
     private bool hudPrevInactive = false;
 
+    private readonly int numHearts = 3; // full health number split across this amount of visual hearts
+    private readonly int numHeartSegments = 8; // spritesheet
+
     private ParticleManager particles;
     private int previousHealth;
+    private int previousHearts;
 
     public static void LoadContent(ContentManager content)
     {
         heartTexture = content.Load<Texture2D>("UI/Heart");
+        heartSpriteSheet = content.Load<Texture2D>("UI/Heart_Spritesheet");
         timerTexture = content.Load<Texture2D>("UI/Timer");
         timerOverlayTexture = content.Load<Texture2D>("UI/Timer_Overlay");
         pixelTexture = content.Load<Texture2D>("pixel");
@@ -64,6 +70,7 @@ internal class GameHUD
     {
         particles = new ParticleManager();
         previousHealth = PlayerData.CurrentGame.Health;
+        previousHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHearts);
     }
 
     public void Draw(SpriteBatch batch, GameTime gameTime, bool active)
@@ -108,10 +115,12 @@ internal class GameHUD
         if (PlayerData.CurrentGame.Time == TimeState.Night)
         {
 
+            int currentHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth  * numHearts);
+
             float pulseCycle = (float)gameTime.TotalGameTime.TotalSeconds % 1;
             float pulseScale = Math.Max(((0.5f - pulseCycle) / 0.5f), 0) * 0.25f + 1;
 
-            for (int i = 0; i < Math.Max(previousHealth, PlayerData.CurrentGame.Health); i++)
+            for (int i = 0; i < Math.Max(previousHearts, currentHearts); i++)
             {
                 Vector2 baseSize = heartSize * hudScale;
                 Vector2 scaledMargin = heartMargin * hudScale;
@@ -120,7 +129,7 @@ internal class GameHUD
                 float wave = (float)Math.Sin(-gameTime.TotalGameTime.TotalSeconds * 2 + (float)i / 2) * 5;
 
                 // hearts that have been lost
-                if (i >= PlayerData.CurrentGame.Health)
+                if (i >= currentHearts)
                 {
                     Vector2 particleOrigin = scaledMargin + new Vector2(
                         (baseSize.X + scaledGap) * i - baseSize.X / 2,
@@ -156,8 +165,32 @@ internal class GameHUD
                     continue;
                 }
 
-                Vector2 finalSize = i == PlayerData.CurrentGame.Health ? baseSize * pulseScale : baseSize;
+                // draw other hearts
+
+                Texture2D textureToDraw = heartSpriteSheet;
+                int spritesheetIndex = 0;
                 
+
+                // render current heart in fractions
+                if (i == currentHearts - 1)
+                {
+                    float healthSectionSize = (float)PlayerData.CurrentGame.MaxHealth / numHeartSegments;
+                    float prevSegment = (float)Math.Floor(PlayerData.CurrentGame.Health / healthSectionSize);
+                    float currentSegment = (float)(PlayerData.CurrentGame.Health / healthSectionSize);
+                    float prog = (currentSegment - prevSegment) / healthSectionSize;
+                    //spritesheetIndex = PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHeartSegments;
+                    spritesheetIndex = (int)Math.Round(prog);
+                }
+                else
+                {
+                    // full heart
+                    spritesheetIndex = numHeartSegments - 1;
+                }
+
+                int xSegmentSize = heartSpriteSheet.Bounds.Width / numHeartSegments;
+
+                Rectangle sourceRect = new Rectangle(spritesheetIndex * xSegmentSize, (spritesheetIndex + 1) * xSegmentSize, xSegmentSize, heartSpriteSheet.Bounds.Height);
+                Vector2 finalSize = i == currentHearts - 1 ? baseSize * pulseScale : baseSize;
                 Vector2 position = scaledMargin + new Vector2(
                     (baseSize.X + scaledGap) * i - finalSize.X / 2,
                     wave - finalSize.Y / 2 + hudTopOffset
@@ -169,11 +202,12 @@ internal class GameHUD
                     (int)finalSize.X,
                     (int)finalSize.Y
                     );
-                //batch.Draw(heartTexture, rect, null, Color.White, 0, size / 2, SpriteEffects.None, 0);
-                batch.Draw(heartTexture, rect, Color.White);
+
+                batch.Draw(textureToDraw, rect, sourceRect, Color.White);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;
+            previousHearts = currentHearts;
         }
         #endregion
 

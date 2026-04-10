@@ -52,6 +52,8 @@ namespace GraftGuard.Data
             }
         }
 
+        public int MaxHealth { get; set; }
+
         public Difficulty CurrentDifficulty { get; set; }
 
         public GameData()
@@ -60,7 +62,8 @@ namespace GraftGuard.Data
             PhaseTimeLength = 15;
             Timer = PhaseTimeLength;
             CurrentScore = 0;
-            Health = 3;
+            MaxHealth = 28;
+            Health = MaxHealth;
             CurrentDifficulty = Difficulty.Medium;
         }
 

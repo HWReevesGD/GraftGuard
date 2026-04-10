@@ -53,6 +53,7 @@ internal class MainMenu {
     private float[] itemXOffests;
     private float[] itemWaveAmplitudes;
     private float arrowYPosition;
+
     public event ActionEvent NewGameStarted;
 
     public MainMenu(Game1 game, InputManager inputManager)

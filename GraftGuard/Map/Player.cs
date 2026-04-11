@@ -92,7 +92,6 @@ internal class Player : GameObject
 
         //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
 
-        Debug.WriteLine("COUNT!: " + CollidedDebug.Count);
         foreach (var box in CollidedDebug)
         {
             batch.Draw(Placeholders.TexturePixel, box, null, Color.Magenta, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);

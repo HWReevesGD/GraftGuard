@@ -30,6 +30,7 @@ internal class EnemyManager
         PathManager.BuildGrid(world);
 
         Enemies = [];
+        Enemies.Add(new EnemyCentipede(Vector2.Zero, this));
     }
 
     public void BeginNight()

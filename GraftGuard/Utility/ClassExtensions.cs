@@ -88,6 +88,10 @@ internal static class ClassExtensions
     {
         return vector.Angle() - thisVector.Angle();
     }
+    public static float AngleTo(this Vector2 thisVector, Vector2 vector)
+    {
+        return (vector - thisVector).Angle();
+    }
     public static Vector2 Truncated(this Vector2 vector, float max)
     {
         return vector.LengthSquared() > max * max ? vector.Normalized() * max : vector;

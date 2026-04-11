@@ -17,12 +17,11 @@ using static GraftGuard.Map.Pathing.PathManager;
 namespace GraftGuard.Map.Enemies;
 internal abstract class Enemy : GameObject
 {
-    double timer = 0;
     public static readonly float NearDistanceSquared = MathF.Pow(32.0f, 2.0f);
 
     // Fields
     private Vector2 dirUnitVec;
-    private float speed;
+    public float Speed { get; protected set; }
 
     // Fields for speed modification
     private float speedMod;
@@ -31,6 +30,7 @@ internal abstract class Enemy : GameObject
     // Fields for Damage over time
     private float damageOverTime;
     private int damageOverTimeDuration;
+    public IntervalTimer DamageOverTimeSecond = new IntervalTimer(1.0f);
 
     public float Health { get; set; }
     public bool IsDead { get; private set; } = false;
@@ -48,7 +48,7 @@ internal abstract class Enemy : GameObject
         : base(position, hitboxSize, torso.Texture, collisionLayers: CollisionLayer.Enemy)
     {
         this.Health = health;
-        this.speed = speed;
+        this.Speed = speed;
         dirUnitVec = new Vector2();
 
         speedMod = 0;
@@ -74,18 +74,13 @@ internal abstract class Enemy : GameObject
 
     public void TakeDamage(float amount)
     {
-        System.Diagnostics.Debug.WriteLine("Damaged for!: " + amount);
         Health -= amount;
     }
 
     public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
-        // code for processing DoT and speed modifier status effects
-        // increment timer
-        timer += gameTime.ElapsedGameTime.TotalSeconds;
-
-        // If a second passed
-        if (timer >= 1)
+        bool secondPassed = DamageOverTimeSecond.Update(gameTime);
+        if (secondPassed)
         {
             // process speed modifier duration
             if (speedModDuration > 0)
@@ -97,9 +92,6 @@ internal abstract class Enemy : GameObject
                 Health -= damageOverTime;
                 damageOverTimeDuration--;
             }
-
-            // reset timer
-            timer = 0;
         }
         
 
@@ -148,7 +140,7 @@ internal abstract class Enemy : GameObject
     /// <param name="world"></param>
     /// <param name="pathManager"></param>
     /// <returns></returns>
-    public Vector2 BasicGaragePathing(GameTime gameTime, World world, PathManager pathManager)
+    public Vector2 BasicPathing(GameTime gameTime, World world, PathManager pathManager, PathGoal destination)
     {
         bool recalculate = PathTimer.Update(gameTime);
         if (Path.Count == 0 || recalculate)
@@ -156,7 +148,7 @@ internal abstract class Enemy : GameObject
             Path = pathManager.FindPath(world, Position,
                 new PathSettings()
                 {
-                    Goal = PathGoal.Garage,
+                    Goal = destination,
                 });
         }
 
@@ -171,14 +163,14 @@ internal abstract class Enemy : GameObject
         }
 
         PathNode goal = Path[0];
-        Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * speed) - Position;
+        Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * Speed) - Position;
 
         Vector2 steering = pathingVelocity - Velocity;
         steering /= Mass;
 
         foreach (Enemy near in nearbyEnemies)
         {
-            Vector2 avoidVelocity = ((Position - near.Position).Normalized() * speed / MathF.Max((Position - near.Position).Length(), 0.01f)).Truncated(speed);
+            Vector2 avoidVelocity = ((Position - near.Position).Normalized() * Speed / MathF.Max((Position - near.Position).Length(), 0.01f)).Truncated(Speed);
             Vector2 avoidSteering = (avoidVelocity - Velocity) / Mass;
             steering += avoidSteering;
         }
@@ -188,10 +180,10 @@ internal abstract class Enemy : GameObject
             Path.RemoveAt(0);
         }
 
-        return steering.Truncated(speed);
+        return steering.Truncated(Speed);
     }
 
-    public void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
+    public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {
         Visual.Draw(spriteBatch, Position);
 

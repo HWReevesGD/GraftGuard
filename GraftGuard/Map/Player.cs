@@ -93,7 +93,7 @@ internal class Player : GameObject
             batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, null, Color.White, -MathF.PI / 2.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
         }
 
-        batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
+        //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
 
         Debug.WriteLine("COUNT!: " + CollidedDebug.Count);
         foreach (var box in CollidedDebug)

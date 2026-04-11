@@ -33,7 +33,7 @@ internal class EnemyCentipede : Enemy
             manager.Enemies.Add(Child);
         }
         PathTimer = new IntervalTimer(1.0f);
-        SegmentPositions = new RotatingArray<Vector2>((segmentsLeft + 2) * SanpshotsPerSegment, Position);
+        SegmentPositions = new RotatingArray<Vector2>((segmentsLeft + 2) * SanpshotsPerSegment, position);
 
         EnemyCentipede parent = this;
         EnemyCentipede child = Child;

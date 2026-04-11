@@ -66,6 +66,7 @@ internal class EnemyCentipede : Enemy
 
     public override void OnDeath()
     {
+        base.OnDeath();
         if (Parent is not null)
         {
             Parent.Child = null;

@@ -108,6 +108,7 @@ internal class GameObject
                 hitbox.X += xSign;
                 if (terrain.Overlaps(hitbox))
                 {
+                    hitbox.X -= xSign;
                     movementPixels.X = 0;
                 }
             }
@@ -118,6 +119,7 @@ internal class GameObject
                 hitbox.Y += ySign;
                 if (terrain.Overlaps(hitbox))
                 {
+                    hitbox.Y -= ySign;
                     movementPixels.Y = 0;
                 }
             }

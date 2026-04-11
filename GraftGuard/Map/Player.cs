@@ -63,9 +63,6 @@ internal class Player : GameObject
         // Move with Collision
         MoveAndCollide(moveVector * Speed * delta, World.CurrentWorld);
 
-        // Set the Camera's position
-        World.CurrentWorld.Camera.Position = Position;
-
         HandlePartPickups(World.CurrentWorld);
 
         playerVisual.Update(gameTime, Center, .1f);

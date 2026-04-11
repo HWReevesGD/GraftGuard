@@ -74,6 +74,7 @@ internal class GameObject
     public virtual void Draw(GameTime gameTime, Rectangle bounds, SpriteBatch batch)
     {
         batch.Draw(Texture, bounds, Color.White);
+        CollidedDebug = [];
     }
 
     /// <summary>
@@ -82,62 +83,47 @@ internal class GameObject
     /// <param name="movement"></param>
     public virtual void MoveAndCollide(Vector2 movement, World world)
     {
-        Position += CollisionSweep(movement, Hitbox, world.Terrain);
+        Position += MoveAndStuff(movement, world.Terrain);
+        Position = DoIntersections(Hitbox, world.Terrain).Location.ToVector();
     }
-    protected virtual Vector2 CollisionSweep(Vector2 movement, Rectangle box, Terrain terrain)
+
+    public List<Rectangle> CollidedDebug = [];
+    public virtual Vector2 MoveAndStuff(Vector2 movement, Terrain terrain)
     {
-        float moveDistance = movement.Length();
-        if (moveDistance == 0.0f)
+        if (terrain.Overlaps(Hitbox))
         {
             return Vector2.Zero;
         }
-        foreach (Rectangle other in terrain.GetTileBoxes())
+
+        Rectangle hitbox = Hitbox;
+        Point movementPixels = movement.ToPoint();
+        int xSign = Math.Sign(movementPixels.X);
+        int ySign = Math.Sign(movementPixels.Y);
+
+        while (movementPixels != Point.Zero)
         {
-            Rectangle difference = box.MinkowskiDifference(other);
-
-            // If the MinkowskiDifference contains the origin, then the boxes are colliding,
-            // so we just do normal "Push Out" collisions
-            if (difference.ContainsOrigin())
+            if (movementPixels.X != 0)
             {
-                box = MovedOut(box, difference);
-                continue;
+                movementPixels.X -= xSign;
+                hitbox.X += xSign;
+                if (terrain.Overlaps(hitbox))
+                {
+                    movementPixels.X = 0;
+                }
             }
 
-            // Otherwise, we do swept collision
-            bool collides = difference.RaycastFraction(Vector2.Zero, movement, out float fraction);
-
-            // If there is no collision, skip this
-            if (!collides)
+            if (movementPixels.Y != 0)
             {
-                continue;
+                movementPixels.Y -= ySign;
+                hitbox.Y += ySign;
+                if (terrain.Overlaps(hitbox))
+                {
+                    movementPixels.Y = 0;
+                }
             }
-
-            float distance = movement.Length() * fraction;
-            if (distance < moveDistance)
-            {
-                moveDistance = distance;
-            }
-
-            Debug.WriteLine(difference);
-            Debug.WriteLine(fraction);
-            return movement;
         }
-        return movement;
-    }
-    
-    /// <summary>
-    /// Given a <paramref name="box"/>, and it's COLLIDING <paramref name="minkowskiDifference"/>,
-    /// returns the given <paramref name="box"/> moved out of the original other box that was used
-    /// to create the given <paramref name="minkowskiDifference"/>
-    /// </summary>
-    /// <param name="box">Box to use</param>
-    /// <param name="minkowskiDifference">Difference to use</param>
-    /// <returns>Moved out box</returns>
-    protected virtual Rectangle MovedOut(Rectangle box, Rectangle minkowskiDifference)
-    {
-        Point penetrationVector = minkowskiDifference.ClosestBoundsPoint(Point.Zero);
-        box.Location += penetrationVector;
-        return box;
+
+        return (hitbox.Location - Hitbox.Location).ToVector();
     }
 
     protected virtual Rectangle DoIntersections(Rectangle currentBox, Terrain terrain)

@@ -92,7 +92,18 @@ internal static class ClassExtensions
     {
         return vector.LengthSquared() > max * max ? vector.Normalized() * max : vector;
     }
-
+    public static float Cross(this Vector2 vector, Vector2 other)
+    {
+        return vector.X * other.Y - vector.Y * other.X;
+    }
+    public static float Dot(this Vector2 vector, Vector2 other)
+    {
+        return vector.X * other.X + vector.Y * other.Y;
+    }
+    public static Vector3 To3D(this Vector2 vector, float z = 0.0f)
+    {
+        return new Vector3(vector, z);
+    }
     #endregion
 
     #region Rectangle
@@ -124,14 +135,34 @@ internal static class ClassExtensions
     {
         return rectangle.Location + rectangle.Size;
     }
+    public static Point Min(this Rectangle rectangle)
+    {
+        return new Point(
+            Math.Min(rectangle.Left, rectangle.Right),
+            Math.Min(rectangle.Top, rectangle.Bottom)
+            );
+    }
+    public static Point Max(this Rectangle rectangle)
+    {
+        return new Point(
+            Math.Max(rectangle.Left, rectangle.Right),
+            Math.Max(rectangle.Top, rectangle.Bottom)
+            );
+    }
     public static Rectangle MinkowskiDifference(this Rectangle rectangle, Rectangle other)
     {
-        Point location = rectangle.Location - other.End();
+        Point location = rectangle.Min() - other.Max();
         Point size = rectangle.Size + other.Size;
         return new Rectangle(
-            location + size.Divided(2),
-            size.Divided(2)
+            location,
+            size
             );
+    }
+    public static BoundingBox To3D(this Rectangle rectangle, float depth = 1.0f)
+    {
+        return new BoundingBox(
+            rectangle.Min().ToVector().To3D(),
+            rectangle.Max().ToVector().To3D(depth));
     }
     public static Vector2 ClosestPosition(this Rectangle rectangle, Vector2 position)
     {
@@ -147,10 +178,14 @@ internal static class ClassExtensions
             MathHelper.Clamp(point.Y, rectangle.Location.Y, rectangle.Location.Y + rectangle.Size.Y)
             );
     }
+    // Thanks to:
+    // - https://blog.hamaluik.ca/posts/simple-aabb-collision-using-minkowski-difference/
+    // - https://blog.hamaluik.ca/posts/swept-aabb-collision-using-minkowski-difference/
+    // for collision articles!
     public static Point ClosestBoundsPoint(this Rectangle rectangle, Point point)
     {
-        Point min = rectangle.Location;
-        Point max = rectangle.Location + rectangle.Size;
+        Point min = rectangle.Min();
+        Point max = rectangle.Max();
 
         float minDistance = Math.Abs(point.X - min.X);
         Point boundsPoint = new Point(min.X, point.Y);
@@ -177,8 +212,8 @@ internal static class ClassExtensions
     }
     public static Vector2 ClosestBoundsPosition(this Rectangle rectangle, Vector2 position)
     {
-        Vector2 min = rectangle.Location.ToVector();
-        Vector2 max = (rectangle.Location + rectangle.Size).ToVector();
+        Vector2 min = rectangle.Min().ToVector();
+        Vector2 max = rectangle.Max().ToVector();
 
         float minDistance = Math.Abs(position.X - min.X);
         Vector2 boundsPoint = new Vector2(min.X, position.Y);
@@ -203,10 +238,10 @@ internal static class ClassExtensions
 
         return boundsPoint;
     }
-    public static bool RaycastFraction(this Rectangle rectangle, Vector2 position, Vector2 vector, out float fraction)
+    public static bool RaycastFractionOld(this Rectangle rectangle, Vector2 position, Vector2 vector, out float fraction)
     {
-        Point min = rectangle.Location;
-        Point max = rectangle.End();
+        Point min = rectangle.Min();
+        Point max = rectangle.Max();
 
         float minXPlane = (min.X - position.X) / vector.X;
         float maxXPlane = (max.X - position.X) / vector.X;
@@ -239,10 +274,70 @@ internal static class ClassExtensions
         fraction = minPlane;
         return true;
     }
+    public static bool RaycastFraction(this Rectangle rectangle, Vector2 origin, Vector2 direction, out float fraction)
+    {
+        Point min = rectangle.Min();
+        Point max = rectangle.Max();
+        Vector2 end = origin + direction;
+
+        // for each of the AABB's four edges
+        // calculate the minimum fraction of "direction"
+        // in order to find where the ray FIRST intersects
+        // the AABB (if it ever does)
+        float minT = RacastFractionFirst(origin, end, new Vector2(min.X, min.Y), new Vector2(min.X, max.Y));
+        float x;
+        x = RacastFractionFirst(origin, end, new Vector2(min.X, max.Y), new Vector2(max.X, max.Y));
+        if (x < minT)
+            minT = x;
+        x = RacastFractionFirst(origin, end, new Vector2(max.X, max.Y), new Vector2(max.X, min.Y));
+        if (x < minT)
+            minT = x;
+        x = RacastFractionFirst(origin, end, new Vector2(max.X, min.Y), new Vector2(min.X, min.Y));
+        if (x < minT)
+            minT = x;
+
+        fraction = minT;
+        if (float.IsInfinity(minT))
+        {
+            return false;
+        }
+
+        // ok, now we should have found the fractional component along the ray where we collided
+        return true;
+    }
+    private static float RacastFractionFirst(Vector2 originA, Vector2 endA, Vector2 originB, Vector2 endB)
+    {
+        Vector2 r = endA - originA;
+        Vector2 s = endB - originB;
+
+        float numerator = (originB - originA).Cross(r);
+        float denominator = r.Cross(s);
+
+        if (numerator == 0 && denominator == 0)
+        {
+            // the lines are co-linear
+            // check if they overlap
+            // todo: calculate intersection point
+            return float.PositiveInfinity;
+        }
+        if (denominator == 0)
+        {
+            // lines are parallel
+            return float.PositiveInfinity;
+        }
+
+        float u = numerator / denominator;
+        float t = ((originB - originA).Cross(s)) / denominator;
+        if ((t >= 0) && (t <= 1) && (u >= 0) && (u <= 1))
+        {
+            return t;
+        }
+        return float.PositiveInfinity;
+    }
     public static bool ContainsOrigin(this Rectangle rectangle)
     {
-        Point min = rectangle.Location;
-        Point max = rectangle.End();
+        Point min = rectangle.Min();
+        Point max = rectangle.Max();
         return
             min.X <= 0 &&
             max.X >= 0 &&

@@ -22,7 +22,7 @@ namespace GraftGuard
         private readonly NightPlacementGUI _nightPlacement;
         private readonly InputManager inputManager;
 
-        public static readonly float DawnTimeLength = 10f;
+        public static readonly float DawnTimeLength = 1000f;
         public static readonly float NightTimeLength = 20f;
 
         private GameTime lastGameTime;

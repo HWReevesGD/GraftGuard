@@ -68,6 +68,11 @@ internal class Terrain
                 prop.Draw(batch, player);
             }
         }
+
+        foreach (Rectangle box in GetTileBoxes())
+        {
+            batch.Draw(Placeholders.TexturePixel, box, Color.Black);
+        }
     }
 
     public bool Overlaps(Circle circle)

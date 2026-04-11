@@ -4,6 +4,7 @@ using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
 using GraftGuard.Map;
+using GraftGuard.Map.Enemies;
 using GraftGuard.UI;
 using GraftGuard.UI.Screens;
 using GraftGuard.Utility;
@@ -80,6 +81,7 @@ public class Game1 : Game
 
         Projectile.LoadContent(Content);
         Player.LoadContent(Content);
+        Enemy.LoadContent(Content);
 
         // Import and Load the Environment
         EnvironmentRegistry.LoadContent(Content);
@@ -91,7 +93,6 @@ public class Game1 : Game
         PauseMenu.LoadContent(Content);
         GameOverScreen.LoadContent(Content);
         GameHUD.LoadContent(Content);
-
         
         EnvironmentProps.LoadContent(Content);
 

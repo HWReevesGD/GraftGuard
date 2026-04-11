@@ -30,7 +30,6 @@ internal class EnemyManager
         PathManager.BuildGrid(world);
 
         Enemies = [];
-        Enemies.Add(new EnemyCentipede(Vector2.Zero, this));
     }
 
     public void BeginNight()
@@ -40,6 +39,10 @@ internal class EnemyManager
             for(int i = 0; i <= (int) PlayerData.CurrentGame.CurrentDifficulty; i++)
             {
                 Enemies.Add(new EnemyBasic(spawn, GraftLibrary.GetRandomBase()));
+                if (i % 2 == 0)
+                {
+                    Enemies.Add(new EnemyCentipede(Vector2.Zero, this));
+                }
             }
         }
     }

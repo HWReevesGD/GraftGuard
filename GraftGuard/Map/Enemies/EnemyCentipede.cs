@@ -16,13 +16,15 @@ namespace GraftGuard.Map.Enemies;
 internal class EnemyCentipede : Enemy
 {
     static BaseDefinition shell = GraftLibrary.GetBaseByName("Shell");
+    private Vector2 movement;
+    private float mandibleRotation;
     public const int CentipedeLength = 12;
     public const int SanpshotsPerSegment = 8;
     public RotatingArray<Vector2> SegmentPositions;
     public EnemyCentipede Parent { get; private set; }
     public EnemyCentipede Child { get; private set; }
     public EnemyCentipede(Vector2 position, EnemyManager manager, int segmentsLeft = CentipedeLength)
-        : base(position, shell, new Vector2(32, 32), 10.0f, 256.0f)
+        : base(position, shell, new Vector2(32, 32), 10.0f, 128.0f)
     {
         segmentsLeft--;
         if (segmentsLeft > 0)
@@ -74,7 +76,7 @@ internal class EnemyCentipede : Enemy
         }
 
     }
-
+    
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
         if (Parent is not null)
@@ -82,16 +84,18 @@ internal class EnemyCentipede : Enemy
             return;
         }
         Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager, PathGoal.Player);
-        Vector2 sinusoidalMovement = new Vector2(
-            0.0f,
-            MathF.Sin(gameTime.Total() * 5.0f) * gameTime.Delta() * 30f
-            );
-        sinusoidalMovement.Rotate(Position.AngleTo(world.Player.Position));
-        Position += steeringPathing;//+ sinusoidalMovement;
+        movement = steeringPathing;
+        Position += movement;
     }
 
     public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
     {
         base.Draw(gameTime, spriteBatch, inputManager, world);
+
+        if (Parent is null)
+        {
+            mandibleRotation = mandibleRotation.MoveTowardsAngle(movement.Angle(), gameTime.Delta() * 10.0f);
+            spriteBatch.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-32, 0), rotation: mandibleRotation);
+        }
     }
 }

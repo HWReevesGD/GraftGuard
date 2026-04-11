@@ -5,6 +5,7 @@ using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Map.Pathing;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -223,5 +224,11 @@ internal abstract class Enemy : GameObject
     {
         this.damageOverTime = damage;
         this.damageOverTimeDuration = duration;
+    }
+
+    public static Texture2D TCentipedeMandible;
+    public static void LoadContent(ContentManager content)
+    {
+        TCentipedeMandible = content.Load<Texture2D>("Parts/cendipede_mandibles");
     }
 }

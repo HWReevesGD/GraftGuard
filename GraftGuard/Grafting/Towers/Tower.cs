@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
@@ -88,9 +89,9 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     }
 
-    public virtual void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
-        base.Draw(time, TODO);
+        base.Draw(time, drawing);
     }
 
     /// <summary>

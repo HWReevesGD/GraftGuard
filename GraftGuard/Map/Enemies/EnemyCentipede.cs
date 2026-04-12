@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map.Pathing;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -89,14 +90,14 @@ internal class EnemyCentipede : Enemy
         Position += movement;
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
+    public override void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)
     {
-        base.Draw(gameTime, spriteBatch, inputManager, world);
+        base.Draw(gameTime, drawing, inputManager, world);
 
         if (Parent is null)
         {
             mandibleRotation = mandibleRotation.MoveTowardsAngle(movement.Angle(), gameTime.Delta() * 10.0f);
-            spriteBatch.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-32, 0), rotation: mandibleRotation);
+            drawing.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-32, 0), rotation: mandibleRotation);
         }
     }
 }

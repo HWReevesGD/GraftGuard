@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Map.Pathing;
 using GraftGuard.Utility;
@@ -184,9 +185,9 @@ internal abstract class Enemy : GameObject
         return steering.Truncated(Speed);
     }
 
-    public virtual void Draw(GameTime gameTime, SpriteBatch spriteBatch, InputManager inputManager, World world)
+    public virtual void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)
     {
-        Visual.Draw(spriteBatch, Position);
+        Visual.Draw(drawing, Position);
 
         // Draw attached part behaviors
         int index = 0;
@@ -194,7 +195,7 @@ internal abstract class Enemy : GameObject
         {
             PartTransform transform = Visual.GetPartTransform(part, Position, index++, physical: true);
             part.DrawBehavior(
-                batch: spriteBatch,
+                drawing: drawing,
                 settings: PartSettings.DefaultEnemy,
                 transform: transform,
                 time: gameTime,

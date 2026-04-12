@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -98,16 +99,19 @@ namespace GraftGuard.Map.Enemies
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        internal void Draw(DrawManager drawing, Vector2 position)
         {
             if (!IsDead)
             {
-                LimbDrawContext ctx = GetContext(spriteBatch, position);
+                LimbDrawContext ctx = GetContext(drawing, position);
 
                 // Draw Torso
-                spriteBatch.Draw(Base.Texture, ctx.BodyPos, null, Color.White, ctx.BodyRot,
-                    new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
-                    ctx.DynamicScale, SpriteEffects.None, 0f);
+                drawing.Draw(
+                    texture: Base.Texture,
+                    position: ctx.BodyPos, 
+                    rotation: ctx.BodyRot,
+                    origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
+                    scale: ctx.DynamicScale);
 
                 // Draw Limbs
                 int count = 0;
@@ -127,12 +131,12 @@ namespace GraftGuard.Map.Enemies
             {
                 foreach (var part in fallingParts)
                 {
-                    part.Draw(spriteBatch);
+                    part.Draw(drawing);
                 }
             }
         }
 
-        public LimbDrawContext GetContext(SpriteBatch spriteBatch, Vector2 enemyPosition)
+        internal LimbDrawContext GetContext(DrawManager drawing, Vector2 enemyPosition)
         {
             float timer = Animator.AnimationTimer;
             AnimationClip clip = Animator.CurrentClip;
@@ -147,7 +151,7 @@ namespace GraftGuard.Map.Enemies
 
             return new LimbDrawContext
             {
-                SpriteBatch = spriteBatch,
+                Drawing = drawing,
                 BodyPos = animatedPos,
                 BodyRot = bodyRotation,
                 DynamicScale = dynamicScale,
@@ -156,7 +160,7 @@ namespace GraftGuard.Map.Enemies
             };
         }
 
-        public PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
+        internal PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
         {
             // Use ctx.Timer, ctx.BodyPos, etc.
             Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(context.BodyRot));
@@ -193,9 +197,9 @@ namespace GraftGuard.Map.Enemies
             return transform;
         }
 
-        public struct LimbDrawContext
+        internal struct LimbDrawContext
         {
-            public SpriteBatch SpriteBatch;
+            public DrawManager Drawing;
             public Vector2 BodyPos;
             public float BodyRot;
             public Vector2 DynamicScale;
@@ -207,9 +211,12 @@ namespace GraftGuard.Map.Enemies
         {
             PartTransform transform = GetPartTransform(part, offset, ctx, index);
 
-            ctx.SpriteBatch.Draw(part.Texture, transform.Position, null, Color.White, transform.Rotation,
-                transform.Origin,
-                transform.Scale, SpriteEffects.None, 0f);
+            ctx.Drawing.Draw(
+                texture: part.Texture,
+                position: transform.Position,
+                rotation: transform.Rotation,
+                origin: transform.Origin,
+                scale: transform.Scale);
         }
     }
 }

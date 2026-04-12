@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -45,13 +46,15 @@ namespace GraftGuard.Map.Enemies
             }
         }
 
-        public void Draw(SpriteBatch sb)
+        internal void Draw(DrawManager drawing)
         {
             // Apply zHeight to the Y position to simulate depth
             Vector2 drawPos = new Vector2(position.X, position.Y + zHeight);
-            sb.Draw(Definition.Texture, drawPos, null, Color.White, rotation,
-                new Vector2(Definition.Texture.Width / 2, Definition.Texture.Height / 2),
-                1f, SpriteEffects.None, 0f);
+            drawing.Draw(
+                texture: Definition.Texture,
+                position: drawPos,
+                rotation: rotation,
+                origin: new Vector2(Definition.Texture.Width / 2, Definition.Texture.Height / 2));
         }
 
         public Vector2 GetLandingPosition() => position;

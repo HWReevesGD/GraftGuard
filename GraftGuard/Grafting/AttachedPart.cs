@@ -2,6 +2,7 @@
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -47,11 +48,11 @@ internal class AttachedPart
         }
     }
 
-    public void DrawBehavior(PartSettings settings, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void DrawBehavior(PartSettings settings, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {
-            behavior.Draw(settings, Definition, transform, time, batch, world, inputManager, state);
+            behavior.Draw(settings, Definition, transform, time, drawing, world, inputManager, state);
         }
     }
 }

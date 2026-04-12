@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -63,11 +64,11 @@ internal class TowerTurret : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
         float direction = CurrentDirection;
-        batch.DrawCentered(Texture, Position);
-        batch.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction);
+        drawing.DrawCentered(Texture, Position);
+        drawing.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -87,8 +88,8 @@ internal class TowerTurret : Tower
                 Rotation = direction - MathF.PI / 2.0f
             };
 
-            batch.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation);
-            part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+            drawing.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation);
+            part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state);
         }
     }
 

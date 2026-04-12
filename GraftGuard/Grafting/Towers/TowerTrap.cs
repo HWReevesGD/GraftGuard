@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -79,9 +80,9 @@ internal class TowerTrap : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
-        batch.DrawCentered(Texture, Position);
+        drawing.DrawCentered(Texture, Position);
         if (!HasParts) return;
 
         for (int x = 0; x < GridSize; x++)
@@ -95,12 +96,9 @@ internal class TowerTrap : Tower
                 Point partSize = part.Definition.Texture.GetSizePoint();
                 float sinHeight = MathF.Sin(x + y + (float)time.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
 
-                batch.Draw(part.Definition.Texture, partPosition, new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White,
+                drawing.Draw(part.Definition.Texture, partPosition, source: new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))),
                     effects: SpriteEffects.FlipVertically,
-                    rotation: 0.0f,
-                    scale: 1.0f,
-                    origin: Vector2.Zero,
-                    layerDepth: 0.0f);
+                    origin: Vector2.Zero);
 
                 PartTransform transform = new PartTransform()
                 {
@@ -108,7 +106,7 @@ internal class TowerTrap : Tower
                     Rotation = -MathF.PI / 2.0f,
                 };
 
-                part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+                part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state);
             }
         }
     }

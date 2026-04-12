@@ -30,11 +30,11 @@ internal class EnemyBasic : Enemy
         }
     }
 
-    public override void Draw(GameTime gameTime, DrawManager batch)
+    public override void Draw(GameTime gameTime, DrawManager drawing)
     {
-        base.Draw(gameTime, TODO);
+        base.Draw(gameTime, drawing);
         string text = $"HP: {Health}";
-        batch.DrawString(Fonts.Arial, text, Position - Fonts.Arial.MeasureString(text) * 0.5f, Color.Red);
+        drawing.DrawString(text, Position, color: Color.Red, centered: true);
     }
 
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)

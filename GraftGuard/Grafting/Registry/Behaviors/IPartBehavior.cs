@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -16,6 +17,6 @@ internal delegate IPartBehavior CreatePartBehavior();
 internal interface IPartBehavior
 {
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
-    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state);
+    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state);
     public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager);
 }

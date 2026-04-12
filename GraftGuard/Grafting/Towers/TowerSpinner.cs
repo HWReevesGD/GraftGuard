@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
@@ -58,9 +59,9 @@ internal class TowerSpinner : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
-        batch.DrawCentered(Texture, Position);
+        drawing.DrawCentered(Texture, Position);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -72,8 +73,8 @@ internal class TowerSpinner : Tower
 
             //Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
             //batch.DrawCircle(damageCircle, Color.Red);
-            batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically);
-            batch.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically);
+            drawing.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically);
+            drawing.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically);
 
             PartTransform transform = new PartTransform()
             {
@@ -81,7 +82,7 @@ internal class TowerSpinner : Tower
                 Rotation = rotation + MathF.PI,
             };
 
-            part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+            part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state);
         }
     }
 

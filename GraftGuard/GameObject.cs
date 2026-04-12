@@ -1,4 +1,5 @@
-﻿using GraftGuard.Map;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -60,7 +61,7 @@ internal class GameObject
     /// </summary>
     /// <param name="gameTime">Current frame GameTime</param>
     /// <param name="batch">SpriteBatch</param>
-    public virtual void Draw(GameTime gameTime, SpriteBatch batch)
+    public virtual void Draw(GameTime gameTime, DrawManager batch)
     {
         batch.Draw(Texture, Position, Color.White);
     }

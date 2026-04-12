@@ -166,26 +166,26 @@ internal class World
 
     }
 
-    public void DrawCamera(SpriteBatch batch, GameTime gameTime, TimeState state, InputManager inputManager, bool renderPlayer)
+    public void DrawCamera(DrawManager drawing, GameTime gameTime, TimeState state, InputManager inputManager, bool renderPlayer)
     {
-        Terrain.Draw(batch, gameTime);
+        Terrain.Draw(drawing, gameTime);
 
         foreach (ScatteredPart part in ScatteredParts)
         {
-            part.Draw(gameTime, batch);
+            part.Draw(gameTime, drawing);
         }
 
-        Garage.Draw(batch, gameTime);
+        Garage.Draw(drawing, gameTime);
 
-        TowerManager.Draw(batch, gameTime, this, inputManager, state);
-        EnemyManager.Draw(batch, gameTime, this, inputManager);
-        ProjectileManager.Draw(batch, gameTime, this, inputManager);
+        TowerManager.Draw(drawing, gameTime, this, inputManager, state);
+        EnemyManager.Draw(drawing, gameTime, this, inputManager);
+        ProjectileManager.Draw(drawing, gameTime, this, inputManager);
         if (renderPlayer)
         {
-            Player.Draw(gameTime, batch);
+            Player.Draw(gameTime, TODO);
         }
 
-        Particles.Draw(batch, gameTime);
+        Particles.Draw(drawing, gameTime);
     }
 
     public static void ScatterPart(Vector2 location, PartDefinition part)

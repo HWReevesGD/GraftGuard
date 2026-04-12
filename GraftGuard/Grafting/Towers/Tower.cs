@@ -90,7 +90,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     public virtual void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
     {
-        base.Draw(time, batch);
+        base.Draw(time, TODO);
     }
 
     /// <summary>

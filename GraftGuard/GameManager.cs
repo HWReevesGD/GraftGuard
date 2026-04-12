@@ -207,7 +207,7 @@ namespace GraftGuard
             _gameOverScreen.Update(gameTime);
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             switch (PlayerData.CurrentState)
             {

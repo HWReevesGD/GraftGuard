@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Enemies.Animation;
@@ -71,7 +72,7 @@ internal class Player : GameObject
             invincibilityTimer -= delta;
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime gameTime, DrawManager batch)
     {
         if (invincibilityTimer > 0)
         {

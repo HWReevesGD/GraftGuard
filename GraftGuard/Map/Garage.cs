@@ -30,9 +30,9 @@ internal class Garage
             world.Player.ClearHeldParts();
         }
     }
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(DrawManager drawing, GameTime time)
     {
-        MainPatch.Draw(batch, Position, Size);
-        batch.Draw(Placeholders.TexturePartReceptacle, ReceptacleBounds, Color.White);
+        MainPatch.Draw(drawing, Position, Size);
+        drawing.Draw(Placeholders.TexturePartReceptacle, ReceptacleBounds, Color.White);
     }
 }

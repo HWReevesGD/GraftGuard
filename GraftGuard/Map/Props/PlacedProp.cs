@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -18,7 +19,7 @@ internal class PlacedProp
         Definition = definition;
         Position = position;
     }
-    public void Draw(SpriteBatch batch, Player player)
+    public void Draw(DrawManager drawing, Player player)
     {
         //Rectangle rect = new Rectangle(
         //    (int)(Position.X - Definition.Origin.X),
@@ -33,18 +34,12 @@ internal class PlacedProp
 
         //bool isPlayerInFront = player.Position.Y >= Position.Y;
         //bool isPlayerColliding = rect.Intersects(player.Hitbox);
-        batch.Draw(
+        drawing.Draw(
             texture: Definition.Texture,
             position: Position,
-            sourceRectangle: Definition.Cutout,
+            source: Definition.Cutout,
             origin: Definition.Origin,
-            //color: !isPlayerInFront && isPlayerColliding ? new Color(255, 255, 255, 175) : Color.White,
-            color: Color.White,
-            rotation: 0.0f,
-            scale: 1.0f,
-            effects: SpriteEffects.None,
-            //layerDepth: isPlayerInFront && isPlayerColliding ? 0f : 1f
-            layerDepth: 0f
+            useSorting: true
             );
 
         //batch.Draw(Placeholders.TexturePixel, rect, new Color(255, 0, 0, 25));

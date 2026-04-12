@@ -34,7 +34,7 @@ internal class Terrain
 
     }
 
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(DrawManager drawing, GameTime time)
     {
         if (Chunks is null)
         {
@@ -56,7 +56,7 @@ internal class Terrain
                 float x = ((index & EnvironmentRegistry.ChunkMask) << EnvironmentRegistry.TileBits) + chunkPosition.X;
                 float y = ((index >> EnvironmentRegistry.ChunkBits) << EnvironmentRegistry.TileBits) + chunkPosition.Y;
 
-                batch.Draw(tile.Texture, new Vector2(x, y), tile.Cutout, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, -0f);
+                drawing.Draw(tile.Texture, position: new Vector2(x, y), source: tile.Cutout, drawLayer: 0);
                 index++;
             }
         }
@@ -65,7 +65,7 @@ internal class Terrain
         {
             foreach (PlacedProp prop in Props)
             {
-                prop.Draw(batch, player);
+                prop.Draw(drawing, player);
             }
         }
     }

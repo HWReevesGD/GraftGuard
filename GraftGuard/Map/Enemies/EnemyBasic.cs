@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map.Pathing;
 using GraftGuard.UI;
 using GraftGuard.Utility;
@@ -29,9 +30,9 @@ internal class EnemyBasic : Enemy
         }
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime gameTime, DrawManager batch)
     {
-        base.Draw(gameTime, batch);
+        base.Draw(gameTime, TODO);
         string text = $"HP: {Health}";
         batch.DrawString(Fonts.Arial, text, Position - Fonts.Arial.MeasureString(text) * 0.5f, Color.Red);
     }

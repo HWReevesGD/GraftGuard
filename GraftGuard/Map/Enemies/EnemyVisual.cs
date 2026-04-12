@@ -36,51 +36,22 @@ namespace GraftGuard.Map.Enemies
             Animator = new Animator(initialClip);
 
             Animator.Teleport(spawnPos);
-
-            InitializeDefaultParts();
-
+            InitializeRandomParts();
         }
 
-        private void InitializeDefaultParts()
+        protected void InitializeRandomParts()
         {
-
-            List<PartDefinition> headPool = GraftLibrary.AllParts
-                .Where(p => p.Type == PartType.Head).ToList();
-
-
-            PartDefinition[] limbArray = GraftLibrary.AllParts
-                .Where(p => p.Type == PartType.Limb).ToArray();
-            rng.Shuffle(limbArray);
-            List<PartDefinition> limbPool = limbArray.ToList();
-
-
-            // Select a random head (if any exist)
-            PartDefinition selectedHead = headPool.Count > 0
-                ? headPool[rng.Next(0, headPool.Count)]
-                : null;
-
-            // Iterate through sockets and assign
-            int limbIndex = 0;
+            // Iterate through all sockets, and assign an appropriate part
             foreach (string slotName in Base.AttachmentPoints.Keys)
             {
                 if (slotName == "Head")
                 {
-                    // Assign the pre-selected random head
-                    if (selectedHead != null)
-                    {
-                        AttachedPart part = new AttachedPart(selectedHead, slotName);
-                        AttachedParts.Add(part);
-                    }
+                    AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomHead(), slotName));
                 }
                 else
                 {
                     // Fill all other slots with limbs
-                    if (limbIndex < limbPool.Count)
-                    {
-                        AttachedPart part = new AttachedPart(limbPool[limbIndex], slotName);
-                        AttachedParts.Add(part);
-                        limbIndex++;
-                    }
+                    AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomLimb(), slotName));
                 }
             }
         }

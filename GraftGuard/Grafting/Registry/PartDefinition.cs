@@ -21,10 +21,20 @@ public class PartDefinition
     //public static Texture2D TexturePlaceholderArm;
     //public static Texture2D TexturePlaceholderKnife;
     public readonly Vector2 Size = new Vector2(16, 24);
+    private float _internalRarity;
+    private float _internalRarityWeight;
     public string Name { get; set; }
     public PartType Type { get; set; }
     public float BaseDamage { get; set; } 
-    public float Rarity { get; set; }
+    public float Rarity
+    {
+        get => _internalRarity;
+        set {
+            _internalRarity = value;
+            _internalRarityWeight = 1.0f / (value * value);
+        }
+    }
+    public float RarityWeight => _internalRarityWeight;
     public float SpeedModifier { get; set; }
     public float ArmorModifier { get; set; }
     public float RangeModifier { get; set; }

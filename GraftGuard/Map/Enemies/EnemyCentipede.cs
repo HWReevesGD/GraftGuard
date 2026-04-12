@@ -18,7 +18,7 @@ internal class EnemyCentipede : Enemy
     static BaseDefinition shell = GraftLibrary.GetBaseByName("Shell");
     private Vector2 movement;
     private float mandibleRotation;
-    public const int CentipedeLength = 12;
+    public const int CentipedeLength = 8;
     public const int SanpshotsPerSegment = 8;
     public RotatingArray<Vector2> SegmentPositions;
     public EnemyCentipede Parent { get; private set; }

@@ -6,17 +6,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 
 namespace GraftGuard.Grafting
 {
     public class GraftLibrary
     {
-        public readonly static List<PartDefinition> AllParts = new();
-        public readonly static List<BaseDefinition> AllBases = new();
+        public readonly static List<PartDefinition> AllParts = [];
+        public readonly static List<BaseDefinition> AllBases = [];
+        public static List<PartDefinition> Limbs { get; private set; } = [];
+        public static List<PartDefinition> Heads { get; private set; } = [];
 
-        public List<PartDefinition> Parts { get; set; } = new();
-        public List<BaseDefinition> Bases { get; set; } = new();
+        public List<PartDefinition> Parts { get; set; } = [];
+        public List<BaseDefinition> Bases { get; set; } = [];
 
         private static readonly Random rng = new Random();
 
@@ -63,11 +66,16 @@ namespace GraftGuard.Grafting
                         }
                     }
                 }
-
             }
-
+            CalculatePartPools();
         }
 
+        public static void CalculatePartPools()
+        {
+            Limbs = AllParts.Where((part) => part.Type == PartType.Limb).ToList();
+
+            Heads = AllParts.Where((part) => part.Type == PartType.Head).ToList();
+        }
 
         /// <summary>
         /// Gets a <see cref="PartDefinition"/> from the Registry by its name, case-insensitive
@@ -92,12 +100,43 @@ namespace GraftGuard.Grafting
         }
 
         /// <summary>
-        /// Returns a random PartDefinition from the loaded library.
+        /// Returns a random PartDefinition from the loaded library, using their rarities as weights
         /// </summary>
-        public static PartDefinition GetRandomPart()
+        public static PartDefinition GetRandomPart() => GetRandomPartFromList(AllParts);
+        /// <summary>
+        /// Returns a random PartDefinition from the loaded library's limbs, using their rarities as weights
+        /// </summary>
+        public static PartDefinition GetRandomLimb() => GetRandomPartFromList(Limbs);
+        /// <summary>
+        /// Returns a random PartDefinition from the loaded library's heads, using their rarities as weights
+        /// </summary>
+        public static PartDefinition GetRandomHead() => GetRandomPartFromList(Heads);
+
+        /// <summary>
+        /// Returns a random PartDefinition from the given list, using their rarities as weights
+        /// </summary>
+        private static PartDefinition GetRandomPartFromList(List<PartDefinition> parts)
         {
-            if (AllParts.Count == 0) return null;
-            return AllParts[rng.Next(AllParts.Count)];
+            if (parts.Count == 0) return null;
+
+            // Combined weights of all parts
+            float totalWeight = parts.Sum((part) => part.RarityWeight);
+            // When we reach this number, we choose this part
+            float requiredWeight = rng.NextSingle() * totalWeight;
+            // The sum of all of the weights before this number, we compare this against the required weight
+            float cumulativeWeight = 0.0f;
+
+            foreach (PartDefinition part in parts)
+            {
+                cumulativeWeight += part.RarityWeight;
+                if (cumulativeWeight > requiredWeight)
+                {
+                    return part;
+                }
+            }
+
+            // This should'nt be reachable, but I'll leave it here as a fallback
+            return parts[rng.Next(parts.Count)];
         }
 
         /// <summary>

@@ -10,6 +10,7 @@ internal class PathNode
 {
     public const float GridDistance = 32.0f;
     public const float CheckRadius = 24.0f;
+    public static bool DrawDebug = false;
     // Properties
     public Vector2 WorldPosition { get; private set; }
     public Point GridPosition { get; private set; }
@@ -37,6 +38,10 @@ internal class PathNode
     /// <param name="spriteBatch"></param>
     public void Draw(SpriteBatch batch)
     {
+        if (!DrawDebug)
+        {
+            return;
+        }
         batch.DrawCircle(new Circle(WorldPosition, 5.0f), DebugColor with { A = (byte)MathHelper.Clamp((int)(Cost * 20) + 50, 0, 255) });
         string text = $"{Cost}";
         batch.DrawString(Fonts.Arial, text, WorldPosition - Fonts.Arial.MeasureString(text) * 0.5f, Color.White);

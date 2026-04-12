@@ -59,6 +59,8 @@
             ctSelectButton = new Button();
             projDirSelectButton = new Button();
             txtProjDirPath = new TextBox();
+            labelRarity = new Label();
+            numRarity = new NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)picPreview).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDamage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSpeed).BeginInit();
@@ -66,6 +68,7 @@
             ((System.ComponentModel.ISupportInitialize)numCritical).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numHealth).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numRange).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)numRarity).BeginInit();
             SuspendLayout();
             // 
             // txtName
@@ -154,7 +157,8 @@
             // 
             // numDamage
             // 
-            numDamage.Location = new Point(266, 437);
+            numDamage.DecimalPlaces = 2;
+            numDamage.Location = new Point(266, 410);
             numDamage.Margin = new Padding(4);
             numDamage.Name = "numDamage";
             numDamage.Size = new Size(267, 39);
@@ -164,7 +168,7 @@
             // 
             label4.AutoSize = true;
             label4.Font = new Font("Segoe UI", 10F);
-            label4.Location = new Point(59, 437);
+            label4.Location = new Point(59, 410);
             label4.Margin = new Padding(4, 0, 4, 0);
             label4.Name = "label4";
             label4.Size = new Size(178, 37);
@@ -175,7 +179,7 @@
             // 
             label5.AutoSize = true;
             label5.Font = new Font("Segoe UI", 10F);
-            label5.Location = new Point(59, 514);
+            label5.Location = new Point(55, 533);
             label5.Margin = new Padding(4, 0, 4, 0);
             label5.Name = "label5";
             label5.Size = new Size(199, 37);
@@ -184,7 +188,8 @@
             // 
             // numSpeed
             // 
-            numSpeed.Location = new Point(266, 516);
+            numSpeed.DecimalPlaces = 2;
+            numSpeed.Location = new Point(262, 535);
             numSpeed.Margin = new Padding(4);
             numSpeed.Name = "numSpeed";
             numSpeed.Size = new Size(267, 39);
@@ -192,6 +197,7 @@
             // 
             // numArmor
             // 
+            numArmor.DecimalPlaces = 2;
             numArmor.Location = new Point(266, 599);
             numArmor.Margin = new Padding(4);
             numArmor.Name = "numArmor";
@@ -211,6 +217,7 @@
             // 
             // numCritical
             // 
+            numCritical.DecimalPlaces = 2;
             numCritical.Location = new Point(266, 727);
             numCritical.Margin = new Padding(4);
             numCritical.Name = "numCritical";
@@ -241,6 +248,7 @@
             // 
             // numHealth
             // 
+            numHealth.DecimalPlaces = 2;
             numHealth.Location = new Point(266, 798);
             numHealth.Margin = new Padding(4);
             numHealth.Name = "numHealth";
@@ -260,6 +268,7 @@
             // 
             // numRange
             // 
+            numRange.DecimalPlaces = 2;
             numRange.Location = new Point(266, 661);
             numRange.Margin = new Padding(4);
             numRange.Name = "numRange";
@@ -377,11 +386,37 @@
             txtProjDirPath.Size = new Size(329, 39);
             txtProjDirPath.TabIndex = 30;
             // 
+            // labelRarity
+            // 
+            labelRarity.AutoSize = true;
+            labelRarity.Font = new Font("Segoe UI", 10F);
+            labelRarity.Location = new Point(59, 468);
+            labelRarity.Margin = new Padding(4, 0, 4, 0);
+            labelRarity.Name = "labelRarity";
+            labelRarity.Size = new Size(85, 37);
+            labelRarity.TabIndex = 32;
+            labelRarity.Text = "Rarity";
+            labelRarity.Click += label11_Click_1;
+            // 
+            // numRarity
+            // 
+            numRarity.DecimalPlaces = 2;
+            numRarity.Location = new Point(266, 468);
+            numRarity.Margin = new Padding(4);
+            numRarity.Maximum = new decimal(new int[] { 12, 0, 0, 0 });
+            numRarity.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            numRarity.Name = "numRarity";
+            numRarity.Size = new Size(267, 39);
+            numRarity.TabIndex = 31;
+            numRarity.Value = new decimal(new int[] { 1, 0, 0, 0 });
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1597, 1039);
+            Controls.Add(labelRarity);
+            Controls.Add(numRarity);
             Controls.Add(behaviorLabel);
             Controls.Add(chkBehaviors);
             Controls.Add(txtProjDirPath);
@@ -424,6 +459,7 @@
             ((System.ComponentModel.ISupportInitialize)numCritical).EndInit();
             ((System.ComponentModel.ISupportInitialize)numHealth).EndInit();
             ((System.ComponentModel.ISupportInitialize)numRange).EndInit();
+            ((System.ComponentModel.ISupportInitialize)numRarity).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -461,5 +497,7 @@
         private Button ctSelectButton;
         private Button projDirSelectButton;
         private TextBox txtProjDirPath;
+        private Label labelRarity;
+        private NumericUpDown numRarity;
     }
 }

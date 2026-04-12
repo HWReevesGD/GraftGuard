@@ -137,6 +137,7 @@ namespace Grafter
             {
                 controller.CurrentlyEditing.Name = txtName.Text;
                 controller.CurrentlyEditing.BaseDamage = (float)numDamage.Value;
+                controller.CurrentlyEditing.Rarity = (float)numRarity.Value;
                 controller.CurrentlyEditing.SpeedModifier = (float)numSpeed.Value;
                 controller.CurrentlyEditing.ArmorModifier = (float)numArmor.Value;
                 controller.CurrentlyEditing.RangeModifier = (float)numRange.Value;
@@ -190,6 +191,7 @@ namespace Grafter
         {
             txtName.Text = part.Name;
             numDamage.Value = (decimal)part.BaseDamage;
+            numRarity.Value = (decimal)part.Rarity;
             numSpeed.Value = (decimal)part.SpeedModifier;
             numArmor.Value = (decimal)part.ArmorModifier;
             numRange.Value = (decimal)part.RangeModifier;
@@ -242,6 +244,11 @@ namespace Grafter
 
 
         private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click_1(object sender, EventArgs e)
         {
 
         }

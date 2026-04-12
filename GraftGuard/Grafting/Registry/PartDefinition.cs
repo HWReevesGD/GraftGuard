@@ -24,6 +24,7 @@ public class PartDefinition
     public string Name { get; set; }
     public PartType Type { get; set; }
     public float BaseDamage { get; set; } 
+    public float Rarity { get; set; }
     public float SpeedModifier { get; set; }
     public float ArmorModifier { get; set; }
     public float RangeModifier { get; set; }
@@ -56,13 +57,13 @@ public class PartDefinition
         Vector2 pivot = headPivot;
         Type = PartType.Head;
         BaseDamage = 1;
+        Rarity = 1;
         SpeedModifier = 1;
         ArmorModifier = 1;
         RangeModifier = 1;
         CriticalModifier = 1;
         HealthModifier = 1;
     }
-
 
     public PartDefinition(string name, Texture2D texture, string textureName, float pivotX, float pivotY, PartType type,
                               float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f,

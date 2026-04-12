@@ -119,7 +119,7 @@ internal class World
 
     public void OnStartingDay()
     {
-        
+        ScatteredParts = [];
     }
 
     public void OnStartingNight()

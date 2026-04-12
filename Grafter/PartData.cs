@@ -57,6 +57,7 @@ namespace Grafter
         public float RangeModifier { get; set; }
         public float CriticalModifier { get; set; }
         public float HealthModifier { get; set; }
+        public float Rarity { get; set; } = 1.0f;
         public string TextureName { get; set; }
         public string FullImagePath { get; set; }
         public float PivotX { get; set; }

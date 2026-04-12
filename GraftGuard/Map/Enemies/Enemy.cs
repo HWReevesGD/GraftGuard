@@ -1,6 +1,5 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
-using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Map.Pathing;
 using GraftGuard.Utility;
@@ -9,10 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata;
-using static GraftGuard.Map.Enemies.EnemyVisual;
 using static GraftGuard.Map.Pathing.PathManager;
 
 namespace GraftGuard.Map.Enemies;
@@ -64,6 +60,7 @@ internal abstract class Enemy : GameObject
         // Initialize the visual component
         Visual = new EnemyVisual(torso, 1f, AnimationClips.Idle, position);
     }
+
 
     public virtual void OnDeath()
     {
@@ -230,5 +227,7 @@ internal abstract class Enemy : GameObject
     public static void LoadContent(ContentManager content)
     {
         TCentipedeMandible = content.Load<Texture2D>("Parts/cendipede_mandibles");
+
+
     }
 }

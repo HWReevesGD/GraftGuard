@@ -102,7 +102,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/Enemies/Heads/enemy_faces_1.png
+/build:Entities/Enemies/Heads/enemy_faces_1.png;Entities/Enemies/Heads/enemy_faces_0.png
 
 #begin Entities/Enemies/Heads/enemy_faces_2.png
 /importer:TextureImporter
@@ -114,7 +114,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/Enemies/Heads/enemy_faces_2.png
+/build:Entities/Enemies/Heads/enemy_faces_2.png;Entities/Enemies/Heads/enemy_faces_1.png
 
 #begin Entities/Enemies/Heads/enemy_faces_3.png
 /importer:TextureImporter
@@ -126,7 +126,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/Enemies/Heads/enemy_faces_3.png
+/build:Entities/Enemies/Heads/enemy_faces_3.png;Entities/Enemies/Heads/enemy_faces_2.png
 
 #begin Entities/Enemies/Heads/enemy_faces_4.png
 /importer:TextureImporter
@@ -138,7 +138,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/Enemies/Heads/enemy_faces_4.png
+/build:Entities/Enemies/Heads/enemy_faces_4.png;Entities/Enemies/Heads/enemy_faces_3.png
 
 #begin Entities/Enemies/Heads/enemy_faces_5.png
 /importer:TextureImporter
@@ -150,7 +150,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Entities/Enemies/Heads/enemy_faces_5.png
+/build:Entities/Enemies/Heads/enemy_faces_5.png;Entities/Enemies/Heads/enemy_faces_4.png
 
 #begin Entities/Enemies/Legs/enemy_leg_0.png
 /importer:TextureImporter

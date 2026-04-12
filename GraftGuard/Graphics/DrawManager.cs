@@ -10,13 +10,12 @@ namespace GraftGuard.Graphics;
 internal class DrawManager
 {
     public SpriteBatch Batch;
-    SortedDictionary<int, List<DrawInstruction>> DrawLayers = [];
-    SortedDictionary<int, List<DrawInstruction>> DrawUILayers = [];
+    public SortedDictionary<int, List<DrawInstruction>> DrawLayers = [];
+    public SortedDictionary<int, List<DrawInstruction>> DrawUILayers = [];
 
     public DrawManager(SpriteBatch batch)
     {
         Batch = batch;
-        DrawLayers = [];
     }
 
     public void DrawCentered(
@@ -204,11 +203,11 @@ internal class DrawManager
         DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer, isUi: isUi);
     }
 
-    public void Paint()
+    public void Paint(Camera camera)
     {
         foreach (List<DrawInstruction> layer in DrawLayers.Values)
         {
-            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp);
+            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, transformMatrix: camera.WorldToScreen);
 
             List<DrawInstruction> scissors = [];
             foreach (DrawInstruction instruction in layer)
@@ -257,12 +256,107 @@ internal class DrawManager
             }
 
             Batch.End();
+            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: camera.WorldToScreen);
+            foreach (DrawInstruction instruction in scissors)
+            {
+                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
+
+                float sorting = 0.0f;
+
+                if (instruction.UseSorting)
+                {
+                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
+                }
+
+                if (!instruction.IsString)
+                {
+                    Batch.Draw(
+                    instruction.Texture,
+                    instruction.Position,
+                    instruction.Source,
+                    instruction.Color,
+                    instruction.Rotation,
+                    instruction.Origin,
+                    instruction.Scale,
+                    instruction.Effects,
+                    sorting
+                    );
+                }
+                else
+                {
+                    Batch.DrawString(
+                        instruction.Font,
+                        instruction.Text,
+                        instruction.Position,
+                        instruction.Color,
+                        instruction.Rotation,
+                        instruction.Origin,
+                        instruction.Scale,
+                        instruction.Effects,
+                        sorting
+                        );
+                }
+            }
+            Batch.End();
+        }
+
+        foreach (List<DrawInstruction> layer in DrawUILayers.Values)
+        {
+            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp);
+
+            List<DrawInstruction> scissors = [];
+            foreach (DrawInstruction instruction in layer)
+            {
+                if (instruction.Scissor is not null)
+                {
+                    scissors.Add(instruction);
+                    continue;
+                }
+
+                float sorting = 1.0f;
+
+                if (instruction.UseSorting)
+                {
+                    //sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
+                }
+
+                if (!instruction.IsString)
+                {
+                    Batch.Draw(
+                    instruction.Texture,
+                    instruction.Position,
+                    instruction.Source,
+                    instruction.Color,
+                    instruction.Rotation,
+                    instruction.Origin,
+                    instruction.Scale,
+                    instruction.Effects,
+                    sorting
+                    );
+                }
+                else
+                {
+                    Batch.DrawString(
+                        instruction.Font,
+                        instruction.Text,
+                        instruction.Position,
+                        instruction.Color,
+                        instruction.Rotation,
+                        instruction.Origin,
+                        instruction.Scale,
+                        instruction.Effects,
+                        sorting
+                        );
+                }
+            }
+
+            Batch.End();
             Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
             foreach (DrawInstruction instruction in scissors)
             {
                 Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
 
-                float sorting = 1.0f;
+                float sorting = 0.0f;
 
                 if (instruction.UseSorting)
                 {

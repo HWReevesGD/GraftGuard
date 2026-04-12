@@ -69,9 +69,9 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
         DrawText(drawing);
     }
 
-    protected virtual void DrawText(DrawManager batch)
+    protected virtual void DrawText(DrawManager drawing)
     {
-        batch.DrawString(
+        drawing.DrawString(
             font: Font,
             text: Text,
             position: Position + Size / 2.0f - Font.MeasureString(Text) / 2.0f,

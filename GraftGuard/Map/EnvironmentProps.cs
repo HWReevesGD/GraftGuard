@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -41,23 +42,19 @@ namespace GraftGuard.Map
             };
         }
 
-        public static void Draw(SpriteBatch spriteBatch, PropType type, Vector2 position)
+        internal static void Draw(DrawManager drawing, PropType type, Vector2 position)
         {
             if (sources.TryGetValue(type, out Rectangle sourceRect))
             {
                 //base of tree/bush instead of top left
                 Vector2 origin = new Vector2(sourceRect.Width / 2f, sourceRect.Height);
 
-                spriteBatch.Draw(
-                    sheet,
-                    position,
-                    sourceRect,
-                    Color.White,
-                    0f,            
-                    origin,       
-                    GlobalScale,   
-                    SpriteEffects.None,
-                    0f             
+                drawing.Draw(
+                    texture: sheet,
+                    position: position,
+                    source: sourceRect,
+                    origin: origin,       
+                    scale: GlobalScale * Vector2.One    
                 );
             }
         }

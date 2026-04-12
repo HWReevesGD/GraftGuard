@@ -224,6 +224,7 @@ namespace GraftGuard
                     _gameOverScreen.Draw(DrawManager, gameTime);
                     break;
             }
+            DrawManager.Paint(_world.Camera);
         }
 
         private void DrawGameSession(DrawManager drawing, GameTime gameTime)

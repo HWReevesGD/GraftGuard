@@ -134,12 +134,12 @@ public class Game1 : Game
         //GraphicsDevice.Clear(ClearOptions.Target, Color.ForestGreen, -100, 0);
         
         GraphicsDevice.SetRenderTarget(_renderTarget);
-        GraphicsDevice.Clear(Color.ForestGreen);
+        GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target | ClearOptions.Stencil, Color.ForestGreen, 0.0f, 0);
 
         _gameManager.Draw(gameTime);
 
         GraphicsDevice.SetRenderTarget(null); 
-        GraphicsDevice.Clear(Color.Black);    
+        GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target | ClearOptions.Stencil, Color.Black, 0.0f, 0);    
 
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: GetScaleMatrix());
         _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);

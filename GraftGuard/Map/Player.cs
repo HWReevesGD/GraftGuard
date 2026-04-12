@@ -72,7 +72,7 @@ internal class Player : GameObject
             invincibilityTimer -= delta;
     }
 
-    public override void Draw(GameTime gameTime, DrawManager batch)
+    public override void Draw(GameTime gameTime, DrawManager drawing)
     {
         if (invincibilityTimer > 0)
         {
@@ -81,14 +81,14 @@ internal class Player : GameObject
                 return;
         }
 
-        playerVisual.Draw(batch, Center);
+        playerVisual.Draw(drawing, Center);
         //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
         // Draw Held Parts
         for (int index = 0; index < HeldParts.Count; index++)
         {
             Texture2D part = HeldParts[index].Texture;
-            batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, rotation: -MathF.PI / 2.0f);
+            drawing.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, rotation: -MathF.PI / 2.0f);
         }
 
         //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);

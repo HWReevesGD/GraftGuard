@@ -22,9 +22,14 @@ internal class Player : GameObject
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
     private static readonly float invincibilityFrameTime = 0.5f; // in seconds
 
-    private static Texture2D texture;
+    private static Texture2D playerTorso;
+    private static Texture2D playerHead;
+    private static Texture2D playerLeg;
+    private static Texture2D playerArm;
+    private static Texture2D playerHair;
+
     private Circle _collectionCircle;
-    private EnemyVisual playerVisual;
+    private PlayerVisual playerVisual;
     private float invincibilityTimer;
 
     public List<PartDefinition> HeldParts { get; private set; }
@@ -33,14 +38,39 @@ internal class Player : GameObject
 
     public static void LoadContent(ContentManager content)
     {
-        
+        playerTorso = content.Load<Texture2D>("Entities/Player/player_torso");
+        playerHead = content.Load<Texture2D>("Entities/Player/player_face");
+        playerLeg = content.Load<Texture2D>("Entities/Player/player_leg");
+        playerArm = content.Load<Texture2D>("Entities/Player/player_arm");
+        playerHair = content.Load<Texture2D>("Entities/Player/player_ponytail");
+
     }
 
-    public Player(Vector2 position) : base(position, new Vector2(24, 48), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
+    public Player(Vector2 position) : base(position, new Vector2(24, 48), playerTorso, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
     {
         _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
-        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, Center);
+
+        var playerSockets = new List<AttachPoint>
+        {
+            new AttachPoint { Name = "Arm_R", PivotX = 0.6859326f, PivotY = 0.28445747f },
+            new AttachPoint { Name = "Arm_L", PivotX = 0.31524926f, PivotY = 0.28445747f },
+            new AttachPoint { Name = "Leg_L", PivotX = 0.29765397f, PivotY = 0.7683284f },
+            new AttachPoint { Name = "Leg_R", PivotX = 0.66129035f, PivotY = 0.7859238f },
+            new AttachPoint { Name = "Head",  PivotX = 0.47947213f, PivotY = 0.199648f },
+            new AttachPoint { Name = "Ponytail", PivotX = 0.15f, PivotY = -0.15f },
+        };
+
+        
+
+        playerVisual = new PlayerVisual(playerTorso, playerSockets, 1, AnimationClips.Idle, Center);
+
+        playerVisual.CreatePart("Head", "PlayerHead", playerHead, 0.53f, 0.77f, PartType.Head, false);
+        playerVisual.CreatePart("Arm_R", "PlayerArmR", playerArm, 0.48f, 0.24f, PartType.Limb, false);
+        playerVisual.CreatePart("Arm_L", "PlayerArmL", playerArm, 0.48f, 0.24f, PartType.Limb, true);
+        playerVisual.CreatePart("Leg_R", "PlayerLegR", playerLeg, 0.48f, 0.26f, PartType.Limb, false);
+        playerVisual.CreatePart("Leg_L", "PlayerLegL", playerLeg, 0.48f, 0.26f, PartType.Limb, true);
+        playerVisual.CreatePart("Ponytail", "Ponytail", playerHair, 0.42f, 0.25f, PartType.Limb, true);
     }
 
     /// <summary>

@@ -98,7 +98,7 @@ namespace GraftGuard.Map.Enemies
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             if (!IsDead)
             {
@@ -113,14 +113,11 @@ namespace GraftGuard.Map.Enemies
                 int count = 0;
                 foreach (AttachedPart part in AttachedParts)
                 {
-                    Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
-                    //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
-                    Vector2 pixelOffset = new Vector2(
-                        (slotPosition.X - 0.5f) * Base.Texture.Width,
-                        (slotPosition.Y - 0.5f) * Base.Texture.Height
-                    );
+                    //legs and head in front of that
+                    DrawLayer(spriteBatch, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
 
-                    DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx);
+                    //arms above that
+                    DrawLayer(spriteBatch, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
                 }
             }
             else
@@ -203,13 +200,35 @@ namespace GraftGuard.Map.Enemies
             public AnimationClip Clip;
         }
 
-        private void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx)
+        /// <summary>
+        /// Helper to draw a specific subset of parts based on a filter
+        /// </summary>
+        private void DrawLayer(SpriteBatch spriteBatch, LimbDrawContext ctx, Func<AttachedPart, bool> filter)
+        {
+            int count = 0;
+            foreach (AttachedPart part in AttachedParts)
+            {
+                if (!filter(part)) continue;
+
+                Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+                Vector2 pixelOffset = new Vector2(
+                    (slotPosition.X - 0.5f) * Base.Texture.Width,
+                    (slotPosition.Y - 0.5f) * Base.Texture.Height
+                );
+
+                SpriteEffects effects = part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, effects);
+            }
+        }
+
+        protected void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx, SpriteEffects spriteEffect)
         {
             PartTransform transform = GetPartTransform(part, offset, ctx, index);
 
             ctx.SpriteBatch.Draw(part.Texture, transform.Position, null, Color.White, transform.Rotation,
                 transform.Origin,
-                transform.Scale, SpriteEffects.None, 0f);
+                transform.Scale, spriteEffect, 0f);
         }
     }
 }

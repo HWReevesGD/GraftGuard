@@ -88,15 +88,10 @@ internal class Player : GameObject
         for (int index = 0; index < HeldParts.Count; index++)
         {
             Texture2D part = HeldParts[index].Texture;
-            batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, null, Color.White, -MathF.PI / 2.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+            batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, rotation: -MathF.PI / 2.0f);
         }
 
         //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
-
-        foreach (var box in CollidedDebug)
-        {
-            batch.Draw(Placeholders.TexturePixel, box, null, Color.Magenta, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        }
         CollidedDebug = [];
     }
 

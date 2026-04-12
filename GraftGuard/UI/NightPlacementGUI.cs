@@ -113,7 +113,7 @@ internal class NightPlacementGUI
             color: new Color(0.0f, 0.0f, 0.0f, 0.4f));
 
         // Draw Designs
-        _designButtons.Draw(drawing, (batch, button, _) => button.Draw(batch, time, world, input));
+        _designButtons.Draw(drawing, (drawing, button, _) => button.Draw(drawing, time, world, input));
 
         // Draw the a preview of the current tower
         if (_selectedIndex is int index)

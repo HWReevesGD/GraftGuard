@@ -16,7 +16,7 @@ using System.Text.RegularExpressions;
 namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
-internal delegate void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position);
+internal delegate void DrawPreview(DrawManager drawing, GameTime time, Vector2 position);
 /// <summary>
 /// Base Class for all Towers
 /// </summary>

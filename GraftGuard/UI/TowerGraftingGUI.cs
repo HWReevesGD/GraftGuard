@@ -354,17 +354,17 @@ internal class TowerGraftingGUI
         );
 
         // Scissor for Parts
-        ReBatchWithScissor(drawing, _towerChoiceButtons.GridRectangle);
+        //ReBatchWithScissor(drawing, _towerChoiceButtons.GridRectangle);
         // Draw each Tower Button
-        _towerChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
+        //_towerChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Scissor for Parts
-        ReBatchWithScissor(drawing, _partChoiceButtons.GridRectangle);
+        //ReBatchWithScissor(drawing, _partChoiceButtons.GridRectangle);
         // Draw each Part Button
-        _partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
+        //_partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Back to Normal
-        ReBatchNormal(drawing);
+        //ReBatchNormal(drawing);
 
         // Draw Non-Button parts of Grids
         _towerChoiceButtons.Draw(drawing, skipBackground: true);
@@ -405,7 +405,7 @@ internal class TowerGraftingGUI
         _projectiles.Draw(drawing, time, world, inputManager);
 
         // Back to Normal
-        ReBatchNormal(drawing);
+        //ReBatchNormal(drawing);
 
         // Draw the Label showing the Currently Chosen Part
         _currentChosenLabel.Draw(drawing);
@@ -438,7 +438,7 @@ internal class TowerGraftingGUI
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
     /// <param name="scissor"><see cref="Rectangle"/> for scissoring</param>
-    public void ReBatchWithScissor(SpriteBatch batch, Rectangle scissor)
+    public void ReBatchWithScissorDEPRICATED(SpriteBatch batch, Rectangle scissor)
     {
         batch.End();
         batch.GraphicsDevice.ScissorRectangle = scissor;
@@ -449,7 +449,7 @@ internal class TowerGraftingGUI
     /// Ends current and Stars a new Batch Begin with default static settings
     /// </summary>
     /// <param name="batch"></param>
-    public void ReBatchNormal(SpriteBatch batch)
+    public void ReBatchNormalDEPRICATED(SpriteBatch batch)
     {
         batch.End();
         batch.Begin(samplerState: SamplerState.PointWrap);

@@ -35,13 +35,10 @@ internal class ProjectileZap : Projectile
         {
             drawing.Draw(
                 TLightning,
-                destinationRectangle: new Rectangle(Position.ToPoint() - new Point(0, (int)(16 * lifeFactor)), new Point((int)Vector2.Distance(Position, zap.Position) + 8, (int)(32 * lifeFactor))),
-                sourceRectangle: null,
-                new Color(Color.White, (MaxLifetime - Lifetime) / MaxLifetime),
+                destination: new Rectangle(Position.ToPoint() - new Point(0, (int)(16 * lifeFactor)), new Point((int)Vector2.Distance(Position, zap.Position) + 8, (int)(32 * lifeFactor))),
+                color: new Color(Color.White, (MaxLifetime - Lifetime) / MaxLifetime),
                 rotation: (zap.Position - Position).Angle(),
-                origin: new Vector2(0, 16),
-                SpriteEffects.None,
-                layerDepth: 0.0f);
+                origin: new Vector2(0, 16));
         }
     }
 

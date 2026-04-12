@@ -10,8 +10,9 @@ namespace GraftGuard.Graphics;
 internal class DrawManager
 {
     public SpriteBatch Batch;
-    SortedDictionary<int, List<DrawInstruction>> DrawLayers;
-    SortedDictionary<int, List<DrawInstruction>> DrawUILayers;
+    SortedDictionary<int, List<DrawInstruction>> DrawLayers = [];
+    SortedDictionary<int, List<DrawInstruction>> DrawUILayers = [];
+
     public DrawManager(SpriteBatch batch)
     {
         Batch = batch;
@@ -29,7 +30,8 @@ internal class DrawManager
         Vector2? origin = null,
         SpriteEffects? effects = null,
         Vector2? sortingOriginOffset = null,
-        bool isUi)
+        bool isUi = false,
+        Rectangle? scissor = null)
     {
         Vector2 centeredOrigin = texture.GetSize() * 0.5f + (origin ?? Vector2.Zero);
         Draw(
@@ -44,7 +46,8 @@ internal class DrawManager
             centeredOrigin,
             effects,
             sortingOriginOffset,
-            isUi
+            isUi,
+            scissor
             );
     }
 
@@ -60,7 +63,8 @@ internal class DrawManager
         Vector2? origin = null,
         SpriteEffects? effects = null,
         Vector2? sortingOriginOffset = null,
-        bool isUi = false)
+        bool isUi = false,
+        Rectangle? scissor = null)
     {
         Vector2 centeredOrigin = texture.GetSize() * 0.5f + (origin ?? Vector2.Zero);
         Draw(
@@ -75,7 +79,8 @@ internal class DrawManager
             centeredOrigin,
             effects,
             sortingOriginOffset,
-            isUi
+            isUi,
+            scissor
             );
     }
     public void Draw(
@@ -90,11 +95,13 @@ internal class DrawManager
         Vector2? origin = null,
         SpriteEffects? effects = null,
         Vector2? sortingOriginOffset = null,
-        bool isUi = false)
+        bool isUi = false,
+        Rectangle? scissor = null)
     {
         AddAtLayer(new DrawInstruction(
                 texture,
                 position,
+                useSorting,
                 scale ?? Vector2.One,
                 source ?? texture.Bounds,
                 color ?? Color.White,
@@ -105,7 +112,8 @@ internal class DrawManager
                 drawLayer,
                 false,
                 null,
-                null
+                null,
+                scissor
                 ), drawLayer, isUi);
     }
 
@@ -120,11 +128,13 @@ internal class DrawManager
         Vector2? origin = null,
         SpriteEffects? effects = null,
         Vector2? sortingOriginOffset = null,
-        bool isUi = false)
+        bool isUi = false,
+        Rectangle? scissor = null)
     {
         AddAtLayer(new DrawInstruction(
                 texture,
                 destination.Location.ToVector(),
+                useSorting,
                 destination.Size.ToVector(),
                 source ?? texture.Bounds,
                 color ?? Color.White,
@@ -135,7 +145,8 @@ internal class DrawManager
                 drawLayer,
                 false,
                 null,
-                null
+                null,
+                scissor
                 ), drawLayer, isUi);
     }
 
@@ -143,11 +154,13 @@ internal class DrawManager
         string text,
         Vector2 position,
         SpriteFont font = null,
+        bool useSorting = false,
         int drawLayer = 1,
         Color? color = null,
         Vector2? scale = null,
         bool centered = false,
-        bool isUi = false
+        bool isUi = false,
+        Rectangle? scissor = null
         )
     {
         font ??= Fonts.Arial;
@@ -158,6 +171,7 @@ internal class DrawManager
         AddAtLayer(new DrawInstruction(
                 null,
                 position,
+                useSorting,
                 Vector2.Zero,
                 Rectangle.Empty,
                 color ?? Color.White,
@@ -168,7 +182,8 @@ internal class DrawManager
                 drawLayer,
                 true,
                 text,
-                font
+                font,
+                scissor
                 ), drawLayer, isUi);
     }
 
@@ -195,9 +210,25 @@ internal class DrawManager
         {
             Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp);
 
+            List<DrawInstruction> scissors = [];
             foreach (DrawInstruction instruction in layer)
             {
-                Batch.Draw(
+                if (instruction.Scissor is not null)
+                {
+                    scissors.Add(instruction);
+                    continue;
+                }
+
+                float sorting = 1.0f;
+
+                if (instruction.UseSorting)
+                {
+                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
+                }
+
+                if (!instruction.IsString)
+                {
+                    Batch.Draw(
                     instruction.Texture,
                     instruction.Position,
                     instruction.Source,
@@ -206,12 +237,72 @@ internal class DrawManager
                     instruction.Origin,
                     instruction.Scale,
                     instruction.Effects,
-                    instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f
+                    sorting
                     );
+                }
+                else
+                {
+                    Batch.DrawString(
+                        instruction.Font,
+                        instruction.Text,
+                        instruction.Position,
+                        instruction.Color,
+                        instruction.Rotation,
+                        instruction.Origin,
+                        instruction.Scale,
+                        instruction.Effects,
+                        sorting
+                        );
+                }
             }
 
             Batch.End();
+            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
+            foreach (DrawInstruction instruction in scissors)
+            {
+                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
+
+                float sorting = 1.0f;
+
+                if (instruction.UseSorting)
+                {
+                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
+                }
+
+                if (!instruction.IsString)
+                {
+                    Batch.Draw(
+                    instruction.Texture,
+                    instruction.Position,
+                    instruction.Source,
+                    instruction.Color,
+                    instruction.Rotation,
+                    instruction.Origin,
+                    instruction.Scale,
+                    instruction.Effects,
+                    sorting
+                    );
+                }
+                else
+                {
+                    Batch.DrawString(
+                        instruction.Font,
+                        instruction.Text,
+                        instruction.Position,
+                        instruction.Color,
+                        instruction.Rotation,
+                        instruction.Origin,
+                        instruction.Scale,
+                        instruction.Effects,
+                        sorting
+                        );
+                }
+            }
+            Batch.End();
         }
+
+        DrawLayers = [];
+        DrawUILayers = [];
     }
 }
 internal struct DrawInstruction
@@ -229,9 +320,12 @@ internal struct DrawInstruction
     public bool IsString;
     public string Text;
     public SpriteFont Font;
+    public Rectangle? Scissor;
+    public bool UseSorting;
     public DrawInstruction(
         Texture2D texture,
         Vector2 position,
+        bool useSorting,
         Vector2 scale,
         Rectangle source,
         Color color,
@@ -242,10 +336,12 @@ internal struct DrawInstruction
         int drawLayer,
         bool isString,
         string text,
-        SpriteFont font)
+        SpriteFont font,
+        Rectangle? scissor)
     {
         Texture = texture;
         Position = position;
+        UseSorting = useSorting;
         Scale = scale;
         Source = source;
         Color = color;
@@ -257,5 +353,6 @@ internal struct DrawInstruction
         IsString = isString;
         Text = text;
         Font = font;
+        Scissor = scissor;
     }
 } 

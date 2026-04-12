@@ -134,5 +134,5 @@ internal class NinePatch
             color: finalColor);
     }
 
-    public void Draw(SpriteBatch batch, Vector2 position, Vector2 size, Color? color = null) => Draw(batch, position, size.ToPoint(), color);
+    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null) => Draw(drawing, position, size.ToPoint(), color);
 }

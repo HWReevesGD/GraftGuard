@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
@@ -19,7 +20,7 @@ internal class PartShotgunning : IPartBehavior
     public const int ShotAmount = 5;
     public const float SeparationAngle = 0.4f;
     public const float SeparationRandomness = 0.1f;
-    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
         
     }

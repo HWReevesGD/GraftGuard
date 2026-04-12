@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using Microsoft.Xna.Framework;
@@ -37,19 +38,19 @@ internal class CreatedTowerButton : IPositional, ISizeable
         Tower.Update(time, world, input, state, Projectiles);
         Projectiles.Update(time, world, input);
     }
-    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager input, TimeState state = TimeState.Day)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state = TimeState.Day)
     {
-        Internal.Draw(batch);
+        Internal.Draw(drawing);
 
         // Clipping
-        batch.End();
-        batch.GraphicsDevice.ScissorRectangle = Internal.MarginBox;
-        batch.Begin(samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
+        //drawing.End();
+        //drawing.GraphicsDevice.ScissorRectangle = Internal.MarginBox;
+        //drawing.Begin(samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
 
-        Tower.Draw(time, batch, world, input, state);
-        Projectiles.Draw(batch, time, world, input);
+        Tower.Draw(time, drawing, world, input, state);
+        Projectiles.Draw(drawing, time, world, input);
 
-        batch.End();
-        batch.Begin(samplerState: SamplerState.PointWrap);
+        //drawing.End();
+        //drawing.Begin(samplerState: SamplerState.PointWrap);
     }
 }

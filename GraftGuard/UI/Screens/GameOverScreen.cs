@@ -64,19 +64,14 @@ internal class GameOverScreen
 
     public void Draw(DrawManager drawing, GameTime gameTime)
     {
-        drawing.End()
         // Draw by the Camera's Position
-        drawing.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
         world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
-        drawing.End();
 
         // draw menu items
 
-        drawing.Begin();
-
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        drawing.Draw(backgroundTexture, fullScreenRect, bgColor);
+        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor);
 
         float screenScale = 2.0f;
         float centerX = Interface.Width / 2;
@@ -122,20 +117,20 @@ internal class GameOverScreen
         float scaledGap = gap * screenScale;
         float scaledJump = scoreNumJumpDist * screenScale;
 
-        drawing.DrawString(Fonts.SubFont, scoreText, new Vector2(
-            centerX - scoreTextSize.X - scaledGap / 2,
-            scoreY
-            ), Color.White);
+        drawing.DrawString(
+            font: Fonts.SubFont,
+            text: scoreText,
+            position: new Vector2(centerX - scoreTextSize.X - scaledGap / 2, scoreY),
+            isUi: true);
 
         drawing.DrawString(
-            Fonts.SubFont,
-            $"{displayScore}",
-            new Vector2(
+            font: Fonts.SubFont,
+            text: $"{displayScore}",
+            position: new Vector2(
                 centerX + scaledGap / 2,
                 scoreY + (scoreCountIsUp ? -scaledJump : 0)
                 ),
-            Color.White
-            );
+            isUi: true);
 
         // hi score text
 
@@ -156,20 +151,22 @@ internal class GameOverScreen
         {
             float hiScoreY = centerY + (75 * screenScale);
 
-            drawing.DrawString(Fonts.SubFont, hiScoreText, new Vector2(
-                centerX - hiScoreTextSize.X - scaledGap / 2,
-                hiScoreY
-                ), Color.White);
+            drawing.DrawString(
+                font: Fonts.SubFont,
+                text: hiScoreText,
+                position: new Vector2(
+                    centerX - hiScoreTextSize.X - scaledGap / 2,
+                    hiScoreY),
+                isUi: true);
 
             drawing.DrawString(
-                Fonts.SubFont,
-                $"{displayHiScore}",
-                new Vector2(
+                font: Fonts.SubFont,
+                text: $"{displayHiScore}",
+                position: new Vector2(
                     centerX + scaledGap / 2,
                     hiScoreY + (hiScoreCountIsUp ? -scaledJump : 0)
                     ),
-               Color.White
-               );
+                isUi: true);
         }
     }
 }

@@ -137,11 +137,11 @@ internal class TowerTrap : Tower
     /// <summary>
     /// Draws the "preview" for the tower, before it is placed. This is generally a transparent version of the tower's base
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Current <see cref="GameTime"/></param>
     /// <param name="position">Position to draw at</param>
-    public static void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position)
+    public static void DrawPreview(DrawManager drawing, GameTime time, Vector2 position)
     {
-        batch.DrawCentered(TexturePlaceholderGround, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+        drawing.DrawCentered(TexturePlaceholderGround, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
     }
 }

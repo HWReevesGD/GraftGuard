@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Utility;
@@ -73,7 +74,7 @@ internal class GameHUD
         previousHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHearts);
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime, bool active)
+    public void Draw(DrawManager drawing, GameTime gameTime, bool active)
     {
         int totalSeconds = (int)Math.Ceiling(PlayerData.CurrentGame.Timer);
         int displaySeconds = totalSeconds % 60;
@@ -203,7 +204,7 @@ internal class GameHUD
                     (int)finalSize.Y
                     );
 
-                batch.Draw(textureToDraw, rect, sourceRect, Color.White);
+                drawing.Draw(textureToDraw, destination: rect, source: sourceRect);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;
@@ -218,12 +219,12 @@ internal class GameHUD
         float sHeight = timerHeight * hudScale;
         float sTopMargin = timerTopMargin * hudScale;
 
-        batch.Draw(timerTexture, new Rectangle(
+        drawing.Draw(timerTexture, new Rectangle(
             (int)(Interface.Width / 2 - sWidth / 2),
             (int)(sTopMargin + hudTopOffset),
             (int)sWidth,
             (int)sHeight
-            ), Color.White);
+            ));
 
         string timerText = active ? $"{displayMinutes}:{displaySeconds.ToString("D2")}" : "-:--";
 
@@ -233,11 +234,11 @@ internal class GameHUD
 
         new Text(Fonts.SubFont, $"{timerText} Left")
             .SetXOrigin(XOrigin.Center)
-            .Draw(batch, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset));
+            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset));
 
         new Text(Fonts.SubFont, timeNames[PlayerData.CurrentGame.Time])
            .SetXOrigin(XOrigin.Center)
-           .Draw(batch, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset));
+           .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset));
 
         // timer progress bar
 
@@ -245,22 +246,22 @@ internal class GameHUD
         float sBarMargin = timerBarMargin * hudScale;
 
         // Scale the internal progress bar rectangle
-        batch.Draw(pixelTexture, new Rectangle(
+        drawing.Draw(pixelTexture, new Rectangle(
             (int)(Interface.Width / 2 - sWidth / 2 + sBarMargin),
             (int)(sTopMargin + sBarMargin + hudTopOffset),
             (int)((sWidth - sBarMargin * 2) * timerProgressBarScale),
             (int)(sHeight * timerBarHeightScale - sBarMargin * 2)
-            ), Color.Purple);
+            ), color: Color.Purple);
 
-        batch.Draw(timerOverlayTexture, new Rectangle(
+        drawing.Draw(timerOverlayTexture, new Rectangle(
             (int)(Interface.Width / 2 - sWidth / 2),
             (int)(sTopMargin + hudTopOffset),
             (int)sWidth,
             (int)sHeight
-            ), Color.White);
+            ), color: Color.White);
         #endregion
 
         particles.Update(gameTime);
-        particles.Draw(batch, gameTime);
+        particles.Draw(drawing, gameTime);
     }
 }

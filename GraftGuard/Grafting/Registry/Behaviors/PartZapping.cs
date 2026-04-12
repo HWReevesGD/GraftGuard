@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -20,7 +21,7 @@ internal class PartZapping : IPartBehavior
     public const int MaxChain = 10;
     public const float ZapDamage = 1.0f;
     public static IPartBehavior Create() => new PartZapping();
-    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
         
     }

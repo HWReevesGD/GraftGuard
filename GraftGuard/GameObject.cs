@@ -63,7 +63,7 @@ internal class GameObject
     /// <param name="batch">SpriteBatch</param>
     public virtual void Draw(GameTime gameTime, DrawManager batch)
     {
-        batch.Draw(Texture, Position, Color.White);
+        batch.Draw(Texture, Position);
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.UI;
 using GraftGuard.UI.Screens;
@@ -22,12 +23,16 @@ namespace GraftGuard
         private readonly NightPlacementGUI _nightPlacement;
         private readonly InputManager inputManager;
 
+        public readonly DrawManager DrawManager;
+
         public static readonly float DawnTimeLength = 10f;
         public static readonly float NightTimeLength = 20f;
 
         private GameTime lastGameTime;
-        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input)
+        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input, SpriteBatch batch)
         {
+            DrawManager = new DrawManager(batch);
+
             _world = world;
             _mainMenu = menu;
             _pauseMenu = pause;

@@ -113,7 +113,8 @@ public class Game1 : Game
             new GameHUD(),
             new TowerGraftingGUI(),
             new NightPlacementGUI(),
-            input
+            input,
+            _spriteBatch
         );
 
         /*mainMenu = new MainMenu(inputManager);

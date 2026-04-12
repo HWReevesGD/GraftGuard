@@ -149,19 +149,13 @@ internal class MainMenu {
         // draw background world
 
         // Draw by the Camera's Position
-        drawing.Begin(samplerState: SamplerState.PointWrap, transformMatrix: backgroundWorld.Camera.WorldToScreen);
         backgroundWorld.DrawCamera(drawing, gameTime, timeState, inputManager, false);
-        drawing.End();
-
-        // gui stuff
-
-        drawing.Begin();
 
         // draw transulcent black cover
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        drawing.Draw(backgroundTexture, fullScreenRect, bgColor);
+        drawing.Draw(backgroundTexture, fullScreenRect, color: bgColor, isUi: true);
 
         // draw menu items
 

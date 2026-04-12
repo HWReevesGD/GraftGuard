@@ -182,7 +182,7 @@ internal class World
         ProjectileManager.Draw(drawing, gameTime, this, inputManager);
         if (renderPlayer)
         {
-            Player.Draw(gameTime, TODO);
+            Player.Draw(gameTime, drawing);
         }
 
         Particles.Draw(drawing, gameTime);

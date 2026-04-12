@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -103,21 +104,21 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
     /// <summary>
     /// Draws the <see cref="ScrollingGrid{T}"/>. <paramref name="drawElement"/> can be used to run an <see cref="Action"/> on each element for drawing
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="drawElement"><see cref="Action"/> to run on each element, with the element and index provided</param>
-    public void Draw(SpriteBatch batch, Action<SpriteBatch, T, int> drawElement = null, bool skipBackground = false)
+    public void Draw(DrawManager drawing, Action<DrawManager, T, int> drawElement = null, bool skipBackground = false)
     {
         // Draw Back
         if (!skipBackground)
         {
-            batch.Draw(Placeholders.TexturePixel, new Rectangle(Position.ToPoint(), Size.ToPoint()), new Color(Color.Black, 0.3f));
+            drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Position.ToPoint(), Size.ToPoint()), color: new Color(Color.Black, 0.3f));
         }
 
         // Draw Arrows
         if (IsScrollActive)
         {
-            _negativeArrow.Draw(batch);
-            _positiveArrow.Draw(batch);
+            _negativeArrow.Draw(drawing);
+            _positiveArrow.Draw(drawing);
         }
 
         if (drawElement is null)
@@ -129,7 +130,7 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
         for (int index = 0; index < Elements.Count; index++)
         {
             T element = Elements[index];
-            drawElement?.Invoke(batch, element, index);
+            drawElement?.Invoke(drawing, element, index);
         }
     }
 

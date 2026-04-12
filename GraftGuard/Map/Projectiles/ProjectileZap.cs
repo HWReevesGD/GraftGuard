@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -25,14 +26,14 @@ internal class ProjectileZap : Projectile
         Next = [];
     }
 
-    public override void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
     {
         float lifeFactor = 1.0f - Lifetime / MaxLifetime;
-        batch.DrawCentered(Texture, Position, scale: Scale * 0.5f * lifeFactor, rotation: (time.Total() % MathF.Tau) * 3.0f);
+        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale * 0.5f * lifeFactor, rotation: (time.Total() % MathF.Tau) * 3.0f);
 
         foreach (ProjectileZap zap in Next)
         {
-            batch.Draw(
+            drawing.Draw(
                 TLightning,
                 destinationRectangle: new Rectangle(Position.ToPoint() - new Point(0, (int)(16 * lifeFactor)), new Point((int)Vector2.Distance(Position, zap.Position) + 8, (int)(32 * lifeFactor))),
                 sourceRectangle: null,

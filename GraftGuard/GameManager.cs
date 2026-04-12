@@ -212,61 +212,53 @@ namespace GraftGuard
             switch (PlayerData.CurrentState)
             {
                 case GameState.MainMenu:
-                    _mainMenu.Draw(spriteBatch, gameTime);
+                    _mainMenu.Draw(DrawManager, gameTime);
                     break;
                 case GameState.Game:
-                    DrawGameSession(spriteBatch, gameTime);
+                    DrawGameSession(DrawManager, gameTime);
                     break;
                 case GameState.Paused:
-                    _pauseMenu.Draw(spriteBatch, gameTime, PlayerData.CurrentGame.Time);
+                    _pauseMenu.Draw(DrawManager, gameTime, PlayerData.CurrentGame.Time);
                     break;
                 case GameState.GameOver:
-                    _gameOverScreen.Draw(spriteBatch, gameTime);
+                    _gameOverScreen.Draw(DrawManager, gameTime);
                     break;
             }
         }
 
-        private void DrawGameSession(SpriteBatch spriteBatch, GameTime gameTime)
+        private void DrawGameSession(DrawManager drawing, GameTime gameTime)
         {
             var session = PlayerData.CurrentGame;
 
-            // World Draw (Camera space)
-            spriteBatch.End();
-            //spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen, sortMode: SpriteSortMode.FrontToBack);
-            spriteBatch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: _world.Camera.WorldToScreen, blendState: BlendState.NonPremultiplied);
-            _world.DrawCamera(spriteBatch, gameTime, session.Time, inputManager, true);
-            spriteBatch.End();
+            _world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
 
             // Draw Time Overlay
-            spriteBatch.Begin(samplerState: SamplerState.PointWrap, blendState: BlendState.NonPremultiplied);
             switch (PlayerData.CurrentGame.Time)
             {
                 case TimeState.Night:
-                    spriteBatch.Draw(Placeholders.TexturePixel, new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), new Color(0.1f, 0f, 0.4f, 0.1f));
+                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.1f, 0f, 0.4f, 0.1f));
                     break;
                 case TimeState.Dawn:
-                    spriteBatch.Draw(Placeholders.TexturePixel, new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), new Color(0.8f, 0.6f, 0.3f, 0.01f));
+                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.8f, 0.6f, 0.3f, 0.01f));
                     break;
                 case TimeState.Day:
                     break;
             }
-            spriteBatch.End();
 
             // UI Draw (Screen space)
-            spriteBatch.Begin(samplerState: SamplerState.PointWrap, blendState: BlendState.NonPremultiplied);
             switch (session.Time)
             {
                 case TimeState.Dawn:
                     break;
                 case TimeState.Day:
-                    _towerGrafting.Draw(spriteBatch, gameTime, _world, inputManager);
+                    _towerGrafting.Draw(drawing, gameTime, _world, inputManager);
                     break;
                 case TimeState.Night:
-                    DrawNightOnly(spriteBatch, gameTime);
+                    DrawNightOnly(drawing, gameTime);
                     break;
             }
 
-            _hud.Draw(spriteBatch, gameTime, session.Time != TimeState.Day);
+            _hud.Draw(drawing, gameTime, session.Time != TimeState.Day);
 
             // HUD
             //spriteBatch.DrawString(Fonts.Arial, $"TIME: {session.Time}\nTIMER: {session.Timer:F1}", new Vector2(64, 0), Color.White);
@@ -275,11 +267,11 @@ namespace GraftGuard
         /// <summary>
         /// Draws systems which only should be drawing during Nighttime
         /// </summary>
-        /// <param name="batch">Batch to use</param>
+        /// <param name="drawing">Batch to use</param>
         /// <param name="gameTime">Game Time to use</param>
-        private void DrawNightOnly(SpriteBatch batch, GameTime gameTime)
+        private void DrawNightOnly(DrawManager drawing, GameTime gameTime)
         {
-            _nightPlacement.Draw(batch, gameTime, _world, inputManager);
+            _nightPlacement.Draw(drawing, gameTime, _world, inputManager);
         }
     }
 }

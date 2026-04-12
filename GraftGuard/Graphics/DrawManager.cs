@@ -10,8 +10,8 @@ namespace GraftGuard.Graphics;
 internal class DrawManager
 {
     public SpriteBatch Batch;
-    SortedDictionary<int, List<DrawInstruction>> DrawLayers; 
-
+    SortedDictionary<int, List<DrawInstruction>> DrawLayers;
+    SortedDictionary<int, List<DrawInstruction>> DrawUILayers;
     public DrawManager(SpriteBatch batch)
     {
         Batch = batch;
@@ -28,7 +28,8 @@ internal class DrawManager
         float rotation = 0.0f,
         Vector2? origin = null,
         SpriteEffects? effects = null,
-        Vector2? sortingOriginOffset = null)
+        Vector2? sortingOriginOffset = null,
+        bool isUi)
     {
         Vector2 centeredOrigin = texture.GetSize() * 0.5f + (origin ?? Vector2.Zero);
         Draw(
@@ -42,7 +43,8 @@ internal class DrawManager
             destination.Size.ToVector(),
             centeredOrigin,
             effects,
-            sortingOriginOffset
+            sortingOriginOffset,
+            isUi
             );
     }
 
@@ -57,7 +59,8 @@ internal class DrawManager
         Vector2? scale = null,
         Vector2? origin = null,
         SpriteEffects? effects = null,
-        Vector2? sortingOriginOffset = null)
+        Vector2? sortingOriginOffset = null,
+        bool isUi = false)
     {
         Vector2 centeredOrigin = texture.GetSize() * 0.5f + (origin ?? Vector2.Zero);
         Draw(
@@ -71,7 +74,8 @@ internal class DrawManager
             scale,
             centeredOrigin,
             effects,
-            sortingOriginOffset
+            sortingOriginOffset,
+            isUi
             );
     }
     public void Draw(
@@ -85,10 +89,10 @@ internal class DrawManager
         Vector2? scale = null,
         Vector2? origin = null,
         SpriteEffects? effects = null,
-        Vector2? sortingOriginOffset = null)
+        Vector2? sortingOriginOffset = null,
+        bool isUi = false)
     {
-        List<DrawInstruction> draws = DrawLayers.GetValueOrDefault(drawLayer, []);
-        draws.Add(new DrawInstruction(
+        AddAtLayer(new DrawInstruction(
                 texture,
                 position,
                 scale ?? Vector2.One,
@@ -102,8 +106,7 @@ internal class DrawManager
                 false,
                 null,
                 null
-                ));
-        DrawLayers[drawLayer] = draws;
+                ), drawLayer, isUi);
     }
 
     public void Draw(
@@ -116,10 +119,10 @@ internal class DrawManager
         float rotation = 0.0f,
         Vector2? origin = null,
         SpriteEffects? effects = null,
-        Vector2? sortingOriginOffset = null)
+        Vector2? sortingOriginOffset = null,
+        bool isUi = false)
     {
-        List<DrawInstruction> draws = DrawLayers.GetValueOrDefault(drawLayer, []);
-        draws.Add(new DrawInstruction(
+        AddAtLayer(new DrawInstruction(
                 texture,
                 destination.Location.ToVector(),
                 destination.Size.ToVector(),
@@ -133,8 +136,7 @@ internal class DrawManager
                 false,
                 null,
                 null
-                ));
-        DrawLayers[drawLayer] = draws;
+                ), drawLayer, isUi);
     }
 
     public void DrawString(
@@ -143,7 +145,9 @@ internal class DrawManager
         SpriteFont font = null,
         int drawLayer = 1,
         Color? color = null,
-        bool centered = false
+        Vector2? scale = null,
+        bool centered = false,
+        bool isUi = false
         )
     {
         font ??= Fonts.Arial;
@@ -151,8 +155,7 @@ internal class DrawManager
         {
             position -= font.MeasureString(text) * 0.5f;
         }
-        List<DrawInstruction> draws = DrawLayers.GetValueOrDefault(drawLayer, []);
-        draws.Add(new DrawInstruction(
+        AddAtLayer(new DrawInstruction(
                 null,
                 position,
                 Vector2.Zero,
@@ -161,22 +164,29 @@ internal class DrawManager
                 0.0f,
                 Vector2.Zero,
                 SpriteEffects.None,
-                Vector2.Zero,
+                scale ?? Vector2.One,
                 drawLayer,
                 true,
                 text,
                 font
-                ));
-        DrawLayers[drawLayer] = draws;
+                ), drawLayer, isUi);
     }
 
-    public void DrawCircle(Circle circle, Color? color = null, int drawLayer = 1)
+    public void AddAtLayer(DrawInstruction instruction, int drawLayer, bool isUi)
     {
-        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(circle.Center.ToPoint(), new Point((int)(circle.Radius * 2.0f))), drawLayer: drawLayer);
+        SortedDictionary<int, List<DrawInstruction>> drawLayers = isUi ? DrawUILayers : DrawLayers;
+        List<DrawInstruction> draws = drawLayers.GetValueOrDefault(drawLayer, []);
+        draws.Add(instruction);
+        drawLayers[drawLayer] = draws;
     }
-    public void DrawCircle(Vector2 position, float radius, Color? color = null, int drawLayer = 1)
+
+    public void DrawCircle(Circle circle, Color? color = null, int drawLayer = 1, bool isUi = false)
     {
-        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer);
+        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(circle.Center.ToPoint(), new Point((int)(circle.Radius * 2.0f))), drawLayer: drawLayer, isUi: isUi);
+    }
+    public void DrawCircle(Vector2 position, float radius, Color? color = null, int drawLayer = 1, bool isUi = false)
+    {
+        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer, isUi: isUi);
     }
 
     public void Paint()

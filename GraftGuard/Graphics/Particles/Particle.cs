@@ -279,9 +279,9 @@ internal class Particle
     /// <summary>
     /// Draw this particle
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="gametime">This frame's GameTime</param>
-    public void Draw(SpriteBatch batch, GameTime gametime)
+    public void Draw(DrawManager drawing, GameTime gametime)
     {
         float progress = Math.Min(timeElapsed / lifetime, 1);
 
@@ -291,6 +291,11 @@ internal class Particle
             );
         Color color = startColor.Lerp(endColor, progress);
 
-        batch.DrawCenteredScaled(texture, position, scale, null, color, rotation);
+        drawing.DrawCentered(
+            texture,
+            position, 
+            scale: scale,
+            color: color,
+            rotation: rotation);
     }
 }

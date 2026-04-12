@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -102,22 +103,22 @@ internal class NightPlacementGUI
             }
         }
     }
-    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager input)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input)
     {
         // Draw Buttons Background
-        batch.Draw(
+        drawing.Draw(
             Placeholders.TexturePixel,
-            new Rectangle(0, (int)(Interface.ScreenSize.Y - _designSize.Y),
+            destination: new Rectangle(0, (int)(Interface.ScreenSize.Y - _designSize.Y),
                 (int)Interface.ScreenSize.X, (int)_designSize.X),
-            new Color(0.0f, 0.0f, 0.0f, 0.4f));
+            color: new Color(0.0f, 0.0f, 0.0f, 0.4f));
 
         // Draw Designs
-        _designButtons.Draw(batch, (batch, button, _) => button.Draw(batch, time, world, input));
+        _designButtons.Draw(drawing, (batch, button, _) => button.Draw(batch, time, world, input));
 
         // Draw the a preview of the current tower
         if (_selectedIndex is int index)
         {
-            _designs[index].Definition.DrawPreview(batch, time, input.MouseScreenPosition.ToVector());
+            _designs[index].Definition.DrawPreview(drawing, time, input.MouseScreenPosition.ToVector());
         }
     }
 }

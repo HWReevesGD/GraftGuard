@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Map;
@@ -61,21 +62,21 @@ internal class GameOverScreen
         inputManager.Update();
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime)
+    public void Draw(DrawManager drawing, GameTime gameTime)
     {
-        batch.End();
+        drawing.End()
         // Draw by the Camera's Position
-        batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
-        world.DrawCamera(batch, gameTime, session.Time, inputManager, true);
-        batch.End();
+        drawing.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
+        world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
+        drawing.End();
 
         // draw menu items
 
-        batch.Begin();
+        drawing.Begin();
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        batch.Draw(backgroundTexture, fullScreenRect, bgColor);
+        drawing.Draw(backgroundTexture, fullScreenRect, bgColor);
 
         float screenScale = 2.0f;
         float centerX = Interface.Width / 2;
@@ -88,7 +89,7 @@ internal class GameOverScreen
 
         new Text(Fonts.SubFont, titleText).SetXOrigin(XOrigin.Center)
             .AddEffect(new ShakeTextEffect(shakeMagnitude))
-            .Draw(batch, gameTime, new Vector2(centerX, centerY - (150 * screenScale)));
+            .Draw(drawing, gameTime, new Vector2(centerX, centerY - (150 * screenScale)));
 
         // score stuff
 
@@ -121,12 +122,12 @@ internal class GameOverScreen
         float scaledGap = gap * screenScale;
         float scaledJump = scoreNumJumpDist * screenScale;
 
-        batch.DrawString(Fonts.SubFont, scoreText, new Vector2(
+        drawing.DrawString(Fonts.SubFont, scoreText, new Vector2(
             centerX - scoreTextSize.X - scaledGap / 2,
             scoreY
             ), Color.White);
 
-        batch.DrawString(
+        drawing.DrawString(
             Fonts.SubFont,
             $"{displayScore}",
             new Vector2(
@@ -155,12 +156,12 @@ internal class GameOverScreen
         {
             float hiScoreY = centerY + (75 * screenScale);
 
-            batch.DrawString(Fonts.SubFont, hiScoreText, new Vector2(
+            drawing.DrawString(Fonts.SubFont, hiScoreText, new Vector2(
                 centerX - hiScoreTextSize.X - scaledGap / 2,
                 hiScoreY
                 ), Color.White);
 
-            batch.DrawString(
+            drawing.DrawString(
                 Fonts.SubFont,
                 $"{displayHiScore}",
                 new Vector2(

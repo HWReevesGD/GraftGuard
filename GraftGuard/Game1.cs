@@ -136,11 +136,7 @@ public class Game1 : Game
         GraphicsDevice.SetRenderTarget(_renderTarget);
         GraphicsDevice.Clear(Color.ForestGreen);
 
-        _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-
-        _gameManager.Draw(_spriteBatch, gameTime);
-
-        _spriteBatch.End();
+        _gameManager.Draw(gameTime);
 
         GraphicsDevice.SetRenderTarget(null); 
         GraphicsDevice.Clear(Color.Black);    

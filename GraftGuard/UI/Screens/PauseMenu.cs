@@ -1,6 +1,7 @@
 ﻿// pause menu
 
 using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -40,26 +41,21 @@ internal class PauseMenu
         inputManager.Update();
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime, TimeState timeState)
+    public void Draw(DrawManager drawing, GameTime gameTime, TimeState timeState)
     {
 
-        batch.End();
         // Draw by the Camera's Position
-        batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: world.Camera.WorldToScreen);
-        world.DrawCamera(batch, gameTime, timeState, inputManager, true);
-        batch.End();
+        world.DrawCamera(drawing, gameTime, timeState, inputManager, true);
 
         // draw menu items
 
-        batch.Begin();
-
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        batch.Draw(backgroundTexture, fullScreenRect, bgColor);
+        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor);
 
         Vector2 textSize = Fonts.SubFont.MeasureString(text);
         Vector2 position = new Vector2(Interface.Width / 2 - textSize.X / 2, Interface.Height / 2 - textSize.Y / 2);
 
-        batch.DrawString(Fonts.SubFont, text, position, Color.White);
+        drawing.DrawString(font: Fonts.SubFont, text: text, position: position);
     }
 }

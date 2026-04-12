@@ -204,9 +204,9 @@ internal struct Text
     /// <summary>
     /// Draw each letter separately to add kerning without text effects
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    private void DrawRawWithKerning(SpriteBatch batch, Vector2 position)
+    private void DrawRawWithKerning(DrawManager drawing, Vector2 position)
     {
         Vector2 leftPosition = position + Origin;
 
@@ -214,16 +214,12 @@ internal struct Text
         {
             string charString = $"{character}";
 
-            batch.DrawString(
-                Font,
-                charString,
-                leftPosition,
-                Color,
-                0,
-                Vector2.Zero,
-                Scale,
-                SpriteEffects.None,
-                0
+            drawing.DrawString(
+                font: Font,
+                text: charString,
+                position: leftPosition,
+                color: Color,
+                scale: Scale
                 );
 
             // advanced by width and kerning
@@ -234,36 +230,32 @@ internal struct Text
     /// <summary>
     /// Draw this text without text effects
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    public void DrawRaw(SpriteBatch batch, Vector2 position)
+    public void DrawRaw(DrawManager drawing, Vector2 position)
     {
         if (Kerning != 0)
         {
-            DrawRawWithKerning(batch, position);
+            DrawRawWithKerning(drawing, position);
             return;
         }
 
-        batch.DrawString(
-            Font,
-            TextString,
-            position + Origin,
-            Color,
-            0,
-            Vector2.Zero,
-            Scale,
-            SpriteEffects.None,
-            0
+        drawing.DrawString(
+            font: Font,
+            text: TextString,
+            position: position + Origin,
+            color: Color,
+            scale: Scale
             );
     }
 
     /// <summary>
     /// Draw the text provided at construct time with the new effects added
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="gameTime">GameTime</param>
     /// <param name="position">Text origin position on screen</param>
-    public void Draw(SpriteBatch batch, GameTime gameTime, Vector2 position)
+    public void Draw(DrawManager drawing, GameTime gameTime, Vector2 position)
     {
         Vector2 renderOrigin = position + Origin;
         Vector2 curPosition = renderOrigin;
@@ -290,16 +282,12 @@ internal struct Text
             }
 
             // draw this letter
-            batch.DrawString(
-                Font,
-                character,
-                letter.Position,
-                letter.Color,
-                0,
-                Vector2.Zero,
-                letter.Scale,
-                SpriteEffects.None,
-                0
+            drawing.DrawString(
+                text: character,
+                position: letter.Position,
+                font: Font,
+                color: letter.Color,
+                scale: letter.Scale
                 );
 
             // advance position

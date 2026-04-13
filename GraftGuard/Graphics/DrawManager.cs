@@ -124,8 +124,9 @@ internal class DrawManager
                 false,
                 null,
                 null,
-                ForceScissor ?? scissor
-                ), drawLayer, isUi, extraMatrix: ExtraMatrix);
+                ForceScissor ?? scissor,
+                extraMatrix: ExtraMatrix
+                ), drawLayer, isUi);
     }
 
     public void Draw(
@@ -158,8 +159,9 @@ internal class DrawManager
                 false,
                 null,
                 null,
-                ForceScissor ?? scissor
-                ), drawLayer, isUi, extraMatrix: ExtraMatrix);
+                ForceScissor ?? scissor,
+                extraMatrix: ExtraMatrix
+                ), drawLayer, isUi);
     }
 
     public void DrawString(
@@ -196,8 +198,9 @@ internal class DrawManager
                 true,
                 text,
                 font,
-                ForceScissor ?? scissor
-                ), drawLayer, isUi, extraMatrix: ExtraMatrix);
+                ForceScissor ?? scissor,
+                extraMatrix: ExtraMatrix
+                ), drawLayer, isUi);
     }
 
     public void AddAtLayer(DrawInstruction instruction, int drawLayer, bool isUi)

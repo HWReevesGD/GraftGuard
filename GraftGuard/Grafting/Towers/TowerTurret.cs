@@ -64,11 +64,11 @@ internal class TowerTurret : Tower
         }
     }
 
-    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted)
     {
         float direction = CurrentDirection;
-        drawing.DrawCentered(Texture, Position, isUi: isUi);
-        drawing.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction, isUi: isUi);
+        drawing.DrawCentered(Texture, Position, isUi: isUi, sortMode: defaultSortMode);
+        drawing.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction, isUi: isUi, sortMode: defaultSortMode);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -88,7 +88,7 @@ internal class TowerTurret : Tower
                 Rotation = direction - MathF.PI / 2.0f
             };
 
-            drawing.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation, isUi: isUi);
+            drawing.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation, isUi: isUi, sortMode: defaultSortMode);
             part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state, isUi: isUi);
         }
     }

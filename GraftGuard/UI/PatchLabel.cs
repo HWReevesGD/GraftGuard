@@ -34,7 +34,7 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
     public void Draw(DrawManager drawing, Color? color = null)
     {
         Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color);
-        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor);
+        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top);
     }
 
     public bool IsMouseOver(InputManager inputManager)

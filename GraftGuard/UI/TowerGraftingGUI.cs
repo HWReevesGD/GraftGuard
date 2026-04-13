@@ -204,7 +204,7 @@ internal class TowerGraftingGUI
         if (inputManager.LeftMouseClicked() &&
             _currentlyChosenPart is not null &&
             _editingTower is not null &&
-            _editingTower.IsOver(inputManager.MouseScreenPosition.ToVector()))
+            _editingTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(), Matrix.CreateScale(1.0f / _previewScale))))
         {
             if (world.Inventory.GetPartCount(_currentlyChosenPart) > 0)
             {
@@ -227,7 +227,7 @@ internal class TowerGraftingGUI
                         RefundParts(_editingTower, world.Inventory);
                     }
                     _currentlyGraftingTower = _towerChoices[index];
-                    _editingTower = _currentlyGraftingTower.Factory(Interface.ScreenCenter - _towerDisplayOffset);
+                    _editingTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
                 }
             });
 
@@ -393,21 +393,19 @@ internal class TowerGraftingGUI
         // Custom Tower Drawing
 
         // Set Scissor Mask
-        //drawing.GraphicsDevice.ScissorRectangle = _towerDisplay.Box;
+        drawing.ForceScissor = _towerDisplay.Box;
 
-        //drawing.Begin(
-         //   transformMatrix: Matrix.CreateScale(_previewScale),
-          //  samplerState: SamplerState.PointWrap,
-           // rasterizerState: new RasterizerState { ScissorTestEnable = true });
+        drawing.ExtraMatrix = Matrix.CreateScale(_previewScale);
 
         // Draw Tower
         _editingTower?.Draw(time, drawing, world, inputManager, TimeState.Day, isUi: true);
 
         // Draw Projectiles
-        _projectiles.Draw(drawing, time, world, inputManager);
+        _projectiles.Draw(drawing, time, world, inputManager, isUi: true);
 
         // Back to Normal
-        //ReBatchNormal(drawing);
+        drawing.ExtraMatrix = null;
+        drawing.ForceScissor = null;
 
         // Draw the Label showing the Currently Chosen Part
         _currentChosenLabel.Draw(drawing);

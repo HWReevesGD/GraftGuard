@@ -231,7 +231,10 @@ namespace GraftGuard
         {
             var session = PlayerData.CurrentGame;
 
-            _world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
+            if (session.Time != TimeState.Day)
+            {
+                _world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
+            }
 
             // Draw Time Overlay
             switch (PlayerData.CurrentGame.Time)

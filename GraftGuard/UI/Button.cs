@@ -63,7 +63,7 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
         _thisMouseState = inputManager.CurrentMouse;
     }
 
-    public virtual void Draw(DrawManager drawing, Color? color = null)
+    public virtual void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
         DrawIcon(drawing);
         DrawText(drawing);

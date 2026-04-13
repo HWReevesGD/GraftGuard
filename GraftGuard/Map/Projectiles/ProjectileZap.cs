@@ -26,10 +26,10 @@ internal class ProjectileZap : Projectile
         Next = [];
     }
 
-    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)
     {
         float lifeFactor = 1.0f - Lifetime / MaxLifetime;
-        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale * 0.5f * lifeFactor, rotation: (time.Total() % MathF.Tau) * 3.0f);
+        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale * 0.5f * lifeFactor, rotation: (time.Total() % MathF.Tau) * 3.0f, isUi: isUi);
 
         foreach (ProjectileZap zap in Next)
         {
@@ -38,7 +38,7 @@ internal class ProjectileZap : Projectile
                 destination: new Rectangle(Position.ToPoint() - new Point(0, (int)(16 * lifeFactor)), new Point((int)Vector2.Distance(Position, zap.Position) + 8, (int)(32 * lifeFactor))),
                 color: new Color(Color.White, (MaxLifetime - Lifetime) / MaxLifetime),
                 rotation: (zap.Position - Position).Angle(),
-                origin: new Vector2(0, 16));
+                origin: new Vector2(0, 16), isUi: isUi);
         }
     }
 

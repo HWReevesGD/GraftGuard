@@ -47,10 +47,10 @@ internal class ProjectileFire : Projectile
         }
     }
 
-    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)
     {
         float lifetimeFactor = _lifetime / (FullLifetime * _lifetimeModifier);
         drawing.DrawCentered(Texture, Position, scale: Vector2.One * (MathF.Log(_lifetime + 1.0f) * Scale), rotation: Velocity.Angle(),
-            color: new Color(Color.White, (1.0f - lifetimeFactor) * 4.0f));
+            color: new Color(Color.White, (1.0f - lifetimeFactor) * 4.0f), isUi: isUi);
     }
 }

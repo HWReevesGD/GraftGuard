@@ -22,9 +22,9 @@ internal class ProjectileBullet : Projectile
         DamageTimer = new IntervalTimer(0.1f);
     }
 
-    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public override void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)
     {
-        drawing.DrawCentered(Texture, Position, scale: Scale * Vector2.One, rotation: Velocity.Angle() + MathF.PI / 2.0f);
+        drawing.DrawCentered(Texture, Position, scale: Scale * Vector2.One, rotation: Velocity.Angle() + MathF.PI / 2.0f, isUi: isUi);
     }
 
     public override void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)

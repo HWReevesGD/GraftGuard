@@ -88,9 +88,9 @@ internal class Projectile
 
     }
 
-    public virtual void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public virtual void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)
     {
-        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale);
+        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale, isUi: isUi);
     }
 
     public static Texture2D TFire;

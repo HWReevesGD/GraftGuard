@@ -90,9 +90,9 @@ internal class PatchButton : Button
         }
     }
 
-    public override void Draw(DrawManager drawing, Color? color = null)
+    public override void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
-        Patch.Draw(drawing, Position, Size.ToPoint(), color);
+        Patch.Draw(drawing, Position, Size.ToPoint(), color, sortMode: SortMode.Bottom);
         base.Draw(drawing, color);
     }
 

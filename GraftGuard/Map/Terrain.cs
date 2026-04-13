@@ -55,7 +55,7 @@ internal class Terrain
         foreach ((Point coordinate, TileDefinition[] chunk) in Chunks)
         {
             Vector2 chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits).ToVector();
-            drawing.Draw(RenderingChunks[coordinate], chunkPosition, sortMode: SortMode.Bottom);
+            drawing.Draw(RenderingChunks[coordinate], chunkPosition, sortMode: SortMode.Bottom, drawLayer: 0);
         }
 
         if (Props is not null)

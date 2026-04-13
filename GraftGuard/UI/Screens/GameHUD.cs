@@ -204,7 +204,7 @@ internal class GameHUD
                     (int)finalSize.Y
                     );
 
-                drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top);
+                drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top, drawLayer: 2);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;

@@ -89,9 +89,9 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     }
 
-    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
+    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false)
     {
-        base.Draw(time, drawing);
+        drawing.Draw(Texture, Position, isUi: isUi);
     }
 
     /// <summary>

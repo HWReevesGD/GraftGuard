@@ -204,7 +204,7 @@ internal class TowerGraftingGUI
         if (inputManager.LeftMouseClicked() &&
             _currentlyChosenPart is not null &&
             _editingTower is not null &&
-            _editingTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(), Matrix.CreateScale(1.0f / _previewScale))))
+            _editingTower.IsOver(inputManager.MouseScreenPosition.ToVector()))
         {
             if (world.Inventory.GetPartCount(_currentlyChosenPart) > 0)
             {
@@ -227,7 +227,7 @@ internal class TowerGraftingGUI
                         RefundParts(_editingTower, world.Inventory);
                     }
                     _currentlyGraftingTower = _towerChoices[index];
-                    _editingTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
+                    _editingTower = _currentlyGraftingTower.Factory(Interface.ScreenCenter - _towerDisplayOffset);
                 }
             });
 
@@ -350,18 +350,21 @@ internal class TowerGraftingGUI
         // Draw Garage Background
         drawing.Draw(
             Placeholders.GarageBackgroundTexture,
-            destination: Interface.ScreenRect
+            destination: Interface.ScreenRect,
+            isUi: true,
+            sortMode: SortMode.Bottom,
+            drawLayer: 0
         );
 
         // Scissor for Parts
         //ReBatchWithScissor(drawing, _towerChoiceButtons.GridRectangle);
         // Draw each Tower Button
-        //_towerChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
+        _towerChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Scissor for Parts
         //ReBatchWithScissor(drawing, _partChoiceButtons.GridRectangle);
         // Draw each Part Button
-        //_partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
+        _partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Back to Normal
         //ReBatchNormal(drawing);
@@ -388,7 +391,6 @@ internal class TowerGraftingGUI
         _maxTowersLabel.Draw(drawing);
 
         // Custom Tower Drawing
-        //TODO: drawing.End();
 
         // Set Scissor Mask
         //drawing.GraphicsDevice.ScissorRectangle = _towerDisplay.Box;
@@ -399,7 +401,7 @@ internal class TowerGraftingGUI
            // rasterizerState: new RasterizerState { ScissorTestEnable = true });
 
         // Draw Tower
-        _editingTower?.Draw(time, drawing, world, inputManager, TimeState.Day);
+        _editingTower?.Draw(time, drawing, world, inputManager, TimeState.Day, isUi: true);
 
         // Draw Projectiles
         _projectiles.Draw(drawing, time, world, inputManager);

@@ -80,9 +80,9 @@ internal class TowerTrap : Tower
         }
     }
 
-    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false)
     {
-        drawing.DrawCentered(Texture, Position);
+        drawing.DrawCentered(Texture, Position, isUi: isUi);
         if (!HasParts) return;
 
         for (int x = 0; x < GridSize; x++)
@@ -98,7 +98,7 @@ internal class TowerTrap : Tower
 
                 drawing.Draw(part.Definition.Texture, partPosition, source: new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))),
                     effects: SpriteEffects.FlipVertically,
-                    origin: Vector2.Zero);
+                    origin: Vector2.Zero, isUi: isUi);
 
                 PartTransform transform = new PartTransform()
                 {
@@ -106,7 +106,7 @@ internal class TowerTrap : Tower
                     Rotation = -MathF.PI / 2.0f,
                 };
 
-                part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state);
+                part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state, isUi: isUi);
             }
         }
     }

@@ -7,8 +7,6 @@ using GraftGuard.Map.Projectiles;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,7 +36,7 @@ internal class CreatedTowerButton : IPositional, ISizeable
         Tower.Update(time, world, input, state, Projectiles);
         Projectiles.Update(time, world, input);
     }
-    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state = TimeState.Day)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state = TimeState.Day, Rectangle? scissor = null)
     {
         Internal.Draw(drawing);
 
@@ -47,8 +45,8 @@ internal class CreatedTowerButton : IPositional, ISizeable
         //drawing.GraphicsDevice.ScissorRectangle = Internal.MarginBox;
         //drawing.Begin(samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
 
-        Tower.Draw(time, drawing, world, input, state);
-        Projectiles.Draw(drawing, time, world, input);
+        Tower.Draw(time, drawing, world, input, state, isUi: true);
+        Projectiles.Draw(drawing, time, world, input, isUi: true);
 
         //drawing.End();
         //drawing.Begin(samplerState: SamplerState.PointWrap);

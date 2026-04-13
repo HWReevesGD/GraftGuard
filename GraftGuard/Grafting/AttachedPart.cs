@@ -48,7 +48,7 @@ internal class AttachedPart
         }
     }
 
-    public void DrawBehavior(PartSettings settings, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
+    public void DrawBehavior(PartSettings settings, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false)
     {
         foreach (IPartBehavior behavior in _partBehaviors)
         {

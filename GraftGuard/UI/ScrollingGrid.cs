@@ -111,7 +111,7 @@ internal class ScrollingGrid<T> where T : class, IPositional, ISizeable
         // Draw Back
         if (!skipBackground)
         {
-            drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Position.ToPoint(), Size.ToPoint()), color: new Color(Color.Black, 0.3f));
+            drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Position.ToPoint(), Size.ToPoint()), color: new Color(Color.Black, 0.3f), isUi: true);
         }
 
         // Draw Arrows

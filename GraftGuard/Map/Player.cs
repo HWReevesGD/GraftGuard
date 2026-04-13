@@ -23,6 +23,7 @@ internal class Player : GameObject
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
     private static readonly float invincibilityFrameTime = 0.5f; // in seconds
     public Vector2 VisualCenter => Position + new Vector2(HitboxSize.X * 0.5f, -16f);
+    public Vector2 SortingOffset { get; set; } = new Vector2(0, 150);
 
     private static Texture2D texture;
     private Circle _collectionCircle;
@@ -42,7 +43,7 @@ internal class Player : GameObject
     {
         _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
-        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, VisualCenter);
+        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, VisualCenter, SortingOffset);
     }
 
     /// <summary>
@@ -89,7 +90,7 @@ internal class Player : GameObject
         for (int index = 0; index < HeldParts.Count; index++)
         {
             Texture2D part = HeldParts[index].Texture;
-            Vector2 offset = Vector2.UnitY * (index - 2) * 8;
+            Vector2 offset = Vector2.UnitY * (index - 2) * 8 * 10;
             Vector2 position = VisualCenter - Vector2.UnitY * (index - 2) * 8;
             drawing.Draw(part, position, rotation: -MathF.PI / 2.0f, sortingOriginOffset: offset);
         }

@@ -204,7 +204,7 @@ internal class GameHUD
                     (int)finalSize.Y
                     );
 
-                drawing.Draw(textureToDraw, destination: rect, source: sourceRect);
+                drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;
@@ -224,7 +224,8 @@ internal class GameHUD
             (int)(sTopMargin + hudTopOffset),
             (int)sWidth,
             (int)sHeight
-            ));
+            ),
+            isUi: true);
 
         string timerText = active ? $"{displayMinutes}:{displaySeconds.ToString("D2")}" : "-:--";
 
@@ -234,11 +235,13 @@ internal class GameHUD
 
         new Text(Fonts.SubFont, $"{timerText} Left")
             .SetXOrigin(XOrigin.Center)
-            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset));
+            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset),
+            isUi: true);
 
         new Text(Fonts.SubFont, timeNames[PlayerData.CurrentGame.Time])
            .SetXOrigin(XOrigin.Center)
-           .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset));
+           .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset),
+            isUi: true);
 
         // timer progress bar
 
@@ -251,17 +254,19 @@ internal class GameHUD
             (int)(sTopMargin + sBarMargin + hudTopOffset),
             (int)((sWidth - sBarMargin * 2) * timerProgressBarScale),
             (int)(sHeight * timerBarHeightScale - sBarMargin * 2)
-            ), color: Color.Purple);
+            ), color: Color.Purple,
+            isUi: true);
 
         drawing.Draw(timerOverlayTexture, new Rectangle(
             (int)(Interface.Width / 2 - sWidth / 2),
             (int)(sTopMargin + hudTopOffset),
             (int)sWidth,
             (int)sHeight
-            ), color: Color.White);
+            ), color: Color.White,
+            isUi: true);
         #endregion
 
         particles.Update(gameTime);
-        particles.Draw(drawing, gameTime);
+        particles.Draw(drawing, gameTime, isUi: true);
     }
 }

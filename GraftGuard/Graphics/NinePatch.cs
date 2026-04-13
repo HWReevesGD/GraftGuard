@@ -25,8 +25,8 @@ internal class NinePatch
         MarginTop = marginTop;
         MarginBottom = marginBottom;
     }
-    public void Draw(DrawManager drawing, Rectangle box, Color? color = null) => Draw(drawing, box.Location.ToVector(), box.Size, color);
-    public void Draw(DrawManager drawing, Vector2 position, Point size, Color? color = null)
+    public void Draw(DrawManager drawing, Rectangle box, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Top) => Draw(drawing, box.Location.ToVector(), box.Size, color, isUI, sortMode);
+    public void Draw(DrawManager drawing, Vector2 position, Point size, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Top)
     {
         // The Position of the Nine-Patch turned into a Point
         Point offset = position.ToPoint();
@@ -51,7 +51,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(0, 0, MarginLeft, MarginTop).Translated(offset),
             source: new Rectangle(0, 0, MarginLeft, MarginTop),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom-Left
         // ╔═══╗
@@ -61,7 +63,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Translated(offset),
             source: new Rectangle(0, textureSize.Y - MarginBottom, MarginLeft, MarginBottom),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Top-Right
         // ╔══░░
@@ -71,7 +75,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(size.X - MarginRight, 0, MarginRight, MarginTop).Translated(offset),
             source: new Rectangle(textureSize.X - MarginRight, 0, MarginRight, MarginTop),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom-Right
         // ╔═══╗
@@ -81,7 +87,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(size.X - MarginRight, size.Y - MarginBottom, MarginRight, MarginBottom).Translated(offset),
             source: new Rectangle(textureSize.X - MarginRight, textureSize.Y - MarginBottom, MarginRight, MarginBottom),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Left
         // ╔═══╗
@@ -91,7 +99,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(0, MarginTop, MarginLeft, sideSize.Y).Translated(offset),
             source: new Rectangle(0, MarginTop, MarginLeft, textureSideSize.Y),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Right
         // ╔═══╗
@@ -101,7 +111,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(size.X - MarginRight, MarginTop, MarginRight, sideSize.Y).Translated(offset),
             source: new Rectangle(textureSize.X - MarginRight, MarginTop, MarginRight, textureSideSize.Y),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Top
         // ╔░░░╗
@@ -111,7 +123,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(MarginLeft, 0, sideSize.X, MarginTop).Translated(offset),
             source: new Rectangle(MarginLeft, 0, textureSideSize.X, MarginTop),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom
         // ╔═══╗
@@ -121,7 +135,9 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(MarginLeft, size.Y - MarginBottom, sideSize.X, MarginBottom).Translated(offset),
             source: new Rectangle(MarginLeft, textureSize.Y - MarginBottom, textureSideSize.X, MarginBottom),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Center
         // ╔═══╗
@@ -131,8 +147,10 @@ internal class NinePatch
             texture: Texture,
             destination: new Rectangle(MarginLeft, MarginTop, sideSize.X, sideSize.Y).Translated(offset),
             source: new Rectangle(MarginLeft, MarginTop, textureSideSize.X, textureSideSize.Y),
-            color: finalColor);
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
     }
 
-    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null) => Draw(drawing, position, size.ToPoint(), color);
+    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null, bool isUi = true, SortMode sortMode = SortMode.Top) => Draw(drawing, position, size.ToPoint(), color, isUi, sortMode);
 }

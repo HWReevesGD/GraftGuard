@@ -71,7 +71,7 @@ internal class GameOverScreen
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor);
+        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor, isUi: true);
 
         float screenScale = 2.0f;
         float centerX = Interface.Width / 2;
@@ -121,7 +121,8 @@ internal class GameOverScreen
             font: Fonts.SubFont,
             text: scoreText,
             position: new Vector2(centerX - scoreTextSize.X - scaledGap / 2, scoreY),
-            isUi: true);
+            isUi: true,
+            drawLayer: 2);
 
         drawing.DrawString(
             font: Fonts.SubFont,
@@ -130,7 +131,8 @@ internal class GameOverScreen
                 centerX + scaledGap / 2,
                 scoreY + (scoreCountIsUp ? -scaledJump : 0)
                 ),
-            isUi: true);
+            isUi: true,
+            drawLayer: 2);
 
         // hi score text
 
@@ -157,7 +159,8 @@ internal class GameOverScreen
                 position: new Vector2(
                     centerX - hiScoreTextSize.X - scaledGap / 2,
                     hiScoreY),
-                isUi: true);
+                isUi: true,
+                drawLayer: 2);
 
             drawing.DrawString(
                 font: Fonts.SubFont,
@@ -166,7 +169,8 @@ internal class GameOverScreen
                     centerX + scaledGap / 2,
                     hiScoreY + (hiScoreCountIsUp ? -scaledJump : 0)
                     ),
-                isUi: true);
+                isUi: true,
+                drawLayer: 2);
         }
     }
 }

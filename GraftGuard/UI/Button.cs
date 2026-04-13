@@ -75,7 +75,8 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
             font: Font,
             text: Text,
             position: Position + Size / 2.0f - Font.MeasureString(Text) / 2.0f,
-            color: TextColor
+            color: TextColor,
+            isUi: true
             );
     }
     protected virtual void DrawIcon(DrawManager drawing)
@@ -87,7 +88,7 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
             ButtonIconType.Stretch => new Rectangle(Position.ToPoint(), Size.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((Position + Size * 0.5f - Size.SquareOfSmallest() * 0.5f).ToPoint(), Size.SquareOfSmallest().ToPoint())
         };
-        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White);
+        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White, isUi: true);
     }
 
     bool IMouseDetectable.IsMouseOver(InputManager inputManager)

@@ -51,11 +51,11 @@ internal class PauseMenu
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor);
+        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor, isUi: true);
 
         Vector2 textSize = Fonts.SubFont.MeasureString(text);
         Vector2 position = new Vector2(Interface.Width / 2 - textSize.X / 2, Interface.Height / 2 - textSize.Y / 2);
 
-        drawing.DrawString(font: Fonts.SubFont, text: text, position: position);
+        drawing.DrawString(font: Fonts.SubFont, text: text, position: position, isUi: true, sortMode: SortMode.Top, drawLayer: 2);
     }
 }

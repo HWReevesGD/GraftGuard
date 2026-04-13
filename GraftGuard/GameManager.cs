@@ -237,10 +237,10 @@ namespace GraftGuard
             switch (PlayerData.CurrentGame.Time)
             {
                 case TimeState.Night:
-                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.1f, 0f, 0.4f, 0.1f));
+                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.1f, 0f, 0.4f, 0.1f), isUi: true);
                     break;
                 case TimeState.Dawn:
-                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.8f, 0.6f, 0.3f, 0.01f));
+                    drawing.Draw(Placeholders.TexturePixel, destination: new Rectangle(Point.Zero, Interface.ScreenSize.ToPoint()), color: new Color(0.8f, 0.6f, 0.3f, 0.01f), isUi: true);
                     break;
                 case TimeState.Day:
                     break;

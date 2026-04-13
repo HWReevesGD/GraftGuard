@@ -10,213 +10,216 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace GraftGuard.Map.Enemies
+namespace GraftGuard.Map.Enemies;
+public class EnemyVisual
 {
-    public class EnemyVisual
+    public BaseDefinition Base { get; private set; }
+    internal List<AttachedPart> AttachedParts = [];
+    public Animator Animator { get; private set; }
+    public float Scale { get; set; }
+    public Vector2 SortingOffset { get; set; }
+
+    private Random rng;
+
+    private float speedMultiplier = 1f;
+
+    //handle death
+    private List<FallingPart> fallingParts = new();
+    public bool AllPartsLanded => IsDead && fallingParts.Count == 0;
+    public bool IsDead { get; private set; } = false;
+
+    public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos, Vector2? sortingOffset = null)
     {
-        public BaseDefinition Base { get; private set; }
-        internal List<AttachedPart> AttachedParts = [];
-        public Animator Animator { get; private set; }
-        public float Scale { get; set; }
+        rng = new Random();
 
-        private Random rng;
+        Base = torsoBase;
+        Scale = scale;
+        Animator = new Animator(initialClip);
+        SortingOffset = sortingOffset ?? Vector2.Zero;
 
-        private float speedMultiplier = 1f;
+        Animator.Teleport(spawnPos);
+        InitializeRandomParts();
+    }
 
-        //handle death
-        private List<FallingPart> fallingParts = new();
-        public bool AllPartsLanded => IsDead && fallingParts.Count == 0;
-        public bool IsDead { get; private set; } = false;
-
-        public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos)
+    protected void InitializeRandomParts()
+    {
+        // Iterate through all sockets, and assign an appropriate part
+        foreach (string slotName in Base.AttachmentPoints.Keys)
         {
-            rng = new Random();
+            if (slotName == "Head")
+            {
+                AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomHead(), slotName));
+            }
+            else
+            {
+                // Fill all other slots with limbs
+                AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomLimb(), slotName));
+            }
+        }
+    }
 
-            Base = torsoBase;
-            Scale = scale;
-            Animator = new Animator(initialClip);
+    public void VisualDeath(Vector2 deathPosition)
+    {
+        IsDead = true;
 
-            Animator.Teleport(spawnPos);
-            InitializeRandomParts();
+        Random rnd = new Random();
+
+        // Explode Limbs and Head
+        foreach (AttachedPart part in AttachedParts)
+        {
+            // Calculate a vector pointing away from the center
+            Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
+            fallingParts.Add(new FallingPart(part.Definition, deathPosition, direction));
         }
 
-        protected void InitializeRandomParts()
+        // Clear the equipped parts so they stop drawing in the normal Draw call
+        AttachedParts.Clear();
+    }
+
+    public void Update(GameTime gameTime, Vector2 position, float speedMultiplier = 1)
+    {
+        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        if (!IsDead)
         {
-            // Iterate through all sockets, and assign an appropriate part
-            foreach (string slotName in Base.AttachmentPoints.Keys)
+            Animator.Update(gameTime, position, speedMultiplier);
+        }
+        else
+        {
+            for (int i = fallingParts.Count - 1; i >= 0; i--)
             {
-                if (slotName == "Head")
+                fallingParts[i].Update(dt);
+
+                if (fallingParts[i].HasLanded)
                 {
-                    AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomHead(), slotName));
-                }
-                else
-                {
-                    // Fill all other slots with limbs
-                    AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomLimb(), slotName));
+                    World.ScatterPart(fallingParts[i].GetLandingPosition(), fallingParts[i].Definition);
+
+                    fallingParts.RemoveAt(i);
                 }
             }
         }
+    }
 
-        public void VisualDeath(Vector2 deathPosition)
+    internal void Draw(DrawManager drawing, Vector2 position)
+    {
+        if (!IsDead)
         {
-            IsDead = true;
+            LimbDrawContext ctx = GetContext(drawing, position);
+            Vector2 sortingPosition = position + SortingOffset;
 
-            Random rnd = new Random();
+            // Draw Torso
+            drawing.Draw(
+                texture: Base.Texture,
+                position: ctx.BodyPos, 
+                rotation: ctx.BodyRot,
+                origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
+                scale: ctx.DynamicScale,
+                sortingOriginOffset: SortingOffset - new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2));
 
-            // Explode Limbs and Head
+            // Draw Limbs
+            int count = 0;
             foreach (AttachedPart part in AttachedParts)
             {
-                // Calculate a vector pointing away from the center
-                Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
-                fallingParts.Add(new FallingPart(part.Definition, deathPosition, direction));
-            }
+                Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+                //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+                Vector2 pixelOffset = new Vector2(
+                    (slotPosition.X - 0.5f) * Base.Texture.Width,
+                    (slotPosition.Y - 0.5f) * Base.Texture.Height
+                );
 
-            // Clear the equipped parts so they stop drawing in the normal Draw call
-            AttachedParts.Clear();
-        }
-
-        public void Update(GameTime gameTime, Vector2 position, float speedMultiplier = 1)
-        {
-            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-            if (!IsDead)
-            {
-                Animator.Update(gameTime, position, speedMultiplier);
-            }
-            else
-            {
-                for (int i = fallingParts.Count - 1; i >= 0; i--)
-                {
-                    fallingParts[i].Update(dt);
-
-                    if (fallingParts[i].HasLanded)
-                    {
-                        World.ScatterPart(fallingParts[i].GetLandingPosition(), fallingParts[i].Definition);
-
-                        fallingParts.RemoveAt(i);
-                    }
-                }
+                DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, SortingOffset);
             }
         }
-
-        internal void Draw(DrawManager drawing, Vector2 position)
+        else
         {
-            if (!IsDead)
+            foreach (var part in fallingParts)
             {
-                LimbDrawContext ctx = GetContext(drawing, position);
-
-                // Draw Torso
-                drawing.Draw(
-                    texture: Base.Texture,
-                    position: ctx.BodyPos, 
-                    rotation: ctx.BodyRot,
-                    origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
-                    scale: ctx.DynamicScale);
-
-                // Draw Limbs
-                int count = 0;
-                foreach (AttachedPart part in AttachedParts)
-                {
-                    Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
-                    //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
-                    Vector2 pixelOffset = new Vector2(
-                        (slotPosition.X - 0.5f) * Base.Texture.Width,
-                        (slotPosition.Y - 0.5f) * Base.Texture.Height
-                    );
-
-                    DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx);
-                }
-            }
-            else
-            {
-                foreach (var part in fallingParts)
-                {
-                    part.Draw(drawing);
-                }
+                part.Draw(drawing);
             }
         }
+    }
 
-        internal LimbDrawContext GetContext(DrawManager drawing, Vector2 enemyPosition)
+    internal LimbDrawContext GetContext(DrawManager drawing, Vector2 enemyPosition)
+    {
+        float timer = Animator.AnimationTimer;
+        AnimationClip clip = Animator.CurrentClip;
+        float bodyRotation = Animator.GetRotation();
+
+        float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
+        float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
+        Vector2 animatedPos = new Vector2(enemyPosition.X + sideSway, enemyPosition.Y + walkBob);
+
+        float squash = (float)Math.Sin(timer * 2f) * 0.05f;
+        Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
+
+        return new LimbDrawContext
         {
-            float timer = Animator.AnimationTimer;
-            AnimationClip clip = Animator.CurrentClip;
-            float bodyRotation = Animator.GetRotation();
+            Drawing = drawing,
+            BodyPos = animatedPos,
+            BodyRot = bodyRotation,
+            DynamicScale = dynamicScale,
+            Timer = timer,
+            Clip = clip
+        };
+    }
 
-            float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
-            float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
-            Vector2 animatedPos = new Vector2(enemyPosition.X + sideSway, enemyPosition.Y + walkBob);
+    internal PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
+    {
+        // Use ctx.Timer, ctx.BodyPos, etc.
+        Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(context.BodyRot));
+        Vector2 worldAttachPos = context.BodyPos + rotatedOffset;
 
-            float squash = (float)Math.Sin(timer * 2f) * 0.05f;
-            Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
+        float phaseShift = index * 0.5f;
+        float rawSine = (float)Math.Sin(context.Timer + phaseShift);
+        float snappyWobble = Math.Sign(rawSine) * (float)Math.Pow(Math.Abs(rawSine), 0.5f) * context.Clip.LimbWobbleScale;
 
-            return new LimbDrawContext
-            {
-                Drawing = drawing,
-                BodyPos = animatedPos,
-                BodyRot = bodyRotation,
-                DynamicScale = dynamicScale,
-                Timer = timer,
-                Clip = clip
-            };
-        }
-
-        internal PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
+        return new PartTransform()
         {
-            // Use ctx.Timer, ctx.BodyPos, etc.
-            Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(context.BodyRot));
-            Vector2 worldAttachPos = context.BodyPos + rotatedOffset;
+            Position = worldAttachPos,
+            Rotation = context.BodyRot + snappyWobble,
+            Origin = new Vector2(part.Texture.Width * part.PivotX, part.Texture.Height * part.PivotY),
+            Scale = context.DynamicScale
+        };
+    }
 
-            float phaseShift = index * 0.5f;
-            float rawSine = (float)Math.Sin(context.Timer + phaseShift);
-            float snappyWobble = Math.Sign(rawSine) * (float)Math.Pow(Math.Abs(rawSine), 0.5f) * context.Clip.LimbWobbleScale;
+    internal PartTransform GetPartTransform(AttachedPart part, Vector2 enemyPosition, int index, bool physical = false)
+    {
+        Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+        //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+        Vector2 pixelOffset = new Vector2(
+            (slotPosition.X - 0.5f) * Base.Texture.Width,
+            (slotPosition.Y - 0.5f) * Base.Texture.Height
+        );
 
-            return new PartTransform()
-            {
-                Position = worldAttachPos,
-                Rotation = context.BodyRot + snappyWobble,
-                Origin = new Vector2(part.Texture.Width * part.PivotX, part.Texture.Height * part.PivotY),
-                Scale = context.DynamicScale
-            };
-        }
-
-        internal PartTransform GetPartTransform(AttachedPart part, Vector2 enemyPosition, int index, bool physical = false)
+        LimbDrawContext context = GetContext(null, enemyPosition);
+        PartTransform transform = GetPartTransform(part.Definition, pixelOffset, context, index);
+        if (physical)
         {
-            Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
-            //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
-            Vector2 pixelOffset = new Vector2(
-                (slotPosition.X - 0.5f) * Base.Texture.Width,
-                (slotPosition.Y - 0.5f) * Base.Texture.Height
-            );
-
-            LimbDrawContext context = GetContext(null, enemyPosition);
-            PartTransform transform = GetPartTransform(part.Definition, pixelOffset, context, index);
-            if (physical)
-            {
-                transform.Rotation += MathF.PI / 2.0f;
-            }
-            return transform;
+            transform.Rotation += MathF.PI / 2.0f;
         }
+        return transform;
+    }
 
-        internal struct LimbDrawContext
-        {
-            public DrawManager Drawing;
-            public Vector2 BodyPos;
-            public float BodyRot;
-            public Vector2 DynamicScale;
-            public float Timer;
-            public AnimationClip Clip;
-        }
+    internal struct LimbDrawContext
+    {
+        public DrawManager Drawing;
+        public Vector2 BodyPos;
+        public float BodyRot;
+        public Vector2 DynamicScale;
+        public float Timer;
+        public AnimationClip Clip;
+    }
 
-        private void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx)
-        {
-            PartTransform transform = GetPartTransform(part, offset, ctx, index);
+    private void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx, Vector2 sortingOffset)
+    {
+        PartTransform transform = GetPartTransform(part, offset, ctx, index);
 
-            ctx.Drawing.Draw(
-                texture: part.Texture,
-                position: transform.Position,
-                rotation: transform.Rotation,
-                origin: transform.Origin,
-                scale: transform.Scale);
-        }
+        ctx.Drawing.Draw(
+            texture: part.Texture,
+            position: transform.Position,
+            rotation: transform.Rotation,
+            origin: transform.Origin,
+            scale: transform.Scale,
+            sortingOriginOffset: sortingOffset - transform.Origin);
     }
 }

@@ -43,7 +43,7 @@ internal class CreatedTowerButton : IPositional, ISizeable
         // Clipping
         drawing.ForceScissor = Internal.MarginBox;
 
-        Tower.Draw(time, drawing, world, input, state, isUi: true);
+        Tower.Draw(time, drawing, world, input, state, isUi: true, drawLayerOffset: 1);
         Projectiles.Draw(drawing, time, world, input, isUi: true);
 
         drawing.ForceScissor = null;

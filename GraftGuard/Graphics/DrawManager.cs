@@ -286,10 +286,10 @@ internal class DrawManager
             return;
         }
 
-        if (instruction.ExtraMatrix is Matrix matrix)
+        if (instruction.ExtraMatrix is Matrix || instruction.Scissor is not null)
         {
             Batch.End();
-            CurrentBatchBegin(matrix);
+            CurrentBatchBegin(instruction.ExtraMatrix ?? Matrix.Identity);
         }
 
         float sorting = 1.0f;
@@ -354,7 +354,7 @@ internal class DrawManager
                 );
         }
 
-        if (instruction.ExtraMatrix is Matrix)
+        if (instruction.ExtraMatrix is Matrix || instruction.Scissor is not null)
         {
             Batch.End();
             CurrentBatchBegin(Matrix.Identity);

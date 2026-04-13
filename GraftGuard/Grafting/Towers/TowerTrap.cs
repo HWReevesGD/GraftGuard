@@ -80,7 +80,7 @@ internal class TowerTrap : Tower
         }
     }
 
-    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode sortMode = SortMode.Sorted)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode sortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
         drawing.DrawCentered(Texture, Position, isUi: isUi);
         if (!HasParts) return;

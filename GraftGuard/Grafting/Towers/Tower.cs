@@ -89,9 +89,9 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     }
 
-    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted)
+    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        drawing.Draw(Texture, Position, isUi: isUi, sortMode: defaultSortMode);
+        drawing.Draw(Texture, Position, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
     }
 
     /// <summary>

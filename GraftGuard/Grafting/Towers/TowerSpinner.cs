@@ -59,9 +59,9 @@ internal class TowerSpinner : Tower
         }
     }
 
-    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        drawing.DrawCentered(Texture, Position, isUi: isUi);
+        drawing.DrawCentered(Texture, Position, isUi: isUi, drawLayer: 1 + drawLayerOffset);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -73,8 +73,8 @@ internal class TowerSpinner : Tower
 
             //Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
             //batch.DrawCircle(damageCircle, Color.Red);
-            drawing.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode);
-            drawing.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode);
+            drawing.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
+            drawing.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
 
             PartTransform transform = new PartTransform()
             {

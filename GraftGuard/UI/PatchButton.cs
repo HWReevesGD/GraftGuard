@@ -114,7 +114,9 @@ internal class PatchButton : Button
             ButtonIconType.Stretch => new Rectangle(marginPosition.ToPoint(), marginSize.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((marginPosition + marginSize * 0.5f - marginSize.SquareOfSmallest() * 0.5f).ToPoint(), marginSize.SquareOfSmallest().ToPoint())
         };
-        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White);
+        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White,
+            isUi: true,
+            sortMode: SortMode.Top);
     }
 
     protected override void DrawText(DrawManager drawing)
@@ -132,7 +134,9 @@ internal class PatchButton : Button
             font: Font,
             text: Text,
             position: marginOffset + marginSize / 2.0f - Font.MeasureString(Text) / 2.0f,
-            color: TextColor
+            color: TextColor,
+            isUi: true,
+            sortMode: SortMode.Top
             );
     }
 }

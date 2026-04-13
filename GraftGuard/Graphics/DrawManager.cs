@@ -15,6 +15,7 @@ internal class DrawManager
     public List<List<DrawInstruction>> DrawUILayers { get; private set; } = [];
     public const float SortingCompressment = 1.0f / 100_000_000_000.0f;
     public const float SortingCompressmentAddition = 1.0f / 1_000_000;
+    public Rectangle? ForceScissor { get; set; } = null;
 
 
     public DrawManager(SpriteBatch batch)
@@ -121,7 +122,7 @@ internal class DrawManager
                 false,
                 null,
                 null,
-                scissor
+                ForceScissor ?? scissor
                 ), drawLayer, isUi);
     }
 
@@ -155,7 +156,7 @@ internal class DrawManager
                 false,
                 null,
                 null,
-                scissor
+                ForceScissor ?? scissor
                 ), drawLayer, isUi);
     }
 
@@ -193,7 +194,7 @@ internal class DrawManager
                 true,
                 text,
                 font,
-                scissor
+                ForceScissor ?? scissor
                 ), drawLayer, isUi);
     }
 
@@ -244,6 +245,7 @@ internal class DrawManager
             Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: camera.WorldToScreen);
             foreach (DrawInstruction instruction in gameScissors)
             {
+                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
                 DrawInstruction(instruction);
             }
             Batch.End();
@@ -256,6 +258,7 @@ internal class DrawManager
             Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
             foreach (DrawInstruction instruction in uiScissors)
             {
+                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
                 DrawInstruction(instruction);
             }
             Batch.End();
@@ -276,14 +279,19 @@ internal class DrawManager
 
         float sorting = 1.0f;
 
-        if (instruction.SortMode == SortMode.Sorted)
+        switch (instruction.SortMode)
         {
-            sorting = WrapOne((instruction.Position.Y + instruction.SortingOrigin.Y) * SortingCompressment + SortingCompressmentAddition);
-        }
-
-        if (instruction.SortMode == SortMode.Bottom)
-        {
-            sorting = 0.0f;
+            case SortMode.Sorted:
+                sorting = WrapOne((instruction.Position.Y + instruction.SortingOrigin.Y) * SortingCompressment + SortingCompressmentAddition);
+                break;
+            case SortMode.Top:
+                sorting = 0.0f;
+                break;
+            case SortMode.Middle:
+                sorting = 0.5f;
+                break;
+            case SortMode.Bottom:
+                break;
         }
 
         if (instruction.Destination is null)
@@ -391,6 +399,7 @@ internal struct DrawInstruction
 internal enum SortMode
 {
     Sorted,
-    Bottom,
     Top,
+    Middle,
+    Bottom,
 }

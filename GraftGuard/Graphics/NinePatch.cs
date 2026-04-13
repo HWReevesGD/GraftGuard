@@ -25,8 +25,8 @@ internal class NinePatch
         MarginTop = marginTop;
         MarginBottom = marginBottom;
     }
-    public void Draw(DrawManager drawing, Rectangle box, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Top) => Draw(drawing, box.Location.ToVector(), box.Size, color, isUI, sortMode);
-    public void Draw(DrawManager drawing, Vector2 position, Point size, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Top)
+    public void Draw(DrawManager drawing, Rectangle box, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Bottom) => Draw(drawing, box.Location.ToVector(), box.Size, color, isUI, sortMode);
+    public void Draw(DrawManager drawing, Vector2 position, Point size, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Bottom)
     {
         // The Position of the Nine-Patch turned into a Point
         Point offset = position.ToPoint();
@@ -152,5 +152,5 @@ internal class NinePatch
             sortMode: sortMode);
     }
 
-    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null, bool isUi = true, SortMode sortMode = SortMode.Top) => Draw(drawing, position, size.ToPoint(), color, isUi, sortMode);
+    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null, bool isUi = true, SortMode sortMode = SortMode.Bottom) => Draw(drawing, position, size.ToPoint(), color, isUi, sortMode);
 }

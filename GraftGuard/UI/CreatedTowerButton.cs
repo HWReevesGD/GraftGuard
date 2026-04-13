@@ -36,19 +36,16 @@ internal class CreatedTowerButton : IPositional, ISizeable
         Tower.Update(time, world, input, state, Projectiles);
         Projectiles.Update(time, world, input);
     }
-    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state = TimeState.Day, Rectangle? scissor = null)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state = TimeState.Day)
     {
         Internal.Draw(drawing);
 
         // Clipping
-        //drawing.End();
-        //drawing.GraphicsDevice.ScissorRectangle = Internal.MarginBox;
-        //drawing.Begin(samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
+        drawing.ForceScissor = Internal.MarginBox;
 
         Tower.Draw(time, drawing, world, input, state, isUi: true);
         Projectiles.Draw(drawing, time, world, input, isUi: true);
 
-        //drawing.End();
-        //drawing.Begin(samplerState: SamplerState.PointWrap);
+        drawing.ForceScissor = null;
     }
 }

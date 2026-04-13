@@ -92,7 +92,7 @@ internal class PatchButton : Button
 
     public override void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
-        Patch.Draw(drawing, Position, Size.ToPoint(), color, sortMode: SortMode.Bottom);
+        Patch.Draw(drawing, Position, Size.ToPoint(), color, sortMode: SortMode.Middle);
         base.Draw(drawing, color);
     }
 
@@ -116,7 +116,7 @@ internal class PatchButton : Button
         };
         drawing.Draw(Icon, destination: destinationRectangle, color: Color.White,
             isUi: true,
-            sortMode: SortMode.Top);
+            sortMode: SortMode.Sorted);
     }
 
     protected override void DrawText(DrawManager drawing)

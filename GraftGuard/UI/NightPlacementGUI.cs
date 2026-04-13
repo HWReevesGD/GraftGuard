@@ -112,7 +112,7 @@ internal class NightPlacementGUI
                 (int)Interface.ScreenSize.X, (int)_designSize.X),
             color: new Color(0.0f, 0.0f, 0.0f, 0.4f),
             isUi: true,
-            sortMode: SortMode.Bottom);
+            sortMode: SortMode.Top);
 
         // Draw Designs
         _designButtons.Draw(drawing, (drawing, button, _) => button.Draw(drawing, time, world, input));

@@ -352,7 +352,7 @@ internal class TowerGraftingGUI
             Placeholders.GarageBackgroundTexture,
             destination: Interface.ScreenRect,
             isUi: true,
-            sortMode: SortMode.Bottom,
+            sortMode: SortMode.Top,
             drawLayer: 0
         );
 

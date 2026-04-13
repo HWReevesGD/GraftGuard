@@ -56,6 +56,6 @@ internal class PauseMenu
         Vector2 textSize = Fonts.SubFont.MeasureString(text);
         Vector2 position = new Vector2(Interface.Width / 2 - textSize.X / 2, Interface.Height / 2 - textSize.Y / 2);
 
-        drawing.DrawString(font: Fonts.SubFont, text: text, position: position, isUi: true, sortMode: SortMode.Top, drawLayer: 2);
+        drawing.DrawString(font: Fonts.SubFont, text: text, position: position, isUi: true, sortMode: SortMode.Bottom, drawLayer: 2);
     }
 }

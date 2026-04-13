@@ -3,6 +3,7 @@ using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.UI;
@@ -101,21 +102,7 @@ public class Game1 : Game
         TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview, Tower.TexturePlaceholderGround);
         TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
 
-
-        // Add Testing World
-        var world = new World();
-
-        _gameManager = new GameManager(
-            world,
-            new MainMenu(this, input),
-            new PauseMenu(world, input),
-            new GameOverScreen(world),
-            new GameHUD(),
-            new TowerGraftingGUI(),
-            new NightPlacementGUI(),
-            input,
-            _spriteBatch
-        );
+        _gameManager = new GameManager(this, input, _spriteBatch);
 
         /*mainMenu = new MainMenu(inputManager);
         pauseMenu = new PauseMenu(this.world, inputManager);

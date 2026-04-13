@@ -35,7 +35,7 @@ internal class World
     public ParticleManager Particles { get; set; }
 
     // Constructor
-    public World()
+    public World(DrawManager drawing)
     {
         CurrentWorld = this;
 
@@ -49,7 +49,7 @@ internal class World
 
         TowerManager = new TowerManager(this);
         Terrain = new Terrain(Player);
-        Terrain.LoadMap(CurrentMap);
+        Terrain.LoadMap(CurrentMap, drawing);
         EnemyManager = new EnemyManager(this, CurrentMap);
         ProjectileManager = new ProjectileManager();
         Garage = new Garage(CurrentMap);

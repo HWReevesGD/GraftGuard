@@ -29,17 +29,17 @@ namespace GraftGuard
         public static readonly float NightTimeLength = 20f;
 
         private GameTime lastGameTime;
-        public GameManager(World world, MainMenu menu, PauseMenu pause, GameOverScreen gameOver, GameHUD hud, TowerGraftingGUI gui, NightPlacementGUI nightPlacement, InputManager input, SpriteBatch batch)
+        public GameManager(Game1 game, InputManager input, SpriteBatch batch)
         {
             DrawManager = new DrawManager(batch);
 
-            _world = world;
-            _mainMenu = menu;
-            _pauseMenu = pause;
-            _gameOverScreen = gameOver;
-            _hud = hud;
-            _towerGrafting = gui;
-            _nightPlacement = nightPlacement;
+            _world = new World(DrawManager);
+            _mainMenu = new MainMenu(game, input, DrawManager);
+            _pauseMenu = new PauseMenu(_world, input);
+            _gameOverScreen = new GameOverScreen(_world);
+            _hud = new GameHUD();
+            _towerGrafting = new TowerGraftingGUI();
+            _nightPlacement = new NightPlacementGUI();
             inputManager = input;
 
             _mainMenu.NewGameStarted += OnNewGameStarted;

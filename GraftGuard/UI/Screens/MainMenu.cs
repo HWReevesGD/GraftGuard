@@ -57,10 +57,10 @@ internal class MainMenu {
 
     public event ActionEvent NewGameStarted;
 
-    public MainMenu(Game1 game, InputManager inputManager)
+    public MainMenu(Game1 game, InputManager inputManager, DrawManager drawing)
     {
         this.game = game;
-        backgroundWorld = new World();
+        backgroundWorld = new World(drawing);
         idleInputManager = new InputManager();
         this.inputManager = inputManager;
         timeState = TimeState.Night; // always night

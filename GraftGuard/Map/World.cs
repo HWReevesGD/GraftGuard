@@ -161,7 +161,7 @@ internal class World
         Garage.Update(gameTime, this);
         Particles.Update(gameTime);
 
-        Camera.Position = Player.Center;
+        Camera.Position = Player.VisualCenter;
         Camera.Update(gameTime);
 
     }

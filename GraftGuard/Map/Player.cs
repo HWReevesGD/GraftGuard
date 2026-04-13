@@ -22,6 +22,7 @@ internal class Player : GameObject
 
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
     private static readonly float invincibilityFrameTime = 0.5f; // in seconds
+    public Vector2 VisualCenter => Position + new Vector2(HitboxSize.X * 0.5f, -16f);
 
     private static Texture2D texture;
     private Circle _collectionCircle;
@@ -37,11 +38,11 @@ internal class Player : GameObject
         
     }
 
-    public Player(Vector2 position) : base(position, new Vector2(24, 48), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
+    public Player(Vector2 position) : base(position, new Vector2(18, 18), texture, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
     {
         _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
-        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, Center);
+        playerVisual = new EnemyVisual(GraftLibrary.GetBaseByName("Default"), 1, AnimationClips.Idle, VisualCenter);
     }
 
     /// <summary>
@@ -66,7 +67,7 @@ internal class Player : GameObject
 
         HandlePartPickups(World.CurrentWorld);
 
-        playerVisual.Update(gameTime, Center, .1f);
+        playerVisual.Update(gameTime, VisualCenter, .1f);
 
         if (invincibilityTimer > 0)
             invincibilityTimer -= delta;
@@ -81,17 +82,19 @@ internal class Player : GameObject
                 return;
         }
 
-        playerVisual.Draw(drawing, Center);
+        playerVisual.Draw(drawing, VisualCenter);
         //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
         // Draw Held Parts
         for (int index = 0; index < HeldParts.Count; index++)
         {
             Texture2D part = HeldParts[index].Texture;
-            drawing.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, rotation: -MathF.PI / 2.0f);
+            Vector2 offset = Vector2.UnitY * (index - 2) * 8;
+            Vector2 position = VisualCenter - Vector2.UnitY * (index - 2) * 8;
+            drawing.Draw(part, position, rotation: -MathF.PI / 2.0f, sortingOriginOffset: offset);
         }
 
-        //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
+        //drawing.Draw(Placeholders.TexturePixel, Hitbox, color: Color.Red);
         CollidedDebug = [];
     }
 

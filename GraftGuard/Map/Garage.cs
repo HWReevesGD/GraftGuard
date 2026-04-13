@@ -33,6 +33,6 @@ internal class Garage
     public void Draw(DrawManager drawing, GameTime time)
     {
         MainPatch.Draw(drawing, Position, Size);
-        drawing.Draw(Placeholders.TexturePartReceptacle, ReceptacleBounds);
+        drawing.Draw(Placeholders.TexturePartReceptacle, ReceptacleBounds, sortMode: SortMode.Bottom);
     }
 }

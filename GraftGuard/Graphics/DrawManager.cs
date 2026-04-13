@@ -10,18 +10,27 @@ namespace GraftGuard.Graphics;
 internal class DrawManager
 {
     public SpriteBatch Batch;
-    public SortedDictionary<int, List<DrawInstruction>> DrawLayers = [];
-    public SortedDictionary<int, List<DrawInstruction>> DrawUILayers = [];
+    public const int LayerCount = 8;
+    public List<List<DrawInstruction>> DrawLayers { get; private set; } = [];
+    public List<List<DrawInstruction>> DrawUILayers { get; private set; } = [];
+    public const float SortingCompressment = 1.0f / 100_000_000_000.0f;
+    public const float SortingCompressmentAddition = 1.0f / 1_000_000;
+
 
     public DrawManager(SpriteBatch batch)
     {
         Batch = batch;
+        for (int i = 0; i < LayerCount; i++)
+        {
+            DrawLayers.Add([]);
+            DrawUILayers.Add([]);
+        }
     }
 
     public void DrawCentered(
         Texture2D texture,
         Rectangle destination,
-        bool useSorting = false,
+        SortMode sortMode = SortMode.Sorted,
         int drawLayer = 1,
         Rectangle? source = null,
         Color? color = null,
@@ -35,13 +44,12 @@ internal class DrawManager
         Vector2 centeredOrigin = texture.GetSize() * 0.5f + (origin ?? Vector2.Zero);
         Draw(
             texture,
-            destination.Location.ToVector(),
-            useSorting,
+            destination,
+            sortMode,
             drawLayer,
             source,
             color,
             rotation,
-            destination.Size.ToVector(),
             centeredOrigin,
             effects,
             sortingOriginOffset,
@@ -53,7 +61,7 @@ internal class DrawManager
     public void DrawCentered(
         Texture2D texture,
         Vector2 position,
-        bool useSorting = false,
+        SortMode sortMode = SortMode.Sorted,
         int drawLayer = 1,
         Rectangle? source = null,
         Color? color = null,
@@ -69,7 +77,7 @@ internal class DrawManager
         Draw(
             texture,
             position,
-            useSorting,
+            sortMode,
             drawLayer,
             source,
             color,
@@ -85,7 +93,7 @@ internal class DrawManager
     public void Draw(
         Texture2D texture,
         Vector2 position,
-        bool useSorting = false,
+        SortMode sortMode = SortMode.Sorted,
         int drawLayer = 1,
         Rectangle? source = null,
         Color? color = null,
@@ -100,9 +108,10 @@ internal class DrawManager
         AddAtLayer(new DrawInstruction(
                 texture,
                 position,
-                useSorting,
+                sortMode,
                 scale ?? Vector2.One,
                 source ?? texture.Bounds,
+                null,
                 color ?? Color.White,
                 rotation,
                 origin ?? Vector2.Zero,
@@ -119,7 +128,7 @@ internal class DrawManager
     public void Draw(
         Texture2D texture,
         Rectangle destination,
-        bool useSorting = false,
+        SortMode sortMode = SortMode.Sorted,
         int drawLayer = 1,
         Rectangle? source = null,
         Color? color = null,
@@ -132,10 +141,11 @@ internal class DrawManager
     {
         AddAtLayer(new DrawInstruction(
                 texture,
-                destination.Location.ToVector(),
-                useSorting,
-                destination.Size.ToVector(),
+                Vector2.Zero,
+                sortMode,
+                Vector2.One,
                 source ?? texture.Bounds,
+                destination,
                 color ?? Color.White,
                 rotation,
                 origin ?? Vector2.Zero,
@@ -153,7 +163,7 @@ internal class DrawManager
         string text,
         Vector2 position,
         SpriteFont font = null,
-        bool useSorting = false,
+        SortMode sortMode = SortMode.Sorted,
         int drawLayer = 1,
         Color? color = null,
         Vector2? scale = null,
@@ -170,9 +180,10 @@ internal class DrawManager
         AddAtLayer(new DrawInstruction(
                 null,
                 position,
-                useSorting,
-                Vector2.Zero,
+                sortMode,
+                Vector2.One,
                 Rectangle.Empty,
+                null,
                 color ?? Color.White,
                 0.0f,
                 Vector2.Zero,
@@ -188,10 +199,8 @@ internal class DrawManager
 
     public void AddAtLayer(DrawInstruction instruction, int drawLayer, bool isUi)
     {
-        SortedDictionary<int, List<DrawInstruction>> drawLayers = isUi ? DrawUILayers : DrawLayers;
-        List<DrawInstruction> draws = drawLayers.GetValueOrDefault(drawLayer, []);
-        draws.Add(instruction);
-        drawLayers[drawLayer] = draws;
+        List<List<DrawInstruction>> drawLayers = isUi ? DrawUILayers : DrawLayers;
+        drawLayers[drawLayer].Add(instruction);
     }
 
     public void DrawCircle(Circle circle, Color? color = null, int drawLayer = 1, bool isUi = false)
@@ -203,172 +212,102 @@ internal class DrawManager
         DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer, isUi: isUi);
     }
 
+    float WrapOne(float number)
+    {
+        if (number > 1.0)
+        {
+            return number - MathF.Floor(number);
+        }
+        if (number < 0.0)
+        {
+            return number + MathF.Ceiling(Math.Abs(number));
+        }
+        return number;
+    }
+
     public void Paint(Camera camera)
     {
-        foreach (List<DrawInstruction> layer in DrawLayers.Values)
+        for (int index = 0; index < LayerCount; index++)
         {
-            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, transformMatrix: camera.WorldToScreen);
+            List<DrawInstruction> gameLayer = DrawLayers[index];
+            List<DrawInstruction> uiLayer = DrawUILayers[index];
 
-            List<DrawInstruction> scissors = [];
-            foreach (DrawInstruction instruction in layer)
+            List<DrawInstruction> gameScissors = [];
+            List<DrawInstruction> uiScissors = [];
+
+            Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, transformMatrix: camera.WorldToScreen);
+            foreach (DrawInstruction instruction in gameLayer)
             {
-                if (instruction.Scissor is not null)
-                {
-                    scissors.Add(instruction);
-                    continue;
-                }
-
-                float sorting = 1.0f;
-
-                if (instruction.UseSorting)
-                {
-                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
-                }
-
-                if (!instruction.IsString)
-                {
-                    Batch.Draw(
-                    instruction.Texture,
-                    instruction.Position,
-                    instruction.Source,
-                    instruction.Color,
-                    instruction.Rotation,
-                    instruction.Origin,
-                    instruction.Scale,
-                    instruction.Effects,
-                    sorting
-                    );
-                }
-                else
-                {
-                    Batch.DrawString(
-                        instruction.Font,
-                        instruction.Text,
-                        instruction.Position,
-                        instruction.Color,
-                        instruction.Rotation,
-                        instruction.Origin,
-                        instruction.Scale,
-                        instruction.Effects,
-                        sorting
-                        );
-                }
-            }
-
-            Batch.End();
-            Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: camera.WorldToScreen);
-            foreach (DrawInstruction instruction in scissors)
-            {
-                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
-
-                float sorting = 0.0f;
-
-                if (instruction.UseSorting)
-                {
-                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
-                }
-
-                if (!instruction.IsString)
-                {
-                    Batch.Draw(
-                    instruction.Texture,
-                    instruction.Position,
-                    instruction.Source,
-                    instruction.Color,
-                    instruction.Rotation,
-                    instruction.Origin,
-                    instruction.Scale,
-                    instruction.Effects,
-                    sorting
-                    );
-                }
-                else
-                {
-                    Batch.DrawString(
-                        instruction.Font,
-                        instruction.Text,
-                        instruction.Position,
-                        instruction.Color,
-                        instruction.Rotation,
-                        instruction.Origin,
-                        instruction.Scale,
-                        instruction.Effects,
-                        sorting
-                        );
-                }
+                DrawInstruction(instruction, gameScissors);
             }
             Batch.End();
-        }
-
-        foreach (List<DrawInstruction> layer in DrawUILayers.Values)
-        {
+            Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: camera.WorldToScreen);
+            foreach (DrawInstruction instruction in gameScissors)
+            {
+                DrawInstruction(instruction);
+            }
+            Batch.End();
             Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp);
-
-            List<DrawInstruction> scissors = [];
-            foreach (DrawInstruction instruction in layer)
+            foreach (DrawInstruction instruction in uiLayer)
             {
-                if (instruction.Scissor is not null)
-                {
-                    scissors.Add(instruction);
-                    continue;
-                }
-
-                float sorting = 1.0f;
-
-                if (instruction.UseSorting)
-                {
-                    //sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
-                }
-
-                if (!instruction.IsString)
-                {
-                    Batch.Draw(
-                    instruction.Texture,
-                    instruction.Position,
-                    instruction.Source,
-                    instruction.Color,
-                    instruction.Rotation,
-                    instruction.Origin,
-                    instruction.Scale,
-                    instruction.Effects,
-                    sorting
-                    );
-                }
-                else
-                {
-                    Batch.DrawString(
-                        instruction.Font,
-                        instruction.Text,
-                        instruction.Position,
-                        instruction.Color,
-                        instruction.Rotation,
-                        instruction.Origin,
-                        instruction.Scale,
-                        instruction.Effects,
-                        sorting
-                        );
-                }
+                DrawInstruction(instruction, uiScissors);
             }
-
             Batch.End();
             Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true });
-            foreach (DrawInstruction instruction in scissors)
+            foreach (DrawInstruction instruction in uiScissors)
             {
-                Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
+                DrawInstruction(instruction);
+            }
+            Batch.End();
 
-                float sorting = 0.0f;
+        }
 
-                if (instruction.UseSorting)
-                {
-                    sorting = instruction.Position.Y + instruction.SortingOrigin.Y * 0.0000001f + 0.001f;
-                }
+        foreach (List<DrawInstruction> layer in DrawLayers) layer.Clear();
+        foreach (List<DrawInstruction> layer in DrawUILayers) layer.Clear();
+    }
 
-                if (!instruction.IsString)
-                {
-                    Batch.Draw(
-                    instruction.Texture,
+    private void DrawInstruction(DrawInstruction instruction, List<DrawInstruction> scissors = null)
+    {
+        if (scissors is not null && instruction.Scissor is not null)
+        {
+            scissors.Add(instruction);
+            return;
+        }
+
+        float sorting = 1.0f;
+
+        if (instruction.SortMode == SortMode.Sorted)
+        {
+            sorting = WrapOne((instruction.Position.Y + instruction.SortingOrigin.Y) * SortingCompressment + SortingCompressmentAddition);
+        }
+
+        if (instruction.SortMode == SortMode.Bottom)
+        {
+            sorting = 0.0f;
+        }
+
+        if (instruction.Destination is null)
+        {
+            if (!instruction.IsString)
+            {
+                Batch.Draw(
+                instruction.Texture,
+                instruction.Position,
+                instruction.Source,
+                instruction.Color,
+                instruction.Rotation,
+                instruction.Origin,
+                instruction.Scale,
+                instruction.Effects,
+                sorting
+                );
+            }
+            else
+            {
+                Batch.DrawString(
+                    instruction.Font,
+                    instruction.Text,
                     instruction.Position,
-                    instruction.Source,
                     instruction.Color,
                     instruction.Rotation,
                     instruction.Origin,
@@ -376,35 +315,31 @@ internal class DrawManager
                     instruction.Effects,
                     sorting
                     );
-                }
-                else
-                {
-                    Batch.DrawString(
-                        instruction.Font,
-                        instruction.Text,
-                        instruction.Position,
-                        instruction.Color,
-                        instruction.Rotation,
-                        instruction.Origin,
-                        instruction.Scale,
-                        instruction.Effects,
-                        sorting
-                        );
-                }
             }
-            Batch.End();
         }
-
-        DrawLayers = [];
-        DrawUILayers = [];
+        else
+        {
+            Batch.Draw(
+                instruction.Texture,
+                instruction.Destination.Value,
+                instruction.Source,
+                instruction.Color,
+                instruction.Rotation,
+                instruction.Origin,
+                instruction.Effects,
+                sorting
+                );
+        }
     }
 }
+
 internal struct DrawInstruction
 {
     public Texture2D Texture;
     public Vector2 Position;
     public Vector2 Scale;
     public Rectangle Source;
+    public Rectangle? Destination;
     public Color Color;
     public float Rotation;
     public Vector2 Origin;
@@ -415,13 +350,14 @@ internal struct DrawInstruction
     public string Text;
     public SpriteFont Font;
     public Rectangle? Scissor;
-    public bool UseSorting;
+    public SortMode SortMode;
     public DrawInstruction(
         Texture2D texture,
         Vector2 position,
-        bool useSorting,
+        SortMode sortMode,
         Vector2 scale,
         Rectangle source,
+        Rectangle? destination,
         Color color,
         float rotation,
         Vector2 origin,
@@ -435,9 +371,10 @@ internal struct DrawInstruction
     {
         Texture = texture;
         Position = position;
-        UseSorting = useSorting;
+        SortMode = sortMode;
         Scale = scale;
         Source = source;
+        Destination = destination;
         Color = color;
         Rotation = rotation;
         Origin = origin;
@@ -449,4 +386,11 @@ internal struct DrawInstruction
         Font = font;
         Scissor = scissor;
     }
-} 
+}
+
+internal enum SortMode
+{
+    Sorted,
+    Bottom,
+    Top,
+}

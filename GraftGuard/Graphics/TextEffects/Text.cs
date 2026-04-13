@@ -206,7 +206,7 @@ internal struct Text
     /// </summary>
     /// <param name="drawing">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    private void DrawRawWithKerning(DrawManager drawing, Vector2 position)
+    private void DrawRawWithKerning(DrawManager drawing, Vector2 position, bool isUi, int drawLayer = 2)
     {
         Vector2 leftPosition = position + Origin;
 
@@ -219,7 +219,9 @@ internal struct Text
                 text: charString,
                 position: leftPosition,
                 color: Color,
-                scale: Scale
+                scale: Scale,
+                isUi: isUi,
+                drawLayer: drawLayer
                 );
 
             // advanced by width and kerning
@@ -232,11 +234,11 @@ internal struct Text
     /// </summary>
     /// <param name="drawing">SpriteBatch</param>
     /// <param name="position">Draw position</param>
-    public void DrawRaw(DrawManager drawing, Vector2 position)
+    public void DrawRaw(DrawManager drawing, Vector2 position, bool isUi = true, int drawLayer = 2)
     {
         if (Kerning != 0)
         {
-            DrawRawWithKerning(drawing, position);
+            DrawRawWithKerning(drawing, position, isUi);
             return;
         }
 
@@ -245,7 +247,9 @@ internal struct Text
             text: TextString,
             position: position + Origin,
             color: Color,
-            scale: Scale
+            scale: Scale,
+            isUi: isUi,
+            drawLayer: drawLayer
             );
     }
 
@@ -255,7 +259,7 @@ internal struct Text
     /// <param name="drawing">SpriteBatch</param>
     /// <param name="gameTime">GameTime</param>
     /// <param name="position">Text origin position on screen</param>
-    public void Draw(DrawManager drawing, GameTime gameTime, Vector2 position)
+    public void Draw(DrawManager drawing, GameTime gameTime, Vector2 position, bool isUi = true, int drawLayer = 2)
     {
         Vector2 renderOrigin = position + Origin;
         Vector2 curPosition = renderOrigin;
@@ -287,7 +291,9 @@ internal struct Text
                 position: letter.Position,
                 font: Font,
                 color: letter.Color,
-                scale: letter.Scale
+                scale: letter.Scale,
+                isUi: isUi,
+                drawLayer: drawLayer
                 );
 
             // advance position

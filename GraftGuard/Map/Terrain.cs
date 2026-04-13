@@ -17,6 +17,7 @@ internal class Terrain
     public Dictionary<Point, TileDefinition[]> Chunks;
     public List<PlacedProp> Props;
     private Player player;
+    private Texture2D _terrain = Placeholders.TexturePixel;
 
     public Terrain(Player player)
     {
@@ -41,7 +42,7 @@ internal class Terrain
             return;
         }
 
-        foreach ((Point coordinate, IEnumerable<TileDefinition> chunk) in Chunks)
+        if (false) foreach ((Point coordinate, IEnumerable<TileDefinition> chunk) in Chunks)
         {
             Vector2 chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits).ToVector();
             int index = 0;

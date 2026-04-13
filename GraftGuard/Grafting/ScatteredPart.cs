@@ -18,6 +18,6 @@ internal class ScatteredPart : GameObject
     }
     public override void Draw(GameTime gameTime, DrawManager drawing)
     {
-        drawing.DrawCentered(Definition.Texture, Position, rotation: _randomRotation, useSorting: true);
+        drawing.DrawCentered(Definition.Texture, Position, rotation: _randomRotation, sortMode: SortMode.Sorted);
     }
 }

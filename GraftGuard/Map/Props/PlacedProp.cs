@@ -39,7 +39,7 @@ internal class PlacedProp
             position: Position,
             source: Definition.Cutout,
             origin: Definition.Origin,
-            useSorting: true
+            sortMode: SortMode.Sorted
             );
 
         //batch.Draw(Placeholders.TexturePixel, rect, new Color(255, 0, 0, 25));

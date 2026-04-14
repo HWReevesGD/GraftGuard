@@ -1,6 +1,8 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Graphics;
 using GraftGuard.Map;
+using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -47,5 +49,34 @@ internal class TowerNest : Tower
     public static void DrawPreview(DrawManager drawing, GameTime time, Vector2 position)
     {
         drawing.DrawCentered(TNest, position);
+    }
+}
+internal class Nestling
+{
+    public static readonly Texture2D Texture = Tower.TNestling;
+    public Vector2 Position { get; set; }
+    public readonly AttachedPart[] Parts = new AttachedPart[Tower.MaxParts];
+    public Nestling(AttachedPart[] parts)
+    {
+        for (int index = 0; index < Tower.MaxParts; index++)
+        {
+            Parts[index] = new AttachedPart(parts[index].Definition);
+        }
+    }
+    public void Update(GameTime time, World world, InputManager input, TimeState state, ProjectileManager projectiles)
+    {
+        foreach (AttachedPart part in Parts)
+        {
+            part.UpdateBehavior(PartSettings.DefaultTower, new PartTransform() { Position = Position }, time, world, input, state, projectiles);
+        }
+    }
+
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager input, TimeState state, bool isUi)
+    {
+        drawing.DrawCentered(Texture, Position);
+        foreach (AttachedPart part in Parts)
+        {
+            part.DrawBehavior(PartSettings.DefaultTower, new PartTransform() { Position = Position }, time, drawing, world, input, state, isUi: isUi);
+        }
     }
 }

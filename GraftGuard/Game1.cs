@@ -66,8 +66,9 @@ public class Game1 : Game
         // Register Graft Library from JSON
         GraftLibrary.LoadLibrary(Content, "graft_library.json");
 
-        
+
         // Register (and save) part behaviors
+        PartBehaviorRegistry.Register("Basic", PartBasic.Create);
         PartBehaviorRegistry.Register("Slashing", PartSlashing.Create);
         PartBehaviorRegistry.Register("Flaming", PartFlaming.Create);
         PartBehaviorRegistry.Register("Zapping", PartZapping.Create);

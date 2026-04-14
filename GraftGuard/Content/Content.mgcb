@@ -872,6 +872,18 @@
 /processorParam:TextureFormat=Color
 /build:Tower/nest.png
 
+#begin Tower/nestling.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Tower/nestling.png
+
 #begin Tower/turret.png
 /importer:TextureImporter
 /processor:TextureProcessor

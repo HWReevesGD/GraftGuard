@@ -18,6 +18,8 @@ internal class PartSlashing : IPartBehavior
 {
     private float _slashSize = 0.9f;
     public const float HitRadius = 14.0f;
+    public const float DamageModifier = 0.5f;
+    public readonly IntervalTimer DamageTimer = new IntervalTimer(0.2f);
     public static string Name => "Slashing";
 
     public static IPartBehavior Create() => new PartSlashing();
@@ -34,15 +36,13 @@ internal class PartSlashing : IPartBehavior
         drawing.DrawCentered(Placeholders.TextureSlash, transform.Position, rotation: (float)time.TotalGameTime.TotalSeconds * -24.0f % MathF.Tau, scale: _slashSize * Vector2.One, color: new Color(Color.White, 0.3f));
     }
 
-    public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
-    {
-        _slashSize = 0.9f;
-        Damage areaDamage = new Damage(part.PartDamage.BaseDamage * 0.5f, part.PartDamage.DamageOverTime, part.PartDamage.DamageOverTimeDuration, part.PartDamage.SpeedMod, part.PartDamage.SpeedModDuration);
-        world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], areaDamage);
-    }
-
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
-        
+        if (DamageTimer.Update(time))
+        {
+            _slashSize = 0.9f;
+            Damage areaDamage = new Damage(part.PartDamage.BaseDamage * 0.5f, part.PartDamage.DamageOverTime, part.PartDamage.DamageOverTimeDuration, part.PartDamage.SpeedMod, part.PartDamage.SpeedModDuration);
+            world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], areaDamage);
+        }
     }
 }

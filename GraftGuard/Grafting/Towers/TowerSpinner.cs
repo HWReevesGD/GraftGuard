@@ -53,8 +53,6 @@ internal class TowerSpinner : Tower
                 float damage = (part.Definition.PartDamage.BaseDamage + part.Definition.CriticalModifier * random.NextSingle());
                 Damage damageFinal = new Damage(damage, part.Definition.PartDamage.DamageOverTime, part.Definition.PartDamage.DamageOverTimeDuration, part.Definition.PartDamage.SpeedMod, part.Definition.PartDamage.SpeedModDuration);
                 world.EnemyManager.DealDamageInAreas([], [damageCircle], damageFinal);
-
-                part.BehaviorOnDealDamage(0.5f, Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
             }
         }
     }

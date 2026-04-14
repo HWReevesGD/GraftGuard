@@ -25,11 +25,6 @@ internal class PartShotgunning : IPartBehavior
         
     }
 
-    public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
-    {
-        
-    }
-
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         bool shoot = ShotTimer.Update(time);

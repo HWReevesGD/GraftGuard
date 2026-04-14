@@ -29,16 +29,6 @@ internal class AttachedPart
         SlotName = slotName;
     }
 
-    public void BehaviorOnDealDamage(
-        float damageModifier, PartSettings settings, PartTransform transform, GameTime time, World world, InputManager inputManager,
-        TimeState state, ProjectileManager projectileManager)
-    {
-        foreach (IPartBehavior behavior in _partBehaviors)
-        {
-            behavior.OnDealDamage(settings, damageModifier, Definition, transform, time, world, inputManager, state, projectileManager);
-        }
-    }
-
     public void UpdateBehavior(PartSettings settings, PartTransform transform, GameTime time, World world, InputManager inputManager,
         TimeState state, ProjectileManager projectileManager)
     {

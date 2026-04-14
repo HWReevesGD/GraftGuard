@@ -85,11 +85,6 @@ internal class TowerTrap : Tower
                 };
 
                 part.UpdateBehavior(Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
-
-                if (dealDamage)
-                {
-                    part.BehaviorOnDealDamage(0.25f, Settings, transform, time, world, inputManager, state, projectileDiversion ?? world.ProjectileManager);
-                }
             }
         }
     }

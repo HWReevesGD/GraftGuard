@@ -64,9 +64,7 @@ internal class Player : GameObject
             new AttachPoint { Name = "Ponytail", PivotX = 0.15f, PivotY = -0.15f },
         };
 
-        
-
-        playerVisual = new PlayerVisual(playerTorso, playerSockets, 1, AnimationClips.Idle, Center);
+        playerVisual = new PlayerVisual(playerTorso, playerSockets, 1, AnimationClips.Idle, Center, SortingOffset);
 
         playerVisual.CreatePart("Head", "PlayerHead", playerHead, 0.53f, 0.77f, PartType.Head, false);
         playerVisual.CreatePart("Arm_R", "PlayerArmR", playerArm, 0.48f, 0.24f, PartType.Limb, false);

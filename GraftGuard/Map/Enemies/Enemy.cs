@@ -144,7 +144,7 @@ internal abstract class Enemy : GameObject
     /// <param name="world"></param>
     /// <param name="pathManager"></param>
     /// <returns></returns>
-    public Vector2 BasicPathing(GameTime gameTime, World world, PathManager pathManager, PathGoal destination)
+    public Vector2 BasicPathing(GameTime gameTime, World world, PathManager pathManager, PathGoal destination, List<Enemy> doNotAvoid = null)
     {
         bool recalculate = PathTimer.Update(gameTime);
         if (Path.Count == 0 || recalculate)
@@ -158,7 +158,7 @@ internal abstract class Enemy : GameObject
 
         IEnumerable<Enemy> nearbyEnemies = world.EnemyManager.Enemies.Where((enemy) =>
         {
-            return !ReferenceEquals(enemy, this) && Vector2.DistanceSquared(enemy.Position, Position) < NearDistanceSquared;
+            return !ReferenceEquals(enemy, this) && Vector2.DistanceSquared(enemy.Position, Position) < NearDistanceSquared && (doNotAvoid is null || !doNotAvoid.Contains(enemy));
         });
 
         if (Path.Count == 0)

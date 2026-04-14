@@ -54,7 +54,7 @@ internal class Projectile
     /// <param name="world"><see cref="World"/> to use</param>
     /// <param name="amount">Amount of damage to deal</param>
     /// <returns>True if any target was overlapping <see cref="HitCircle"/>, false otherwise</returns>
-    public bool DealDamage(World world, ProjectileDamage damage)
+    public bool DealDamage(World world, Damage damage)
     {
         if (IsBlueprint)
         {
@@ -73,9 +73,7 @@ internal class Projectile
                     if (enemy.Hitbox.Intersects(HitCircle))
                     {
                         overlapsEnemy = true;
-                        enemy.TakeDamage(damage.Damage);
-                        enemy.setDamageOverTime(damage.DamageOverTime, damage.DamageOverTimeDuration);
-                        enemy.setSpeedModifier(damage.SpeedMod, damage.SpeedModDuration);
+                        enemy.TakeDamage(damage);
                     }
                 }
                 return overlapsEnemy;

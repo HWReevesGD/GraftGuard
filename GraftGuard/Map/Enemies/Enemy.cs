@@ -24,11 +24,11 @@ internal abstract class Enemy : GameObject
 
     // Fields for speed modification
     private float speedMod;
-    private int speedModDuration;
+    private float speedModDuration;
 
     // Fields for Damage over time
     private float damageOverTime;
-    private int damageOverTimeDuration;
+    private float damageOverTimeDuration;
     public IntervalTimer DamageOverTimeSecond = new IntervalTimer(1.0f);
 
     public float Health { get; set; }
@@ -72,9 +72,13 @@ internal abstract class Enemy : GameObject
         Visual.VisualDeath(Position);
     }
 
-    public void TakeDamage(float amount)
+    public void TakeDamage(Damage damage)
     {
-        Health -= amount;
+        Health -= damage.BaseDamage;
+        damageOverTime = damage.DamageOverTime;
+        damageOverTimeDuration = damage.DamageOverTimeDuration;
+        speedMod = damage.SpeedMod;
+        speedModDuration = damage.SpeedModDuration;
     }
 
     public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
@@ -201,28 +205,6 @@ internal abstract class Enemy : GameObject
                 state: Data.TimeState.Night,
                 world: world);
         }
-    }
-
-    /// <summary>
-    /// Sets a speed modifier for a duration when called, meant to be called by tower attacks that hit the enemy
-    /// </summary>
-    /// <param name="modifier">the amount subtracted from move speed (larger number slows by more)</param>
-    /// <param name="duration">duration of the affect in seconds</param>
-    public void setSpeedModifier(float modifier, int duration)
-    {
-        this.speedMod = modifier;
-        this.speedModDuration = duration;
-    }
-
-    /// <summary>
-    /// Sets damage over time for a duration when called, meant to be called by tower attacks that hit the enemy
-    /// </summary>
-    /// <param name="damage">the damage taken per tick</param>
-    /// <param name="duration">the duration of the effect in seconds</param>
-    public void setDamageOverTime(float damage, int duration)
-    {
-        this.damageOverTime = damage;
-        this.damageOverTimeDuration = duration;
     }
 
     public static Texture2D TCentipedeMandible;

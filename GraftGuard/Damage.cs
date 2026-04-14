@@ -8,21 +8,21 @@ using System.Threading.Tasks;
 
 namespace GraftGuard
 {
-    internal class ProjectileDamage
+    public class Damage
     {
         // Fields
-        private float damage;
+        private float baseDamage;
         private float damageOverTime;
-        private int damageOverTimeDuration;
+        private float damageOverTimeDuration;
         private float speedMod;
-        private int speedModDuration;
+        private float speedModDuration;
 
         // Properties
-        public float Damage { get { return damage; } }
+        public float BaseDamage { get { return baseDamage; } }
         public float DamageOverTime { get { return damageOverTime; } }
-        public int DamageOverTimeDuration { get { return damageOverTimeDuration; } }
+        public float DamageOverTimeDuration { get { return damageOverTimeDuration; } }
         public float SpeedMod { get { return speedMod; } }
-        public int SpeedModDuration { get {return speedModDuration; } }
+        public float SpeedModDuration { get {return speedModDuration; } }
 
         // Constructors
         /// <summary>
@@ -31,14 +31,14 @@ namespace GraftGuard
         ///  - damage dealt per second for a set number of seconds
         ///  - intensity and duration of slowdown effect (larger number has a greater slowdown effect)
         /// </summary>
-        /// <param name="damage">direct damage dealt on contact</param>
+        /// <param name="baseDamage">direct damage dealt on contact</param>
         /// <param name="damageOverTime">damage taken per second after getting hit</param>
         /// <param name="damageOverTimeDuration">Duration of the DoT in seconds</param>
         /// <param name="speedMod">modifies the enemy's speed (greater number slows down more)</param>
         /// <param name="speedModDuration">duration of the slowdown effect in seconds</param>
-        public ProjectileDamage(float damage, float damageOverTime, int damageOverTimeDuration, float speedMod, int speedModDuration)
+        public Damage(float baseDamage, float damageOverTime, float damageOverTimeDuration, float speedMod, float speedModDuration)
         {
-            this.damage = damage;
+            this.baseDamage = baseDamage;
             this.damageOverTime = damageOverTime;
             this.damageOverTimeDuration = damageOverTimeDuration;
             this.speedMod= speedMod;

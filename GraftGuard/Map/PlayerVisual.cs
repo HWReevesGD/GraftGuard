@@ -65,7 +65,7 @@ namespace GraftGuard.Map
                 pivotX,
                 pivotY,
                 type,
-                1.0f,
+                new Damage(1, 0, 0, 0, 0),
                 flipHorizonal: flipHorizontal
             );
 

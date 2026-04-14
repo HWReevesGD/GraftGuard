@@ -98,7 +98,7 @@ internal class EnemyManager
         return areaEnemies;
     }
 
-    public void DealDamageInAreas(List<Rectangle> boxes, List<Circle> circles, float damage)
+    public void DealDamageInAreas(List<Rectangle> boxes, List<Circle> circles, Damage damage)
     {
         List<Enemy> enemies = GetEnemiesInAreas(boxes, circles);
         foreach (Enemy enemy in enemies)

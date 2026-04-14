@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -95,13 +96,13 @@ internal class PathManager
         }
     }
 
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(DrawManager drawing, GameTime time)
     {
         foreach (PathNode? possibleNode in Nodes)
         {
             if (possibleNode is PathNode node)
             {
-                node.Draw(batch);
+                node.Draw(drawing);
             }
         }
     }

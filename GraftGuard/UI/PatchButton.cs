@@ -90,18 +90,18 @@ internal class PatchButton : Button
         }
     }
 
-    public override void Draw(SpriteBatch batch, Color? color = null)
+    public override void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
-        Patch.Draw(batch, Position, Size, color);
-        base.Draw(batch, color);
+        Patch.Draw(drawing, Position, Size.ToPoint(), color, sortMode: SortMode.Middle);
+        base.Draw(drawing, color);
     }
 
-    protected override void DrawIcon(SpriteBatch batch)
+    protected override void DrawIcon(DrawManager drawing)
     {
         if (Icon is null) return;
         if (!FitIconToPatchMargins)
         {
-            base.DrawIcon(batch);
+            base.DrawIcon(drawing);
             return;
         }
 
@@ -114,25 +114,29 @@ internal class PatchButton : Button
             ButtonIconType.Stretch => new Rectangle(marginPosition.ToPoint(), marginSize.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((marginPosition + marginSize * 0.5f - marginSize.SquareOfSmallest() * 0.5f).ToPoint(), marginSize.SquareOfSmallest().ToPoint())
         };
-        batch.Draw(Icon, destinationRectangle, Color.White);
+        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White,
+            isUi: true,
+            sortMode: SortMode.Sorted);
     }
 
-    protected override void DrawText(SpriteBatch batch)
+    protected override void DrawText(DrawManager drawing)
     {
         if (!FitTextToPatchMargins)
         {
-            base.DrawText(batch);
+            base.DrawText(drawing);
             return;
         }
 
         Vector2 marginOffset = Position + Patch.MarginTopLeft.ToVector();
         Vector2 marginSize = Size - Patch.MarginAll.ToVector();
 
-        batch.DrawString(
-            Font,
-            Text,
-            marginOffset + marginSize / 2.0f - Font.MeasureString(Text) / 2.0f,
-            TextColor
+        drawing.DrawString(
+            font: Font,
+            text: Text,
+            position: marginOffset + marginSize / 2.0f - Font.MeasureString(Text) / 2.0f,
+            color: TextColor,
+            isUi: true,
+            sortMode: SortMode.Top
             );
     }
 }

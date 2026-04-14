@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
@@ -19,7 +20,7 @@ internal class PartFlaming : IPartBehavior
     private IntervalTimer _fireTimer = new IntervalTimer(0.05f);
     public static IPartBehavior Create() => new PartFlaming();
 
-    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
         
     }

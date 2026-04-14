@@ -15,18 +15,29 @@ namespace GraftGuard.Map;
 internal class Terrain
 {
     public Dictionary<Point, TileDefinition[]> Chunks;
+    public Dictionary<Point, RenderTarget2D> RenderingChunks;
     public List<PlacedProp> Props;
     private Player player;
+    private Texture2D _terrain = Placeholders.TexturePixel;
 
     public Terrain(Player player)
     {
         this.player = player;
+        RenderingChunks = [];
+        Chunks = [];
+        Props = [];
     }
 
-    public void LoadMap(MapDefinition map)
+    public void LoadMap(MapDefinition map, DrawManager drawing)
     {
         Chunks = map.TileChunks.ToDictionary((pair) => pair.Key, (pair) => pair.Value.ToArray());
         Props = map.PlacedProps.ToList();
+        RenderingChunks.Clear();
+        foreach (Point coordinate in Chunks.Keys)
+        {
+            RenderingChunks[coordinate] = new RenderTarget2D(drawing.Batch.GraphicsDevice, EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits, EnvironmentRegistry.ChunkSize << EnvironmentRegistry.TileBits);
+        }
+        RenderChunks(drawing);
     }
 
     public void Update(GameTime time)
@@ -34,16 +45,43 @@ internal class Terrain
 
     }
 
-    public void Draw(SpriteBatch batch, GameTime time)
+    public void Draw(DrawManager drawing, GameTime time)
     {
         if (Chunks is null)
         {
             return;
         }
 
-        foreach ((Point coordinate, IEnumerable<TileDefinition> chunk) in Chunks)
+        foreach ((Point coordinate, TileDefinition[] chunk) in Chunks)
         {
             Vector2 chunkPosition = coordinate.ShiftLeft(EnvironmentRegistry.ChunkBits + EnvironmentRegistry.TileBits).ToVector();
+            drawing.Draw(RenderingChunks[coordinate], chunkPosition, sortMode: SortMode.Top, drawLayer: 0);
+        }
+
+        if (Props is not null)
+        {
+            foreach (PlacedProp prop in Props)
+            {
+                prop.Draw(drawing, player);
+            }
+        }
+    }
+
+    public void RenderChunks(DrawManager drawing)
+    {
+        GraphicsDevice device = drawing.Batch.GraphicsDevice;
+
+        foreach ((Point coordinate, RenderTarget2D target) in RenderingChunks)
+        {
+            TileDefinition[] chunk = Chunks[coordinate];
+            // Set the device to the render target
+            device.SetRenderTarget(target);
+
+            // Clear the graphics buffer to a solid color
+            device.Clear(Color.Black);
+
+            drawing.Batch.Begin(sortMode: SpriteSortMode.Deferred, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp);
+
             int index = 0;
             foreach (TileDefinition tile in chunk)
             {
@@ -53,20 +91,17 @@ internal class Terrain
                     continue;
                 }
 
-                float x = ((index & EnvironmentRegistry.ChunkMask) << EnvironmentRegistry.TileBits) + chunkPosition.X;
-                float y = ((index >> EnvironmentRegistry.ChunkBits) << EnvironmentRegistry.TileBits) + chunkPosition.Y;
+                float x = (index & EnvironmentRegistry.ChunkMask) << EnvironmentRegistry.TileBits;
+                float y = (index >> EnvironmentRegistry.ChunkBits) << EnvironmentRegistry.TileBits;
 
-                batch.Draw(tile.Texture, new Vector2(x, y), tile.Cutout, Color.White, 0, Vector2.Zero, 1, SpriteEffects.None, -0f);
+                drawing.Batch.Draw(tile.Texture, position: new Vector2(x, y), sourceRectangle: tile.Cutout, color: Color.White);
                 index++;
             }
-        }
 
-        if (Props is not null)
-        {
-            foreach (PlacedProp prop in Props)
-            {
-                prop.Draw(batch, player);
-            }
+            drawing.Batch.End();
+
+            // Reset the device to the back buffer
+            device.SetRenderTarget(null);
         }
     }
 

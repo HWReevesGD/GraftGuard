@@ -1,4 +1,5 @@
-﻿using GraftGuard.Map;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -59,10 +60,10 @@ internal class GameObject
     /// Draw call that propagates down from Game1
     /// </summary>
     /// <param name="gameTime">Current frame GameTime</param>
-    /// <param name="batch">SpriteBatch</param>
-    public virtual void Draw(GameTime gameTime, SpriteBatch batch)
+    /// <param name="drawing">SpriteBatch</param>
+    public virtual void Draw(GameTime gameTime, DrawManager drawing)
     {
-        batch.Draw(Texture, Position, Color.White);
+        drawing.Draw(Texture, Position);
     }
 
     /// <summary>
@@ -70,10 +71,10 @@ internal class GameObject
     /// </summary>
     /// <param name="gameTime">Current frame GameTime</param>
     /// <param name="bounds">bounds of the texture to draw</param>
-    /// <param name="batch">SpriteBatch</param>
-    public virtual void Draw(GameTime gameTime, Rectangle bounds, SpriteBatch batch)
+    /// <param name="drawing">SpriteBatch</param>
+    public virtual void Draw(GameTime gameTime, Rectangle bounds, DrawManager drawing)
     {
-        batch.Draw(Texture, bounds, Color.White);
+        drawing.Draw(Texture, bounds);
         CollidedDebug = [];
     }
 

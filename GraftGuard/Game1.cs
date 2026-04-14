@@ -3,6 +3,7 @@ using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.UI;
@@ -98,23 +99,9 @@ public class Game1 : Game
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
-        TowerRegistry.Register("Trap", TowerTrap.Create, TowerTrap.DrawPreview, Tower.TexturePlaceholderGround);
         TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
 
-
-        // Add Testing World
-        var world = new World();
-
-        _gameManager = new GameManager(
-            world,
-            new MainMenu(this, input),
-            new PauseMenu(world, input),
-            new GameOverScreen(world),
-            new GameHUD(),
-            new TowerGraftingGUI(),
-            new NightPlacementGUI(),
-            input
-        );
+        _gameManager = new GameManager(this, input, _spriteBatch);
 
         /*mainMenu = new MainMenu(inputManager);
         pauseMenu = new PauseMenu(this.world, inputManager);
@@ -133,16 +120,12 @@ public class Game1 : Game
         //GraphicsDevice.Clear(ClearOptions.Target, Color.ForestGreen, -100, 0);
         
         GraphicsDevice.SetRenderTarget(_renderTarget);
-        GraphicsDevice.Clear(Color.ForestGreen);
+        GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target | ClearOptions.Stencil, Color.ForestGreen, 0.0f, 0);
 
-        _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
-
-        _gameManager.Draw(_spriteBatch, gameTime);
-
-        _spriteBatch.End();
+        _gameManager.Draw(gameTime);
 
         GraphicsDevice.SetRenderTarget(null); 
-        GraphicsDevice.Clear(Color.Black);    
+        GraphicsDevice.Clear(ClearOptions.DepthBuffer | ClearOptions.Target | ClearOptions.Stencil, Color.Black, 0.0f, 0);    
 
         _spriteBatch.Begin(samplerState: SamplerState.PointClamp, transformMatrix: GetScaleMatrix());
         _spriteBatch.Draw(_renderTarget, Vector2.Zero, Color.White);

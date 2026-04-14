@@ -7,6 +7,7 @@ using System.Linq;
 using GraftGuard.Utility;
 using GraftGuard.Grafting;
 using GraftGuard.Data;
+using GraftGuard.Graphics;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -70,12 +71,12 @@ internal class EnemyManager
         }
     }
 
-    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager)
     {
-        PathManager.Draw(batch, time);
+        PathManager.Draw(drawing, time);
         foreach (Enemy enemy in Enemies)
         {
-            enemy.Draw(time, batch, inputManager, world);
+            enemy.Draw(time, drawing, inputManager, world);
         }
     }
 

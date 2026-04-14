@@ -1,4 +1,5 @@
-﻿using GraftGuard.UI;
+﻿using GraftGuard.Graphics;
+using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -36,14 +37,14 @@ internal class PathNode
     /// this should only be called if game is in debug mode
     /// </summary>
     /// <param name="spriteBatch"></param>
-    public void Draw(SpriteBatch batch)
+    public void Draw(DrawManager drawing)
     {
         if (!DrawDebug)
         {
             return;
         }
-        batch.DrawCircle(new Circle(WorldPosition, 5.0f), DebugColor with { A = (byte)MathHelper.Clamp((int)(Cost * 20) + 50, 0, 255) });
+        drawing.DrawCircle(WorldPosition, 5.0f, DebugColor with { A = (byte)MathHelper.Clamp((int)(Cost * 20) + 50, 0, 255) });
         string text = $"{Cost}";
-        batch.DrawString(Fonts.Arial, text, WorldPosition - Fonts.Arial.MeasureString(text) * 0.5f, Color.White);
+        drawing.DrawString(text, WorldPosition, centered: true);
     }
 }

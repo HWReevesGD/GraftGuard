@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GraftGuard.Graphics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -44,11 +45,11 @@ internal class ProjectileManager
         _toRemove.Clear();
     }
 
-    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, bool isUi = false)
     {
         foreach (Projectile projectile in Projectiles)
         {
-            projectile.Draw(batch, time, world, inputManager, this);
+            projectile.Draw(drawing, time, world, inputManager, this, isUi: isUi);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Utility;
@@ -58,9 +59,9 @@ internal class TowerSpinner : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        batch.DrawCentered(Texture, Position);
+        drawing.DrawCentered(Texture, Position, isUi: isUi, drawLayer: 1 + drawLayerOffset);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -72,8 +73,8 @@ internal class TowerSpinner : Tower
 
             //Circle damageCircle = new Circle(partPosition, DamageCircleRadius);
             //batch.DrawCircle(damageCircle, Color.Red);
-            batch.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically);
-            batch.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically);
+            drawing.DrawCentered(Placeholders.TextureSpinnerArm, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 24), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
+            drawing.DrawCentered(part.Definition.Texture, Position + SpinOffset, rotation: rotation, origin: new Vector2(0, 48), effects: SpriteEffects.FlipVertically, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
 
             PartTransform transform = new PartTransform()
             {
@@ -81,7 +82,7 @@ internal class TowerSpinner : Tower
                 Rotation = rotation + MathF.PI,
             };
 
-            part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+            part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state, isUi: isUi);
         }
     }
 
@@ -108,11 +109,11 @@ internal class TowerSpinner : Tower
     /// <summary>
     /// Draws the "preview" for the tower, before it is placed. This is generally a transparent version of the tower's base
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Current <see cref="GameTime"/></param>
     /// <param name="position">Position to draw at</param>
-    public static void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position)
+    public static void DrawPreview(DrawManager drawing, GameTime time, Vector2 position)
     {
-        batch.DrawCentered(TexturePlaceholderTower, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+        drawing.DrawCentered(TexturePlaceholderTower, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
     }
 }

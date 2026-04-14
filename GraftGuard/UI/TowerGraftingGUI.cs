@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Towers;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
@@ -342,78 +343,77 @@ internal class TowerGraftingGUI
     /// <summary>
     /// Draws the <see cref="TowerGraftingGUI"/> Interface
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Game Time</param>
-    public void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager)
+    public void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager)
     {
         // Draw Garage Background
-        batch.Draw(
+        drawing.Draw(
             Placeholders.GarageBackgroundTexture,
-            Interface.ScreenRect,
-            Color.White
+            destination: Interface.ScreenRect,
+            isUi: true,
+            sortMode: SortMode.Top,
+            drawLayer: 0
         );
 
         // Scissor for Parts
-        ReBatchWithScissor(batch, _towerChoiceButtons.GridRectangle);
+        //ReBatchWithScissor(drawing, _towerChoiceButtons.GridRectangle);
         // Draw each Tower Button
-        _towerChoiceButtons.Draw(batch, (batch, button, _) => button.Draw(batch));
+        _towerChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Scissor for Parts
-        ReBatchWithScissor(batch, _partChoiceButtons.GridRectangle);
+        //ReBatchWithScissor(drawing, _partChoiceButtons.GridRectangle);
         // Draw each Part Button
-        _partChoiceButtons.Draw(batch, (batch, button, _) => button.Draw(batch));
+        _partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
 
         // Back to Normal
-        ReBatchNormal(batch);
+        //ReBatchNormal(drawing);
 
         // Draw Non-Button parts of Grids
-        _towerChoiceButtons.Draw(batch, skipBackground: true);
-        _partChoiceButtons.Draw(batch, skipBackground: true);
+        _towerChoiceButtons.Draw(drawing, skipBackground: true);
+        _partChoiceButtons.Draw(drawing, skipBackground: true);
 
         // Draw Night Button
-        _nightButton.Draw(batch);
+        _nightButton.Draw(drawing);
         // Draw Tower Display Border
-        _towerDisplay.Draw(batch);
+        _towerDisplay.Draw(drawing);
 
         // Draw Created Towers
-        _createdTowers.Draw(batch, (batch, created, _) => created.Draw(batch, time, world, inputManager));
+        _createdTowers.Draw(drawing, (batch, created, _) => created.Draw(batch, time, world, inputManager));
 
         // Draw Save Button
-        _saveButton.Draw(batch);
+        _saveButton.Draw(drawing);
 
         // Draw Remove Part Button
-        _removePartButton.Draw(batch);
+        _removePartButton.Draw(drawing);
 
         // Draw Tower Count Label
-        _maxTowersLabel.Draw(batch);
+        _maxTowersLabel.Draw(drawing);
 
         // Custom Tower Drawing
-        batch.End();
 
         // Set Scissor Mask
-        batch.GraphicsDevice.ScissorRectangle = _towerDisplay.Box;
+        drawing.ForceScissor = _towerDisplay.Box;
 
-        batch.Begin(
-            transformMatrix: Matrix.CreateScale(_previewScale),
-            samplerState: SamplerState.PointWrap,
-            rasterizerState: new RasterizerState { ScissorTestEnable = true });
+        drawing.ExtraMatrix = Matrix.CreateScale(_previewScale);
 
         // Draw Tower
-        _editingTower?.Draw(time, batch, world, inputManager, TimeState.Day);
+        _editingTower?.Draw(time, drawing, world, inputManager, TimeState.Day, isUi: true);
 
         // Draw Projectiles
-        _projectiles.Draw(batch, time, world, inputManager);
+        _projectiles.Draw(drawing, time, world, inputManager, isUi: true);
 
         // Back to Normal
-        ReBatchNormal(batch);
+        drawing.ExtraMatrix = null;
+        drawing.ForceScissor = null;
 
         // Draw the Label showing the Currently Chosen Part
-        _currentChosenLabel.Draw(batch);
+        _currentChosenLabel.Draw(drawing);
 
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)
         {
-            batch.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+            drawing.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
         }
     }
 
@@ -438,7 +438,7 @@ internal class TowerGraftingGUI
     /// </summary>
     /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
     /// <param name="scissor"><see cref="Rectangle"/> for scissoring</param>
-    public void ReBatchWithScissor(SpriteBatch batch, Rectangle scissor)
+    public void ReBatchWithScissorDEPRICATED(SpriteBatch batch, Rectangle scissor)
     {
         batch.End();
         batch.GraphicsDevice.ScissorRectangle = scissor;
@@ -449,7 +449,7 @@ internal class TowerGraftingGUI
     /// Ends current and Stars a new Batch Begin with default static settings
     /// </summary>
     /// <param name="batch"></param>
-    public void ReBatchNormal(SpriteBatch batch)
+    public void ReBatchNormalDEPRICATED(SpriteBatch batch)
     {
         batch.End();
         batch.Begin(samplerState: SamplerState.PointWrap);

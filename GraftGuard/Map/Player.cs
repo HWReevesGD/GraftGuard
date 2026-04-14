@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Enemies.Animation;
@@ -21,6 +22,8 @@ internal class Player : GameObject
 
     public static readonly Vector2 CenterOffset = new Vector2(25, 50) * 0.5f;
     private static readonly float invincibilityFrameTime = 0.5f; // in seconds
+    public Vector2 VisualCenter => Position + new Vector2(HitboxSize.X * 0.5f, -16f);
+    public Vector2 SortingOffset { get; set; } = new Vector2(0, 150);
 
     private static Texture2D playerTorso;
     private static Texture2D playerHead;
@@ -46,7 +49,7 @@ internal class Player : GameObject
 
     }
 
-    public Player(Vector2 position) : base(position, new Vector2(24, 48), playerTorso, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
+    public Player(Vector2 position) : base(position, new Vector2(18, 18), playerTorso, collisionLayers: CollisionLayer.Player, collisionMasks: CollisionLayer.Solid | CollisionLayer.Terrain)
     {
         _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
@@ -61,9 +64,7 @@ internal class Player : GameObject
             new AttachPoint { Name = "Ponytail", PivotX = 0.15f, PivotY = -0.15f },
         };
 
-        
-
-        playerVisual = new PlayerVisual(playerTorso, playerSockets, 1, AnimationClips.Idle, Center);
+        playerVisual = new PlayerVisual(playerTorso, playerSockets, 1, AnimationClips.Idle, Center, SortingOffset);
 
         playerVisual.CreatePart("Head", "PlayerHead", playerHead, 0.53f, 0.77f, PartType.Head, false);
         playerVisual.CreatePart("Arm_R", "PlayerArmR", playerArm, 0.48f, 0.24f, PartType.Limb, false);
@@ -95,13 +96,13 @@ internal class Player : GameObject
 
         HandlePartPickups(World.CurrentWorld);
 
-        playerVisual.Update(gameTime, Center, .1f);
+        playerVisual.Update(gameTime, VisualCenter, .1f);
 
         if (invincibilityTimer > 0)
             invincibilityTimer -= delta;
     }
 
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime gameTime, DrawManager drawing)
     {
         if (invincibilityTimer > 0)
         {
@@ -110,22 +111,19 @@ internal class Player : GameObject
                 return;
         }
 
-        playerVisual.Draw(batch, Center);
+        playerVisual.Draw(drawing, VisualCenter);
         //base.Draw(gameTime, new Rectangle(Position.ToPoint(), new Point(25, 50)), batch);
 
         // Draw Held Parts
         for (int index = 0; index < HeldParts.Count; index++)
         {
             Texture2D part = HeldParts[index].Texture;
-            batch.Draw(part, Position - Vector2.UnitY * (index - 2) * 8, null, Color.White, -MathF.PI / 2.0f, Vector2.Zero, 1.0f, SpriteEffects.None, 1.0f);
+            Vector2 offset = Vector2.UnitY * (index - 2) * 8 * 10;
+            Vector2 position = VisualCenter - Vector2.UnitY * (index - 2) * 8;
+            drawing.Draw(part, position, rotation: -MathF.PI / 2.0f, sortingOriginOffset: offset);
         }
 
-        //batch.Draw(Placeholders.TexturePixel, Hitbox, Color.Red);
-
-        foreach (var box in CollidedDebug)
-        {
-            batch.Draw(Placeholders.TexturePixel, box, null, Color.Magenta, 0.0f, Vector2.Zero, SpriteEffects.None, 1.0f);
-        }
+        //drawing.Draw(Placeholders.TexturePixel, Hitbox, color: Color.Red);
         CollidedDebug = [];
     }
 

@@ -1,4 +1,5 @@
 ﻿using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -15,8 +16,8 @@ internal class ScatteredPart : GameObject
         Definition = definition;
         _randomRotation = _random.NextSingle() * MathF.Tau;
     }
-    public override void Draw(GameTime gameTime, SpriteBatch batch)
+    public override void Draw(GameTime gameTime, DrawManager drawing)
     {
-        batch.DrawCentered(Definition.Texture, Position, rotation: _randomRotation);
+        drawing.DrawCentered(Definition.Texture, Position, rotation: _randomRotation, sortMode: SortMode.Sorted);
     }
 }

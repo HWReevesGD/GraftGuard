@@ -25,8 +25,8 @@ internal class NinePatch
         MarginTop = marginTop;
         MarginBottom = marginBottom;
     }
-    public void Draw(SpriteBatch batch, Rectangle box, Color? color = null) => Draw(batch, box.Location.ToVector(), box.Size.ToVector(), color);
-    public void Draw(SpriteBatch batch, Vector2 position, Point size, Color? color = null)
+    public void Draw(DrawManager drawing, Rectangle box, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Bottom) => Draw(drawing, box.Location.ToVector(), box.Size, color, isUI, sortMode);
+    public void Draw(DrawManager drawing, Vector2 position, Point size, Color? color = null, bool isUI = true, SortMode sortMode = SortMode.Bottom)
     {
         // The Position of the Nine-Patch turned into a Point
         Point offset = position.ToPoint();
@@ -47,83 +47,110 @@ internal class NinePatch
         // ░░══╗
         // ║   ║
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(0, 0, MarginLeft, MarginTop).Translated(offset),
-            new Rectangle(0, 0, MarginLeft, MarginTop),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(0, 0, MarginLeft, MarginTop).Translated(offset),
+            source: new Rectangle(0, 0, MarginLeft, MarginTop),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom-Left
         // ╔═══╗
         // ║   ║
         // ░░══╝
-        batch.Draw(Texture,
-            new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Translated(offset),
-            new Rectangle(0, textureSize.Y - MarginBottom, MarginLeft, MarginBottom),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(0, size.Y - MarginBottom, MarginLeft, MarginBottom).Translated(offset),
+            source: new Rectangle(0, textureSize.Y - MarginBottom, MarginLeft, MarginBottom),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Top-Right
         // ╔══░░
         // ║   ║
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, 0, MarginRight, MarginTop).Translated(offset),
-            new Rectangle(textureSize.X - MarginRight, 0, MarginRight, MarginTop),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(size.X - MarginRight, 0, MarginRight, MarginTop).Translated(offset),
+            source: new Rectangle(textureSize.X - MarginRight, 0, MarginRight, MarginTop),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom-Right
         // ╔═══╗
         // ║   ║
         // ╚══░░
-        batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, size.Y - MarginBottom, MarginRight, MarginBottom).Translated(offset),
-            new Rectangle(textureSize.X - MarginRight, textureSize.Y - MarginBottom, MarginRight, MarginBottom),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(size.X - MarginRight, size.Y - MarginBottom, MarginRight, MarginBottom).Translated(offset),
+            source: new Rectangle(textureSize.X - MarginRight, textureSize.Y - MarginBottom, MarginRight, MarginBottom),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Left
         // ╔═══╗
         // ░   ║
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(0, MarginTop, MarginLeft, sideSize.Y).Translated(offset),
-            new Rectangle(0, MarginTop, MarginLeft, textureSideSize.Y),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(0, MarginTop, MarginLeft, sideSize.Y).Translated(offset),
+            source: new Rectangle(0, MarginTop, MarginLeft, textureSideSize.Y),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Right
         // ╔═══╗
         // ║   ░
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(size.X - MarginRight, MarginTop, MarginRight, sideSize.Y).Translated(offset),
-            new Rectangle(textureSize.X - MarginRight, MarginTop, MarginRight, textureSideSize.Y),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(size.X - MarginRight, MarginTop, MarginRight, sideSize.Y).Translated(offset),
+            source: new Rectangle(textureSize.X - MarginRight, MarginTop, MarginRight, textureSideSize.Y),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Top
         // ╔░░░╗
         // ║   ║
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(MarginLeft, 0, sideSize.X, MarginTop).Translated(offset),
-            new Rectangle(MarginLeft, 0, textureSideSize.X, MarginTop),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(MarginLeft, 0, sideSize.X, MarginTop).Translated(offset),
+            source: new Rectangle(MarginLeft, 0, textureSideSize.X, MarginTop),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Bottom
         // ╔═══╗
         // ║   ║
         // ╚░░░╝
-        batch.Draw(Texture,
-            new Rectangle(MarginLeft, size.Y - MarginBottom, sideSize.X, MarginBottom).Translated(offset),
-            new Rectangle(MarginLeft, textureSize.Y - MarginBottom, textureSideSize.X, MarginBottom),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(MarginLeft, size.Y - MarginBottom, sideSize.X, MarginBottom).Translated(offset),
+            source: new Rectangle(MarginLeft, textureSize.Y - MarginBottom, textureSideSize.X, MarginBottom),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
 
         // Center
         // ╔═══╗
         // ║░░░║
         // ╚═══╝
-        batch.Draw(Texture,
-            new Rectangle(MarginLeft, MarginTop, sideSize.X, sideSize.Y).Translated(offset),
-            new Rectangle(MarginLeft, MarginTop, textureSideSize.X, textureSideSize.Y),
-            finalColor);
+        drawing.Draw(
+            texture: Texture,
+            destination: new Rectangle(MarginLeft, MarginTop, sideSize.X, sideSize.Y).Translated(offset),
+            source: new Rectangle(MarginLeft, MarginTop, textureSideSize.X, textureSideSize.Y),
+            color: finalColor,
+            isUi: isUI,
+            sortMode: sortMode);
     }
 
-    public void Draw(SpriteBatch batch, Vector2 position, Vector2 size, Color? color = null) => Draw(batch, position, size.ToPoint(), color);
+    public void Draw(DrawManager drawing, Vector2 position, Vector2 size, Color? color = null, bool isUi = true, SortMode sortMode = SortMode.Bottom) => Draw(drawing, position, size.ToPoint(), color, isUi, sortMode);
 }

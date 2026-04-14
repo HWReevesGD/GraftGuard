@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,11 +34,11 @@ internal class TowerManager
         }
     }
 
-    public void Draw(SpriteBatch batch, GameTime gameTime, World world, InputManager inputManager, TimeState state)
+    public void Draw(DrawManager drawing, GameTime gameTime, World world, InputManager inputManager, TimeState state)
     {
         foreach (Tower tower in _towers)
         {
-            tower.Draw(gameTime, batch, world, inputManager, state);
+            tower.Draw(gameTime, drawing, world, inputManager, state);
         }
     }
 

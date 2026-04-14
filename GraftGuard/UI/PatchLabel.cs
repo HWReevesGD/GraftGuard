@@ -31,10 +31,10 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
     {
         return MakeBase(text, position - size * 0.5f, size);
     }
-    public void Draw(SpriteBatch batch, Color? color = null)
+    public void Draw(DrawManager drawing, Color? color = null)
     {
-        Patch.Draw(batch, Position, Size, color ?? Color.White);
-        batch.DrawString(Font, Text, Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, TextColor);
+        Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color);
+        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top);
     }
 
     public bool IsMouseOver(InputManager inputManager)

@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -79,9 +80,9 @@ internal class TowerTrap : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode sortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        batch.DrawCentered(Texture, Position);
+        drawing.DrawCentered(Texture, Position, isUi: isUi);
         if (!HasParts) return;
 
         for (int x = 0; x < GridSize; x++)
@@ -95,12 +96,9 @@ internal class TowerTrap : Tower
                 Point partSize = part.Definition.Texture.GetSizePoint();
                 float sinHeight = MathF.Sin(x + y + (float)time.TotalGameTime.TotalSeconds * 3.0f) * 4.0f;
 
-                batch.Draw(part.Definition.Texture, partPosition, new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))), Color.White,
+                drawing.Draw(part.Definition.Texture, partPosition, source: new Rectangle(new Point(0, (int)(partSize.Y * 0.5f - sinHeight)), new Point(partSize.X, (int)(partSize.Y * 0.5f - sinHeight))),
                     effects: SpriteEffects.FlipVertically,
-                    rotation: 0.0f,
-                    scale: 1.0f,
-                    origin: Vector2.Zero,
-                    layerDepth: 0.0f);
+                    origin: Vector2.Zero, isUi: isUi);
 
                 PartTransform transform = new PartTransform()
                 {
@@ -108,7 +106,7 @@ internal class TowerTrap : Tower
                     Rotation = -MathF.PI / 2.0f,
                 };
 
-                part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+                part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state, isUi: isUi);
             }
         }
     }
@@ -139,11 +137,11 @@ internal class TowerTrap : Tower
     /// <summary>
     /// Draws the "preview" for the tower, before it is placed. This is generally a transparent version of the tower's base
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Current <see cref="GameTime"/></param>
     /// <param name="position">Position to draw at</param>
-    public static void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position)
+    public static void DrawPreview(DrawManager drawing, GameTime time, Vector2 position)
     {
-        batch.DrawCentered(TexturePlaceholderGround, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+        drawing.DrawCentered(TexturePlaceholderGround, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
     }
 }

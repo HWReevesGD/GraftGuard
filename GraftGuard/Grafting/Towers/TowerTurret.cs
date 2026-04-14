@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
 using GraftGuard.Map.Projectiles;
@@ -63,11 +64,11 @@ internal class TowerTurret : Tower
         }
     }
 
-    public override void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
         float direction = CurrentDirection;
-        batch.DrawCentered(Texture, Position);
-        batch.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction);
+        drawing.DrawCentered(Texture, Position, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
+        drawing.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
 
         for (int index = 0; index < _attachedParts.Length; index++)
         {
@@ -87,8 +88,8 @@ internal class TowerTurret : Tower
                 Rotation = direction - MathF.PI / 2.0f
             };
 
-            batch.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation);
-            part.DrawBehavior(Settings, transform, time, batch, world, inputManager, state);
+            drawing.DrawCentered(def.Texture, transform.Position, rotation: transform.Rotation, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
+            part.DrawBehavior(Settings, transform, time, drawing, world, inputManager, state, isUi: isUi);
         }
     }
 
@@ -130,11 +131,11 @@ internal class TowerTurret : Tower
     /// <summary>
     /// Draws the "preview" for the tower, before it is placed. This is generally a transparent version of the tower's base
     /// </summary>
-    /// <param name="batch"><see cref="SpriteBatch"/> to use</param>
+    /// <param name="drawing"><see cref="SpriteBatch"/> to use</param>
     /// <param name="time">Current <see cref="GameTime"/></param>
     /// <param name="position">Position to draw at</param>
-    public static void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position)
+    public static void DrawPreview(DrawManager drawing, GameTime time, Vector2 position)
     {
-        batch.DrawCentered(TexturePlaceholderTower, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+        drawing.DrawCentered(TexturePlaceholderTower, position, color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
     }
 }

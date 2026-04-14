@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Linq;
 using System.Security.Cryptography;
 using GraftGuard.Map.Projectiles;
+using GraftGuard.Graphics;
 
 namespace GraftGuard.Map;
 
@@ -87,9 +88,9 @@ internal class Projectile
 
     }
 
-    public virtual void Draw(SpriteBatch batch, GameTime time, World world, InputManager inputManager, ProjectileManager manager)
+    public virtual void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)
     {
-        batch.DrawCentered(Texture, Position, scale: Scale);
+        drawing.DrawCentered(Texture, Position, scale: Vector2.One * Scale, isUi: isUi);
     }
 
     public static Texture2D TFire;

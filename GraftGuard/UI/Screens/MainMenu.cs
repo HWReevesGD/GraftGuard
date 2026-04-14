@@ -1,6 +1,7 @@
 ﻿// render main menu
 
 using GraftGuard.Data;
+using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Graphics.TextEffects.Effects;
@@ -56,10 +57,10 @@ internal class MainMenu {
 
     public event ActionEvent NewGameStarted;
 
-    public MainMenu(Game1 game, InputManager inputManager)
+    public MainMenu(Game1 game, InputManager inputManager, DrawManager drawing)
     {
         this.game = game;
-        backgroundWorld = new World();
+        backgroundWorld = new World(drawing);
         idleInputManager = new InputManager();
         this.inputManager = inputManager;
         timeState = TimeState.Night; // always night
@@ -137,9 +138,9 @@ internal class MainMenu {
     /// <summary>
     /// Draw Main Menu
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="gameTime">gameTime from Game1 Draw()</param>
-    public void Draw(SpriteBatch batch, GameTime gameTime)
+    public void Draw(DrawManager drawing, GameTime gameTime)
     {
         // simulate and render world in the background
         // with random towers and constantly spawning enemies
@@ -147,21 +148,14 @@ internal class MainMenu {
 
         // draw background world
 
-        batch.End();
         // Draw by the Camera's Position
-        batch.Begin(samplerState: SamplerState.PointWrap, transformMatrix: backgroundWorld.Camera.WorldToScreen);
-        backgroundWorld.DrawCamera(batch, gameTime, timeState, inputManager, false);
-        batch.End();
-
-        // gui stuff
-
-        batch.Begin();
+        backgroundWorld.DrawCamera(drawing, gameTime, timeState, inputManager, false);
 
         // draw transulcent black cover
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        batch.Draw(backgroundTexture, fullScreenRect, bgColor);
+        drawing.Draw(backgroundTexture, fullScreenRect, color: bgColor, isUi: true);
 
         // draw menu items
 
@@ -199,7 +193,7 @@ internal class MainMenu {
                 .SetKerning(2)
                 .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]));
 
-            text.Draw(batch, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
+            text.Draw(drawing, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
 
             // increment up
             yPosition += -text.Height - itemGap;
@@ -208,13 +202,13 @@ internal class MainMenu {
         // little arrow thing
         new Text(Fonts.SubFont, ">")
             .SetYOrigin(YOrigin.Bottom)
-            .DrawRaw(batch, new Vector2(itemLeftPadding, arrowYPosition));
+            .DrawRaw(drawing, new Vector2(itemLeftPadding, arrowYPosition));
 
         // title text
         new Text(Fonts.MainFont, titleText)
             .SetYOrigin(YOrigin.Bottom)
             .SetKerning(3)
             .AddEffect(new WavyTextEffect(7, -3))
-            .Draw(batch, gameTime, new Vector2(titleLeftPadding, yPosition));
+            .Draw(drawing, gameTime, new Vector2(titleLeftPadding, yPosition));
     }
 }

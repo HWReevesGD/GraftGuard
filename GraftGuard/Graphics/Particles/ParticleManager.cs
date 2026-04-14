@@ -58,13 +58,13 @@ internal class ParticleManager
     /// <summary>
     /// Draw particles to the screen
     /// </summary>
-    /// <param name="batch">SpriteBatch</param>
+    /// <param name="drawing">SpriteBatch</param>
     /// <param name="gameTime">This frame's GameTime</param>
-    public void Draw(SpriteBatch batch, GameTime gameTime)
+    public void Draw(DrawManager drawing, GameTime gameTime, bool isUi = false)
     {
         foreach (Particle particle in particles)
         {
-            particle.Draw(batch, gameTime);
+            particle.Draw(drawing, gameTime, isUi);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using GraftGuard.Utility;
+﻿using GraftGuard.Graphics;
+using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -62,22 +63,23 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
         _thisMouseState = inputManager.CurrentMouse;
     }
 
-    public virtual void Draw(SpriteBatch batch, Color? color = null)
+    public virtual void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
-        DrawIcon(batch);
-        DrawText(batch);
+        DrawIcon(drawing);
+        DrawText(drawing);
     }
 
-    protected virtual void DrawText(SpriteBatch batch)
+    protected virtual void DrawText(DrawManager drawing)
     {
-        batch.DrawString(
-            Font,
-            Text,
-            Position + Size / 2.0f - Font.MeasureString(Text) / 2.0f,
-            TextColor
+        drawing.DrawString(
+            font: Font,
+            text: Text,
+            position: Position + Size / 2.0f - Font.MeasureString(Text) / 2.0f,
+            color: TextColor,
+            isUi: true
             );
     }
-    protected virtual void DrawIcon(SpriteBatch batch)
+    protected virtual void DrawIcon(DrawManager drawing)
     {
         if (Icon is null) return;
         Rectangle destinationRectangle = IconType switch
@@ -86,7 +88,7 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
             ButtonIconType.Stretch => new Rectangle(Position.ToPoint(), Size.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((Position + Size * 0.5f - Size.SquareOfSmallest() * 0.5f).ToPoint(), Size.SquareOfSmallest().ToPoint())
         };
-        batch.Draw(Icon, destinationRectangle, Color.White);
+        drawing.Draw(Icon, destination: destinationRectangle, color: Color.White, isUi: true);
     }
 
     bool IMouseDetectable.IsMouseOver(InputManager inputManager)

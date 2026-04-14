@@ -1,5 +1,6 @@
 ﻿using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
+using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies.Animation;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,8 +18,8 @@ namespace GraftGuard.Map
         /// <summary>
         /// Creates a PlayerVisual with a custom base texture and defined attachment points.
         /// </summary>
-        public PlayerVisual(Texture2D texture, List<AttachPoint> attachPoints, float scale, AnimationClip initialClip, Vector2 spawnPos)
-            : base(new BaseDefinition("PlayerBase", "PlayerTex", texture, true, attachPoints), scale, initialClip, spawnPos)
+        public PlayerVisual(Texture2D texture, List<AttachPoint> attachPoints, float scale, AnimationClip initialClip, Vector2 spawnPos, Vector2 sortingOffset)
+            : base(new BaseDefinition("PlayerBase", "PlayerTex", texture, true, attachPoints), scale, initialClip, spawnPos, sortingOffset)
         {
             AttachedParts.Clear();
         }
@@ -31,11 +32,10 @@ namespace GraftGuard.Map
             // Do nothing: We will assign parts manually via SetPart
         }
 
-        public override void Draw(SpriteBatch spriteBatch, Vector2 position)
+        internal new void Draw(DrawManager drawing, Vector2 position)
         {
             //draw ponytail behind first then get rid of it
-            LimbDrawContext ctx = GetContext(spriteBatch, position);
-
+            LimbDrawContext ctx = GetContext(drawing, position);
 
             //DEPENDENT ON PONYTAIL ADDED LAST BAD PRACTICE BUT WHATEVER
             Vector2 slotPosition = Base.AttachmentPoints[ponytail.Name];
@@ -46,10 +46,10 @@ namespace GraftGuard.Map
 
             SpriteEffects effects = ponytail.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
-            DrawLimb(ponytail.Name, pixelOffset, ponytail, -1, ctx, effects);
+            DrawLimb(ponytail.Name, pixelOffset, ponytail, -1, ctx, SortingOffset, effects);
 
 
-            base.Draw(spriteBatch, position);
+            base.Draw(drawing, position);
         }
         /// <summary>
         /// Creates a new PartDefinition on the fly and attaches it to the specified slot.

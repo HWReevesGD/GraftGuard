@@ -1,6 +1,7 @@
 ﻿using GraftGuard.Data;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
+using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
@@ -15,7 +16,7 @@ using System.Text.RegularExpressions;
 namespace GraftGuard.Grafting.Towers;
 
 internal delegate Tower CreateTower(Vector2 position);
-internal delegate void DrawPreview(SpriteBatch batch, GameTime time, Vector2 position);
+internal delegate void DrawPreview(DrawManager drawing, GameTime time, Vector2 position);
 /// <summary>
 /// Base Class for all Towers
 /// </summary>
@@ -88,9 +89,9 @@ internal abstract class Tower : GameObject, IMouseDetectable
 
     }
 
-    public virtual void Draw(GameTime time, SpriteBatch batch, World world, InputManager inputManager, TimeState state)
+    public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        base.Draw(time, batch);
+        drawing.Draw(Texture, Position, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
     }
 
     /// <summary>

@@ -204,7 +204,8 @@ internal class TowerGraftingGUI
         if (inputManager.LeftMouseClicked() &&
             _currentlyChosenPart is not null &&
             _editingTower is not null &&
-            _editingTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(), Matrix.CreateScale(1.0f / _previewScale))))
+            _editingTower.IsOver(Vector2.Transform(inputManager.MouseScreenPosition.ToVector(), Matrix.CreateScale(1.0f / _previewScale))) &&
+            !_editingTower.PartsFull)
         {
             if (world.Inventory.GetPartCount(_currentlyChosenPart) > 0)
             {

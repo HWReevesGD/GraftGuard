@@ -44,6 +44,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     /// </summary>
     public bool HasParts => _attachedParts.Any((part) => part is not null);
     public int TotalAttachedParts => _attachedParts.Count((part) => part is not null);
+    public bool PartsFull => !_attachedParts.Any((part) => part is null);
     /// <summary>
     /// Rectangle which determines where the Mouse will be considered to be "hovering" over this tower
     /// </summary>

@@ -241,14 +241,14 @@ internal class DrawManager
             List<DrawInstruction> gameScissors = [];
             List<DrawInstruction> uiScissors = [];
 
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, transformMatrix: matrix * camera.WorldToScreen);
+            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix * camera.WorldToScreen);
             CurrentBatchBegin(Matrix.Identity);
             foreach (DrawInstruction instruction in gameLayer)
             {
                 DrawInstruction(instruction, gameScissors);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix * camera.WorldToScreen);
+            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix * camera.WorldToScreen);
             CurrentBatchBegin(Matrix.Identity);
             foreach (DrawInstruction instruction in gameScissors)
             {
@@ -256,14 +256,14 @@ internal class DrawManager
                 DrawInstruction(instruction);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, transformMatrix: matrix);
+            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix);
             CurrentBatchBegin(Matrix.Identity);
             foreach (DrawInstruction instruction in uiLayer)
             {
                 DrawInstruction(instruction, uiScissors);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointClamp, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix);
+            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix);
             CurrentBatchBegin(Matrix.Identity);
             foreach (DrawInstruction instruction in uiScissors)
             {

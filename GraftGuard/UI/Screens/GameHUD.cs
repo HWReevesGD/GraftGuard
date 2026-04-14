@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraftGuard.UI.Screens;
 
@@ -198,13 +199,14 @@ internal class GameHUD
                 );
 
                 Rectangle rect = new Rectangle(
-                    (int)(position.X),
-                    (int)(position.Y),
+                    (int)position.X,
+                    (int)position.Y,
                     (int)finalSize.X,
                     (int)finalSize.Y
                     );
 
-                drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top, drawLayer: 2);
+                drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top);
+                drawing.DrawString($"HEALTH: {PlayerData.CurrentGame.Health}", new Vector2(64 ,64), isUi: true);
             }
 
             previousHealth = PlayerData.CurrentGame.Health;

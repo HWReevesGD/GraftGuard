@@ -65,6 +65,18 @@ namespace GraftGuard.Grafting
                             Debug.WriteLine($"Loaded Base: {data.Name}");
                         }
                     }
+
+                    // Load Manual JSON
+                    JsonDocument document = JsonDocument.Parse(json);
+                    JsonElement parts = document.RootElement.GetProperty("Parts");
+                    foreach (JsonElement definition in parts.EnumerateArray())
+                    {
+                        PartDefinition part = GetPartByName(definition.GetProperty("Name").GetString());
+                        part.PartDamage = new Damage(
+                            definition.GetProperty("BaseDamage").GetSingle(),
+                            0.0f, 0.0f, 0.0f, 0.0f);
+                    }
+
                 }
             }
             CalculatePartPools();

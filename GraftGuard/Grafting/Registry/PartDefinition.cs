@@ -45,6 +45,9 @@ public class PartDefinition
     public float PivotY { get; set; }
     public string[] PartBehaviorNames { get; set; }
 
+    public bool FlipHorizonal { get; set; }
+
+
     [JsonIgnore]
     public Texture2D Texture { get; set; }
 
@@ -77,7 +80,7 @@ public class PartDefinition
 
     public PartDefinition(string name, Texture2D texture, string textureName, float pivotX, float pivotY, PartType type,
                               float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f,
-                              float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f, string[]? partBehaviorNames = null)
+                              float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f, string[]? partBehaviorNames = null, bool flipHorizonal = false)
     {
         Name = name;
         Texture = texture;
@@ -92,6 +95,7 @@ public class PartDefinition
         CriticalModifier = criticalModifier;
         HealthModifier = healthModifier;
         PartBehaviorNames = partBehaviorNames ?? [];
+        FlipHorizonal = flipHorizonal;
     }
 
     public Vector2 GetEndpoint(PartTransform transform)

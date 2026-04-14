@@ -56,6 +56,7 @@ public class EnemyVisual
                 AttachedParts.Add(new AttachedPart(GraftLibrary.GetRandomLimb(), slotName));
             }
         }
+<<<<<<< HEAD
     }
 
     public void VisualDeath(Vector2 deathPosition)
@@ -122,11 +123,128 @@ public class EnemyVisual
             {
                 Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
                 //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+=======
+
+        public virtual void Draw(SpriteBatch spriteBatch, Vector2 position)
+        {
+            if (!IsDead)
+            {
+                LimbDrawContext ctx = GetContext(spriteBatch, position);
+
+                // Draw Torso
+                spriteBatch.Draw(Base.Texture, ctx.BodyPos, null, Color.White, ctx.BodyRot,
+                    new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
+                    ctx.DynamicScale, SpriteEffects.None, 0f);
+
+                // Draw Limbs
+                int count = 0;
+                foreach (AttachedPart part in AttachedParts)
+                {
+                    //legs and head in front of that
+                    DrawLayer(spriteBatch, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
+
+                    //arms above that
+                    DrawLayer(spriteBatch, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
+                }
+            }
+            else
+            {
+                foreach (var part in fallingParts)
+                {
+                    part.Draw(spriteBatch);
+                }
+            }
+        }
+
+        public LimbDrawContext GetContext(SpriteBatch spriteBatch, Vector2 enemyPosition)
+        {
+            float timer = Animator.AnimationTimer;
+            AnimationClip clip = Animator.CurrentClip;
+            float bodyRotation = Animator.GetRotation();
+
+            float walkBob = (float)Math.Sin(timer * 2f) * clip.BobIntensity;
+            float sideSway = (float)Math.Sin(timer) * clip.SwayIntensity;
+            Vector2 animatedPos = new Vector2(enemyPosition.X + sideSway, enemyPosition.Y + walkBob);
+
+            float squash = (float)Math.Sin(timer * 2f) * 0.05f;
+            Vector2 dynamicScale = new Vector2(Scale + squash, Scale - squash);
+
+            return new LimbDrawContext
+            {
+                SpriteBatch = spriteBatch,
+                BodyPos = animatedPos,
+                BodyRot = bodyRotation,
+                DynamicScale = dynamicScale,
+                Timer = timer,
+                Clip = clip
+            };
+        }
+
+        public PartTransform GetPartTransform(PartDefinition part, Vector2 offset, LimbDrawContext context, int index)
+        {
+            // Use ctx.Timer, ctx.BodyPos, etc.
+            Vector2 rotatedOffset = Vector2.Transform(offset * Scale, Matrix.CreateRotationZ(context.BodyRot));
+            Vector2 worldAttachPos = context.BodyPos + rotatedOffset;
+
+            float phaseShift = index * 0.5f;
+            float rawSine = (float)Math.Sin(context.Timer + phaseShift);
+            float snappyWobble = Math.Sign(rawSine) * (float)Math.Pow(Math.Abs(rawSine), 0.5f) * context.Clip.LimbWobbleScale;
+
+            return new PartTransform()
+            {
+                Position = worldAttachPos,
+                Rotation = context.BodyRot + snappyWobble,
+                Origin = new Vector2(part.Texture.Width * part.PivotX, part.Texture.Height * part.PivotY),
+                Scale = context.DynamicScale
+            };
+        }
+
+        internal PartTransform GetPartTransform(AttachedPart part, Vector2 enemyPosition, int index, bool physical = false)
+        {
+            Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+            //Convert normalized Pivot (0.0 to 1.0) into center-relative pixel offset
+            Vector2 pixelOffset = new Vector2(
+                (slotPosition.X - 0.5f) * Base.Texture.Width,
+                (slotPosition.Y - 0.5f) * Base.Texture.Height
+            );
+
+            LimbDrawContext context = GetContext(null, enemyPosition);
+            PartTransform transform = GetPartTransform(part.Definition, pixelOffset, context, index);
+            if (physical)
+            {
+                transform.Rotation += MathF.PI / 2.0f;
+            }
+            return transform;
+        }
+
+        public struct LimbDrawContext
+        {
+            public SpriteBatch SpriteBatch;
+            public Vector2 BodyPos;
+            public float BodyRot;
+            public Vector2 DynamicScale;
+            public float Timer;
+            public AnimationClip Clip;
+        }
+
+        /// <summary>
+        /// Helper to draw a specific subset of parts based on a filter
+        /// </summary>
+        private void DrawLayer(SpriteBatch spriteBatch, LimbDrawContext ctx, Func<AttachedPart, bool> filter)
+        {
+            int count = 0;
+            foreach (AttachedPart part in AttachedParts)
+            {
+                if (!filter(part)) continue;
+
+                Vector2 slotPosition = Base.AttachmentPoints[part.SlotName];
+>>>>>>> main
                 Vector2 pixelOffset = new Vector2(
                     (slotPosition.X - 0.5f) * Base.Texture.Width,
                     (slotPosition.Y - 0.5f) * Base.Texture.Height
                 );
 
+<<<<<<< HEAD
                 DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, SortingOffset);
             }
         }
@@ -221,5 +339,21 @@ public class EnemyVisual
             origin: transform.Origin,
             scale: transform.Scale,
             sortingOriginOffset: sortingOffset - transform.Origin);
+=======
+                SpriteEffects effects = part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+
+                DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, effects);
+            }
+        }
+
+        protected void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx, SpriteEffects spriteEffect)
+        {
+            PartTransform transform = GetPartTransform(part, offset, ctx, index);
+
+            ctx.SpriteBatch.Draw(part.Texture, transform.Position, null, Color.White, transform.Rotation,
+                transform.Origin,
+                transform.Scale, spriteEffect, 0f);
+        }
+>>>>>>> main
     }
 }

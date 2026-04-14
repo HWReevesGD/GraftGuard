@@ -19,14 +19,15 @@ internal class EnemyCentipede : Enemy
     static BaseDefinition shell = GraftLibrary.GetBaseByName("Shell");
     private Vector2 movement;
     private float mandibleRotation;
-    public const int CentipedeLength = 8;
-    public const int SanpshotsPerSegment = 8;
+    public const int CentipedeLength = 6;
+    public const int SanpshotsPerSegment = 3;
     public RotatingArray<Vector2> SegmentPositions;
     public EnemyCentipede Parent { get; private set; }
     public EnemyCentipede Child { get; private set; }
     public EnemyCentipede(Vector2 position, EnemyManager manager, int segmentsLeft = CentipedeLength)
-        : base(position, shell, new Vector2(32, 32), 10.0f, 128.0f)
+        : base(position, shell, new Vector2(32, 32), 10.0f, 760.0f)
     {
+        Mass = 4.0f;
         segmentsLeft--;
         if (segmentsLeft > 0)
         {
@@ -78,14 +79,26 @@ internal class EnemyCentipede : Enemy
         }
 
     }
-    
+
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
         if (Parent is not null)
         {
             return;
         }
-        Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager, PathGoal.Player);
+
+        List<Enemy> children = [];
+
+        EnemyCentipede child = Child;
+        int childIndex = 0;
+        while (child is not null)
+        {
+            children.Add(child);
+            child = child.Child;
+            childIndex++;
+        }
+
+        Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager, PathGoal.Player, children);
         movement = steeringPathing;
         Position += movement;
     }
@@ -97,7 +110,7 @@ internal class EnemyCentipede : Enemy
         if (Parent is null)
         {
             mandibleRotation = mandibleRotation.MoveTowardsAngle(movement.Angle(), gameTime.Delta() * 10.0f);
-            drawing.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-32, 0), rotation: mandibleRotation);
+            drawing.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-16, 0), rotation: mandibleRotation);
         }
     }
 }

@@ -37,8 +37,8 @@ internal class PartSlashing : IPartBehavior
     public void OnDealDamage(PartSettings settings, float damageModifier, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
         _slashSize = 0.9f;
-
-        world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], part.BaseDamage * 0.5f);
+        Damage areaDamage = new Damage(part.PartDamage.BaseDamage * 0.5f, part.PartDamage.DamageOverTime, part.PartDamage.DamageOverTimeDuration, part.PartDamage.SpeedMod, part.PartDamage.SpeedModDuration);
+        world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], areaDamage);
     }
 
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)

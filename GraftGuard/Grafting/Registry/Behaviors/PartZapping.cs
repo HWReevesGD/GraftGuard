@@ -19,7 +19,7 @@ internal class PartZapping : IPartBehavior
     public const float ZapSearchRadius = 192.0f;
     public const int MaxZaps = 1;
     public const int MaxChain = 10;
-    public const float ZapDamage = 1.0f;
+    public GraftGuard.Damage Zap = new GraftGuard.Damage(1f, 0f, 0, 0f, 0);
     public static IPartBehavior Create() => new PartZapping();
     public void Draw(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state)
     {
@@ -128,7 +128,7 @@ internal class PartZapping : IPartBehavior
             }
             if (zappedObject is Enemy enemy)
             {
-                enemy.TakeDamage(ZapDamage);
+                enemy.TakeDamage(Zap);
             }
         }
 

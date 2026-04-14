@@ -25,7 +25,7 @@ public class PartDefinition
     private float _internalRarityWeight;
     public string Name { get; set; }
     public PartType Type { get; set; }
-    public float BaseDamage { get; set; } 
+    public Damage PartDamage { get; set; } 
     public float Rarity
     {
         get => _internalRarity;
@@ -69,7 +69,7 @@ public class PartDefinition
         TextureName = "head texture";
         Vector2 pivot = headPivot;
         Type = PartType.Head;
-        BaseDamage = 1;
+        PartDamage = new Damage(1, 0, 0, 0, 0);
         Rarity = 1;
         SpeedModifier = 1;
         ArmorModifier = 1;
@@ -79,7 +79,7 @@ public class PartDefinition
     }
 
     public PartDefinition(string name, Texture2D texture, string textureName, float pivotX, float pivotY, PartType type,
-                              float baseDamage, float speedModifier = 1.0f, float armorModifier = 1.0f,
+                              Damage partDamage, float speedModifier = 1.0f, float armorModifier = 1.0f,
                               float rangeModifier = 1.0f, float criticalModifier = 1.0f, float healthModifier = 1.0f, string[]? partBehaviorNames = null, bool flipHorizonal = false)
     {
         Name = name;
@@ -88,7 +88,7 @@ public class PartDefinition
         PivotX = pivotX;
         PivotY = pivotY;
         Type = type;
-        BaseDamage = baseDamage;
+        PartDamage = partDamage;
         SpeedModifier = speedModifier;
         ArmorModifier = armorModifier;
         RangeModifier = rangeModifier;

@@ -100,6 +100,7 @@ public class Game1 : Game
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
         TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
+        TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest);
 
         _gameManager = new GameManager(this, input, _spriteBatch);
 

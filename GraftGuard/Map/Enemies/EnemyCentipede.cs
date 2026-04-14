@@ -100,6 +100,8 @@ internal class EnemyCentipede : Enemy
 
         Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager, PathGoal.Player, children);
         movement = steeringPathing;
+        steeringPathing += new Vector2(0, MathF.Sin(gameTime.Total()) * 128.0f * gameTime.Delta());
+        steeringPathing.Rotate(steeringPathing.Angle());
         Position += movement;
     }
 

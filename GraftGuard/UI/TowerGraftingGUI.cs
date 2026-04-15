@@ -38,6 +38,8 @@ internal class TowerGraftingGUI
     private readonly static Vector2 _saveButtonSize = new Vector2(128, 56) * guiScale;
     private readonly static Vector2 _removePartSize = new Vector2(112, 56) * guiScale;
     private readonly static Vector2 _maxTowersLabelSize = new Vector2(110, 56) * guiScale;
+    private readonly static Vector2 _partSelectorPosition = new Vector2(0, 64);
+    private readonly static Vector2 _towerSelectorPositionOffset = new Vector2(0, 64);
     private const float _arrowCreatedTowerButtonOffset = -256.0f * 2;
     private const float _previewScale = 4.0f;
 
@@ -128,8 +130,8 @@ internal class TowerGraftingGUI
 
         _towerChoiceButtons = new ScrollingGrid<PatchButton>(
             orientation: Orientation.Vertical,
-            gridPosition: new Vector2(Interface.Width - _towerButtonSize.X, 0),
-            gridSize: new Vector2(_towerButtonSize.X, Interface.Height - _createdTowerSize.Y),
+            gridPosition: new Vector2(Interface.Width - _towerButtonSize.X, 0) + _towerSelectorPositionOffset,
+            gridSize: new Vector2(_towerButtonSize.X, Interface.Height - _createdTowerSize.Y - _towerSelectorPositionOffset.Y),
             elementSize: _towerButtonSize,
             arrowSide: Corner.TopOrRight,
             arrowOffset: 0.0f,
@@ -139,8 +141,8 @@ internal class TowerGraftingGUI
 
         _partChoiceButtons = new ScrollingGrid<PatchButton>(
             orientation: Orientation.Vertical,
-            gridPosition: Vector2.Zero,
-            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y),
+            gridPosition: _partSelectorPosition,
+            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y - _partSelectorPosition.Y),
             elementSize: _partButtonSize,
             arrowSide: Corner.BottomOrLeft,
             arrowOffset: 0.0f,
@@ -408,13 +410,21 @@ internal class TowerGraftingGUI
         drawing.ExtraMatrix = null;
         drawing.ForceScissor = null;
 
+        // Draw Text
+        if (_currentlyChosenPart is not null)
+        {
+            drawing.DrawString("Attach Parts Here", font: Fonts.SubFont, position: Interface.ScreenCenter - new Vector2(0, 420f), isUi: true, centered: true);
+        }
+        drawing.DrawString("Parts", font: Fonts.SubFont, position: new Vector2(8, 8), isUi: true);
+        drawing.DrawString("Towers", font: Fonts.SubFont, position: Interface.TopRight + new Vector2(-8, 8) - Fonts.SubFont.MeasureString("Towers") * Vector2.UnitX, isUi: true);
+
         // Draw the Label showing the Currently Chosen Part
         _currentChosenLabel.Draw(drawing);
 
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)
         {
-            drawing.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.3f));
+            drawing.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.7f), isUi: true, scale: Vector2.One * 3);
         }
     }
 

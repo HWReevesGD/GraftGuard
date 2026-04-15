@@ -55,7 +55,7 @@ internal class Projectile
     /// <param name="world"><see cref="World"/> to use</param>
     /// <param name="amount">Amount of damage to deal</param>
     /// <returns>True if any target was overlapping <see cref="HitCircle"/>, false otherwise</returns>
-    public bool DealDamage(World world, Damage damage, float playerDamageModifier = 0.0f)
+    public bool DealDamage(World world, Damage damage, float playerDamageModifier = 1.0f)
     {
         if (IsBlueprint)
         {
@@ -68,7 +68,7 @@ internal class Projectile
                 
                 if (overlapsPlayer)
                 {
-                    world.Player.TakeDamage(Position, Math.Max((int)(damage.BaseDamage), 1), 0.2f);
+                    world.Player.TakeDamage(Position, Math.Max((int)(damage.BaseDamage * playerDamageModifier), 1), 0.2f);
                 }
 
                 return overlapsPlayer;

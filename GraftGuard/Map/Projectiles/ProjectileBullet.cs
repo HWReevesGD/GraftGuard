@@ -32,7 +32,7 @@ internal class ProjectileBullet : Projectile
         Position += Velocity * time.Delta();
         if (DamageTimer.Update(time))
         {
-            DealDamage(world, damage);
+            DealDamage(world, damage, 0.25f);
         }
     }
 }

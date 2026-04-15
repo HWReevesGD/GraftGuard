@@ -14,7 +14,7 @@ internal class ProjectileFire : Projectile
 {
     public const float FireSpeed = 256.0f;
     public const float FireRadius = 16.0f;
-    public Damage Damage = new Damage(1.0f, 0, 0, 0, 0);
+    public Damage Damage = new Damage(1.0f, 2, 5, 0, 0);
 
     private const float FullLifetime = 0.5f;
     private float _lifetime = 0.0f;

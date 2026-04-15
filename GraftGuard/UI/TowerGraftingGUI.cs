@@ -317,6 +317,10 @@ internal class TowerGraftingGUI
                     (tower) => new TowerDesign(tower.Definition, tower.Tower.Parts.ToList())
                     )
                 );
+
+            //update game log
+            PlayerData.CurrentGame.GameLog.TowersMade += _createdTowers.Elements.Count;
+
             // Start Night
             OnNightButtonPressed?.Invoke();
         }

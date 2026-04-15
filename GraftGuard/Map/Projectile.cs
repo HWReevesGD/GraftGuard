@@ -7,6 +7,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using GraftGuard.Map.Projectiles;
 using GraftGuard.Graphics;
+using System;
 
 namespace GraftGuard.Map;
 
@@ -64,7 +65,12 @@ internal class Projectile
         {
             case ProjectileTarget.Player:
                 bool overlapsPlayer = world.Player.Hitbox.Intersects(HitCircle);
-                // TODO: Deal Damage to player?
+                
+                if (overlapsPlayer)
+                {
+                    world.Player.TakeDamage(Position, Math.Max((int)(damage.BaseDamage), 1), 0.2f);
+                }
+
                 return overlapsPlayer;
             case ProjectileTarget.Enemy:
                 bool overlapsEnemy = false;

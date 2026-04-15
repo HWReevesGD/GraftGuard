@@ -148,8 +148,10 @@ internal class MainMenu {
 
         // draw background world
 
+        drawing.ExtraMatrix = backgroundWorld.Camera.WorldToScreen * Matrix.CreateScale(0.25f);
         // Draw by the Camera's Position
         backgroundWorld.DrawCamera(drawing, gameTime, timeState, inputManager, false);
+        drawing.ExtraMatrix = null;
 
         // draw transulcent black cover
 

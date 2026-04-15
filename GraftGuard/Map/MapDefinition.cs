@@ -17,4 +17,6 @@ internal class MapDefinition
     public FrozenDictionary<Point, ReadOnlyCollection<TileDefinition>> TileChunks { get; init; }
     public Rectangle PathingArea { get; init; }
     public Vector2 GaragePosition { get; init; }
+    public Vector2 ScatterPosition { get; init; }
+    public Vector2 PlayerSpawn { get; init; }
 }

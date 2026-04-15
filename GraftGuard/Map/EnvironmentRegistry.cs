@@ -7,6 +7,7 @@ using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection.Metadata;
@@ -118,6 +119,10 @@ internal class EnvironmentRegistry
 
         // Parse Garage Position
         Vector2 garagePosition = ImportVector2(world.GetProperty("garage_position"));
+        // Parse Scatter Position
+        Vector2 scatterPosition = ImportVector2(world.GetProperty("scatter_position"));
+        // Parse Player Spawn
+        Vector2 playerSpawn = ImportVector2(world.GetProperty("player_spawn"));
 
         // Save a new Map
         Map = new MapDefinition()
@@ -127,6 +132,8 @@ internal class EnvironmentRegistry
             TileChunks = tileChunks.ToFrozenDictionary(),
             PathingArea = pathingArea,
             GaragePosition = garagePosition,
+            ScatterPosition = scatterPosition,
+            PlayerSpawn = playerSpawn,
         };
     }
 

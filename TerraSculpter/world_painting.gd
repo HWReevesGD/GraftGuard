@@ -186,7 +186,7 @@ func serialize_world() -> Dictionary:
 		"spawns": serialize_enemy_spawns(),
 		"pathing_area": serialize_pathfinding_area(),
 		"garage_position": serialize_garage_position(),
-		"scatter_position:": Painter.vector_serialize(scatter_position),
+		"scatter_position": Painter.vector_serialize(scatter_position),
 		"player_spawn": Painter.vector_serialize(player_spawn),
 	}
 

@@ -2,6 +2,7 @@
 using GraftGuard.Grafting;
 using GraftGuard.Graphics;
 using GraftGuard.Map;
+using GraftGuard.Map.Enemies;
 using GraftGuard.UI;
 using GraftGuard.UI.Screens;
 using GraftGuard.Utility;
@@ -9,6 +10,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 
 namespace GraftGuard
 {
@@ -51,7 +53,7 @@ namespace GraftGuard
         {
             if (PlayerData.CurrentState == GameState.Game)
             {
-                ToggleGameOver(lastGameTime, PlayerData.CurrentGame);
+                ToggleGameOver(lastGameTime, PlayerData.CurrentGame, "You Died");
             }
 
         }
@@ -174,6 +176,11 @@ namespace GraftGuard
         private void UpdateNightOnly(GameTime gameTime)
         {
             _nightPlacement.Update(gameTime, _world, inputManager);
+
+            if (_world.EnemyManager.Enemies.Any((enemy) => !enemy.IsDead && enemy.Hitbox.Intersects(_world.Garage.GameOverBounds)))
+            {
+                ToggleGameOver(gameTime, PlayerData.CurrentGame, "Your Garage was Invaded");
+            }
         }
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
@@ -181,8 +188,7 @@ namespace GraftGuard
             //if time ran out at night it's game over for now probably rethink this
             if (session.Time == TimeState.Night)
             {
-                //Game Over
-                ToggleGameOver(gameTime, session);
+                
             }
             else if (session.Time == TimeState.Dawn)
             {
@@ -191,10 +197,10 @@ namespace GraftGuard
             }
         }
 
-        private void ToggleGameOver(GameTime gameTime, GameData session)
+        private void ToggleGameOver(GameTime gameTime, GameData session, string failReason)
         {
             PlayerData.CurrentState = GameState.GameOver;
-            _gameOverScreen.SetSession(gameTime, session);
+            _gameOverScreen.SetSession(gameTime, session, failReason);
         }
 
         private void UpdatePaused()

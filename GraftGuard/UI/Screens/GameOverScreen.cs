@@ -18,6 +18,7 @@ internal class GameOverScreen
     private GameData session;
     private InputManager inputManager;
     private float startShowingTime;
+    private string failReason = "None";
 
     private static Texture2D backgroundTexture;
 
@@ -48,10 +49,11 @@ internal class GameOverScreen
         inputManager = new InputManager(); // idle InputManager
     }
 
-    public void SetSession(GameTime gameTime, GameData session)
+    public void SetSession(GameTime gameTime, GameData session, string failReason)
     {
         this.session = session;
         startShowingTime = (float)gameTime.TotalGameTime.TotalSeconds;
+        this.failReason = failReason;
     }
 
     public void Update(GameTime gameTime)
@@ -85,6 +87,11 @@ internal class GameOverScreen
         new Text(Fonts.SubFont, titleText).SetXOrigin(XOrigin.Center)
             .AddEffect(new ShakeTextEffect(shakeMagnitude))
             .Draw(drawing, gameTime, new Vector2(centerX, centerY - (150 * screenScale)));
+
+        // reason
+        new Text(Fonts.SubFont, failReason).SetXOrigin(XOrigin.Center)
+            .AddEffect(new ShakeTextEffect(shakeMagnitude))
+            .Draw(drawing, gameTime, new Vector2(centerX, centerY - (110 * screenScale)));
 
         // score stuff
 

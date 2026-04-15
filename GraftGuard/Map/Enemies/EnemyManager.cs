@@ -14,7 +14,7 @@ internal class EnemyManager
 {
     public List<Enemy> Enemies;
     public PathManager PathManager { get; set; }
-    public List<Vector2> Spawns { get; set; }
+    public List<Vector2> SpawnLocations { get; set; }
     public EnemyManager(World world, MapDefinition map) => Setup(world, map);
 
     /// <summary>
@@ -26,7 +26,7 @@ internal class EnemyManager
         Rectangle pathingArea = map.PathingArea;
         PathManager.Start = pathingArea.Location.ToVector();
         PathManager.End = (pathingArea.Location + pathingArea.Size).ToVector();
-        Spawns = map.EnemySpawns.ToList();
+        SpawnLocations = map.EnemySpawns.ToList();
 
         PathManager.BuildGrid(world);
 
@@ -36,23 +36,20 @@ internal class EnemyManager
     public void BeginNight()
     {
         int spawnIndex = -1;
-        foreach(Vector2 spawn in Spawns)
+        foreach(Vector2 spawn in SpawnLocations)
         {
             spawnIndex++;
             int difficulty = (int)PlayerData.CurrentGame.CurrentDifficulty;
             for (int i = 0; i <= difficulty; i++)
             {
                 Enemies.Add(new EnemyHumanoid(spawn));
-                
             }
 
-            if (spawnIndex == Spawns.Count - 1 && difficulty > 1)
+            if (spawnIndex == SpawnLocations.Count - 1 && difficulty > 1)
             {
                 Enemies.Add(new EnemyCentipede(spawn, this));
             }
         }
-
-
     }
 
     private List<PathNode> _debugPath;

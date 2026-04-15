@@ -84,7 +84,7 @@ namespace GraftGuard
         {
             _world.OnNewGameStarted();
             PlayerData.CurrentGame = new();
-            OnStartingDawn();
+            OnStartingDawn(isFirstDawn: true);
 
             PlayerData.CurrentGame.OnPlayerDied += HandleDeath;
         }
@@ -92,8 +92,12 @@ namespace GraftGuard
         /// <summary>
         /// Runs when Dawn is started
         /// </summary>
-        private void OnStartingDawn()
+        private void OnStartingDawn(bool isFirstDawn = false)
         {
+            if (!isFirstDawn)
+            {
+                PlayerData.CurrentGame.GameLog.RoundsSurvived++;
+            }
             PlayerData.CurrentGame.Timer = DawnTimeLength;
             _world.OnStartingDawn();
         }
@@ -185,11 +189,6 @@ namespace GraftGuard
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
-            //if time ran out at night it's game over for now probably rethink this
-            if (session.Time == TimeState.Night)
-            {
-                
-            }
             else if (session.Time == TimeState.Dawn)
             {
                 session.Time = TimeState.Day;

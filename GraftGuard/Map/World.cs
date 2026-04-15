@@ -32,7 +32,6 @@ internal class World
     public Garage Garage { get; set; }
     public static List<ScatteredPart> ScatteredParts { get; set; } = [];
     public MapDefinition CurrentMap { get; set; }
-
     public ParticleManager Particles { get; set; }
 
     // Constructor
@@ -44,9 +43,8 @@ internal class World
 
         CurrentMap = EnvironmentRegistry.Map;
 
-        Player = new Player(Vector2.Zero);
+        Player = new Player(CurrentMap.PlayerSpawn);
         Camera = new Camera();
-        Player.Position = CurrentMap.PlayerSpawn;
 
         TowerManager = new TowerManager(this);
         Terrain = new Terrain(Player);
@@ -90,11 +88,13 @@ internal class World
         EnemyManager.Setup(this, CurrentMap);
         Particles.Clear();
         ScatteredParts = [];
+
         for (int index = 0; index < InitialParts; index++)
         {
             ScatteredParts.Add(new ScatteredPart(CurrentMap.ScatterPosition + 
                 new Vector2(Random.NextSingle() * 64.0f, Random.NextSingle() * 64.0f), GraftLibrary.GetRandomPart()));
         }
+        Player.Position = CurrentMap.PlayerSpawn;
     }
 
     public void OnStartingDawn()
@@ -111,6 +111,7 @@ internal class World
     public void OnStartingNight()
     {
         EnemyManager.BeginNight();
+        Player.Position = CurrentMap.PlayerSpawn;
     }
 
     // Methods

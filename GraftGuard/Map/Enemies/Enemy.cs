@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using static GraftGuard.Map.Pathing.PathManager;
 
 namespace GraftGuard.Map.Enemies;
@@ -63,7 +64,6 @@ internal abstract class Enemy : GameObject
         // Initialize the visual component
         Visual = new EnemyVisual(torso, 1f, AnimationClips.Idle, position);
     }
-
 
     public virtual void OnDeath()
     {

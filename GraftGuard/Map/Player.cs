@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GraftGuard.Map;
 internal class Player : GameObject
@@ -169,11 +170,7 @@ internal class Player : GameObject
     private void HandlePartPickups(World world)
     {
         // Get all overlapping ScatteredParts
-        List<ScatteredPart> scatteredParts = GetIntersects(
-            _collectionCircle.Translated(Position),
-            layers: CollisionLayer.ScatteredPart,
-            World.ScatteredParts
-            );
+        List<ScatteredPart> scatteredParts = World.ScatteredParts.Where((part) => Vector2.DistanceSquared(Position, part.Position) <= _collectionCircle.Radius * _collectionCircle.Radius).ToList();
 
         // Pickup overlapping parts
         foreach (ScatteredPart part in scatteredParts)

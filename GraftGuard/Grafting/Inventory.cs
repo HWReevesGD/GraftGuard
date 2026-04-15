@@ -28,7 +28,7 @@ internal class Inventory
     /// <returns>List of <see cref="PartDefinition"/> of parts included in the <see cref="Inventory"/></returns>
     public List<PartDefinition> GetCollectedParts()
     {
-        return _parts.Where((pair) => pair.Value > 0).Select((pair) => GraftLibrary.GetPartByName(pair.Key)).ToList();
+        return _parts.Where((pair) => pair.Value > 0).Select((pair) => GraftLibrary.GetPartByName(pair.Key)).Where((part) => part is not null).ToList();
     }
     
     /// <summary>

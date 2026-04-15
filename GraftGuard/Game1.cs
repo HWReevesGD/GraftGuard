@@ -6,6 +6,7 @@ using GraftGuard.Grafting.Towers;
 using GraftGuard.Graphics;
 using GraftGuard.Map;
 using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Waves;
 using GraftGuard.UI;
 using GraftGuard.UI.Screens;
 using GraftGuard.Utility;
@@ -86,6 +87,7 @@ public class Game1 : Game
         Enemy.LoadContent(Content);
 
         Sounds.LoadContent(Content);
+        WavesRegistry.LoadWaves();
 
         // Import and Load the Environment
         EnvironmentRegistry.LoadContent(Content);

@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -42,7 +43,18 @@ internal class PartSlashing : IPartBehavior
         {
             _slashSize = 0.9f;
             Damage areaDamage = new Damage(part.PartDamage.BaseDamage * 0.5f, part.PartDamage.DamageOverTime, part.PartDamage.DamageOverTimeDuration, part.PartDamage.SpeedMod, part.PartDamage.SpeedModDuration);
-            world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], areaDamage);
+            switch (settings.Source)
+            {
+                case Source.Player:
+                    world.EnemyManager.DealDamageInAreas([], [new Circle(transform.Position, HitRadius)], areaDamage);
+                    break;
+                case Source.Enemy:
+                    if (world.Player.Hitbox.Intersects(new Circle(transform.Position, HitRadius)))
+                    {
+                        world.Player.TakeDamage(transform.Position, Math.Max((int)areaDamage.BaseDamage, 1), 1.0f);
+                    }
+                    break;
+            }
         }
     }
 }

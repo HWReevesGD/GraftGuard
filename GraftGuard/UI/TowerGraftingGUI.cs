@@ -40,6 +40,7 @@ internal class TowerGraftingGUI
     private readonly static Vector2 _maxTowersLabelSize = new Vector2(110, 56) * guiScale;
     private readonly static Vector2 _partSelectorPosition = new Vector2(0, 64);
     private readonly static Vector2 _towerSelectorPositionOffset = new Vector2(0, 64);
+    private readonly static Vector2 _partSelectorSizeOffset = new Vector2(0, 64);
     private const float _arrowCreatedTowerButtonOffset = -256.0f * 2;
     private const float _previewScale = 4.0f;
 
@@ -142,7 +143,7 @@ internal class TowerGraftingGUI
         _partChoiceButtons = new ScrollingGrid<PatchButton>(
             orientation: Orientation.Vertical,
             gridPosition: _partSelectorPosition,
-            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y - _partSelectorPosition.Y),
+            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y - _partSelectorPosition.Y) - _partSelectorSizeOffset,
             elementSize: _partButtonSize,
             arrowSide: Corner.BottomOrLeft,
             arrowOffset: 0.0f,
@@ -426,6 +427,10 @@ internal class TowerGraftingGUI
         }
         drawing.DrawString("Parts", font: Fonts.SubFont, position: new Vector2(8, 8), isUi: true);
         drawing.DrawString("Towers", font: Fonts.SubFont, position: Interface.TopRight + new Vector2(-8, 8) - Fonts.SubFont.MeasureString("Towers") * Vector2.UnitX, isUi: true);
+        if (_createdTowers.Elements.Count > 0)
+        {
+            drawing.DrawString("Saved Towers - Click to Edit", font: Fonts.SubFont, position: Interface.BottomLeft - new Vector2(0, _createdTowerSize.Y + Fonts.SubFont.MeasureString("Saved Towers - Click to Edit").Y), isUi: true);
+        }
 
         // Draw the Label showing the Currently Chosen Part
         _currentChosenLabel.Draw(drawing);

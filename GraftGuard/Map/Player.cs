@@ -203,6 +203,9 @@ internal class Player : GameObject
         // Add part definition to _heldParts
         HeldParts.Add(scatteredPart.Definition);
 
+        //updated game log parts collected
+        PlayerData.CurrentGame.GameLog.PartsCollected++;
+
         // Remove ScatteredPart from the World
         World.ScatteredParts.Remove(scatteredPart);
     }

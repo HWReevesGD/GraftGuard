@@ -43,12 +43,16 @@ internal class EnemyManager
             for (int i = 0; i <= difficulty; i++)
             {
                 Enemies.Add(new EnemyHumanoid(spawn));
-                if (spawnIndex % 2 == 0 && difficulty > 1)
-                {
-                    Enemies.Add(new EnemyCentipede(spawn, this));
-                }
+                
+            }
+
+            if (spawnIndex == Spawns.Count - 1 && difficulty > 1)
+            {
+                Enemies.Add(new EnemyCentipede(spawn, this));
             }
         }
+
+
     }
 
     private List<PathNode> _debugPath;

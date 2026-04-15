@@ -1,4 +1,5 @@
-﻿using GraftGuard.Grafting;
+﻿using GraftGuard.Data;
+using GraftGuard.Grafting;
 using GraftGuard.Grafting.Registry;
 using GraftGuard.Grafting.Registry.Behaviors;
 using GraftGuard.Graphics;
@@ -69,6 +70,7 @@ internal abstract class Enemy : GameObject
         if (IsDead) return;
 
         IsDead = true;
+        PlayerData.CurrentGame.GameLog.EnemiesKilled++;
         Visual.VisualDeath(Position);
     }
 

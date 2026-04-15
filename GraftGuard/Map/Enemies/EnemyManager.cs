@@ -35,14 +35,17 @@ internal class EnemyManager
 
     public void BeginNight()
     {
+        int spawnIndex = -1;
         foreach(Vector2 spawn in Spawns)
         {
-            for(int i = 0; i <= (int) PlayerData.CurrentGame.CurrentDifficulty; i++)
+            spawnIndex++;
+            int difficulty = (int)PlayerData.CurrentGame.CurrentDifficulty;
+            for (int i = 0; i <= difficulty; i++)
             {
                 Enemies.Add(new EnemyBasic(spawn, GraftLibrary.GetRandomBase()));
-                if (i % 2 == 0)
+                if (spawnIndex % 2 == 0 && difficulty > 1)
                 {
-                    Enemies.Add(new EnemyCentipede(Vector2.Zero, this));
+                    Enemies.Add(new EnemyCentipede(spawn, this));
                 }
             }
         }

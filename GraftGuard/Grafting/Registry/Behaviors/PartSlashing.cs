@@ -40,7 +40,6 @@ internal class PartSlashing : IPartBehavior
 
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
-        SwishRepeater.Update(time);
         if (DamageTimer.Update(time))
         {
             _slashSize = 0.9f;

@@ -27,6 +27,13 @@ internal class GameHUD
         { TimeState.Day, "Day" },
         { TimeState.Night, "Night" }
     };
+    private readonly static Dictionary<TimeState, string> timeObjectives = new Dictionary<TimeState, string>
+    {
+        { TimeState.Dawn, "Collect Parts" },
+        { TimeState.Day, "Created your Defences" },
+        { TimeState.Night, "Protect your Garage" }
+    };
+
 
     private readonly static float hudScale = 2.0f; 
 
@@ -173,7 +180,7 @@ internal class GameHUD
                 );
 
             drawing.Draw(textureToDraw, destination: rect, source: sourceRect, isUi: true, sortMode: SortMode.Top);
-            drawing.DrawString($"HEALTH: {PlayerData.CurrentGame.Health}", new Vector2(64, 64), isUi: true);
+            //drawing.DrawString($"HEALTH: {PlayerData.CurrentGame.Health}", new Vector2(64, 64), isUi: true);
         }
 
         previousHealth = PlayerData.CurrentGame.Health;
@@ -225,6 +232,21 @@ internal class GameHUD
            .SetXOrigin(XOrigin.Center)
            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset),
             isUi: true);
+
+        // draw objective
+        if (PlayerData.CurrentGame.Time != TimeState.Day)
+        {
+            float offset = 4.0f;
+            if (PlayerData.CurrentGame.Time == TimeState.Dawn)
+            {
+                offset -= 44f;
+            }
+
+            new Text(Fonts.SubFont, timeObjectives[PlayerData.CurrentGame.Time])
+           .SetXOrigin(XOrigin.Center)
+           .Draw(drawing, gameTime, new Vector2(Interface.Width / 2 - 390f * hudScale, hudTopOffset + (64f + offset) * hudScale),
+            isUi: true);
+        }
 
         // timer progress bar
 

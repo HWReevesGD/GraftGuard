@@ -409,10 +409,12 @@ metadata/_tab_index = 2
 [node name="DataPicker" type="ItemList" parent="Picker/Margin/Vertical/TabBar/Data"]
 layout_mode = 2
 size_flags_vertical = 3
-item_count = 3
+item_count = 5
 item_0/text = "Enemy Spawns"
 item_1/text = "Pathfinding Area"
 item_2/text = "Garage Positioning"
+item_3/text = "Scatter Position"
+item_4/text = "Player Spawn"
 
 [node name="GridContainer" type="HBoxContainer" parent="Picker/Margin/Vertical"]
 visible = false

@@ -22,6 +22,8 @@ const GARAGE_SIZE: Vector2 = Vector2(480, 320)
 var enemy_spawns: Array[Vector2i] = []
 var pathfinding_area: Rect2
 var garage_start: Vector2
+var scatter_position: Vector2
+var player_spawn: Vector2
 
 var held_inside: bool = false
 var held_right_inside: bool = false
@@ -37,6 +39,10 @@ func _draw() -> void:
 	# Draw Garage
 	draw_rect(Rect2(garage_start, GARAGE_SIZE * Vector2(1, 0.2)), Color.BLUE * Color(1, 1, 1, 0.4))
 	draw_rect(Rect2(garage_start, GARAGE_SIZE), Color.BLUE, false, 5.0)
+	# Draw Scatter Position
+	draw_circle(scatter_position, 64.0, Color.AQUA, false, 2)
+	# Draw Player Spawn
+	draw_circle(player_spawn, 16.0, Color.GOLD, false, 2)
 
 func update_picker() -> void:
 	world_picker.update_props()
@@ -164,6 +170,12 @@ func _process(delta: float) -> void:
 				# Set Garage start position of Left Click
 				if clicked_inside:
 					garage_start = get_local_mouse_position().snappedf(Tile.SIZE)
+			"Scatter Position":
+				if clicked_inside:
+					scatter_position = get_local_mouse_position().snappedf(Tile.SIZE)
+			"Player Spawn":
+				if clicked_inside:
+					player_spawn = get_local_mouse_position().snappedf(Tile.SIZE)
 	
 	last_mouse_tile = mouse_tile
 
@@ -174,6 +186,8 @@ func serialize_world() -> Dictionary:
 		"spawns": serialize_enemy_spawns(),
 		"pathing_area": serialize_pathfinding_area(),
 		"garage_position": serialize_garage_position(),
+		"scatter_position:": Painter.vector_serialize(scatter_position),
+		"player_spawn": Painter.vector_serialize(player_spawn),
 	}
 
 func deserialize_world(serialized_world: Dictionary) -> void:
@@ -186,6 +200,10 @@ func deserialize_world(serialized_world: Dictionary) -> void:
 	pathfinding_area = deserialize_pathfinding_area(serialized_world["pathing_area"])
 	# Deserialize Garage Position
 	garage_start = deserialize_garage_position(serialized_world["garage_position"])
+	# Deserialize Scatter Position
+	scatter_position = Painter.vector_deserialize(serialized_world["scatter_position"])
+	# Deserialize Player Spawn
+	player_spawn = Painter.vector_deserialize(serialized_world["player_spawn"])
 	
 	# Deserialize Props
 	var props: Dictionary = serialized_world["props"]

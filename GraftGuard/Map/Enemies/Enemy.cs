@@ -86,18 +86,28 @@ internal abstract class Enemy : GameObject
         bool secondPassed = DamageOverTimeSecond.Update(gameTime);
         if (secondPassed)
         {
-            // process speed modifier duration
-            if (speedModDuration > 0)
-                speedMod--;
-
             // process DoT
             if (damageOverTimeDuration > 0)
             {
                 Health -= damageOverTime;
                 damageOverTimeDuration--;
             }
+            else if (damageOverTime != 0)
+            {
+                damageOverTime = 0;
+                damageOverTimeDuration = 0;
+            }
         }
-        
+
+        // process speed modifier duration separately, as it isn't based on seconds
+        if (speedModDuration > 0)
+            speedModDuration -= gameTime.Delta();
+        else if (speedMod != 0)
+        {
+            speedMod = 0;
+            speedModDuration = 0;
+        }
+
 
         if (!IsDead)
         {
@@ -167,14 +177,19 @@ internal abstract class Enemy : GameObject
         }
 
         PathNode goal = Path[0];
-        Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * Speed) - Position;
+
+        float actualSpeed = Speed - speedMod;
+        if (actualSpeed < 0)
+            actualSpeed = 0;
+        
+        Vector2 pathingVelocity = Position.MovedTowards(goal.WorldPosition, gameTime.Delta() * actualSpeed) - Position;
 
         Vector2 steering = pathingVelocity - Velocity;
         steering /= Mass;
 
         foreach (Enemy near in nearbyEnemies)
         {
-            Vector2 avoidVelocity = ((Position - near.Position).Normalized() * Speed / MathF.Max((Position - near.Position).Length(), 0.01f)).Truncated(Speed);
+            Vector2 avoidVelocity = ((Position - near.Position).Normalized() * actualSpeed / MathF.Max((Position - near.Position).Length(), 0.01f)).Truncated(actualSpeed);
             Vector2 avoidSteering = (avoidVelocity - Velocity) / Mass;
             steering += avoidSteering;
         }
@@ -184,7 +199,7 @@ internal abstract class Enemy : GameObject
             Path.RemoveAt(0);
         }
 
-        return steering.Truncated(Speed);
+        return steering.Truncated(actualSpeed);
     }
 
     public virtual void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)

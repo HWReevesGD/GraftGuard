@@ -75,10 +75,17 @@ internal abstract class Enemy : GameObject
     public void TakeDamage(Damage damage)
     {
         Health -= damage.BaseDamage;
-        damageOverTime = damage.DamageOverTime;
-        damageOverTimeDuration = damage.DamageOverTimeDuration;
-        speedMod = damage.SpeedMod;
-        speedModDuration = damage.SpeedModDuration;
+        if (damage.DamageOverTime >= this.damageOverTime)
+        {
+            damageOverTime = damage.DamageOverTime;
+            damageOverTimeDuration = damage.DamageOverTimeDuration;
+        }
+        if (damage.SpeedMod >= this.speedMod)
+        {
+            speedMod = damage.SpeedMod;
+            speedModDuration = damage.SpeedModDuration;
+        }
+        
     }
 
     public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)

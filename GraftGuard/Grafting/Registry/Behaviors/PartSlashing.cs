@@ -21,6 +21,7 @@ internal class PartSlashing : IPartBehavior
     public const float HitRadius = 14.0f;
     public const float DamageModifier = 0.5f;
     public readonly IntervalTimer DamageTimer = new IntervalTimer(0.2f);
+    public static readonly Random Random = new Random();
     public static string Name => "Slashing";
 
     public static IPartBehavior Create() => new PartSlashing();
@@ -39,6 +40,7 @@ internal class PartSlashing : IPartBehavior
 
     public void Update(PartSettings settings, PartDefinition part, PartTransform transform, GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileManager)
     {
+        SwishRepeater.Update(time);
         if (DamageTimer.Update(time))
         {
             _slashSize = 0.9f;

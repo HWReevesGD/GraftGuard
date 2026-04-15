@@ -85,6 +85,8 @@ public class Game1 : Game
         Player.LoadContent(Content);
         Enemy.LoadContent(Content);
 
+        Sounds.LoadContent(Content);
+
         // Import and Load the Environment
         EnvironmentRegistry.LoadContent(Content);
 

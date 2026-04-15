@@ -17,7 +17,7 @@ internal class IntervalTimer
         _timeSinceLastInterval = 0.0f + initialTimeOffset;
     }
 
-    public bool Update(GameTime time)
+    public virtual bool Update(GameTime time)
     {
         _timeSinceLastInterval += (float)time.ElapsedGameTime.TotalSeconds;
 
@@ -29,7 +29,7 @@ internal class IntervalTimer
         return false;
     }
 
-    public void Reset()
+    public virtual void Reset()
     {
         _timeSinceLastInterval = 0.0f;
     }

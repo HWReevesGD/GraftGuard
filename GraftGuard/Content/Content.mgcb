@@ -860,6 +860,18 @@
 /processorParam:DebugMode=Auto
 /build:Shaders/Outline.fx
 
+#begin Sound/music_dawn_peaceful.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/music_dawn_peaceful.mp3
+
+#begin Sound/sfx_swishing.mp3
+/importer:Mp3Importer
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sound/sfx_swishing.mp3
+
 #begin Tower/nest.png
 /importer:TextureImporter
 /processor:TextureProcessor

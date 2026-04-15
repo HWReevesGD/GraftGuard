@@ -39,7 +39,7 @@ internal class EnemyManager
         {
             for(int i = 0; i <= (int) PlayerData.CurrentGame.CurrentDifficulty; i++)
             {
-                Enemies.Add(new EnemyBasic(spawn, GraftLibrary.GetRandomBase()));
+                Enemies.Add(new EnemyHumanoid(spawn));
                 if (i % 2 == 0)
                 {
                     Enemies.Add(new EnemyCentipede(Vector2.Zero, this));

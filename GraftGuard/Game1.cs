@@ -103,6 +103,8 @@ public class Game1 : Game
         TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
         TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest);
 
+        HumanoidEnemyRegistry.Load(Content);
+
         _gameManager = new GameManager(this, input, _spriteBatch);
 
         /*mainMenu = new MainMenu(inputManager);

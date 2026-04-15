@@ -54,6 +54,20 @@ internal class Player : GameObject
         _collectionCircle = new Circle(Center, PickupRadius);
         HeldParts = [];
 
+        SetupVisual();
+    }
+
+    /// <summary>
+    /// Sets up the <see cref="Player"/> for a new Session
+    /// </summary>
+    public void Setup()
+    {
+        Position = Vector2.Zero;
+        ClearHeldParts();
+    }
+
+    public void SetupVisual()
+    {
         var playerSockets = new List<AttachPoint>
         {
             new AttachPoint { Name = "Arm_R", PivotX = 0.6859326f, PivotY = 0.28445747f },
@@ -72,15 +86,6 @@ internal class Player : GameObject
         playerVisual.CreatePart("Leg_R", "PlayerLegR", playerLeg, 0.48f, 0.26f, PartType.Limb, false);
         playerVisual.CreatePart("Leg_L", "PlayerLegL", playerLeg, 0.48f, 0.26f, PartType.Limb, true);
         playerVisual.CreatePart("Ponytail", "Ponytail", playerHair, 0.42f, 0.25f, PartType.Limb, true);
-    }
-
-    /// <summary>
-    /// Sets up the <see cref="Player"/> for a new Session
-    /// </summary>
-    public void Setup()
-    {
-        Position = Vector2.Zero;
-        ClearHeldParts();
     }
 
     public override void Update(GameTime gameTime, InputManager inputManager)

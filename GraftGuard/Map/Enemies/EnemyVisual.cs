@@ -27,6 +27,7 @@ public class EnemyVisual
     private List<FallingPart> fallingParts = new();
     public bool AllPartsLanded => IsDead && fallingParts.Count == 0;
     public bool IsDead { get; private set; } = false;
+    
 
     public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos, Vector2? sortingOffset = null)
     {
@@ -67,9 +68,12 @@ public class EnemyVisual
         // Explode Limbs and Head
         foreach (AttachedPart part in AttachedParts)
         {
-            // Calculate a vector pointing away from the center
-            Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
-            fallingParts.Add(new FallingPart(part.Definition, deathPosition, direction));
+            if (part.IsCollectable)
+            {
+                // Calculate a vector pointing away from the center
+                Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
+                fallingParts.Add(new FallingPart(part.Definition, deathPosition, direction));
+            }
         }
 
         // Clear the equipped parts so they stop drawing in the normal Draw call
@@ -114,16 +118,12 @@ public class EnemyVisual
                 origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
                 scale: ctx.DynamicScale,
                 sortingOriginOffset: SortingOffset - new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2));
+            
             // Draw Limbs
-            int count = 0;
-            foreach (AttachedPart part in AttachedParts)
-            {
-                //legs and head in front of that
-                DrawLayer(drawing, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
+            DrawLayer(drawing, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), Vector2.Zero);
 
-                //arms above that
-                DrawLayer(drawing, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase));
-            }
+            // 3. Draw Arms (With a +5 Y nudge to pull them forward)
+            DrawLayer(drawing, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), new Vector2(0, 20));
         }
         else
         {
@@ -136,7 +136,7 @@ public class EnemyVisual
     /// <summary>
     /// Helper to draw a specific subset of parts based on a filter
     /// </summary>
-    private void DrawLayer(DrawManager spriteBatch, LimbDrawContext ctx, Func<AttachedPart, bool> filter)
+    private void DrawLayer(DrawManager spriteBatch, LimbDrawContext ctx, Func<AttachedPart, bool> filter, Vector2 nudge)
     {
         int count = 0;
         foreach (AttachedPart part in AttachedParts)
@@ -149,7 +149,7 @@ public class EnemyVisual
                 (slotPosition.Y - 0.5f) * Base.Texture.Height
             );
 
-            DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, SortingOffset, part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, SortingOffset + nudge, part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
         }
     }
 
@@ -234,7 +234,7 @@ public class EnemyVisual
             rotation: transform.Rotation,
             origin: transform.Origin,
             scale: transform.Scale,
-            sortingOriginOffset: sortingOffset - transform.Origin,
+            sortingOriginOffset: sortingOffset,
             effects: effects);
     }
 }

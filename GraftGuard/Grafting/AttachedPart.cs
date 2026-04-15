@@ -17,16 +17,26 @@ using System.Threading.Tasks;
 namespace GraftGuard.Grafting;
 internal class AttachedPart
 {
+
     private IPartBehavior[] _partBehaviors;
     public PartDefinition Definition { get; init; }
     public ReadOnlySpan<IPartBehavior> Behaviors => _partBehaviors;
+
+    public bool IsCollectable => collectible;
+
     public string? SlotName;
-    public AttachedPart(PartDefinition definition, string? slotName = null)
+
+    private bool collectible;
+    public AttachedPart(PartDefinition definition, string? slotName = null, bool collectible = true)
     {
         Definition = definition;
-
-        _partBehaviors = definition.PartBehaviorNames.Select((name) => PartBehaviorRegistry.GetFromName(name).Create()).ToArray();
         SlotName = slotName;
+        this.collectible = collectible;
+
+        // If PartBehaviorNames is null, it defaults to an empty array before the Select runs
+        _partBehaviors = (definition.PartBehaviorNames ?? Array.Empty<string>())
+            .Select(name => PartBehaviorRegistry.GetFromName(name).Create())
+            .ToArray();
     }
 
     public void UpdateBehavior(PartSettings settings, PartTransform transform, GameTime time, World world, InputManager inputManager,

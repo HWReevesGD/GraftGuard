@@ -62,7 +62,7 @@ namespace GraftGuard.Data
             PhaseTimeLength = 15;
             Timer = PhaseTimeLength;
             CurrentScore = 0;
-            MaxHealth = 28;
+            MaxHealth = 24;
             Health = MaxHealth;
             CurrentDifficulty = Difficulty.Medium;
         }

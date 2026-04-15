@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace GraftGuard.Map.Pathing;
 internal class PathManager
 {
-    public static Random random = new Random();
+    public static Random random = new();
     public readonly Point[] Directions = [
         new Point(1, 0), // Right
         new Point(1, 1), // Down-Right

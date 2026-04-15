@@ -46,6 +46,10 @@ namespace GraftGuard.Map
 
             SpriteEffects effects = ponytail.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
+            // Inside the Draw method
+            //Vector2 armSortingOffset = SortingOffset + new Vector2(0, 5); // Nudge 5 pixels down
+
+
             DrawLimb(ponytail.Name, pixelOffset, ponytail, -1, ctx, SortingOffset, effects);
 
 

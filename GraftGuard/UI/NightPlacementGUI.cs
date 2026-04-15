@@ -17,7 +17,7 @@ using System.Threading.Tasks;
 namespace GraftGuard.UI;
 internal class NightPlacementGUI
 {
-    private readonly Vector2 _designSize = new Vector2(72, 72);
+    private readonly Vector2 _designSize = new Vector2(128, 128);
     private const float _arrowButtonOffset = -256;
 
     private ScrollingGrid<CreatedTowerButton> _designButtons;

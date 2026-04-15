@@ -40,6 +40,7 @@ internal class TowerGraftingGUI
     private readonly static Vector2 _maxTowersLabelSize = new Vector2(110, 56) * guiScale;
     private readonly static Vector2 _partSelectorPosition = new Vector2(0, 64);
     private readonly static Vector2 _towerSelectorPositionOffset = new Vector2(0, 64);
+    private readonly static Vector2 _partSelectorSizeOffset = new Vector2(0, 64);
     private const float _arrowCreatedTowerButtonOffset = -256.0f * 2;
     private const float _previewScale = 4.0f;
 
@@ -142,7 +143,7 @@ internal class TowerGraftingGUI
         _partChoiceButtons = new ScrollingGrid<PatchButton>(
             orientation: Orientation.Vertical,
             gridPosition: _partSelectorPosition,
-            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y - _partSelectorPosition.Y),
+            gridSize: new Vector2(_partButtonSize.X * 2.0f, Interface.Height - _createdTowerSize.Y - _partSelectorPosition.Y) - _partSelectorSizeOffset,
             elementSize: _partButtonSize,
             arrowSide: Corner.BottomOrLeft,
             arrowOffset: 0.0f,
@@ -227,7 +228,7 @@ internal class TowerGraftingGUI
                     // Create the new Tower
                     if (_editingTower is not null)
                     {
-                        RefundParts(_editingTower, world.Inventory);
+                        SaveCurrentTower();
                     }
                     _currentlyGraftingTower = _towerChoices[index];
                     _editingTower = _currentlyGraftingTower.Factory((Interface.ScreenCenter - _towerDisplayOffset) / _previewScale);
@@ -264,26 +265,9 @@ internal class TowerGraftingGUI
         _saveButton.Update(inputManager);
 
         // Handle Saving
-        if (_saveButton.JustClicked && _editingTower is not null && _editingTower.HasParts)
+        if (_saveButton.JustClicked)
         {
-            // Allow saving if there is space
-            if (_createdTowers.Elements.Count < MaxAllowedTowers)
-            {
-                _createdTowers.Add(
-                new CreatedTowerButton(_editingTower,
-                _currentlyGraftingTower,
-                Vector2.Zero,
-                _createdTowerSize
-                ));
-                _currentlyGraftingTower = null;
-                _editingTower = null;
-            }
-            // Otherwise, if there is not space...
-            else
-            {
-                // Set the non red channels of the Max Towers Label's Color to zero
-                _maxTowersLabel.TextColor = _maxTowersLabel.TextColor with { G = 0, B = 0 };
-            }
+            SaveCurrentTower(button: true);
         }
 
         // Update Remove Part Button
@@ -309,7 +293,7 @@ internal class TowerGraftingGUI
                 if (_editingTower is not null)
                 {
                     // Refund the parts of the CURRENTLY editing Tower
-                    RefundParts(_editingTower, world.Inventory);
+                    SaveCurrentTower();
                 }
                 // Set the selected Tower
                 _currentlyGraftingTower = button.Definition;
@@ -326,6 +310,7 @@ internal class TowerGraftingGUI
         _nightButton.Update(inputManager);
         if (_nightButton.JustClicked)
         {
+            SaveCurrentTower();
             // Save Designs
             world.Inventory.StartingDesigns.AddRange(
                 _createdTowers.Elements.Select(
@@ -341,6 +326,31 @@ internal class TowerGraftingGUI
 
         // Update Projectiles
         _projectiles.Update(time, world, inputManager);
+    }
+
+    public void SaveCurrentTower(bool button = false)
+    {
+        if (_editingTower is not null && _editingTower.HasParts)
+        {
+            // Allow saving if there is space
+            if (_createdTowers.Elements.Count < MaxAllowedTowers)
+            {
+                _createdTowers.Add(
+                new CreatedTowerButton(_editingTower,
+                _currentlyGraftingTower,
+                Vector2.Zero,
+                _createdTowerSize
+                ));
+                _currentlyGraftingTower = null;
+                _editingTower = null;
+            }
+            // Otherwise, if there is not space...
+            else if (button)
+            {
+                // Set the non red channels of the Max Towers Label's Color to zero
+                _maxTowersLabel.TextColor = _maxTowersLabel.TextColor with { G = 0, B = 0 };
+            }
+        }
     }
 
     /// <summary>
@@ -417,6 +427,10 @@ internal class TowerGraftingGUI
         }
         drawing.DrawString("Parts", font: Fonts.SubFont, position: new Vector2(8, 8), isUi: true);
         drawing.DrawString("Towers", font: Fonts.SubFont, position: Interface.TopRight + new Vector2(-8, 8) - Fonts.SubFont.MeasureString("Towers") * Vector2.UnitX, isUi: true);
+        if (_createdTowers.Elements.Count > 0)
+        {
+            drawing.DrawString("Saved Towers - Click to Edit", font: Fonts.SubFont, position: Interface.BottomLeft - new Vector2(0, _createdTowerSize.Y + Fonts.SubFont.MeasureString("Saved Towers - Click to Edit").Y), isUi: true);
+        }
 
         // Draw the Label showing the Currently Chosen Part
         _currentChosenLabel.Draw(drawing);

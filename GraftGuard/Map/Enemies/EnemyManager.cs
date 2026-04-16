@@ -45,6 +45,7 @@ internal class EnemyManager
 
     public void BeginNight()
     {
+        Enemies.Clear();
         WaveManager.StartWaves(WavesRegistry.GetRandomForRound(PlayerData.CurrentGame.GameLog.RoundsSurvived));
     }
 

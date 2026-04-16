@@ -125,7 +125,7 @@ internal class World
                 {
                     Player.Update(gameTime, inputManager);
                 }
-                if (EnemyManager.Enemies.Count == 0 && EnemyManager.WaveManager.AllWavesStarted)
+                if (EnemyManager.Enemies.Count == 0 || EnemyManager.Enemies.All((enemy) => enemy.IsDead) && EnemyManager.WaveManager.AllWavesStarted)
                 {
                     PlayerData.CurrentGame.Time = TimeState.Dawn;
                 }

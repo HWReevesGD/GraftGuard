@@ -191,15 +191,16 @@ namespace GraftGuard
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
-            if (session.Time == TimeState.Night)
+            switch (session.Time)
             {
-                session.Timer = DawnTimeLength;
-                session.Time = TimeState.Dawn;
-            }
-            if (session.Time == TimeState.Dawn)
-            {
-                session.Time = TimeState.Day;
-                OnStartingDay();
+                case TimeState.Night:
+                    session.Timer = DawnTimeLength;
+                    session.Time = TimeState.Dawn;
+                    break;
+                case TimeState.Dawn:
+                    session.Time = TimeState.Day;
+                    OnStartingDay();
+                    break;
             }
         }
 

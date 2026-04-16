@@ -50,10 +50,9 @@ namespace GraftGuard.Map
             //Vector2 armSortingOffset = SortingOffset + new Vector2(0, 5); // Nudge 5 pixels down
 
 
-            DrawLimb(ponytail.Name, pixelOffset, ponytail, -1, ctx, SortingOffset, effects);
+            DrawLimb(ponytail.Name, pixelOffset, ponytail, -1, ctx, SortingOffset, effects, Color.White);
 
-
-            base.Draw(drawing, position);
+            base.Draw(drawing, position, Color.White);
         }
         /// <summary>
         /// Creates a new PartDefinition on the fly and attaches it to the specified slot.

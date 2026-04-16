@@ -7,8 +7,10 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace GraftGuard.Map.Enemies;
 public class EnemyVisual
@@ -29,7 +31,13 @@ public class EnemyVisual
     public bool IsDead { get; private set; } = false;
     
 
-    public EnemyVisual(BaseDefinition torsoBase, float scale, AnimationClip initialClip, Vector2 spawnPos, Vector2? sortingOffset = null)
+    public EnemyVisual(
+        BaseDefinition torsoBase, 
+        float scale,
+        AnimationClip initialClip,
+        Vector2 spawnPos,
+        Vector2? sortingOffset = null
+        )
     {
         rng = new Random();
 
@@ -103,7 +111,7 @@ public class EnemyVisual
             }
         }
     }
-    internal void Draw(DrawManager drawing, Vector2 position)
+    internal void Draw(DrawManager drawing, Vector2 position, Color? color)
     {
         if (!IsDead)
         {
@@ -117,13 +125,15 @@ public class EnemyVisual
                 rotation: ctx.BodyRot,
                 origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
                 scale: ctx.DynamicScale,
-                sortingOriginOffset: SortingOffset - new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2));
+                sortingOriginOffset: SortingOffset - new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
+                color: color
+                );
             
             // Draw Limbs
-            DrawLayer(drawing, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), Vector2.Zero);
+            DrawLayer(drawing, ctx, p => !p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), Vector2.Zero, color);
 
             // 3. Draw Arms (With a +5 Y nudge to pull them forward)
-            DrawLayer(drawing, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), new Vector2(0, 20));
+            DrawLayer(drawing, ctx, p => p.SlotName.Contains("Arm", StringComparison.OrdinalIgnoreCase), new Vector2(0, 20), color);
         }
         else
         {
@@ -136,7 +146,13 @@ public class EnemyVisual
     /// <summary>
     /// Helper to draw a specific subset of parts based on a filter
     /// </summary>
-    private void DrawLayer(DrawManager spriteBatch, LimbDrawContext ctx, Func<AttachedPart, bool> filter, Vector2 nudge)
+    private void DrawLayer(
+        DrawManager spriteBatch,
+        LimbDrawContext ctx,
+        Func<AttachedPart, bool> filter,
+        Vector2 nudge,
+        Color? color
+        )
     {
         int count = 0;
         foreach (AttachedPart part in AttachedParts)
@@ -149,7 +165,16 @@ public class EnemyVisual
                 (slotPosition.Y - 0.5f) * Base.Texture.Height
             );
 
-            DrawLimb(part.Definition.Name, pixelOffset, part.Definition, count++, ctx, SortingOffset + nudge, part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None);
+            DrawLimb(
+                part.Definition.Name,
+                pixelOffset,
+                part.Definition,
+                count++,
+                ctx,
+                SortingOffset + nudge,
+                part.Definition.FlipHorizonal ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
+                color
+                );
         }
     }
 
@@ -224,7 +249,16 @@ public class EnemyVisual
         public AnimationClip Clip;
     }
 
-    internal void DrawLimb(string slotName, Vector2 offset, PartDefinition part, int index, LimbDrawContext ctx, Vector2 sortingOffset, SpriteEffects effects)
+    internal void DrawLimb(
+        string slotName,
+        Vector2 offset,
+        PartDefinition part,
+        int index,
+        LimbDrawContext ctx,
+        Vector2 sortingOffset,
+        SpriteEffects effects,
+        Color? color
+        )
     {
         PartTransform transform = GetPartTransform(part, offset, ctx, index);
 
@@ -235,6 +269,7 @@ public class EnemyVisual
             origin: transform.Origin,
             scale: transform.Scale,
             sortingOriginOffset: sortingOffset,
+            color: color,
             effects: effects);
     }
 }

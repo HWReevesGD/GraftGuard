@@ -33,6 +33,10 @@ internal abstract class Enemy : GameObject
     private float damageOverTimeDuration;
     public IntervalTimer DamageOverTimeSecond = new IntervalTimer(1.0f);
 
+    // visual stuff
+    private static float hurtPulseTime = 0.5f;
+    private float timeSinceLastHurtCountdown;
+
     public float Health { get; set; }
     public bool IsDead { get; private set; } = false;
     public EnemyVisual Visual { get; private set; }
@@ -77,6 +81,8 @@ internal abstract class Enemy : GameObject
     public void TakeDamage(Damage damage)
     {
         Health -= damage.BaseDamage;
+        timeSinceLastHurtCountdown = hurtPulseTime;
+
         if (damage.DamageOverTime >= this.damageOverTime)
         {
             damageOverTime = damage.DamageOverTime;
@@ -148,6 +154,11 @@ internal abstract class Enemy : GameObject
 
         Visual.Update(gameTime, Position);
 
+        if (timeSinceLastHurtCountdown > 0)
+        {
+            timeSinceLastHurtCountdown = Math.Max(timeSinceLastHurtCountdown - gameTime.Delta(), 0);
+        }
+
         if (!IsDead)
         {
             UpdatePathing(gameTime, inputManager, world, pathManager);
@@ -213,7 +224,8 @@ internal abstract class Enemy : GameObject
 
     public virtual void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)
     {
-        Visual.Draw(drawing, Position);
+        float gb = MathHelper.Lerp(255, 0, timeSinceLastHurtCountdown / hurtPulseTime);
+        Visual.Draw(drawing, Position, new Color(255, gb, gb));
 
         // Draw attached part behaviors
         int index = 0;

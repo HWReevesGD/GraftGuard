@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GraftGuard.Map;
 internal class World
@@ -124,7 +125,7 @@ internal class World
                 {
                     Player.Update(gameTime, inputManager);
                 }
-                if (EnemyManager.Enemies.Count == 0)
+                if (EnemyManager.Enemies.Count == 0 && EnemyManager.WaveManager.AllWavesStarted)
                 {
                     PlayerData.CurrentGame.Time = TimeState.Dawn;
                 }

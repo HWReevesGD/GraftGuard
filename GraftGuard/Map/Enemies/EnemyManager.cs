@@ -10,20 +10,22 @@ using GraftGuard.Data;
 using GraftGuard.Graphics;
 using GraftGuard.Map.Waves;
 using System;
+using System.Diagnostics;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
 {
-    public List<Enemy> Enemies;
+    public List<Enemy> Enemies { get; set; }
     public PathManager PathManager { get; set; }
     public List<Vector2> SpawnLocations { get; set; }
-    public EnemyManager(World world, MapDefinition map) => Setup(world, map);
-    public WaveManager WaveManager = new WaveManager();
-
-    public EnemyManager()
+    public EnemyManager(World world, MapDefinition map)
     {
+        Setup(world, map);
+        WaveManager = new WaveManager();
         WaveManager.SpawnWave += SpawnWave;
     }
+
+    public WaveManager WaveManager; 
 
     /// <summary>
     /// Sets up the <see cref="EnemyManager"/> for a new Session
@@ -48,12 +50,14 @@ internal class EnemyManager
 
     public void SpawnWave(NightWave wave)
     {
+        Debug.WriteLine("Spawning Wave...");
         int spawnLocationIndex = 0;
-        foreach (SpawnConfig spawn in wave.Spawns)
+        foreach (SpawnConfig spawnConfig in wave.Spawns)
         {
-            for (int index = 0; index < spawn.Count; index++)
+            for (int index = 0; index < spawnConfig.Count; index++)
             {
-                spawn.Construct(SpawnLocations[spawnLocationIndex++], this);
+                Enemy enemy = spawnConfig.Construct(SpawnLocations[spawnLocationIndex++], this);
+                Enemies.Add(enemy);
                 if (spawnLocationIndex >= SpawnLocations.Count)
                 {
                     spawnLocationIndex = 0;

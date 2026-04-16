@@ -11,23 +11,48 @@ internal static class WavesRegistry
     public static readonly Random Random = new Random();
     public static void LoadWaves()
     {
-        Action<Vector2, EnemyManager> humanoid = (position, _) => new EnemyHumanoid(position);
-        Action<Vector2, EnemyManager> centipede = (position, manager) => new EnemyCentipede(position, manager);
+        Func<Vector2, EnemyManager, Enemy> humanoid = (position, _) => new EnemyHumanoid(position);
+        Func<Vector2, EnemyManager, Enemy> centipede = (position, manager) => new EnemyCentipede(position, manager);
 
-        WaveSet("Humanoid Only Easy",
+        WaveSet("Humanoid Easy",
                 [
                     new NightWave([
                         new SpawnConfig(humanoid, 3),
-                    ], 40.0f)
+                    ], 30.0f)
                 ], round: 0);
 
         WaveSet("Centipede Introduction",
                 [
+            new NightWave([
+                        new SpawnConfig(humanoid, 2),
+                    ], 10.0f),
                     new NightWave([
                         new SpawnConfig(humanoid, 1),
                         new SpawnConfig(centipede, 1),
-                    ], 40.0f)
+                    ], 30.0f)
                 ], round: 1);
+
+        WaveSet("Humanoid Dual",
+                [
+                    new NightWave([
+                        new SpawnConfig(humanoid, 3),
+                    ], 10.0f),
+                    new NightWave([
+                        new SpawnConfig(humanoid, 3),
+                    ], 25.0f)
+                ], round: 3);
+
+        WaveSet("Centipede Dual",
+                [
+                    new NightWave([
+                        new SpawnConfig(centipede, 1),
+                        new SpawnConfig(humanoid, 1),
+                    ], 10.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 1),
+                        new SpawnConfig(humanoid, 1),
+                    ], 25.0f)
+                ], round: 3);
     }
 
     public static void WaveSet(string name, List<NightWave> waves, int round)

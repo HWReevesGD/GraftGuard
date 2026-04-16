@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,8 +12,11 @@ internal class WaveManager
     public float FullTime => Set.FullTime;
     public Dictionary<NightWave, bool> Started { get; private set; } = [];
     public Action<NightWave> SpawnWave;
+    public bool AllWavesStarted { get; set; } = false;
     public void StartWaves(NightWaveSet waveSet)
     {
+        AllWavesStarted = false;
+        Debug.WriteLine($"Starting Wave Set: {waveSet.Name}");
         Started.Clear();
         Set = waveSet;
         foreach (NightWave wave in waveSet.Waves)
@@ -21,7 +25,7 @@ internal class WaveManager
         }
         NightWave first = waveSet.Waves[0];
         Started[first] = true;
-        SpawnWave?.Invoke(first);
+        SpawnWave.Invoke(first);
     }
     public void Update(float timeLeft)
     {
@@ -36,6 +40,10 @@ internal class WaveManager
             {
                 Started[wave] = true;
                 SpawnWave?.Invoke(wave);
+                if (Started.Values.All((started) => started))
+                {
+                    AllWavesStarted = true;
+                }
             }
         }
     }

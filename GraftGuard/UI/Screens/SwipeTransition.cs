@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace GraftGuard.UI.Screens;
 
-internal class Transition1
+internal class SwipeTransition
 {
     private static float scale = 2f;
     private static int fadeWidth = 1000;
@@ -24,7 +24,7 @@ internal class Transition1
     private float startTime;
     private bool isReversed;
 
-    public Transition1(bool isReversed)
+    public SwipeTransition(bool isReversed)
     {
         this.isReversed = isReversed;
     }

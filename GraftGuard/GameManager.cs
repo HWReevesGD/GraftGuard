@@ -23,7 +23,7 @@ namespace GraftGuard
         private readonly GameHUD _hud;
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly NightPlacementGUI _nightPlacement;
-        private readonly Transition1 _swipeTransition;
+        private readonly SwipeTransition _swipeTransition;
         private readonly InputManager inputManager;
 
         public readonly DrawManager DrawManager;
@@ -43,7 +43,7 @@ namespace GraftGuard
             _hud = new GameHUD();
             _towerGrafting = new TowerGraftingGUI();
             _nightPlacement = new NightPlacementGUI();
-            _swipeTransition = new Transition1(true);
+            _swipeTransition = new SwipeTransition(true);
             inputManager = input;
 
             _mainMenu.NewGameStarted += OnNewGameStarted;

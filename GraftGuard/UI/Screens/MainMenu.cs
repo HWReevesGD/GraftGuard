@@ -58,7 +58,7 @@ internal class MainMenu {
     private float[] itemWaveAmplitudes;
     private float arrowYPosition;
 
-    private Transition1 swipeTransition;
+    private SwipeTransition swipeTransition;
     private bool optionWasPicked;
     private float optionPickedTime;
 
@@ -76,7 +76,7 @@ internal class MainMenu {
         itemWaveAmplitudes = new float[menuItemOrder.Length];
         arrowYPosition = Interface.Height;
 
-        swipeTransition = new Transition1(false);
+        swipeTransition = new SwipeTransition(false);
 
         CreateTowers();
     }

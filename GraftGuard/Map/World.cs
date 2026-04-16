@@ -129,6 +129,7 @@ internal class World
                 {
                     PlayerData.CurrentGame.Time = TimeState.Dawn;
                     PlayerData.CurrentGame.Timer = GameManager.DawnTimeLength;
+                    EnemyManager.Enemies.Clear();
                 }
                 break;
             case TimeState.Dawn:

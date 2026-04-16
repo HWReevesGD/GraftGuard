@@ -196,6 +196,7 @@ namespace GraftGuard
                 case TimeState.Night:
                     session.Timer = DawnTimeLength;
                     session.Time = TimeState.Dawn;
+                    _world.EnemyManager.Enemies.Clear();
                     break;
                 case TimeState.Dawn:
                     session.Time = TimeState.Day;

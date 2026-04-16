@@ -112,6 +112,7 @@ internal class World
     public void OnStartingNight()
     {
         EnemyManager.BeginNight();
+        PlayerData.CurrentGame.PhaseTimeLength = EnemyManager.WaveManager.FullTime;
         Player.Position = CurrentMap.PlayerSpawn;
     }
 

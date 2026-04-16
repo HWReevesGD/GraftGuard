@@ -23,7 +23,6 @@ internal class MainMenu {
     private readonly InputManager inputManager;
     private readonly TimeState timeState;
 
-
     private readonly static float cameraPanSpeed = 0.5f;
 
     private readonly static float titleLeftPadding = 20;
@@ -33,6 +32,10 @@ internal class MainMenu {
     private readonly static float itemShakeIntensity = 3;
     private readonly static float selectedItemLeftOffset = 34;
     private readonly static float lerpSpeed = 15;
+
+    private readonly static float gameBeginMenuItemsLeftPosition = -1500;
+    private readonly static float gameBeginMenuitemsEaseTime = 0.25f;
+    private readonly static float gameBeginDelayTime = 0.5f;
 
     private static Texture2D backgroundTexture;
     private readonly static string titleText = "GRAFTGUARD";
@@ -55,6 +58,10 @@ internal class MainMenu {
     private float[] itemWaveAmplitudes;
     private float arrowYPosition;
 
+    private Transition1 swipeTransition;
+    private bool optionWasPicked;
+    private float optionPickedTime;
+
     public event ActionEvent NewGameStarted;
 
     public MainMenu(Game1 game, InputManager inputManager, DrawManager drawing)
@@ -68,6 +75,9 @@ internal class MainMenu {
         itemXOffests = new float[menuItemOrder.Length];
         itemWaveAmplitudes = new float[menuItemOrder.Length];
         arrowYPosition = Interface.Height;
+
+        swipeTransition = new Transition1(false);
+
         CreateTowers();
     }
 
@@ -104,24 +114,55 @@ internal class MainMenu {
         backgroundWorld.Camera.Position = position - Interface.ScreenCenter;
     }
 
-    /// <summary>
-    /// Update main menu by input requests
-    /// </summary>
-    /// <param name="gameTime">gameTime from Game1 Update()</param>
-    public void UpdateMenu(GameTime gameTime)
+    public void ProcessKeys(GameTime gameTime)
     {
         if (inputManager.WasKeyPressStarted(Keys.Up)) // advance back
             selectedItemIndex = (selectedItemIndex + menuItemOrder.Length - 1) % menuItemOrder.Length;
         if (inputManager.WasKeyPressStarted(Keys.Down)) // advance forward
             selectedItemIndex = (selectedItemIndex + 1) % menuItemOrder.Length;
 
+        if (inputManager.WasKeyPressStarted(Keys.T))
+        {
+            swipeTransition.Start(gameTime);
+        }
+
         if (inputManager.WasKeyPressStarted(Keys.Enter))
+        {
+            switch (selectedItemIndex)
+            {
+                case 0: // start new game
+                    optionWasPicked = true;
+                    optionPickedTime = (float)gameTime.TotalGameTime.TotalSeconds;
+                    swipeTransition.Start(gameTime);
+                    break;
+                case 1: // continue game
+                    break;
+                case 2: // options
+                    break;
+                case 3: // compendium
+                    break;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Update main menu by input requests
+    /// </summary>
+    /// <param name="gameTime">gameTime from Game1 Update()</param>
+    public void UpdateMenu(GameTime gameTime)
+    {
+        if (!optionWasPicked)
+            ProcessKeys(gameTime);
+
+        if (optionWasPicked && gameTime.TotalGameTime.TotalSeconds - optionPickedTime > gameBeginDelayTime)
         {
             switch (selectedItemIndex)
             {
                 case 0: // start new game
                     PlayerData.StartNewGame(GameManager.DawnTimeLength);
                     NewGameStarted?.Invoke();
+                    // reset main menu
+                    optionWasPicked = false;
                     break;
                 case 1: // continue game
                     break;
@@ -164,7 +205,17 @@ internal class MainMenu {
         float alpha = Math.Min(gameTime.Delta() * lerpSpeed, 1);
         float yPosition = Interface.Height - itemBottomPadding;
 
+        float unpickedXOffsetPosition = 0;
+        if (optionWasPicked)
+        {
+            float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - optionPickedTime;
+            float prog = Math.Min(elapsed / gameBeginMenuitemsEaseTime, 1);
+            unpickedXOffsetPosition = gameBeginMenuItemsLeftPosition * (float)Math.Pow(prog, 2);
+        }
+
         // draw each menu item
+
+        bool pickedItemShouldDraw = !optionWasPicked || Math.Round(gameTime.TotalGameTime.TotalSeconds / 0.05f) % 2 == 0;
 
         for (int i = menuItemOrder.Length - 1; i >= 0; i--)
         {
@@ -172,16 +223,18 @@ internal class MainMenu {
 
             float targetXOffset;
             float targetWaveAmplitude;
+            bool shouldDraw = true;
 
             if (i == selectedItemIndex)
             {
                 targetXOffset = selectedItemLeftOffset;
                 targetWaveAmplitude = itemShakeIntensity;
                 arrowYPosition = MathHelper.Lerp(arrowYPosition, yPosition, alpha);
+                shouldDraw = pickedItemShouldDraw;
             }
             else
             {
-                targetXOffset = 0;
+                targetXOffset = unpickedXOffsetPosition;
                 targetWaveAmplitude = 0;
             }
 
@@ -191,26 +244,30 @@ internal class MainMenu {
             // render item on the bottom left yea
 
             Text text = new Text(Fonts.SubFont, menuItemOrder[i])
-                .SetYOrigin(YOrigin.Bottom)
-                .SetKerning(2)
-                .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]));
+                    .SetYOrigin(YOrigin.Bottom)
+                    .SetKerning(2)
+                    .AddEffect(new ShakeTextEffect(itemWaveAmplitudes[i]));
 
-            text.Draw(drawing, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
+            if (shouldDraw)
+                text.Draw(drawing, gameTime, new Vector2(itemLeftPadding + itemXOffests[i], yPosition));
 
             // increment up
             yPosition += -text.Height - itemGap;
         }
 
         // little arrow thing
-        new Text(Fonts.SubFont, ">")
-            .SetYOrigin(YOrigin.Bottom)
-            .DrawRaw(drawing, new Vector2(itemLeftPadding, arrowYPosition));
+        if (pickedItemShouldDraw)
+            new Text(Fonts.SubFont, ">")
+                .SetYOrigin(YOrigin.Bottom)
+                .DrawRaw(drawing, new Vector2(itemLeftPadding, arrowYPosition));
 
         // title text
         new Text(Fonts.MainFont, titleText)
             .SetYOrigin(YOrigin.Bottom)
             .SetKerning(3)
-            .AddEffect(new WavyTextEffect(7, -3))
-            .Draw(drawing, gameTime, new Vector2(titleLeftPadding, yPosition));
+            .AddEffect(new WavyTextEffect(7 + unpickedXOffsetPosition, -3))
+            .Draw(drawing, gameTime, new Vector2(titleLeftPadding + unpickedXOffsetPosition, yPosition));
+
+        swipeTransition.Draw(drawing, gameTime);
     }
 }

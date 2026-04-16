@@ -23,6 +23,7 @@ namespace GraftGuard
         private readonly GameHUD _hud;
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly NightPlacementGUI _nightPlacement;
+        private readonly Transition1 _swipeTransition;
         private readonly InputManager inputManager;
 
         public readonly DrawManager DrawManager;
@@ -42,6 +43,7 @@ namespace GraftGuard
             _hud = new GameHUD();
             _towerGrafting = new TowerGraftingGUI();
             _nightPlacement = new NightPlacementGUI();
+            _swipeTransition = new Transition1(true);
             inputManager = input;
 
             _mainMenu.NewGameStarted += OnNewGameStarted;
@@ -87,6 +89,7 @@ namespace GraftGuard
             OnStartingDawn(isFirstDawn: true);
 
             PlayerData.CurrentGame.OnPlayerDied += HandleDeath;
+            _swipeTransition.Start(lastGameTime);
         }
 
         /// <summary>
@@ -189,7 +192,7 @@ namespace GraftGuard
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
-            else if (session.Time == TimeState.Dawn)
+            if (session.Time == TimeState.Dawn)
             {
                 session.Time = TimeState.Day;
                 OnStartingDay();
@@ -268,6 +271,7 @@ namespace GraftGuard
             }
 
             _hud.Draw(drawing, gameTime, session.Time != TimeState.Day);
+            _swipeTransition.Draw(drawing, gameTime);
 
             // HUD
             //spriteBatch.DrawString(Fonts.Arial, $"TIME: {session.Time}\nTIMER: {session.Timer:F1}", new Vector2(64, 0), Color.White);

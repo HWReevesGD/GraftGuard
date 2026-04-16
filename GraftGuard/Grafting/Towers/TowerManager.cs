@@ -61,7 +61,7 @@ internal class TowerManager
 
         _towers.Add(placedTower);
 
-        _world.UpdatePaths();
+        _world.UpdatePathCosts();
     }
 
     /// <summary>

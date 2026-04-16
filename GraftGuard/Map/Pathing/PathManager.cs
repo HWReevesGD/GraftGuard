@@ -96,6 +96,27 @@ internal class PathManager
         }
     }
 
+    public void UpdateCosts(World world)
+    {
+        foreach (PathNode node in Nodes)
+        {
+            if (node is null)
+            {
+                continue;
+            }
+            // Add Tower Costs to Node
+            foreach (Tower tower in world.TowerManager.Towers)
+            {
+                bool overlapsTower = tower.PathAreas.Any((area) => area.Intersects(node.CheckCircle));
+
+                if (overlapsTower)
+                {
+                    node.Cost += tower.PathCost;
+                }
+            }
+        }
+    }
+
     public void Draw(DrawManager drawing, GameTime time)
     {
         foreach (PathNode? possibleNode in Nodes)

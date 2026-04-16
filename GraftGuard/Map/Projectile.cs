@@ -39,16 +39,6 @@ internal class Projectile
     }
 
     /// <summary>
-    /// Returns true if the projectile is overlapping <see cref="Terrain"/>
-    /// </summary>
-    /// <param name="world"><see cref="World"/> to check <see cref="Terrain"/> in</param>
-    /// <returns>Returns true if the projectile is overlapping <see cref="Terrain"/></returns>
-    public bool IsCollidingTerrain(World world)
-    {
-        return world.Terrain.Overlaps(HitCircle);
-    }
-
-    /// <summary>
     /// Deals damage to the target specified in <see cref="Targeting"/> if any targets overlap <see cref="HitCircle"/>.
     /// Returns true if any target was overlapping
     /// </summary>

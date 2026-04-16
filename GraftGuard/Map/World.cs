@@ -183,8 +183,8 @@ internal class World
     {
         ScatteredParts.Add(new ScatteredPart(location, part));
     }
-    public void UpdatePaths()
+    public void UpdatePathCosts()
     {
-        EnemyManager.PathManager.BuildGrid(this);
+        EnemyManager.PathManager.UpdateCosts(this);
     }
 }

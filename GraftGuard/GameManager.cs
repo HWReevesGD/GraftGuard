@@ -193,6 +193,7 @@ namespace GraftGuard
         {
             if (session.Time == TimeState.Night)
             {
+                session.Timer = DawnTimeLength;
                 session.Time = TimeState.Dawn;
             }
             if (session.Time == TimeState.Dawn)

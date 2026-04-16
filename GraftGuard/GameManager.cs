@@ -116,16 +116,12 @@ namespace GraftGuard
         /// </summary>
         private void OnStartingNight()
         {
-            PlayerData.CurrentGame.Timer = NightTimeLength;
             // Setup Player Data
-            if (PlayerData.CurrentGame.Time == TimeState.Day)
-            {
-                PlayerData.CurrentGame.Time = TimeState.Night;
-                PlayerData.CurrentGame.PhaseTimeLength = NightTimeLength;
-                PlayerData.CurrentGame.Timer = NightTimeLength;
-            }
+            PlayerData.CurrentGame.Time = TimeState.Night;
+            PlayerData.CurrentGame.PhaseTimeLength = NightTimeLength;
 
             _world.OnStartingNight();
+            PlayerData.CurrentGame.Timer = _world.EnemyManager.WaveManager.FullTime;
 
             // Setup Night Placement GUI
             _nightPlacement.Setup(_world.Inventory);
@@ -158,7 +154,10 @@ namespace GraftGuard
             else
             {
                 session.Timer -= gameTime.Delta();
-                if (session.Timer <= 0) HandleTimeTransition(gameTime, session);
+                if (session.Timer <= 0)
+                {
+                    HandleTimeTransition(gameTime, session);
+                }
             }
 
             switch (session.Time)
@@ -189,7 +188,7 @@ namespace GraftGuard
 
         private void HandleTimeTransition(GameTime gameTime, GameData session)
         {
-            else if (session.Time == TimeState.Dawn)
+            if (session.Time == TimeState.Dawn)
             {
                 session.Time = TimeState.Day;
                 OnStartingDay();

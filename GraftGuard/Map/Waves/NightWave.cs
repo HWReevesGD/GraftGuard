@@ -1,16 +1,30 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GraftGuard.Map.Waves;
 
-internal class NightWave
+internal class NightWave : IEquatable<NightWave>
 {
-    public List<SpawnConfig> Spawns { get; set; }
-    public float WaveDelay = 0.0f;
-    public float NextWaveDelay = 0.0f;
-    public NightWave(List<SpawnConfig> spawns, float delayBeforeStarting = 0.0f, float delayUntilNext = 0.0f)
+    private static int _nextId = int.MinValue;
+    private int _id;
+    public List<SpawnConfig> Spawns { get; init; }
+    public float Time { get; init; }
+    public NightWave(List<SpawnConfig> spawns, float time)
     {
         Spawns = spawns;
-        WaveDelay = delayBeforeStarting;
-        NextWaveDelay = delayUntilNext;
+        Time = time;
+        _id = _nextId++;
+    }
+    public override int GetHashCode()
+    {
+        return _id;
+    }
+    public override bool Equals(object obj)
+    {
+        return obj is NightWave wave && wave._id == _id;
+    }
+    public bool Equals(NightWave other)
+    {
+        return other._id == _id;
     }
 }

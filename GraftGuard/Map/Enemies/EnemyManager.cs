@@ -8,6 +8,8 @@ using GraftGuard.Utility;
 using GraftGuard.Grafting;
 using GraftGuard.Data;
 using GraftGuard.Graphics;
+using GraftGuard.Map.Waves;
+using System;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -16,6 +18,12 @@ internal class EnemyManager
     public PathManager PathManager { get; set; }
     public List<Vector2> SpawnLocations { get; set; }
     public EnemyManager(World world, MapDefinition map) => Setup(world, map);
+    public WaveManager WaveManager = new WaveManager();
+
+    public EnemyManager()
+    {
+        WaveManager.SpawnWave += SpawnWave;
+    }
 
     /// <summary>
     /// Sets up the <see cref="EnemyManager"/> for a new Session
@@ -35,19 +43,21 @@ internal class EnemyManager
 
     public void BeginNight()
     {
-        int spawnIndex = -1;
-        foreach(Vector2 spawn in SpawnLocations)
-        {
-            spawnIndex++;
-            int difficulty = (int)PlayerData.CurrentGame.CurrentDifficulty;
-            for (int i = 0; i <= difficulty; i++)
-            {
-                Enemies.Add(new EnemyHumanoid(spawn));
-            }
+        WaveManager.StartWaves(WavesRegistry.GetRandomForRound(PlayerData.CurrentGame.GameLog.RoundsSurvived));
+    }
 
-            if (spawnIndex == SpawnLocations.Count - 1 && difficulty > 1)
+    public void SpawnWave(NightWave wave)
+    {
+        int spawnLocationIndex = 0;
+        foreach (SpawnConfig spawn in wave.Spawns)
+        {
+            for (int index = 0; index < spawn.Count; index++)
             {
-                Enemies.Add(new EnemyCentipede(spawn, this));
+                spawn.Construct(SpawnLocations[spawnLocationIndex++], this);
+                if (spawnLocationIndex >= SpawnLocations.Count)
+                {
+                    spawnLocationIndex = 0;
+                }
             }
         }
     }
@@ -55,6 +65,10 @@ internal class EnemyManager
     private List<PathNode> _debugPath;
     public void Update(GameTime time, World world, InputManager inputManager)
     {
+        // Update Waves
+        WaveManager.Update(PlayerData.CurrentGame.Timer);
+
+        // Updated Enemies
         for (int index = 0; index < Enemies.Count; index++)
         {
             Enemy enemy = Enemies[index];

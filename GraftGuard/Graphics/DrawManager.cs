@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraftGuard.Graphics;
 internal class DrawManager
@@ -17,7 +18,7 @@ internal class DrawManager
     public const float SortingCompressmentAddition = 1.0f / 1_000_000;
     public Rectangle? ForceScissor { get; set; } = null;
     public Matrix? ExtraMatrix { get; set; } = null;
-    public Action<Matrix> CurrentBatchBegin = null;
+    public BeginBatch CurrentBatchBegin = null;
 
 
     public DrawManager(SpriteBatch batch)
@@ -231,6 +232,15 @@ internal class DrawManager
         return number;
     }
 
+    private static RasterizerState UseScissor = new RasterizerState() { ScissorTestEnable = true };
+
+    public delegate void BeginBatch(Matrix matrix, Camera camera);
+
+    public void BeginWorld(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix * camera.WorldToScreen);
+    public void BeginWorldScissor(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: UseScissor, transformMatrix: matrix * camera.WorldToScreen);
+    public void BeginUi(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix);
+    public void BeginUiScissor(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: UseScissor, transformMatrix: matrix);
+
     public void Paint(Camera camera)
     {
         for (int index = 0; index < LayerCount; index++)
@@ -241,34 +251,34 @@ internal class DrawManager
             List<DrawInstruction> gameScissors = [];
             List<DrawInstruction> uiScissors = [];
 
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix * camera.WorldToScreen);
-            CurrentBatchBegin(Matrix.Identity);
+            CurrentBatchBegin = BeginWorld;
+            CurrentBatchBegin(Matrix.Identity, camera);
             foreach (DrawInstruction instruction in gameLayer)
             {
-                DrawInstruction(instruction, gameScissors);
+                DrawInstruction(instruction, camera, gameScissors);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.FrontToBack, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix * camera.WorldToScreen);
-            CurrentBatchBegin(Matrix.Identity);
+            CurrentBatchBegin = BeginWorldScissor;
+            CurrentBatchBegin(Matrix.Identity, camera);
             foreach (DrawInstruction instruction in gameScissors)
             {
                 Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
-                DrawInstruction(instruction);
+                DrawInstruction(instruction, camera);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix);
-            CurrentBatchBegin(Matrix.Identity);
+            CurrentBatchBegin = BeginUi;
+            CurrentBatchBegin(Matrix.Identity, camera);
             foreach (DrawInstruction instruction in uiLayer)
             {
-                DrawInstruction(instruction, uiScissors);
+                DrawInstruction(instruction, camera, uiScissors);
             }
             Batch.End();
-            CurrentBatchBegin = (matrix) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: new RasterizerState() { ScissorTestEnable = true }, transformMatrix: matrix);
-            CurrentBatchBegin(Matrix.Identity);
+            CurrentBatchBegin = BeginUiScissor;
+            CurrentBatchBegin(Matrix.Identity, camera);
             foreach (DrawInstruction instruction in uiScissors)
             {
                 Batch.GraphicsDevice.ScissorRectangle = instruction.Scissor.Value;
-                DrawInstruction(instruction);
+                DrawInstruction(instruction, camera);
             }
             Batch.End();
 
@@ -278,7 +288,7 @@ internal class DrawManager
         foreach (List<DrawInstruction> layer in DrawUILayers) layer.Clear();
     }
 
-    private void DrawInstruction(DrawInstruction instruction, List<DrawInstruction> scissors = null)
+    private void DrawInstruction(DrawInstruction instruction, Camera camera, List<DrawInstruction> scissors = null)
     {
         if (scissors is not null && instruction.Scissor is not null)
         {
@@ -289,7 +299,7 @@ internal class DrawManager
         if (instruction.ExtraMatrix is Matrix || instruction.Scissor is not null)
         {
             Batch.End();
-            CurrentBatchBegin(instruction.ExtraMatrix ?? Matrix.Identity);
+            CurrentBatchBegin(instruction.ExtraMatrix ?? Matrix.Identity, camera);
         }
 
         float sorting = 1.0f;
@@ -357,7 +367,7 @@ internal class DrawManager
         if (instruction.ExtraMatrix is Matrix || instruction.Scissor is not null)
         {
             Batch.End();
-            CurrentBatchBegin(Matrix.Identity);
+            CurrentBatchBegin(Matrix.Identity, camera);
         }
     }
 }

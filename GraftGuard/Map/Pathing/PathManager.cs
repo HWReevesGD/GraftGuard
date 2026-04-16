@@ -186,30 +186,35 @@ internal class PathManager
         NearestTower,
     }
 
+
+    private PriorityQueue<Point, float> _pathingFrontier = new PriorityQueue<Point, float>();
+    private Dictionary<Point, Point> _pathingCameFrom = [];
+    private Dictionary<Point, float> _pathingCostSoFar = [];
+
     public List<PathNode> FindPointPath(Point start, Point goal, bool crashIfNotFound = true, Func<Vector2, float> getExtraCost = null)
     {
         Point[] directions = Directions.ToArray();
         random.Shuffle(directions);
         // Priority Queue of Points with a float priority
-        PriorityQueue<Point, float> frontier = new PriorityQueue<Point, float>();
+        _pathingFrontier.Clear();
         // Maps paths of Grid Locations
-        Dictionary<Point, Point> cameFrom = [];
+        _pathingCameFrom.Clear();
         // Maps minimum cost for each Grid Location
-        Dictionary<Point, float> costSoFar = [];
+        _pathingCostSoFar.Clear();
 
         // Add start with a priority and cost of zero
         // (Lower priorities are chosen first!)
-        frontier.Enqueue(start, 0.0f);
-        costSoFar.Add(start, 0.0f);
+        _pathingFrontier.Enqueue(start, 0.0f);
+        _pathingCostSoFar.Add(start, 0.0f);
 
         // Will be set to true when a path is found
         bool found = false;
 
         // While there are locations on the frontier...
-        while (frontier.Count > 0)
+        while (_pathingFrontier.Count > 0)
         {
             // Get and Dequeue the next location on the frontier
-            Point current = frontier.Dequeue();
+            Point current = _pathingFrontier.Dequeue();
 
             // End early if a path to the goal has been found
             if (current == goal)
@@ -256,23 +261,23 @@ internal class PathManager
                 }
 
                 // Full next cost is the cost for the ENTIRE path so far, plus the cost to move to the neighbor
-                float fullNextCost = costSoFar[current] + costToNext;
+                float fullNextCost = _pathingCostSoFar[current] + costToNext;
 
                 // If there is a cost CURRENTLY of this next node, and it's LESS than the cost we just found,
                 // skip this node, as we DON'T want to calculate HIGHER cost paths
-                if (costSoFar.TryGetValue(next, out float cost) && fullNextCost >= cost)
+                if (_pathingCostSoFar.TryGetValue(next, out float cost) && fullNextCost >= cost)
                 {
                     continue;
                 }
 
                 // Save the cost to the current next node
-                costSoFar[next] = fullNextCost;
+                _pathingCostSoFar[next] = fullNextCost;
                 // Calculate the priority from the cost and distance
                 float priority = fullNextCost + OctileDistance(goal, next);
                 // Enqueue this next node with its priority
-                frontier.Enqueue(next, priority);
+                _pathingFrontier.Enqueue(next, priority);
                 // Save the node to the path
-                cameFrom[next] = current;
+                _pathingCameFrom[next] = current;
             }
         }
 
@@ -293,7 +298,7 @@ internal class PathManager
         // Keep track of our current position, starting with the goal
         Point currentPosition = goal;
         // We follow the path through the "cameFrom" dictionary
-        while (cameFrom.TryGetValue(currentPosition, out Point cameFromPoint))
+        while (_pathingCameFrom.TryGetValue(currentPosition, out Point cameFromPoint))
         {
             // Save each node
             path.Add(GetNode(cameFromPoint));

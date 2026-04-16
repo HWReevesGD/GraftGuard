@@ -18,18 +18,15 @@ internal class TowerSpinner : Tower
     public const float SpinSpeed = 8.0f;
 
     public readonly Vector2 SpinOffset = new Vector2(0, -16);
-    private IntervalTimer _damageInterval;
 
     public TowerSpinner(Vector2 position) : base(position, new Vector2(64, 64), TexturePlaceholderTower, new Rectangle(new Point(-32, -32), new Point(64, 64)),
         2.0f, [new Rectangle(-32, -32, 64, 64)])
     {
-        _damageInterval = new IntervalTimer(DamageInterval);
+
     }
 
     public override void Update(GameTime time, World world, InputManager inputManager, TimeState state, ProjectileManager projectileDiversion = null)
     {
-        bool dealDamage = _damageInterval.Update(time);
-
         for (int index = 0; index < _attachedParts.Length; index++)
         {
             AttachedPart part = _attachedParts[index];

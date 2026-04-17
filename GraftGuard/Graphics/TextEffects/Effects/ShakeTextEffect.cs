@@ -8,10 +8,12 @@ namespace GraftGuard.Graphics.TextEffects.Effects;
 /// </summary>
 internal class ShakeTextEffect : ITextEffect
 {
-    private float magnitude;
     private Random rng;
 
-    private bool doShakeThisFrame;
+    /// <summary>
+    /// Gets or sets the mangnitude of the shaking in pixels
+    /// </summary>
+    public float Magnitude { get; set; }
 
     /// <summary>
     /// Create text shaking effect
@@ -19,8 +21,8 @@ internal class ShakeTextEffect : ITextEffect
     /// <param name="magnitude">Shake magnitude</param>
     public ShakeTextEffect(float magnitude)
     {
-        this.magnitude = magnitude;
         rng = new Random();
+        Magnitude = magnitude;
     }
 
     public void Update(GameTime gameTime) { }
@@ -36,7 +38,7 @@ internal class ShakeTextEffect : ITextEffect
     {
         float xMul = -1 + (float)rng.NextDouble() * 2;
         float yMul = -1 + (float)rng.NextDouble() * 2;
-        letter.Position += new Vector2(xMul, yMul) * magnitude;
+        letter.Position += new Vector2(xMul, yMul) * Magnitude;
         return letter;
     }
 }

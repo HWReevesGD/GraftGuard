@@ -121,11 +121,6 @@ internal class MainMenu {
         if (inputManager.WasKeyPressStarted(Keys.Down)) // advance forward
             selectedItemIndex = (selectedItemIndex + 1) % menuItemOrder.Length;
 
-        if (inputManager.WasKeyPressStarted(Keys.T))
-        {
-            swipeTransition.Start(gameTime);
-        }
-
         if (inputManager.WasKeyPressStarted(Keys.Enter))
         {
             switch (selectedItemIndex)
@@ -133,7 +128,17 @@ internal class MainMenu {
                 case 0: // start new game
                     optionWasPicked = true;
                     optionPickedTime = (float)gameTime.TotalGameTime.TotalSeconds;
-                    swipeTransition.Start(gameTime);
+                    swipeTransition.Start(gameTime, false);
+
+                    new TaskSchedule()
+                        .Wait(gameBeginDelayTime)
+                        .Run(() => {
+                            PlayerData.StartNewGame(GameManager.DawnTimeLength);
+                            NewGameStarted?.Invoke();
+                            swipeTransition.Clear();
+                            // reset main menu
+                            optionWasPicked = false;
+                        });
                     break;
                 case 1: // continue game
                     break;
@@ -153,25 +158,6 @@ internal class MainMenu {
     {
         if (!optionWasPicked)
             ProcessKeys(gameTime);
-
-        if (optionWasPicked && gameTime.TotalGameTime.TotalSeconds - optionPickedTime > gameBeginDelayTime)
-        {
-            switch (selectedItemIndex)
-            {
-                case 0: // start new game
-                    PlayerData.StartNewGame(GameManager.DawnTimeLength);
-                    NewGameStarted?.Invoke();
-                    // reset main menu
-                    optionWasPicked = false;
-                    break;
-                case 1: // continue game
-                    break;
-                case 2: // options
-                    break;
-                case 3: // compendium
-                    break;
-            }
-        }
 
         inputManager.Update();
     }

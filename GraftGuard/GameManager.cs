@@ -49,8 +49,6 @@ namespace GraftGuard
             _mainMenu.NewGameStarted += OnNewGameStarted;
 
             _towerGrafting.OnNightButtonPressed += OnStartingNight;
-
-            TaskSchedule.CreateGlobalTaskSchedule();
         }
 
         private void HandleDeath()
@@ -65,7 +63,7 @@ namespace GraftGuard
         public void Update(GameTime gameTime)
         {
             inputManager.Update(_world.Camera);
-            TaskSchedule.Update(gameTime);
+            TaskSchedule.UpdateAll(gameTime);
 
             if (inputManager.WasKeyPressStarted(Keys.T))
             {
@@ -247,7 +245,7 @@ namespace GraftGuard
                     break;
             }
             DrawManager.Paint(_world.Camera);
-            TaskSchedule.DrawDebug(DrawManager);
+            //TaskSchedule.DrawDebug(DrawManager);
         }
 
         private void DrawGameSession(DrawManager drawing, GameTime gameTime)

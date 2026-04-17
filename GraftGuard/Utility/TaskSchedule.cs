@@ -95,40 +95,28 @@ struct Task
 /// </summary>
 internal class TaskSchedule
 {
-    public static TaskSchedule GlobalTasks { get; private set; }
-    private static float elapsed;
-    private static List<Task> tasks;
-
-    /// <summary>
-    /// Create the global task manager
-    /// </summary>
-    public static void CreateGlobalTaskSchedule()
-    {
-        tasks = new List<Task>();
-    }
+    private static readonly List<TaskSchedule> schedules = new List<TaskSchedule>();
 
     /// <summary>
     /// Update global task manager
     /// </summary>
     /// <param name="gameTime">GameTime from this frame</param>
-    public static void Update(GameTime gameTime)
+    public static void UpdateAll(GameTime gameTime)
     {
-        elapsed += gameTime.Delta();
+        List<TaskSchedule> toRemove = new List<TaskSchedule>();
 
-        if (tasks.Count == 0)
-            return;
-        
-        Task firstTask = tasks[0];
-
-        if (firstTask.StartTime <= elapsed)
+        foreach (TaskSchedule schedule in schedules)
         {
-            firstTask.RunCallback(gameTime, elapsed - firstTask.StartTime);
-            if (firstTask.EndTime == -1 || elapsed > firstTask.EndTime)
-            {
-                tasks.RemoveAt(0);
-            }
+            bool isOk = schedule.Update(gameTime);
+            if (!isOk)
+                toRemove.Add(schedule);
         }
+
+        foreach (TaskSchedule schedule in toRemove)
+            schedules.Remove(schedule);
     }
+
+    private static string RoundTime(float time) => time.ToString("F2");
 
     /// <summary>
     /// Draw debug text to the screen
@@ -136,26 +124,52 @@ internal class TaskSchedule
     /// <param name="drawing">DrawManager</param>
     public static void DrawDebug(DrawManager drawing)
     {
-        drawing.DrawString($"TIME: {elapsed}", new Vector2(10, 0), font: Fonts.Arial, drawLayer: 3, isUi: true);
-        drawing.DrawString($"NUM TASKS: {tasks.Count}", new Vector2(10, 30), font: Fonts.Arial, drawLayer: 3, isUi: true);
+        drawing.DrawString($"# OF SCHEDULES: {schedules.Count}", new Vector2(0, 0), font: Fonts.Arial, drawLayer: 3, isUi: true);
 
-        for (int i = 0; i < tasks.Count; i++)
+        for (int i = 0; i < schedules.Count; i++)
         {
-            Task task = tasks[i];
-            drawing.DrawString($"TASK | {task.StartTime} -> {task.EndTime}", new Vector2(10, 90 + i * 30), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            TaskSchedule schedule = schedules[i];
+            int x = i * 350;
+
+            // draw schedule stats
+            drawing.DrawString($"SCHEDULE #{i}", new Vector2(x, 60), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            drawing.DrawString($"TIME: {RoundTime(schedule.elapsed)}", new Vector2(x, 90), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            drawing.DrawString($"NUM TASKS: {schedule.tasks.Count}", new Vector2(x, 120), font: Fonts.Arial, drawLayer: 3, isUi: true);
+
+            for (int v = 0; v < schedule.tasks.Count; v++)
+            {
+                Task task = schedule.tasks[v];
+                int y = 180 + v * 30;
+
+                // draw start time
+                drawing.DrawString($"{RoundTime(task.StartTime)}", new Vector2(x, y), font: Fonts.Arial, drawLayer: 3, isUi: true);
+
+                if (task.EndTime != -1)
+                {
+                    // draw end time and progress bar
+                    drawing.DrawString($"{RoundTime(task.EndTime)}", new Vector2(x + 250, y), font: Fonts.Arial, drawLayer: 3, isUi: true);
+                    float barScale = (schedule.elapsed - task.StartTime) / (task.EndTime - task.StartTime);
+                    drawing.Draw(Placeholders.TexturePixel, new Rectangle(x + 80, y + 15, 160, 2), drawLayer: 3, isUi: true);
+                    drawing.Draw(Placeholders.TexturePixel, new Rectangle(x + 80, y + 15, (int)(160 * barScale), 2), drawLayer: 3, isUi: true, color: Color.Green);
+                }
+            }
         }
     }
 
     private float time;
-    public List<Task> myTasks;
+    private float elapsed;
+    public List<Task> tasks;
+    public bool isSorted;
 
     /// <summary>
     /// Initialize this schedule
     /// </summary>
     public TaskSchedule()
     {
-        time = elapsed;
-        myTasks = new List<Task>();
+        time = 0;
+        tasks = new List<Task>();
+        isSorted = false;
+        schedules.Add(this);
     }
 
     /// <summary>
@@ -176,7 +190,6 @@ internal class TaskSchedule
     private void AddTask(Task task)
     {
         tasks.Add(task);
-        myTasks.Add(task);
     }
 
     /// <summary>
@@ -191,6 +204,20 @@ internal class TaskSchedule
     }
 
     /// <summary>
+    /// Add a function to run some delay time after the current scheduled time asynchronously (Does not increase time like Wait())
+    /// </summary>
+    /// <param name="callback">Function to be called</param>
+    /// <returns>this</returns>
+    public TaskSchedule DelayRun(float delay, Task.NoArgsCallback callback)
+    {
+        AddTask(new Task(time + delay, -1, callback));
+        return this;
+    }
+
+    private void AddLoop(float startTime, float endTime, Task.GameTimeOnlyCallback callback) => AddTask(new Task(startTime, endTime, callback));
+    private void AddLoop(float startTime, float endTime, Task.CombinedCallback callback) => AddTask(new Task(startTime, endTime, callback));
+
+    /// <summary>
     /// Add a function to run every frame for a given amount of time
     /// </summary>
     /// <param name="loopTime">Time in seconds</param>
@@ -198,7 +225,7 @@ internal class TaskSchedule
     /// <returns>this</returns>
     public TaskSchedule Loop(float loopTime, Task.GameTimeOnlyCallback callback)
     {
-        AddTask(new Task(time, time + loopTime, callback));
+        AddLoop(time, time + loopTime, callback);
         time += loopTime;
         return this;
     }
@@ -211,9 +238,43 @@ internal class TaskSchedule
     /// <returns>this</returns>
     public TaskSchedule Loop(float loopTime, Task.CombinedCallback callback)
     {
-        AddTask(new Task(time, time + loopTime, callback));
+        AddLoop(time, time + loopTime, callback);
         time += loopTime;
         return this;
+    }
+
+    /// <summary>
+    /// Advance schedule execution forward
+    /// </summary>
+    /// <param name="gameTime">This frame's GameTime</param>
+    public bool Update(GameTime gameTime)
+    {
+        if (tasks.Count == 0) // if this is called after being removed for whatever reason
+            return false;
+
+        elapsed += gameTime.Delta();
+
+        List<Task> toRemove = new List<Task>();
+
+        foreach (Task task in tasks)
+        {
+            if (task.StartTime <= elapsed)
+            {
+                task.RunCallback(gameTime, elapsed - task.StartTime);
+                if (task.EndTime == -1 || elapsed > task.EndTime)
+                    toRemove.Add(task);
+            }
+            else
+                break;
+        }
+
+        foreach (Task task in toRemove)
+            tasks.Remove(task);
+
+        if (tasks.Count == 0)
+            return false;
+
+        return true;
     }
 
     /// <summary>
@@ -221,9 +282,6 @@ internal class TaskSchedule
     /// </summary>
     public void Cancel()
     {
-        foreach (Task task in myTasks)
-        {
-            tasks.Remove(task);
-        }
+        schedules.Remove(this);
     }
 }

@@ -281,7 +281,7 @@ internal class Particle
     /// </summary>
     /// <param name="drawing">SpriteBatch</param>
     /// <param name="gametime">This frame's GameTime</param>
-    public void Draw(DrawManager drawing, GameTime gametime, bool isUi = false)
+    public void Draw(DrawManager drawing, GameTime gametime, bool isUi, int drawLayer)
     {
         float progress = Math.Min(timeElapsed / lifetime, 1);
 
@@ -297,6 +297,7 @@ internal class Particle
             scale: scale,
             color: color,
             rotation: rotation,
+            drawLayer: drawLayer,
             isUi: isUi);
     }
 }

@@ -153,7 +153,7 @@ internal class TaskSchedule
     /// <returns>this</returns>
     public TaskSchedule Loop(float loopTime, ScheduledItem.GameTimeOnlyCallback callback)
     {
-        AddTask(new ScheduledItem(time, -1, callback));
+        AddTask(new ScheduledItem(time, time + loopTime, callback));
         time += loopTime;
         return this;
     }
@@ -166,7 +166,7 @@ internal class TaskSchedule
     /// <returns>this</returns>
     public TaskSchedule Loop(float loopTime, ScheduledItem.CombinedCallback callback)
     {
-        AddTask(new ScheduledItem(time, -1, callback));
+        AddTask(new ScheduledItem(time, time + loopTime, callback));
         time += loopTime;
         return this;
     }

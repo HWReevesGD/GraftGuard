@@ -10,10 +10,20 @@ using System.Threading.Tasks;
 
 namespace GraftGuard.Utility;
 
-struct ScheduledItem
+/// <summary>
+/// Runnable Task
+/// </summary>
+struct Task
 {
-    public float StartTime;
-    public float EndTime;
+    /// <summary>
+    /// Time that this task starts running
+    /// </summary>
+    internal float StartTime;
+
+    /// <summary>
+    /// Time that this task stops running. Set to -1 to run only once
+    /// </summary>
+    internal float EndTime;
 
     public delegate void NoArgsCallback();
     public delegate void GameTimeOnlyCallback(GameTime gameTime);
@@ -23,31 +33,52 @@ struct ScheduledItem
     private GameTimeOnlyCallback gameTimeOnlyCallback;
     private CombinedCallback combinedCallback;
 
-    public ScheduledItem(float startTime, float endTime, NoArgsCallback callback)
+    /// <summary>
+    /// Create a task with a callback with no arguments
+    /// </summary>
+    /// <param name="startTime">Time that this task starts running</param>
+    /// <param name="endTime">Time that this task stops running. Set to -1 to run only once</param>
+    /// <param name="callback">NoArgsCallback</param>
+    public Task(float startTime, float endTime, NoArgsCallback callback)
     {
         StartTime = startTime;
         EndTime = endTime;
         noArgsCallback = callback;
     }
 
-    public ScheduledItem(float startTime, float endTime, GameTimeOnlyCallback callback)
+    /// <summary>
+    /// Create a task with a callback that only receives the current frame's GameTime
+    /// </summary>
+    /// <param name="startTime">Time that this task starts running</param>
+    /// <param name="endTime">Time that this task stops running. Set to -1 to run only once</param>
+    /// <param name="callback">GameTimeOnlyCallback</param>
+    public Task(float startTime, float endTime, GameTimeOnlyCallback callback)
     {
         StartTime = startTime;
         EndTime = endTime;
         gameTimeOnlyCallback = callback;
     }
 
-    public ScheduledItem(float startTime, float endTime, CombinedCallback callback)
+    /// <summary>
+    /// Create a task with a callback that receives both the current frame's GameTime and the time elapsed since the task's StartTime
+    /// </summary>
+    /// <param name="startTime">Time that this task starts running</param>
+    /// <param name="endTime">Time that this task stops running. Set to -1 to run only once</param>
+    /// <param name="callback">CombinedCallback</param>
+    public Task(float startTime, float endTime, CombinedCallback callback)
     {
         StartTime = startTime;
         EndTime = endTime;
         combinedCallback = callback;
     }
 
-    public void RunCallback(GameTime gameTime, float elapsedTime)
+    /// <summary>
+    /// Run any callbacks in this Task
+    /// </summary>
+    /// <param name="gameTime">GameTime from this frame</param>
+    /// <param name="elapsedTime">Time since StartTime</param>
+    internal void RunCallback(GameTime gameTime, float elapsedTime)
     {
-        Debug.WriteLine("Running this thing");
-
         if (noArgsCallback != null)
             noArgsCallback();
 
@@ -59,18 +90,21 @@ struct ScheduledItem
     }
 }
 
+/// <summary>
+/// Allows scheduling of tasks ahead of time, allowing for creation of sequential code to actually look sequential
+/// </summary>
 internal class TaskSchedule
 {
     public static TaskSchedule GlobalTasks { get; private set; }
     private static float elapsed;
-    private static List<ScheduledItem> tasks;
+    private static List<Task> tasks;
 
     /// <summary>
     /// Create the global task manager
     /// </summary>
     public static void CreateGlobalTaskSchedule()
     {
-        tasks = new List<ScheduledItem>();
+        tasks = new List<Task>();
     }
 
     /// <summary>
@@ -84,7 +118,7 @@ internal class TaskSchedule
         if (tasks.Count == 0)
             return;
         
-        ScheduledItem firstTask = tasks[0];
+        Task firstTask = tasks[0];
 
         if (firstTask.StartTime <= elapsed)
         {
@@ -96,6 +130,10 @@ internal class TaskSchedule
         }
     }
 
+    /// <summary>
+    /// Draw debug text to the screen
+    /// </summary>
+    /// <param name="drawing">DrawManager</param>
     public static void DrawDebug(DrawManager drawing)
     {
         drawing.DrawString($"TIME: {elapsed}", new Vector2(10, 0), font: Fonts.Arial, drawLayer: 3, isUi: true);
@@ -103,18 +141,21 @@ internal class TaskSchedule
 
         for (int i = 0; i < tasks.Count; i++)
         {
-            ScheduledItem task = tasks[i];
+            Task task = tasks[i];
             drawing.DrawString($"TASK | {task.StartTime} -> {task.EndTime}", new Vector2(10, 90 + i * 30), font: Fonts.Arial, drawLayer: 3, isUi: true);
         }
     }
 
     private float time;
-    public List<ScheduledItem> myTasks;
+    public List<Task> myTasks;
 
+    /// <summary>
+    /// Initialize this schedule
+    /// </summary>
     public TaskSchedule()
     {
         time = elapsed;
-        myTasks = new List<ScheduledItem>();
+        myTasks = new List<Task>();
     }
 
     /// <summary>
@@ -128,7 +169,11 @@ internal class TaskSchedule
         return this;
     }
 
-    private void AddTask(ScheduledItem task)
+    /// <summary>
+    /// Add task to the global list and local list
+    /// </summary>
+    /// <param name="task">Task to add</param>
+    private void AddTask(Task task)
     {
         tasks.Add(task);
         myTasks.Add(task);
@@ -139,9 +184,9 @@ internal class TaskSchedule
     /// </summary>
     /// <param name="callback">Function to be called</param>
     /// <returns>this</returns>
-    public TaskSchedule Run(ScheduledItem.NoArgsCallback callback)
+    public TaskSchedule Run(Task.NoArgsCallback callback)
     {
-        AddTask(new ScheduledItem(time, -1, callback));
+        AddTask(new Task(time, -1, callback));
         return this;
     }
 
@@ -151,9 +196,9 @@ internal class TaskSchedule
     /// <param name="loopTime">Time in seconds</param>
     /// <param name="callback">Function to be called</param>
     /// <returns>this</returns>
-    public TaskSchedule Loop(float loopTime, ScheduledItem.GameTimeOnlyCallback callback)
+    public TaskSchedule Loop(float loopTime, Task.GameTimeOnlyCallback callback)
     {
-        AddTask(new ScheduledItem(time, time + loopTime, callback));
+        AddTask(new Task(time, time + loopTime, callback));
         time += loopTime;
         return this;
     }
@@ -164,19 +209,19 @@ internal class TaskSchedule
     /// <param name="loopTime">Time in seconds</param>
     /// <param name="callback">Function to be called</param>
     /// <returns>this</returns>
-    public TaskSchedule Loop(float loopTime, ScheduledItem.CombinedCallback callback)
+    public TaskSchedule Loop(float loopTime, Task.CombinedCallback callback)
     {
-        AddTask(new ScheduledItem(time, time + loopTime, callback));
+        AddTask(new Task(time, time + loopTime, callback));
         time += loopTime;
         return this;
     }
 
     /// <summary>
-    /// Cancel this schedule.
+    /// Cancel this schedule
     /// </summary>
     public void Cancel()
     {
-        foreach (ScheduledItem task in myTasks)
+        foreach (Task task in myTasks)
         {
             tasks.Remove(task);
         }

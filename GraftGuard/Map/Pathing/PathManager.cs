@@ -96,6 +96,15 @@ internal class PathManager
         }
     }
 
+    private class CircleIntersectTester
+    {
+        public Circle Circle { get; set; }
+        public bool Intersects(Rectangle rectangle)
+        {
+            return rectangle.Intersects(Circle);
+        } 
+    }
+    private CircleIntersectTester _circleIntersectTester = new CircleIntersectTester();
     public void UpdateCosts(World world)
     {
         foreach (PathNode node in Nodes)
@@ -104,16 +113,83 @@ internal class PathManager
             {
                 continue;
             }
+            node.Cost = 0.0f;
+            _circleIntersectTester.Circle = node.CheckCircle;
             // Add Tower Costs to Node
             foreach (Tower tower in world.TowerManager.Towers)
             {
-                bool overlapsTower = tower.PathAreas.Any((area) => area.Intersects(node.CheckCircle));
+                bool overlapsTower = tower.PathAreas.Any(_circleIntersectTester.Intersects);
 
                 if (overlapsTower)
                 {
                     node.Cost += tower.PathCost;
                 }
             }
+        }
+    }
+
+    public void UpdateOverlappingCosts(World world, Rectangle rectangle)
+    {
+        Vector2 start = rectangle.Location.ToVector() + Start;
+        Vector2 size = rectangle.Size.ToVector();
+
+        start /= PathNode.GridDistance;
+        size /= PathNode.GridDistance;
+
+        start.Floor();
+        size.Ceiling();
+        start -= Vector2.One;
+        size += Vector2.One;
+
+        int startIndexX = (int)start.X;
+        int startIndexY = (int)start.Y;
+
+        int endIndexX = (int)(startIndexX + size.X);
+        int endIndexY = (int)(startIndexY + size.Y);
+
+        for (int x = startIndexX; x < endIndexX; x++)
+        {
+            if (x >= Nodes.GetLength(0))
+            {
+                break;
+            }
+            if (x < 0)
+            {
+                continue;
+            }
+            for (int y = startIndexY; y < endIndexY; y++)
+            {
+                if (y >= Nodes.GetLength(0))
+                {
+                    break;
+                }
+                if (y < 0)
+                {
+                    continue;
+                }
+                PathNode node = Nodes[x, y];
+
+                if (node is null)
+                {
+                    continue;
+                }
+                // Add Tower Costs to Node
+                foreach (Tower tower in world.TowerManager.Towers)
+                {
+                    bool overlapsTower = tower.PathAreas.Any((area) => area.Intersects(node.CheckCircle));
+
+                    if (overlapsTower)
+                    {
+                        node.Cost += tower.PathCost;
+                    }
+                }
+            }
+        }
+
+
+        foreach (PathNode node in Nodes)
+        {
+            
         }
     }
 

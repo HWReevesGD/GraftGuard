@@ -62,7 +62,7 @@ internal struct Circle
             MathHelper.Clamp(CenterY, rectangle.Top, rectangle.Bottom)
             );
         // Check overlap
-        return Vector2.Distance(Center, closest) < Radius;
+        return Vector2.DistanceSquared(Center, closest) < Radius * Radius;
     }
 
     public Circle Translated(Vector2 offset)

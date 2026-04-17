@@ -241,6 +241,9 @@ internal class DrawManager
     public void BeginUi(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, transformMatrix: matrix);
     public void BeginUiScissor(Matrix matrix, Camera camera) => Batch.Begin(sortMode: SpriteSortMode.BackToFront, blendState: BlendState.NonPremultiplied, samplerState: SamplerState.PointWrap, rasterizerState: UseScissor, transformMatrix: matrix);
 
+    private List<DrawInstruction> _paintGameScissors = [];
+    private List<DrawInstruction> _paintUiScissors = [];
+
     public void Paint(Camera camera)
     {
         for (int index = 0; index < LayerCount; index++)
@@ -248,8 +251,11 @@ internal class DrawManager
             List<DrawInstruction> gameLayer = DrawLayers[index];
             List<DrawInstruction> uiLayer = DrawUILayers[index];
 
-            List<DrawInstruction> gameScissors = [];
-            List<DrawInstruction> uiScissors = [];
+            List<DrawInstruction> gameScissors = _paintGameScissors;
+            List<DrawInstruction> uiScissors = _paintUiScissors;
+
+            _paintGameScissors.Clear();
+            _paintUiScissors.Clear();
 
             CurrentBatchBegin = BeginWorld;
             CurrentBatchBegin(Matrix.Identity, camera);

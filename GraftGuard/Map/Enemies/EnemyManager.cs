@@ -11,6 +11,7 @@ using GraftGuard.Graphics;
 using GraftGuard.Map.Waves;
 using System;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace GraftGuard.Map.Enemies;
 internal class EnemyManager
@@ -40,7 +41,7 @@ internal class EnemyManager
 
         PathManager.BuildGrid(world);
 
-        Enemies = [];
+        Enemies = [ new EnemyArachnid(Vector2.Zero) ];
     }
 
     public void BeginNight()

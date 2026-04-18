@@ -115,7 +115,7 @@ internal class TowerTurret : Tower
         {
             return CurrentDirection;
         }
-        return (closest.Position - Position).Angle();
+        return (closest.Position - Position).OppositeAngle();
     }
 
     /// <summary>

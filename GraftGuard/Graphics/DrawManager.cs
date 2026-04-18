@@ -216,7 +216,7 @@ internal class DrawManager
     }
     public void DrawCircle(Vector2 position, float radius, Color? color = null, int drawLayer = 1, bool isUi = false)
     {
-        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer, isUi: isUi);
+        DrawCentered(Placeholders.TextureCircle, destination: new Rectangle(position.ToPoint(), new Point((int)(radius * 2.0f))), drawLayer: drawLayer, isUi: isUi, color: color);
     }
 
     float WrapOne(float number)

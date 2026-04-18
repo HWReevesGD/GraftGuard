@@ -32,9 +32,13 @@ internal static class ClassExtensions
     {
         return new Point((int)vector.X, (int)vector.Y);
     }
-    public static float Angle(this Vector2 vector)
+    public static float OppositeAngle(this Vector2 vector)
     {
         return MathF.Atan2(vector.Y, vector.X);
+    }
+    public static float Angle(this Vector2 vector)
+    {
+        return MathF.Atan2(vector.X, vector.Y);
     }
     public static Vector2 SquareOfSmallest(this Vector2 vector)
     {

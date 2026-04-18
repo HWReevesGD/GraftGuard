@@ -40,9 +40,10 @@ internal abstract class Enemy : GameObject
     public float Health { get; set; }
     public bool IsDead { get; private set; } = false;
     public EnemyVisual Visual { get; private set; }
+    public bool DoContactDamage { get; set; } = true;
 
     public List<PathNode> Path { get; set; } = [];
-    public IntervalTimer PathTimer { get; set; }
+    public IntervalTimer PathTimer { get; set; } = new IntervalTimer(0.5f);
     public Vector2 Velocity { get; set; }
     /// <summary>
     /// Mass Affects how fast an Enemy can change direction
@@ -129,7 +130,7 @@ internal abstract class Enemy : GameObject
 
             Player player = world.Player;
 
-            if (Hitbox.Intersects(player.Hitbox))
+            if (DoContactDamage && Hitbox.Intersects(player.Hitbox))
             {
                 // Trigger damage and knockback
                 player.TakeDamage(Position, 1, 50f);

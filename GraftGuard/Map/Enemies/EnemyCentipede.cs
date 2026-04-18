@@ -101,7 +101,7 @@ internal class EnemyCentipede : Enemy
         Vector2 steeringPathing = BasicPathing(gameTime, world, pathManager, PathGoal.Player, children);
         movement = steeringPathing;
         steeringPathing += new Vector2(0, MathF.Sin(gameTime.Total()) * 128.0f * gameTime.Delta());
-        steeringPathing.Rotate(steeringPathing.Angle());
+        steeringPathing.Rotate(steeringPathing.OppositeAngle());
         Position += movement;
     }
 
@@ -111,7 +111,7 @@ internal class EnemyCentipede : Enemy
 
         if (Parent is null)
         {
-            mandibleRotation = mandibleRotation.MoveTowardsAngle(movement.Angle(), gameTime.Delta() * 10.0f);
+            mandibleRotation = mandibleRotation.MoveTowardsAngle(movement.OppositeAngle(), gameTime.Delta() * 10.0f);
             drawing.DrawCentered(TCentipedeMandible, Position, origin: new Vector2(-16, 0), rotation: mandibleRotation);
         }
     }

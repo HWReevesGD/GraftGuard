@@ -23,7 +23,7 @@ internal static class WavesRegistry
 
         WaveSet("Centipede Introduction",
                 [
-            new NightWave([
+                    new NightWave([
                         new SpawnConfig(humanoid, 2),
                     ], 10.0f),
                     new NightWave([

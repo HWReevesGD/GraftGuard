@@ -23,16 +23,23 @@ internal class SwipeTransition
     private bool isRunning;
     private float startTime;
     private bool isReversed;
+    private bool doAutoClear;
 
     public SwipeTransition(bool isReversed)
     {
         this.isReversed = isReversed;
     }
 
-    public void Start(GameTime gameTime)
+    public void Start(GameTime gameTime, bool doAutoClear = false)
     {
         isRunning = true;
         startTime = (float)gameTime.TotalGameTime.TotalSeconds;
+        this.doAutoClear = doAutoClear;
+    }
+
+    public void Clear()
+    {
+        isRunning = false;
     }
 
     public void DrawSquares(DrawManager drawing, float elapsed)
@@ -86,9 +93,9 @@ internal class SwipeTransition
 
         float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
 
-        if (elapsed > swipeTime)
+        if (elapsed > swipeTime && doAutoClear)
         {
-            isRunning = false;
+            Clear();
             return;
         }
 

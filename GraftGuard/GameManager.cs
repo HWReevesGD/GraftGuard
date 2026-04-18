@@ -62,7 +62,13 @@ namespace GraftGuard
 
         public void Update(GameTime gameTime)
         {
-            inputManager.Update(_world.Camera); 
+            inputManager.Update(_world.Camera);
+            TaskSchedule.UpdateAll(gameTime);
+
+            if (inputManager.WasKeyPressStarted(Keys.T))
+            {
+                ToggleGameOver(lastGameTime, PlayerData.CurrentGame, "You pressed the die key");
+            }
 
             switch (PlayerData.CurrentState)
             {
@@ -89,7 +95,7 @@ namespace GraftGuard
             OnStartingDawn(isFirstDawn: true);
 
             PlayerData.CurrentGame.OnPlayerDied += HandleDeath;
-            _swipeTransition.Start(lastGameTime);
+            _swipeTransition.Start(lastGameTime, true);
         }
 
         /// <summary>
@@ -208,7 +214,7 @@ namespace GraftGuard
         private void ToggleGameOver(GameTime gameTime, GameData session, string failReason)
         {
             PlayerData.CurrentState = GameState.GameOver;
-            _gameOverScreen.SetSession(gameTime, session, failReason);
+            _gameOverScreen.SetGameOver(gameTime, session, failReason);
         }
 
         private void UpdatePaused()
@@ -239,6 +245,7 @@ namespace GraftGuard
                     break;
             }
             DrawManager.Paint(_world.Camera);
+            //TaskSchedule.DrawDebug(DrawManager);
         }
 
         private void DrawGameSession(DrawManager drawing, GameTime gameTime)

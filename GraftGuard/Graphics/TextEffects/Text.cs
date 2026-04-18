@@ -31,9 +31,17 @@ public enum YOrigin
 /// </summary>
 internal struct Text
 {
-    public SpriteFont Font;
-    public string TextString;
     private List<ITextEffect> effects;
+
+    /// <summary>
+    /// Gets and sets the font of the text
+    /// </summary>
+    public SpriteFont Font { get; set; }
+
+    /// <summary>
+    /// Gets and sets the text to display
+    /// </summary>
+    public string TextString { get; set; }
 
     /// <summary>
     /// Gets the size of the text without kerning
@@ -71,14 +79,16 @@ internal struct Text
             {
                 XOrigin.Left => 0,
                 XOrigin.Center => -Size.X / 2,
-                XOrigin.Right => -Size.X
+                XOrigin.Right => -Size.X,
+                _ => throw new System.NotImplementedException()
             };
 
             float y = YOrigin switch
             {
                 YOrigin.Top => 0,
                 YOrigin.Center => -Size.Y / 2,
-                YOrigin.Bottom => -Size.Y
+                YOrigin.Bottom => -Size.Y,
+                _ => throw new System.NotImplementedException()
             };
 
             return new Vector2(x, y);

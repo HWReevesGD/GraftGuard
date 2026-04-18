@@ -245,10 +245,12 @@ internal abstract class Enemy : GameObject
     }
 
     public static Texture2D TCentipedeMandible;
+    public static Texture2D TArachnidShin;
+    public static Texture2D TArachnidUpper;
     public static void LoadContent(ContentManager content)
     {
         TCentipedeMandible = content.Load<Texture2D>("Parts/cendipede_mandibles");
-
-
+        TArachnidShin = content.Load<Texture2D>("Parts/arachnid_shin");
+        TArachnidUpper = content.Load<Texture2D>("Parts/arachnid_upper");
     }
 }

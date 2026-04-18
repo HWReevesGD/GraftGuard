@@ -24,6 +24,7 @@ internal class IKLimb
     public Vector2 CurrentGoal { get; private set; }
     public Vector2 Goal { get; set; }
     public int Side { get; set; }
+    public float MainAngle { get; private set; }
 
     public bool AtGoal => Vector2.DistanceSquared(Goal, CurrentGoal) < 3.0f;
     public virtual bool IsGoalTooFar(float distance = 0.0f)
@@ -60,10 +61,9 @@ internal class IKLimb
     public Vector2 KneePosition { get; private set; }
     public Vector2 FootPosition { get; private set; }
 
-    private float MainAngle = 0.0f;
-    private float KneeAngle = 0.0f;
+    public float KneeAngle { get; private set; } = 0.0f;
     //private float FootAngle = 0.0f;
-    private float OuterAngle = 0.0f;
+    public float OuterAngle { get; private set; } = 0.0f;
 
     public virtual void Update(GameTime time)
     {
@@ -98,7 +98,5 @@ internal class IKLimb
 
         drawing.Draw(Placeholders.TexturePixel, Position, rotation: KneeAngle - MainAngle - MathF.PI / 2.0f, scale: new Vector2(1, upperLength));
         drawing.Draw(Placeholders.TexturePixel, KneePosition, rotation: -OuterAngle - MainAngle - MathF.PI / 2.0f, scale: new Vector2(1, lowerLength));
-
-        drawing.DrawString($"{Position}, {KneePosition}, {FootPosition}", Position, color: Color.Black);
     }
 }

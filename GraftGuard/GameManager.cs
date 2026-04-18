@@ -28,7 +28,7 @@ namespace GraftGuard
 
         public readonly DrawManager DrawManager;
 
-        public static readonly float DawnTimeLength = 100f;
+        public static readonly float DawnTimeLength = 12f;
         public static readonly float NightTimeLength = 80f;
 
         private GameTime lastGameTime;

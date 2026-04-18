@@ -122,8 +122,8 @@
       "AttachPoints": [
         {
           "Name": "Arm_R",
-          "PivotX": 0.47859326,
-          "PivotY": 0.016055046,
+          "PivotX": 0.40366971,
+          "PivotY": 0.71636087,
           "ColorArgb": -16319527
         },
         {
@@ -169,6 +169,62 @@
           "PivotX": 0.882263,
           "PivotY": 0.4824159,
           "ColorArgb": -9112217
+        }
+      ]
+    },
+    {
+      "Name": "Arachnid",
+      "TextureName": "arachnid_torso",
+      "IsTorso": true,
+      "FullImagePath": "..\\..\\..\\..\\GraftGuard\\Content\\Parts\\arachnid_torso.png",
+      "AttachPoints": [
+        {
+          "Name": "Socket_0",
+          "PivotX": 0.20642202,
+          "PivotY": 0.87232417,
+          "ColorArgb": -789806
+        },
+        {
+          "Name": "Socket_1",
+          "PivotX": 0.4082569,
+          "PivotY": 0.9472477,
+          "ColorArgb": -7521614
+        },
+        {
+          "Name": "Socket_2",
+          "PivotX": 0.51834863,
+          "PivotY": 0.95795107,
+          "ColorArgb": -478579
+        },
+        {
+          "Name": "Socket_3",
+          "PivotX": 0.7737003,
+          "PivotY": 0.9717125,
+          "ColorArgb": -10663350
+        },
+        {
+          "Name": "Socket_4",
+          "PivotX": 0.78134555,
+          "PivotY": 0.7607034,
+          "ColorArgb": -14373935
+        },
+        {
+          "Name": "Socket_5",
+          "PivotX": 0.22171254,
+          "PivotY": 0.7438838,
+          "ColorArgb": -9617520
+        },
+        {
+          "Name": "Socket_6",
+          "PivotX": 0.16819572,
+          "PivotY": 0.4319572,
+          "ColorArgb": -3891172
+        },
+        {
+          "Name": "Socket_7",
+          "PivotX": 0.83639145,
+          "PivotY": 0.4120795,
+          "ColorArgb": -2421782
         }
       ]
     }

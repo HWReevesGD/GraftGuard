@@ -3,6 +3,7 @@ using GraftGuard.Grafting.Registry;
 using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Map.Pathing;
+using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using System;
@@ -16,21 +17,19 @@ namespace GraftGuard.Map.Enemies;
 internal class EnemyArachnid : Enemy
 {
     public LinkedList<LegPair> Legs = [];
-    public const float BaseSpeed = 512.0f;
-    public EnemyArachnid(Vector2 position) : base(position, GraftLibrary.GetRandomBase(), new Vector2(64, 64), 128.0f, BaseSpeed)
+    public const float BaseSpeed = 256.0f;
+    public EnemyArachnid(Vector2 position) : base(position, GraftLibrary.GetBaseByName("Arachnid"), new Vector2(64, 64), 128.0f, BaseSpeed)
     {
         DoContactDamage = false;
         Legs.AddLast(new LegPair(
-            new AracnidLeg(position, new Vector2(-32, 32), 76.0f, 168.0f, new Vector2(-64, 128)),
-            new AracnidLeg(position, new Vector2(32, -32), 76.0f, 168.0f, new Vector2(64, 128))
+            new AracnidLeg(position, new Vector2(-24, 32), 76.0f, 168.0f, new Vector2(-64, 128)),
+            new AracnidLeg(position, new Vector2(24, -32), 76.0f, 168.0f, new Vector2(64, 128))
             ));
         Legs.AddLast(new LegPair(
-            new AracnidLeg(position, new Vector2(-32, -32), 76.0f, 168.0f, new Vector2(-64, 128)),
-            new AracnidLeg(position, new Vector2(32, 32), 76.0f, 168.0f, new Vector2(64, 128))
+            new AracnidLeg(position, new Vector2(-24, -32), 76.0f, 168.0f, new Vector2(-64, 128)),
+            new AracnidLeg(position, new Vector2(24, 32), 76.0f, 168.0f, new Vector2(64, 128))
             ));
     }
-
-    private bool _legAtGoal(AracnidLeg leg) => Vector2.DistanceSquared(leg.Goal, leg.Position) < 16f * 16f;
 
     public override void Update(GameTime time, InputManager inputManager, World world, PathManager pathManager)
     {
@@ -50,26 +49,46 @@ internal class EnemyArachnid : Enemy
         }
 
         int movingLegs = Legs.Count((pair) => pair.Moving);
-        float movingFacor = MathF.Min((float)movingLegs / Legs.Count + 0.6f, 1.0f);
+        float movingFacor = MathF.Min((float)movingLegs / Legs.Count + 0.8f, 1.0f);
 
         Speed = BaseSpeed * movingFacor;
     }
 
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
-        Position += BasicPathing(gameTime, world, pathManager, PathManager.PathGoal.Player);
+        float distanceToPLayer = Vector2.Distance(Position, world.Player.Position);
+
+        Vector2 directionToPlayer = (world.Player.Position - Position).Normalized();
+        
+        if (distanceToPLayer > 512.0f)
+        {
+            Position += directionToPlayer * Speed * gameTime.Delta();
+        }
+        else
+        {
+            directionToPlayer.Rotate(MathF.PI * 0.5f);
+            Position += directionToPlayer * Speed * gameTime.Delta();
+        }
+
     }
 
     public override void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)
     {
         base.Draw(gameTime, drawing, inputManager, world);
-        foreach (var leg in Legs)
+        foreach (var legPair in Legs)
         {
-            leg.DebugDraw(drawing);
+            //legPair.DebugDraw(drawing);
+            DrawLeg(legPair.First, drawing);
+            DrawLeg(legPair.Second, drawing);
         }
-        LegPair first = Legs.First.Value;
-        drawing.DrawCircle(first.First.FootPosition, 16.0f, color: Color.BurlyWood);
-        drawing.DrawCircle(first.Second.FootPosition, 16.0f, color: Color.BurlyWood);
+        //LegPair first = Legs.First.Value;
+        //drawing.DrawCircle(first.First.FootPosition, 16.0f, color: Color.BurlyWood);
+        //drawing.DrawCircle(first.Second.FootPosition, 16.0f, color: Color.BurlyWood);
+    }
+    public void DrawLeg(AracnidLeg leg, DrawManager drawing)
+    {
+        drawing.Draw(TArachnidShin, leg.KneePosition, origin: new Vector2(TArachnidShin.Width / 2, 20.0f), rotation: leg.KneePosition.AngleTo(leg.FootPosition));
+        drawing.Draw(TArachnidUpper, leg.Position, origin: new Vector2(TArachnidUpper.Width / 2, 4.0f), rotation: leg.Position.AngleTo(leg.KneePosition), sortMode: SortMode.Top);
     }
 }
 
@@ -101,12 +120,12 @@ internal class LegPair
     }
     public void TryMove()
     {
-        if (First.IsGoalTooFar(40f, 10f) || First.IsGoalTooClose(16.0f))
+        if (First.IsGoalTooFar(32f, 10f) || First.IsGoalTooClose(16.0f) || First.AngleToFar(-0.2f))
         {
             First.Moving = true;
             First.Goal = First.Position + First.GoalOffset;
         }
-        if (Second.IsGoalTooFar(40f, 10f) || Second.IsGoalTooClose(16.0f))
+        if (Second.IsGoalTooFar(32f, 10f) || Second.IsGoalTooClose(16.0f) || First.AngleToFar(-0.2f))
         {
             Second.Moving = true;
             Second.Goal = Second.Position + Second.GoalOffset;
@@ -149,6 +168,7 @@ internal class AracnidLeg : IKLimb
         {
             drawing.DrawCircle(FootPosition, 3.0f, color: Color.Orange, drawLayer: 3);
         }
+        drawing.DrawString($"{MathHelper.WrapAngle(MainAngle) * 180.0f / MathF.PI}", FootPosition, Fonts.SubFont);
     }
 
     public override bool IsGoalTooFar(float distance = 0.0f)
@@ -158,5 +178,9 @@ internal class AracnidLeg : IKLimb
     public bool IsGoalTooFar(float distance, float insideDistance)
     {
         return Math.Sign(Goal.X - Position.X + (insideDistance * -Side)) != Side || base.IsGoalTooFar(distance);
+    }
+    public bool AngleToFar(float angleOffset)
+    {
+        return MathHelper.WrapAngle(MainAngle) <= -180 + angleOffset || MathHelper.WrapAngle(MainAngle) >= 0 - angleOffset;
     }
 }

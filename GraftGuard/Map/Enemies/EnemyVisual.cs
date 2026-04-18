@@ -111,7 +111,7 @@ public class EnemyVisual
             }
         }
     }
-    internal void Draw(DrawManager drawing, Vector2 position, Color? color)
+    internal void Draw(DrawManager drawing, Vector2 position, Color? color, SortMode sortMode = SortMode.Sorted)
     {
         if (!IsDead)
         {
@@ -126,7 +126,8 @@ public class EnemyVisual
                 origin: new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
                 scale: ctx.DynamicScale,
                 sortingOriginOffset: SortingOffset - new Vector2(Base.Texture.Width / 2, Base.Texture.Height / 2),
-                color: color
+                color: color,
+                sortMode: sortMode
                 );
             
             // Draw Limbs

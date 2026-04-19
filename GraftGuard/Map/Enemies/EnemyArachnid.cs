@@ -18,6 +18,10 @@ internal class EnemyArachnid : Enemy
 {
     public LinkedList<LegPair> Legs = [];
     public const float BaseSpeed = 256.0f;
+    public IntervalTimer ShootTimer = new IntervalTimer(6.0f);
+    public IntervalTimer FiringTimer = new IntervalTimer(0.1f);
+    public bool IsCircling = false;
+    public bool IsShooting = false;
     public EnemyArachnid(Vector2 position) : base(position, GraftLibrary.GetBaseByName("Arachnid"), new Vector2(64, 64), 128.0f, BaseSpeed)
     {
         DoContactDamage = false;
@@ -35,11 +39,21 @@ internal class EnemyArachnid : Enemy
     {
         base.Update(time, inputManager, world, pathManager);
 
+        if (IsCircling)
+        {
+            IsShooting = ShootTimer.Update(time);
+        }
+        else
+        {
+            ShootTimer.Reset();
+        }
+
         foreach (var pair in Legs)
         {
             pair.Update(time, Position);
         }
 
+        // Update Legs
         LegPair current = Legs.First();
         current.TryMove();
         if (!current.Moving)
@@ -52,20 +66,36 @@ internal class EnemyArachnid : Enemy
         float movingFacor = MathF.Min((float)movingLegs / Legs.Count + 0.8f, 1.0f);
 
         Speed = BaseSpeed * movingFacor;
+
+        // Shooting Logic
+        if (IsShooting)
+        {
+            bool fire = FiringTimer.Update(time);
+            if (fire)
+            {
+                //world.ProjectileManager.Add(new )
+            }
+        }
     }
 
     public override void UpdatePathing(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
     {
+        if (IsShooting)
+        {
+            return;
+        }
         float distanceToPLayer = Vector2.Distance(Position, world.Player.Position);
 
         Vector2 directionToPlayer = (world.Player.Position - Position).Normalized();
-        
+
         if (distanceToPLayer > 512.0f)
         {
+            IsCircling = true;
             Position += directionToPlayer * Speed * gameTime.Delta();
         }
         else
         {
+            IsCircling = false;
             directionToPlayer.Rotate(MathF.PI * 0.5f);
             Position += directionToPlayer * Speed * gameTime.Delta();
         }

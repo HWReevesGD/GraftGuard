@@ -31,6 +31,7 @@ internal class ProjectileFire : Projectile
 
     public override void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)
     {
+        base.Update(manager, time, world, inputManager);
         _lifetime += (float)time.ElapsedGameTime.TotalSeconds;
 
         if (_lifetime >= FullLifetime * _lifetimeModifier)

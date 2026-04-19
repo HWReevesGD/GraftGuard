@@ -27,6 +27,8 @@ internal class Projectile
     public ProjectileTarget Targeting { get; set; }
     public Texture2D Texture { get; set; }
     public bool IsBlueprint { get; set; }
+    public const float FullMaxLifetime = 60.0f;
+    public float RemainingLifetime;
     public Projectile(Vector2 position, float radius, Vector2 velocity, float scale, Texture2D texture, ProjectileTarget targeting, bool isBlueprint = false)
     {
         Position = position;
@@ -36,6 +38,7 @@ internal class Projectile
         Targeting = targeting;
         Scale = scale;
         IsBlueprint = isBlueprint;
+        RemainingLifetime = FullMaxLifetime;
     }
 
     /// <summary>
@@ -79,7 +82,12 @@ internal class Projectile
 
     public virtual void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)
     {
+        if (RemainingLifetime <= 0.0f)
+        {
+            manager.Remove(this);
+        }
 
+        RemainingLifetime -= time.Delta();
     }
 
     public virtual void Draw(DrawManager drawing, GameTime time, World world, InputManager inputManager, ProjectileManager manager, bool isUi = false)

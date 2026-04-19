@@ -29,6 +29,7 @@ internal class ProjectileBullet : Projectile
 
     public override void Update(ProjectileManager manager, GameTime time, World world, InputManager inputManager)
     {
+        base.Update(manager, time, world, inputManager);
         Position += Velocity * time.Delta();
         if (DamageTimer.Update(time))
         {

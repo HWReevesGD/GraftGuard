@@ -228,6 +228,11 @@ internal class GameHUD
             .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset),
             isUi: true);
 
+        //new Text(Fonts.SubFont, $"ROUND: {PlayerData.CurrentGame.GameLog.RoundsSurvived}")
+        //    .SetXOrigin(XOrigin.Center)
+        //    .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY1 + baseY + timerTextYOffset + hudTopOffset + 100.0f),
+        //    isUi: true);
+
         new Text(Fonts.SubFont, timeNames[PlayerData.CurrentGame.Time])
            .SetXOrigin(XOrigin.Center)
            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2, textY2 + baseY + timerTextYOffset + hudTopOffset),

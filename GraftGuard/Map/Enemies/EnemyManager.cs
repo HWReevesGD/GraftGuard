@@ -41,7 +41,7 @@ internal class EnemyManager
 
         PathManager.BuildGrid(world);
 
-        Enemies = [ new EnemyArachnid(Vector2.Zero) ];
+        Enemies = [];
     }
 
     public void BeginNight()

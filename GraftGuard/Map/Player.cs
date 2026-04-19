@@ -170,7 +170,7 @@ internal class Player : GameObject
     private void HandlePartPickups(World world)
     {
         // Get all overlapping ScatteredParts
-        List<ScatteredPart> scatteredParts = World.ScatteredParts.Where((part) => Vector2.DistanceSquared(Position, part.Position) <= _collectionCircle.Radius * _collectionCircle.Radius).ToList();
+        List<ScatteredPart> scatteredParts = world.ScatteredParts.Where((part) => Vector2.DistanceSquared(Position, part.Position) <= _collectionCircle.Radius * _collectionCircle.Radius).ToList();
 
         // Pickup overlapping parts
         foreach (ScatteredPart part in scatteredParts)
@@ -204,7 +204,7 @@ internal class Player : GameObject
         PlayerData.CurrentGame.GameLog.PartsCollected++;
 
         // Remove ScatteredPart from the World
-        World.ScatteredParts.Remove(scatteredPart);
+        world.ScatteredParts.Remove(scatteredPart);
     }
 
     public void ClearHeldParts() => HeldParts.Clear();

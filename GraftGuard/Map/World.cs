@@ -31,7 +31,7 @@ internal class World
     public Terrain Terrain { get; set; }
     public Camera Camera { get; set; }
     public Garage Garage { get; set; }
-    public static List<ScatteredPart> ScatteredParts { get; set; } = [];
+    public List<ScatteredPart> ScatteredParts { get; set; } = [];
     public MapDefinition CurrentMap { get; set; }
     public ParticleManager Particles { get; set; }
 
@@ -181,7 +181,7 @@ internal class World
 
     public static void ScatterPart(Vector2 location, PartDefinition part)
     {
-        ScatteredParts.Add(new ScatteredPart(location, part));
+        World.CurrentWorld.ScatteredParts.Add(new ScatteredPart(location, part));
     }
     public void UpdateAllPathCosts()
     {

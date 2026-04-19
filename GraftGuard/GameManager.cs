@@ -11,6 +11,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Linq;
+using System.Reflection;
 
 namespace GraftGuard
 {
@@ -24,6 +25,7 @@ namespace GraftGuard
         private readonly TowerGraftingGUI _towerGrafting;
         private readonly NightPlacementGUI _nightPlacement;
         private readonly SwipeTransition _swipeTransition;
+        private readonly PointersUI _pointers;
         private readonly InputManager inputManager;
 
         public readonly DrawManager DrawManager;
@@ -36,14 +38,15 @@ namespace GraftGuard
         {
             DrawManager = new DrawManager(batch);
 
-            _world = new World(DrawManager);
             _mainMenu = new MainMenu(game, input, DrawManager);
+            _world = new World(DrawManager);
             _pauseMenu = new PauseMenu(_world, input);
             _gameOverScreen = new GameOverScreen(_world);
             _hud = new GameHUD();
             _towerGrafting = new TowerGraftingGUI();
             _nightPlacement = new NightPlacementGUI();
             _swipeTransition = new SwipeTransition(true);
+            _pointers = new PointersUI();
             inputManager = input;
 
             _mainMenu.NewGameStarted += OnNewGameStarted;
@@ -284,6 +287,7 @@ namespace GraftGuard
                     break;
             }
 
+            _pointers.Draw(DrawManager, _world);
             _hud.Draw(drawing, gameTime, session.Time != TimeState.Day);
             _swipeTransition.Draw(drawing, gameTime);
 

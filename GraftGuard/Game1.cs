@@ -88,6 +88,7 @@ public class Game1 : Game
 
         Sounds.LoadContent(Content);
         WavesRegistry.LoadWaves();
+        PointersUI.LoadContent(Content);
 
         // Import and Load the Environment
         EnvironmentRegistry.LoadContent(Content);

@@ -15,12 +15,16 @@ internal static class Sounds
     public static readonly string SongPath = "Sound/music_";
     public static SoundEffect Swish { get; private set; }
     public static Song SongDawnPeaceful { get; private set; }
+    public static Song SongNightEasy { get; private set; }
+    public static Song SongDayA { get; private set; }
     public static void LoadContent(ContentManager content)
     {
         _content = content;
 
         Swish = Sound("swishing");
         SongDawnPeaceful = Song("dawn_peaceful");
+        SongNightEasy = Song("night_easy");
+        SongDayA = Song("day_1");
     }
 
     private static SoundEffect Sound(string soundName)

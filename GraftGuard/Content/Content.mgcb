@@ -914,6 +914,18 @@
 /processorParam:Quality=Best
 /build:Sound/music_dawn_peaceful.mp3
 
+#begin Sound/music_day_1.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/music_day_1.mp3
+
+#begin Sound/music_night_easy.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sound/music_night_easy.mp3
+
 #begin Sound/sfx_swishing.mp3
 /importer:Mp3Importer
 /processor:SoundEffectProcessor

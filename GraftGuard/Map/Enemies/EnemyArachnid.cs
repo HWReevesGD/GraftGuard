@@ -126,6 +126,7 @@ internal class EnemyArachnid : Enemy
         //drawing.DrawCircle(first.First.FootPosition, 16.0f, color: Color.BurlyWood);
         //drawing.DrawCircle(first.Second.FootPosition, 16.0f, color: Color.BurlyWood);
         //drawing.DrawString($"TIME: {ShootTimer.TimeLeft}", Position);
+        //drawing.DrawString($"HE: {Health:f}", Position, drawLayer: 3);
     }
     public void DrawLeg(AracnidLeg leg, DrawManager drawing)
     {

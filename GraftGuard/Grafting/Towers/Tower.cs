@@ -27,6 +27,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public static Texture2D TTurret { get; private set; }
     public static Texture2D TNest { get; private set; }
     public static Texture2D TNestling { get; private set; }
+    public static Texture2D TDecayDisplay { get; private set; }
     public const int MaxParts = 4;
 
     public static void LoadContent(ContentManager content)
@@ -36,6 +37,7 @@ internal abstract class Tower : GameObject, IMouseDetectable
         TTurret = content.Load<Texture2D>("Tower/turret");
         TNest = content.Load<Texture2D>("Tower/nest");
         TNestling = content.Load<Texture2D>("Tower/nestling");
+        TDecayDisplay = content.Load<Texture2D>("Tower/decay_display");
     }
 
     protected AttachedPart[] _attachedParts;
@@ -97,6 +99,23 @@ internal abstract class Tower : GameObject, IMouseDetectable
     public virtual void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
         drawing.Draw(Texture, Position, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
+    }
+
+    public virtual void DrawDecay(DrawManager drawing)
+    {
+        drawing.DrawCentered(TDecayDisplay, Position + new Vector2(0, 17.12f));
+
+        Color color = Color.Lime;
+        if (NightsUsed == 1)
+        {
+            color = Color.Red;
+        }
+        if (NightsUsed == 2)
+        {
+            color = Color.Yellow;
+        }
+
+        drawing.DrawString($"{3 - NightsUsed}", Position + new Vector2(0, 18.20f), centered: true, color: color, drawLayer: 2);
     }
 
     /// <summary>

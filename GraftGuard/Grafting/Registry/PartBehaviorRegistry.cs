@@ -22,10 +22,16 @@ internal static class PartBehaviorRegistry
 
     public static void Save(ContentManager content)
     {
-        string[] names = _allBehaviors.Select((behavior) => behavior.Name).ToArray();
-        string json = JsonSerializer.Serialize(names);
-        File.WriteAllText(Path.Join(ProjectContent, SavePath), json);
-        System.Diagnostics.Debug.WriteLine("Saved Part Behaviors at: " + Path.Join(ProjectContent, SavePath));
+        try
+        {
+            string[] names = _allBehaviors.Select((behavior) => behavior.Name).ToArray();
+            string json = JsonSerializer.Serialize(names);
+            File.WriteAllText(Path.Join(ProjectContent, SavePath), json);
+            System.Diagnostics.Debug.WriteLine("Saved Part Behaviors at: " + Path.Join(ProjectContent, SavePath));
+        } catch(Exception e)
+        {
+
+        }
     }
 
     public static PartBehaviorDefinition GetFromName(string name)

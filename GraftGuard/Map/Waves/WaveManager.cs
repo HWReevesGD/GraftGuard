@@ -47,4 +47,10 @@ internal class WaveManager
             }
         }
     }
+    public void Reset()
+    {
+        Set = null;
+        AllWavesStarted = false;
+        Started.Clear();
+    }
 }

@@ -33,6 +33,7 @@ internal class EnemyManager
     /// </summary>
     public void Setup(World world, MapDefinition map)
     {
+        WaveManager?.Reset();
         PathManager = new PathManager();
         Rectangle pathingArea = map.PathingArea;
         PathManager.Start = pathingArea.Location.ToVector();

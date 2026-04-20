@@ -167,11 +167,8 @@ namespace GraftGuard
             {
                 session.Timer -= gameTime.Delta();
 
-                if ((_world.EnemyManager.Enemies.Count == 0 || _world.EnemyManager.Enemies.All((enemy) => enemy.IsDead)) && _world.EnemyManager.WaveManager.AllWavesStarted)
+                if (session.Time == TimeState.Night && ((_world.EnemyManager.Enemies.Count == 0 || _world.EnemyManager.Enemies.All((enemy) => enemy.IsDead)) && _world.EnemyManager.WaveManager.AllWavesStarted))
                 {
-                    PlayerData.CurrentGame.Time = TimeState.Dawn;
-                    PlayerData.CurrentGame.Timer = GameManager.DawnTimeLength;
-                    _world.EnemyManager.Enemies.Clear();
                     HandleTimeTransition(gameTime, session);
                 }
                 else if (session.Timer <= 0)

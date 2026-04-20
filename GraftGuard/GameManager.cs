@@ -26,6 +26,7 @@ namespace GraftGuard
         private readonly NightPlacementGUI _nightPlacement;
         private readonly SwipeTransition _swipeTransition;
         private readonly PointersUI _pointers;
+        private readonly NextDayTransition _nextDayTransition;
         private readonly InputManager inputManager;
 
         public readonly DrawManager DrawManager;
@@ -47,6 +48,7 @@ namespace GraftGuard
             _nightPlacement = new NightPlacementGUI();
             _swipeTransition = new SwipeTransition(true);
             _pointers = new PointersUI();
+            _nextDayTransition = new NextDayTransition();
             inputManager = input;
 
             _mainMenu.NewGameStarted += OnNewGameStarted;
@@ -77,15 +79,24 @@ namespace GraftGuard
             {
                 case GameState.MainMenu:
                     UpdateMainMenu(gameTime);
+                    _nextDayTransition.Reset();
                     break;
                 case GameState.Game:
-                    UpdateGameplay(gameTime);
+                    if (!PlayerData.CurrentGame.PauseForTimeTransitioning)
+                    {
+                        UpdateGameplay(gameTime);
+                    }
+                    else
+                    {
+                        _nextDayTransition.Update(gameTime);
+                    }
                     break;
                 case GameState.Paused:
                     UpdatePaused();
                     break;
                 case GameState.GameOver:
                     UpdateGameOver(gameTime);
+                    _nextDayTransition.Reset();
                     break;
             }
 
@@ -93,7 +104,9 @@ namespace GraftGuard
         }
         private void OnNewGameStarted()
         {
+            PlayerData.CurrentGame.PauseForTimeTransitioning = false;
             _world.OnNewGameStarted();
+            _nextDayTransition.Reset();
             PlayerData.CurrentGame = new();
             OnStartingDawn(isFirstDawn: true);
 
@@ -109,6 +122,8 @@ namespace GraftGuard
             if (!isFirstDawn)
             {
                 PlayerData.CurrentGame.GameLog.RoundsSurvived++;
+                _nextDayTransition.Reset();
+                PlayerData.CurrentGame.PauseForTimeTransitioning = true;
             }
             PlayerData.CurrentGame.Timer = DawnTimeLength;
             _world.OnStartingDawn();
@@ -246,6 +261,8 @@ namespace GraftGuard
                     break;
                 case GameState.Game:
                     DrawGameSession(DrawManager, gameTime);
+                    _nextDayTransition.Draw(DrawManager, gameTime);
+
                     break;
                 case GameState.Paused:
                     _pauseMenu.Draw(DrawManager, gameTime, PlayerData.CurrentGame.Time);

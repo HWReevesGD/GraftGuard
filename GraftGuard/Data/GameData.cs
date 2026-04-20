@@ -55,8 +55,8 @@ namespace GraftGuard.Data
         public float PhaseTimeLength { get; set; }
 
         public GameLog GameLog { get; set; }
-
         public int CurrentRound { get; set; }
+        public bool PauseForTimeTransitioning { get; set; } = false;
 
         public int CurrentScore => GameLog.PartsCollected + 2 * GameLog.TowersMade + GameLog.EnemiesKilled * 3 + GameLog.RoundsSurvived;
 

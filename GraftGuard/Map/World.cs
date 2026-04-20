@@ -101,7 +101,6 @@ internal class World
     public void OnStartingDawn()
     {
         TowerManager.DegradeAndDestroy();
-        MusicController.Play(Sounds.SongDawnPeaceful);
     }
 
     public void OnStartingDay()

@@ -44,7 +44,7 @@ namespace GraftGuard
             _world = new World(DrawManager);
             _pauseMenu = new PauseMenu(_world, input);
             _gameOverScreen = new GameOverScreen(_world);
-            _hud = new GameHUD();
+            _hud = new GameHUD(_world);
             _towerGrafting = new TowerGraftingGUI();
             _nightPlacement = new NightPlacementGUI();
             _swipeTransition = new SwipeTransition(true);

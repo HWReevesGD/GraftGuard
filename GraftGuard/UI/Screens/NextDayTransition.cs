@@ -13,7 +13,7 @@ internal class NextDayTransition
 {
     public float Time { get; private set; }
     public float TimeLeft => EndTime - Time;
-    public const float EndTime = 5.0f;
+    public const float EndTime = 2.0f;
     public float Alpha { get; private set; }
     private bool _displaysNextDay = false;
 
@@ -49,7 +49,7 @@ internal class NextDayTransition
 
         string day = $"DAY: {PlayerData.CurrentGame.GameLog.RoundsSurvived}";
 
-        if (!_displaysNextDay && Time > 2.0f)
+        if (!_displaysNextDay && Time > (.4f * EndTime))
         {
             _displaysNextDay = true;
             // Play cool sound

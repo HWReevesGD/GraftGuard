@@ -140,8 +140,8 @@ internal class GameOverScreen
                 });
         }
 
-        int score = 5; // _session.CurrentScore
-        int hiScore = 12334434; // PlayerData.HighScore
+        int score = session.CurrentScore;
+        int hiScore = PlayerData.HighScore; // PlayerData.HighScore
 
         float scoreCountTime = Math.Min(score / (float)countRate, countUpMaxTime);
         float hiScoreCountTime = Math.Min(hiScore / (float)countRate, countUpMaxTime);

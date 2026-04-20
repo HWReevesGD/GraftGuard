@@ -24,9 +24,9 @@ namespace GraftGuard.Data
 
     public enum Difficulty
     {
-        Easy = 1,
-        Medium = 2,
-        Hard = 3,
+        Easy = 3,
+        Medium = 6,
+        Hard = 9,
     }
 
     public class GameLog
@@ -86,7 +86,7 @@ namespace GraftGuard.Data
             GameLog = new();
             MaxHealth = 24;
             Health = MaxHealth;
-            CurrentDifficulty = Difficulty.Medium;
+            CurrentDifficulty = Difficulty.Easy;
         }
 
     }

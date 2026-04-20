@@ -132,9 +132,9 @@ internal class TaskSchedule
             int x = i * 350;
 
             // draw schedule stats
-            drawing.DrawString($"SCHEDULE #{i}", new Vector2(x, 60), font: Fonts.Arial, drawLayer: 3, isUi: true);
-            drawing.DrawString($"TIME: {RoundTime(schedule.elapsed)}", new Vector2(x, 90), font: Fonts.Arial, drawLayer: 3, isUi: true);
-            drawing.DrawString($"NUM TASKS: {schedule.tasks.Count}", new Vector2(x, 120), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            //drawing.DrawString($"SCHEDULE #{i}", new Vector2(x, 60), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            //drawing.DrawString($"TIME: {RoundTime(schedule.elapsed)}", new Vector2(x, 90), font: Fonts.Arial, drawLayer: 3, isUi: true);
+            //drawing.DrawString($"NUM TASKS: {schedule.tasks.Count}", new Vector2(x, 120), font: Fonts.Arial, drawLayer: 3, isUi: true);
 
             for (int v = 0; v < schedule.tasks.Count; v++)
             {

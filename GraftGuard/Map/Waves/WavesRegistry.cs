@@ -13,12 +13,13 @@ internal static class WavesRegistry
     {
         Func<Vector2, EnemyManager, Enemy> humanoid = (position, _) => new EnemyHumanoid(position);
         Func<Vector2, EnemyManager, Enemy> centipede = (position, manager) => new EnemyCentipede(position, manager);
+        Func<Vector2, EnemyManager, Enemy> arachnid = (position, manager) => new EnemyArachnid(position);
 
         WaveSet("Humanoid Easy",
                 [
                     new NightWave([
                         new SpawnConfig(humanoid, 3),
-                    ], 30.0f)
+                    ], 50.0f)
                 ], round: 0);
 
         WaveSet("Centipede Introduction",
@@ -29,7 +30,7 @@ internal static class WavesRegistry
                     new NightWave([
                         new SpawnConfig(humanoid, 1),
                         new SpawnConfig(centipede, 1),
-                    ], 30.0f)
+                    ], 40.0f)
                 ], round: 1);
 
         WaveSet("Humanoid Dual",
@@ -39,7 +40,7 @@ internal static class WavesRegistry
                     ], 10.0f),
                     new NightWave([
                         new SpawnConfig(humanoid, 3),
-                    ], 25.0f)
+                    ], 40.0f)
                 ], round: 3);
 
         WaveSet("Centipede Dual",
@@ -51,8 +52,78 @@ internal static class WavesRegistry
                     new NightWave([
                         new SpawnConfig(centipede, 1),
                         new SpawnConfig(humanoid, 1),
-                    ], 25.0f)
+                    ], 40.0f)
                 ], round: 3);
+
+        WaveSet("Centipede Bombardment",
+                [
+                    new NightWave([
+                        new SpawnConfig(centipede, 4),
+                        new SpawnConfig(humanoid, 1),
+                    ], 10.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 3),
+                        new SpawnConfig(humanoid, 2),
+                    ], 40.0f)
+                ], round: 4);
+
+        WaveSet("Humanoid Medium",
+                [
+                    new NightWave([
+                        new SpawnConfig(humanoid, 6),
+                    ], 10.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 1),
+                        new SpawnConfig(humanoid, 5),
+                    ], 40.0f)
+                ], round: 4);
+
+        WaveSet("Arachnid Intro",
+                [
+                    new NightWave([
+                        new SpawnConfig(arachnid, 1),
+                        new SpawnConfig(humanoid, 3),
+                    ], 20.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 4),
+                        new SpawnConfig(humanoid, 1),
+                    ], 30.0f)
+                ], round: 4);
+
+        WaveSet("Infestation",
+                [
+                    new NightWave([
+                        new SpawnConfig(centipede, 2),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 2),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 2),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(centipede, 2),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(arachnid, 2),
+                    ], 30.0f),
+                ], round: 5);
+
+        WaveSet("Dual Walkers",
+                [
+                    new NightWave([
+                        new SpawnConfig(arachnid, 1),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(humanoid, 2),
+                    ], 5.0f),
+                    new NightWave([
+                        new SpawnConfig(humanoid, 2),
+                    ], 10.0f),
+                    new NightWave([
+                        new SpawnConfig(arachnid, 1),
+                    ], 30.0f),
+                ], round: 5);
     }
 
     public static void WaveSet(string name, List<NightWave> waves, int round)

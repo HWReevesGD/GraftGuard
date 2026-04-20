@@ -28,6 +28,7 @@ internal class GameObject
 {
     // Properties
     public Vector2 Position { get; set; }
+    public Vector2 LastMovement { get; private set; }
     public Vector2 HitboxSize { get; set; }
     public Rectangle Hitbox => new Rectangle((int)Position.X, (int)Position.Y, (int)HitboxSize.X, (int)HitboxSize.Y);
     public Vector2 Center => Position + HitboxSize * 0.5f;
@@ -84,7 +85,9 @@ internal class GameObject
     /// <param name="movement"></param>
     public virtual void MoveAndCollide(Vector2 movement, World world)
     {
-        Position += MoveAndStuff(movement, world.Terrain);
+        Vector2 move = MoveAndStuff(movement, world.Terrain);
+        LastMovement = move;
+        Position += move;
         Position = DoIntersections(Hitbox, world.Terrain).Location.ToVector();
     }
 

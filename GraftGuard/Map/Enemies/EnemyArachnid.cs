@@ -3,6 +3,7 @@ using GraftGuard.Grafting.Registry;
 using GraftGuard.Graphics;
 using GraftGuard.Map.Enemies.Animation;
 using GraftGuard.Map.Pathing;
+using GraftGuard.Map.Projectiles;
 using GraftGuard.UI;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
@@ -20,6 +21,9 @@ internal class EnemyArachnid : Enemy
     public const float BaseSpeed = 256.0f;
     public IntervalTimer ShootTimer = new IntervalTimer(6.0f);
     public IntervalTimer FiringTimer = new IntervalTimer(0.1f);
+    public const float ShootTime = 4.0f;
+    public float ShootTimeLeft { get; private set; }
+    public static Random Random = new Random();
     public bool IsCircling = false;
     public bool IsShooting = false;
     public EnemyArachnid(Vector2 position) : base(position, GraftLibrary.GetBaseByName("Arachnid"), new Vector2(64, 64), 128.0f, BaseSpeed)
@@ -41,11 +45,11 @@ internal class EnemyArachnid : Enemy
 
         if (IsCircling)
         {
-            IsShooting = ShootTimer.Update(time);
-        }
-        else
-        {
-            ShootTimer.Reset();
+            if (!IsShooting)
+            {
+                ShootTimeLeft = ShootTime;
+                IsShooting = ShootTimer.Update(time);
+            }
         }
 
         foreach (var pair in Legs)
@@ -63,17 +67,24 @@ internal class EnemyArachnid : Enemy
         }
 
         int movingLegs = Legs.Count((pair) => pair.Moving);
-        float movingFacor = MathF.Min((float)movingLegs / Legs.Count + 0.8f, 1.0f);
+        float movingFactor = MathF.Min((float)movingLegs / Legs.Count + 0.8f, 1.0f);
 
-        Speed = BaseSpeed * movingFacor;
+        Speed = BaseSpeed * movingFactor;
 
         // Shooting Logic
         if (IsShooting)
         {
+            if (ShootTimeLeft <= 0.0f)
+            {
+                IsShooting = false;
+                ShootTimeLeft = 0.0f;
+            }
+
+            ShootTimeLeft -= time.Delta();
             bool fire = FiringTimer.Update(time);
             if (fire)
             {
-                //world.ProjectileManager.Add(new )
+                world.ProjectileManager.Add(new ProjectileDarkOrb(Position, Position.AngleTo(world.Player.Position + world.Player.LastMovement) + MathF.PI * 0.5f + Random.NextSingle() * 0.1f, ProjectileTarget.Player));
             }
         }
     }
@@ -90,12 +101,12 @@ internal class EnemyArachnid : Enemy
 
         if (distanceToPLayer > 512.0f)
         {
-            IsCircling = true;
+            IsCircling = false;
             Position += directionToPlayer * Speed * gameTime.Delta();
         }
         else
         {
-            IsCircling = false;
+            IsCircling = true;
             directionToPlayer.Rotate(MathF.PI * 0.5f);
             Position += directionToPlayer * Speed * gameTime.Delta();
         }
@@ -114,6 +125,7 @@ internal class EnemyArachnid : Enemy
         //LegPair first = Legs.First.Value;
         //drawing.DrawCircle(first.First.FootPosition, 16.0f, color: Color.BurlyWood);
         //drawing.DrawCircle(first.Second.FootPosition, 16.0f, color: Color.BurlyWood);
+        //drawing.DrawString($"TIME: {ShootTimer.TimeLeft}", Position);
     }
     public void DrawLeg(AracnidLeg leg, DrawManager drawing)
     {

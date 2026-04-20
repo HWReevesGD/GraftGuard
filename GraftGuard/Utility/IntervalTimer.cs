@@ -10,6 +10,7 @@ internal class IntervalTimer
 {
     public float Interval { get; init; }
     private float _timeSinceLastInterval;
+    public float TimeLeft => Interval - _timeSinceLastInterval;
 
     public IntervalTimer(float interval, float initialTimeOffset = 0.0f)
     {

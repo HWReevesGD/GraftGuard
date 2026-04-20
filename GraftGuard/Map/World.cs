@@ -126,12 +126,6 @@ internal class World
                 {
                     Player.Update(gameTime, inputManager);
                 }
-                if (EnemyManager.Enemies.Count == 0 || EnemyManager.Enemies.All((enemy) => enemy.IsDead) && EnemyManager.WaveManager.AllWavesStarted)
-                {
-                    PlayerData.CurrentGame.Time = TimeState.Dawn;
-                    PlayerData.CurrentGame.Timer = GameManager.DawnTimeLength;
-                    EnemyManager.Enemies.Clear();
-                }
                 break;
             case TimeState.Dawn:
                 if (allowPlayerControls)

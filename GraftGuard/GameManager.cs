@@ -125,7 +125,11 @@ namespace GraftGuard
                 _nextDayTransition.Reset();
                 PlayerData.CurrentGame.PauseForTimeTransitioning = true;
             }
-            PlayerData.CurrentGame.Timer = DawnTimeLength;
+            else
+            {
+                MusicController.Play(Sounds.SongDawnPeaceful);
+            }
+                PlayerData.CurrentGame.Timer = DawnTimeLength;
             _world.OnStartingDawn();
         }
 

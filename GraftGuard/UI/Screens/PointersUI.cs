@@ -34,19 +34,22 @@ internal class PointersUI
             return;
         }
 
-        if (state == TimeState.Dawn)
-        {
-            if (world.ScatteredParts.Count > 0)
-            {
-                Vector2 nearestPart = world.ScatteredParts.MinBy(_partDistanceSquared).Position;
-                DrawPointer(drawing, world, nearestPart, TPart, 64.0f, color: Color.Lime, cutoffRadius: 0.0f);
-            }
 
-            if (world.Player.HeldParts.Count > 0)
+        if (world.ScatteredParts.Count > 0 || state == TimeState.Night)
+        {
+            ScatteredPart near = world.ScatteredParts.MinBy(_partDistanceSquared);
+            if (near is not null)
             {
-                DrawPointer(drawing, world, world.Garage.Center + world.Garage.Size * Vector2.UnitY * 0.5f, TGarage);
+                Vector2 nearestPart = near.Position;
+                DrawPointer(drawing, world, nearestPart, TPart, 64.0f, color: new Color(Color.Lime, (state == TimeState.Night) ? 0.5f : 1.0f), cutoffRadius: 0.0f);
             }
         }
+
+        if (world.Player.HeldParts.Count > 0)
+        {
+            DrawPointer(drawing, world, world.Garage.Center + world.Garage.Size * Vector2.UnitY * 0.5f, TGarage);
+        }
+
 
         if (state == TimeState.Night)
         {
@@ -58,7 +61,7 @@ internal class PointersUI
             }
         }
 
-        
+
     }
 
     public void DrawPointer(DrawManager drawing, World world, Vector2 target, Texture2D icon, float radius = 96.0f, float cutoffRadius = 128.0f, Color? color = null, float scale = 1.0f, float iconScale = 1.0f)

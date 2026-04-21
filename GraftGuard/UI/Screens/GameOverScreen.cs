@@ -49,6 +49,7 @@ internal class GameOverScreen
     private bool isHiScoreShowing = false;
     private int displayScore = 0;
     private int displayHiScore = 0;
+    private bool isReturnShowing = false;
 
     private TaskSchedule currentTasks;
     private Text reasonText;
@@ -92,6 +93,8 @@ internal class GameOverScreen
         isHiScoreShowing = false;
         displayScore = 0;
         displayHiScore = 0;
+
+        isReturnShowing = false;
 
         // do the kind of typing effect
         currentTasks = new TaskSchedule();
@@ -146,19 +149,35 @@ internal class GameOverScreen
         float scoreCountTime = Math.Min(score / (float)countRate, countUpMaxTime);
         float hiScoreCountTime = Math.Min(hiScore / (float)countRate, countUpMaxTime);
 
+        currentTasks.Run(() => isScoreShowing = true);
+
+        if (score != 0)
+        {
+            currentTasks
+                .Loop(scoreCountTime, (_, elapsed) =>
+                {
+                    displayScore = (int)Math.Min(Math.Round(score * elapsed / scoreCountTime), score);
+                })
+                .Run(() => displayScore = score).Wait(1f);
+        }
+
         currentTasks
-            .Run(() => isScoreShowing = true)
-            .Loop(scoreCountTime, (_, elapsed) =>
-            {
-                displayScore = (int)Math.Min(Math.Round(score * elapsed / scoreCountTime), score);
-            })
-            .Run(() => displayScore = score)
-            .Run(() => isHiScoreShowing = true)
-            .Loop(hiScoreCountTime, (_, elapsed) =>
-            {
-                displayHiScore = (int)Math.Min(Math.Round(hiScore * elapsed / hiScoreCountTime), hiScore);
-            })
-            .Run(() => displayHiScore = hiScore);
+            .Wait(1f)
+            .Run(() => isHiScoreShowing = true);
+
+        if (hiScore != 0)
+        {
+            currentTasks
+                .Loop(scoreCountTime, (_, elapsed) =>
+                {
+                    displayScore = (int)Math.Min(Math.Round(score * elapsed / scoreCountTime), score);
+                })
+                .Run(() => displayHiScore = hiScore);
+        }
+
+        currentTasks
+            .Wait(1f)
+            .Run(() => isReturnShowing = true);
     }
 
     public void Update(GameTime gameTime)
@@ -232,7 +251,7 @@ internal class GameOverScreen
 
         if (isHiScoreShowing)
         {
-            float hiScoreY = centerY + (75 * screenScale);
+            float hiScoreY = centerY + (25 * screenScale);
 
             drawing.DrawString(
                 font: Fonts.SubFont,
@@ -252,6 +271,22 @@ internal class GameOverScreen
                     ),
                 isUi: true,
                 drawLayer: 2);
+        }
+
+        //
+
+        if (isReturnShowing)
+        {
+            new Text(Fonts.SubFont, "< Press Enter or Esc to return to Menu >")
+                .SetXOrigin(XOrigin.Center)
+                .SetYOrigin(YOrigin.Bottom)
+                .AddEffect(new WavyTextEffect(2 * screenScale, -5))
+                .Draw(
+                    drawing,
+                    gameTime,
+                    new Vector2(centerX, centerY + 150 * screenScale),
+                    isUi: true
+                    );
         }
 
         particles.Draw(drawing, gameTime, isUi: true, drawLayer: 4);

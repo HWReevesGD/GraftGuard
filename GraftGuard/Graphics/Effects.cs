@@ -9,15 +9,21 @@ namespace GraftGuard.Graphics;
 
 internal class Effects
 {
-    public static void DamageParticles(ParticleManager particles, Vector2 centerPosition)
+    public static void DamageParticles(
+        ParticleManager particles,
+        int amount,
+        Vector2 centerPosition,
+        int emissionAreaWidth,
+        int emmisionAreaHeight
+        )
     {
         Random rng = new Random();
 
-        for (int i = 0; i < 35; i++)
+        for (int i = 0; i < amount; i++)
         {
             Vector2 position = centerPosition + new Vector2(
-                -20 + (float)rng.NextDouble() * 40,
-                -20 + (float)rng.NextDouble() * 40
+                -emissionAreaWidth / 2 + (float)rng.NextDouble() * emissionAreaWidth,
+                -emissionAreaWidth / 2 + (float)rng.NextDouble() * emissionAreaWidth
                 );
             particles.Add(
                 new Particle(Placeholders.TexturePixel)

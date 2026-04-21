@@ -45,7 +45,7 @@ namespace GraftGuard.Data
 
     }
 
-    public class GameData
+    internal class GameData
     {
         public event Action OnPlayerDied;
         private int _health;

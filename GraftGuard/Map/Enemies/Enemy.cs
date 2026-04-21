@@ -34,7 +34,7 @@ internal abstract class Enemy : GameObject
     public IntervalTimer DamageOverTimeSecond = new IntervalTimer(1.0f);
 
     // visual stuff
-    private static float hurtPulseTime = 0.5f;
+    private static float hurtPulseTime = 0.05f;
     private float timeSinceLastHurtCountdown;
 
     public float Health { get; set; }
@@ -94,7 +94,8 @@ internal abstract class Enemy : GameObject
             speedMod = damage.SpeedMod;
             speedModDuration = damage.SpeedModDuration;
         }
-        
+
+        Effects.DamageParticles(World.CurrentWorld.Particles, 2, Position, 40, 40);
     }
 
     public virtual void Update(GameTime gameTime, InputManager inputManager, World world, PathManager pathManager)
@@ -225,8 +226,7 @@ internal abstract class Enemy : GameObject
 
     public virtual void Draw(GameTime gameTime, DrawManager drawing, InputManager inputManager, World world)
     {
-        float gb = MathHelper.Lerp(255, 0, timeSinceLastHurtCountdown / hurtPulseTime);
-        Visual.Draw(drawing, Position, new Color(255, gb, gb));
+        Visual.Draw(drawing, Position, timeSinceLastHurtCountdown > 0 ? Color.Red : Color.White);
 
         // Draw attached part behaviors
         int index = 0;

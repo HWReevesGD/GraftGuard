@@ -188,8 +188,10 @@ internal class Player : GameObject
         // Apply Knockback
         MoveAndCollide(pushDirection * knockbackForce, World.CurrentWorld);
 
-        OnDamaged.Invoke();
+        OnDamaged?.Invoke();
         invincibilityTimer = invincibilityFrameTime;
+
+        Effects.DamageParticles(World.CurrentWorld.Particles, 35, Position, 40, 40);
     }
 
     /// <summary>

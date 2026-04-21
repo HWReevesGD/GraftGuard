@@ -57,9 +57,9 @@ internal class World
         Inventory = new Inventory();
         Particles = new ParticleManager();
 
-        Player.OnDamaged += () => {
-            Effects.DamageParticles(Particles, Player.Position);
-        };
+        //Player.OnDamaged += () => {
+        //    Effects.DamageParticles(Particles, Player.Position);
+        //};
     }
 
     public void OnNewGameStarted()

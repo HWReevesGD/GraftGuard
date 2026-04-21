@@ -8,14 +8,14 @@ namespace GraftGuard.Data
     /// <summary>
     /// The Save Data Structure for JSON Serialization
     /// </summary>
-    public class SaveData
+    internal class SaveData
     {
         public int HighScore { get; set; }
         public List<GameData> GameHistory { get; set; }
 
     }
 
-    public static class PlayerData
+    internal static class PlayerData
     {
         public static GameState CurrentState { get; set; } = GameState.MainMenu;
 

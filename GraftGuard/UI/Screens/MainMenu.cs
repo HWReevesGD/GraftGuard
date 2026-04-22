@@ -107,11 +107,22 @@ internal class MainMenu {
     {
         backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
 
-        double x = 200 + Math.Cos(gameTime.TotalGameTime.TotalSeconds / 3 * cameraPanSpeed) * 400 + 400;
-        double y = 200 + Math.Sin(gameTime.TotalGameTime.TotalSeconds * cameraPanSpeed) * 300 + 300;
+        MapDefinition map = EnvironmentRegistry.Map;
+        Rectangle pathingArea = map.PathingArea;
+        int width = pathingArea.Width;
+        int height = pathingArea.Height;
+
+        float cycleWidth = width / 4;
+        float cycleHeight = height / 4;
+
+        double xCycle = Math.Cos(gameTime.TotalGameTime.TotalSeconds / 3 * cameraPanSpeed);
+        double yCycle = Math.Sin(gameTime.TotalGameTime.TotalSeconds * cameraPanSpeed);
+
+        double x = xCycle * cycleWidth / 2 + pathingArea.Center.X;
+        double y = yCycle * cycleHeight / 2 + pathingArea.Center.Y;
         Vector2 position = new Vector2((float)x, (float)y);
 
-        backgroundWorld.Camera.Position = position - Interface.ScreenCenter;
+        backgroundWorld.Camera.Position = position;
     }
 
     public void ProcessKeys(GameTime gameTime)

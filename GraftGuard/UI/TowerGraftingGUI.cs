@@ -30,7 +30,7 @@ internal class TowerGraftingGUI
     private readonly static float guiScale = 2.0f;
 
     private readonly static Vector2 _towerButtonSize = new Vector2(72, 48) * guiScale;
-    private readonly static Vector2 _currentChosenLabelSize = new Vector2(350, 48) * guiScale;
+    private readonly static Vector2 _partCountLabelSize = new Vector2(350, 48) * guiScale;
     private readonly static Vector2 _partButtonSize = new Vector2(48, 48) * guiScale;
     private readonly static Vector2 _towerDisplaySize = new Vector2(350, 350) * guiScale;
     private readonly static Vector2 _towerDisplayOffset = new Vector2(0, 64) * guiScale;
@@ -63,8 +63,8 @@ internal class TowerGraftingGUI
     private ScrollingGrid<PatchButton> _partChoiceButtons;
     private List<PartDefinition> _partChoices;
 
-    // Label which displays the currently selected building option
-    private PatchLabel _currentChosenLabel;
+    // Label which displays the current amount of parts
+    private PatchLabel _partCountLabel;
 
     // Tracking currently selected parts and towers
     private TowerDefinition _currentlyGraftingTower = null;
@@ -99,10 +99,10 @@ internal class TowerGraftingGUI
             );
 
         // Current Chosen Label
-        _currentChosenLabel = PatchLabel.MakeBase(
-            "Current: Nothing",
-            _towerDisplay.Position + (_towerDisplaySize - _currentChosenLabelSize) * Vector2.UnitY,
-            _currentChosenLabelSize);
+        _partCountLabel = PatchLabel.MakeBase(
+            $"Parts: 0 / {Tower.MaxParts}",
+            _towerDisplay.Position + (_towerDisplaySize - _partCountLabelSize) * Vector2.UnitY,
+            _partCountLabelSize);
 
         // Create Save Button
         _saveButton = PatchButton.MakeBaseCentered(
@@ -247,9 +247,11 @@ internal class TowerGraftingGUI
                 {
                     // Select the part
                     _currentlyChosenPart = _partChoices[index];
-                    _currentChosenLabel.Text = "Current: " + (_currentlyChosenPart is not null ? _currentlyChosenPart.Name : "Nothing");
                 }
             });
+
+        // Update part count label
+        _partCountLabel.Text = $"Parts {(_editingTower is not null ? _editingTower.TotalAttachedParts : "0")} / {Tower.MaxParts}";
 
         // Update Max Towers Label
         _maxTowersLabel.Text = $"Towers: {_createdTowers.Elements.Count} / {MaxAllowedTowers}";
@@ -437,7 +439,7 @@ internal class TowerGraftingGUI
         }
 
         // Draw the Label showing the Currently Chosen Part
-        _currentChosenLabel.Draw(drawing);
+        _partCountLabel.Draw(drawing);
 
         // Draw the preview of the chosen part
         if (_currentlyChosenPart is not null)

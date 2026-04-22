@@ -81,6 +81,9 @@ internal class TowerGraftingGUI
     // Created Tower Limit and Label
     private PatchLabel _maxTowersLabel;
 
+    // Info Label
+    private PatchLabel _infoDisplay;
+
     public int MaxAllowedTowers { get; set; } = 20;
 
     /// <summary>
@@ -123,6 +126,10 @@ internal class TowerGraftingGUI
             new Vector2(_saveButton.Position.X + _saveButtonSize.X, _saveButton.Position.Y),
             _maxTowersLabelSize
             );
+
+        // Create Info Label
+        _infoDisplay = PatchLabel.MakeBase("Nothing here!", Vector2.Zero, Vector2.One * 48.0f);
+        _infoDisplay.Hidden = true;
     }
 
     public void Setup(Inventory inventory)
@@ -330,6 +337,13 @@ internal class TowerGraftingGUI
 
         // Update Projectiles
         _projectiles.Update(time, world, inputManager);
+
+        // Update Info Label
+        IMouseDetectable over = _partChoiceButtons.Elements.FirstOrDefault((element) => element.IsMouseHovered);
+        if (over is null)
+        {
+            over = _towerChoiceButtons.Elements.FirstOrDefault((element) => element.IsMouseHovered);
+        }
     }
 
     public void SaveCurrentTower(bool button = false)

@@ -2,14 +2,13 @@
 using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Graphics.TextEffects;
+using GraftGuard.Map;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
 
 namespace GraftGuard.UI.Screens;
 
@@ -67,6 +66,8 @@ internal class GameHUD
     private int previousHealth;
     private int previousHearts;
 
+    private World world;
+
     public static void LoadContent(ContentManager content)
     {
         heartTexture = content.Load<Texture2D>("UI/Heart");
@@ -76,8 +77,9 @@ internal class GameHUD
         pixelTexture = content.Load<Texture2D>("pixel");
     }
 
-    public GameHUD()
+    public GameHUD(World world)
     {
+        this.world = world;
         particles = new ParticleManager();
         previousHealth = PlayerData.CurrentGame.Health;
         previousHearts = (int)Math.Ceiling((float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth * numHearts);
@@ -252,6 +254,17 @@ internal class GameHUD
            .Draw(drawing, gameTime, new Vector2(Interface.Width / 2 - 390f * hudScale, hudTopOffset + (64f + offset) * hudScale),
             isUi: true);
         }
+
+        if(PlayerData.CurrentGame.Time == TimeState.Night)
+        {
+            float offset = -40.0f;
+            new Text(Fonts.SubFont, $"Enemies Remaining: {world.EnemyManager.Enemies.Count}")
+              .SetXOrigin(XOrigin.Center)
+              .Draw(drawing, gameTime, new Vector2(Interface.Width / 2 + 350f * hudScale, hudTopOffset + (64f + offset) * hudScale),
+               isUi: true);
+        }
+
+
 
         // timer progress bar
 

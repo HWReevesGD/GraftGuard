@@ -1,4 +1,5 @@
-﻿using GraftGuard.Map.Enemies;
+﻿using GraftGuard.Data;
+using GraftGuard.Map.Enemies;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -11,6 +12,6 @@ internal class SpawnConfig
     public SpawnConfig(Func<Vector2, EnemyManager, Enemy> enemyConstructor, int count)
     {
         Construct = enemyConstructor;
-        Count = count;
+        Count = count * (int) PlayerData.CurrentGame.CurrentDifficulty;
     }
 }

@@ -9,6 +9,7 @@ using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +36,8 @@ internal class Player : GameObject
     private Circle _collectionCircle;
     private PlayerVisual playerVisual;
     private float invincibilityTimer;
+
+    private List<FallingPart> fallingParts = new();
 
     public List<PartDefinition> HeldParts { get; private set; }
     public bool InventoryFull => HeldParts.Count >= MaxHeldParts;
@@ -106,10 +109,29 @@ internal class Player : GameObject
 
         if (invincibilityTimer > 0)
             invincibilityTimer -= delta;
+
+        for (int i = fallingParts.Count - 1; i >= 0; i--)
+        {
+            fallingParts[i].Update(delta);
+
+            if (fallingParts[i].HasLanded)
+            {
+                World.ScatterPart(fallingParts[i].GetLandingPosition(), fallingParts[i].Definition);
+
+                fallingParts.RemoveAt(i);
+            }
+        }
+
+        if (inputManager.WasKeyPressStarted(Keys.Q))
+        {
+            DropHeldParts();
+        }
     }
 
     public override void Draw(GameTime gameTime, DrawManager drawing)
     {
+        
+
         if (invincibilityTimer > 0)
         {
             int phase = (int)(invincibilityTimer / 0.025f);
@@ -129,8 +151,15 @@ internal class Player : GameObject
             drawing.Draw(part, position, rotation: -MathF.PI / 2.0f, sortingOriginOffset: offset);
         }
 
+        foreach (var part in fallingParts)
+        {
+            part.Draw(drawing);
+        }
+
         //drawing.Draw(Placeholders.TexturePixel, Hitbox, color: Color.Red);
         CollidedDebug = [];
+
+       
     }
 
     
@@ -206,6 +235,28 @@ internal class Player : GameObject
         // Remove ScatteredPart from the World
         world.ScatteredParts.Remove(scatteredPart);
     }
+
+    public void DropHeldParts()
+    {
+
+        Random rnd = new Random();
+
+        // Explode Limbs and Head
+        foreach (PartDefinition part in HeldParts)
+        {
+
+            // Calculate a vector pointing away from the center
+            Vector2 direction = Vector2.Normalize(new Vector2(rnd.Next(-100, 101), rnd.Next(-100, 101)));
+            fallingParts.Add(new FallingPart(part, Position, direction));
+
+        }
+
+        // Clear the equipped parts so they stop drawing in the normal Draw call
+        ClearHeldParts();
+
+    }
+
+
 
     public void ClearHeldParts() => HeldParts.Clear();
 }

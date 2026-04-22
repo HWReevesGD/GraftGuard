@@ -7,7 +7,6 @@ using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
@@ -18,7 +17,7 @@ internal delegate void ActionEvent();
 /// <summary>
 /// Class for menu item visual information for easy state keeping and reading
 /// </summary>
-internal class MenuOptionVisual
+internal class MainMenuOptionVisual
 {
     private readonly static float itemLeftPadding = 40;
 
@@ -33,7 +32,7 @@ internal class MenuOptionVisual
     /// <param name="text">Text visual</param>
     /// <param name="shake">Text shake effect</param>
     /// <param name="yPosition">Y Position</param>
-    public MenuOptionVisual(Text text, ShakeTextEffect shake, float yPosition)
+    public MainMenuOptionVisual(Text text, ShakeTextEffect shake, float yPosition)
     {
         Text = text;
         Shake = shake;
@@ -106,7 +105,7 @@ internal class MainMenu {
     private int prevMouseSelectedItemIndex = -1; // mouse is probably not over a button at startup
     private float titleYPosition;
 
-    public MenuOptionVisual[] optionVisuals;
+    public MainMenuOptionVisual[] optionVisuals;
 
     private float arrowYPosition;
 
@@ -124,7 +123,7 @@ internal class MainMenu {
         this.selectedItemIndex = 0;
         this.arrowYPosition = Interface.Height;
 
-        optionVisuals = new MenuOptionVisual[menuItemOrder.Length];
+        optionVisuals = new MainMenuOptionVisual[menuItemOrder.Length];
 
         float yPosition = Interface.Height - itemBottomPadding;
         for (int i = menuItemOrder.Length - 1; i >= 0; i--)
@@ -136,7 +135,7 @@ internal class MainMenu {
             ShakeTextEffect shake = new ShakeTextEffect(0);
             text.AddEffect(shake);
 
-            optionVisuals[i] = new MenuOptionVisual(text, shake, yPosition);
+            optionVisuals[i] = new MainMenuOptionVisual(text, shake, yPosition);
             // increment up
             yPosition += -text.Height - itemGap;
         }
@@ -215,7 +214,7 @@ internal class MainMenu {
 
         for (int i = 0; i < menuItemOrder.Length; i++)
         {
-            MenuOptionVisual visual = optionVisuals[i];
+            MainMenuOptionVisual visual = optionVisuals[i];
             Point mousePos = inputManager.MouseScreenPosition;
 
             if (visual.Bounds.Contains(inputManager.MouseScreenPosition))
@@ -276,7 +275,7 @@ internal class MainMenu {
 
         for (int i = 0; i < menuItemOrder.Length; i++)
         {
-            MenuOptionVisual visual = optionVisuals[i];
+            MainMenuOptionVisual visual = optionVisuals[i];
 
             float targetXOffset;
             float targetWaveAmplitude;
@@ -327,7 +326,7 @@ internal class MainMenu {
 
         for (int i = 0; i < menuItemOrder.Length; i++)
         {
-            MenuOptionVisual visual = optionVisuals[i];
+            MainMenuOptionVisual visual = optionVisuals[i];
             if (shouldPickedItemDraw || i != selectedItemIndex)
                 visual.Text.Draw(drawing, gameTime, visual.Position);
         }

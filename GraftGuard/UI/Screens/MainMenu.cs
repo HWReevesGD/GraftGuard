@@ -1,17 +1,22 @@
 ﻿// render main menu
 
 using GraftGuard.Data;
+using GraftGuard.Grafting.Registry;
 using GraftGuard.Graphics;
 using GraftGuard.Graphics.Particles;
 using GraftGuard.Graphics.TextEffects;
 using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Map;
+using GraftGuard.Map.Enemies;
+using GraftGuard.Map.Waves;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace GraftGuard.UI.Screens;
 
@@ -84,6 +89,10 @@ internal class MainMenu {
     private void CreateTowers()
     {
         // create random towers for the world
+
+        
+
+        backgroundWorld.UpdateAllPathCosts();
     }
 
     /// <summary>
@@ -105,7 +114,24 @@ internal class MainMenu {
     /// <param name="gameTime">gameTime from Game1 Update()</param>
     public void UpdateBackgroundWorld(GameTime gameTime)
     {
+        // update world
+
         backgroundWorld.Update(gameTime, idleInputManager, timeState, false);
+
+        // remove enemies that would kill the player via garage
+
+        for (int i = 0; i < backgroundWorld.EnemyManager.Enemies.Count; i++)
+        {
+            Enemy enemy = backgroundWorld.EnemyManager.Enemies[i];
+
+            if (!enemy.IsDead && enemy.Hitbox.Intersects(backgroundWorld.Garage.GameOverBounds))
+            {
+                backgroundWorld.EnemyManager.Enemies.RemoveAt(i);
+                i--;
+            }
+        }
+
+        // camera
 
         MapDefinition map = EnvironmentRegistry.Map;
         Rectangle pathingArea = map.PathingArea;
@@ -123,6 +149,17 @@ internal class MainMenu {
         Vector2 position = new Vector2((float)x, (float)y);
 
         backgroundWorld.Camera.Position = position;
+
+        //
+
+        if (inputManager.WasKeyPressStarted(Keys.Y))
+        {
+            NightWaveSet waveSet = WavesRegistry.GetRandomForRound(1);
+            foreach (NightWave wave in waveSet.Waves)
+            {
+                backgroundWorld.EnemyManager.SpawnWave(wave);
+            }
+        }
     }
 
     public void ProcessKeys(GameTime gameTime)

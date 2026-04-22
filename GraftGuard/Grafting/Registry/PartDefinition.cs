@@ -46,6 +46,7 @@ public class PartDefinition
     public string[] PartBehaviorNames { get; set; }
 
     public bool FlipHorizonal { get; set; }
+    public string Description { get; set; } = "No description provided";
 
 
     [JsonIgnore]

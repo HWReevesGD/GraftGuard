@@ -104,9 +104,9 @@ public class Game1 : Game
         EnvironmentProps.LoadContent(Content);
 
         // Registering Towers
-        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
-        TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret, 1);
-        TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest, 2);
+        TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower, description: "Spins attached parts in a circle");
+        TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret, 1, description: "Aims parts towards the nearest enemy");
+        TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest, 2, description: "Attaches parts to Nestlings which hunt the enemy with the highest health");
 
         HumanoidEnemyRegistry.Load(Content);
 

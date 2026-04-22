@@ -34,18 +34,22 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
     {
         return MakeBase(text, position - size * 0.5f, size);
     }
-    public void Draw(DrawManager drawing, Color? color = null)
+    public void Draw(DrawManager drawing, Color? color = null, int drawLayerOffset = 0)
     {
         if (Hidden)
         {
             return;
         }
-        Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color);
-        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top);
+        Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color, drawLayerOffset: drawLayerOffset);
+        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top, drawLayer: 1 + drawLayerOffset);
     }
 
     public bool IsMouseOver(InputManager inputManager)
     {
         return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MouseScreenPosition);
+    }
+    public void FitToText()
+    {
+        Size = Font.MeasureString(Text);
     }
 }

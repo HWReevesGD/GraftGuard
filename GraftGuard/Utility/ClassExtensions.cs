@@ -419,6 +419,10 @@ internal static class ClassExtensions
     {
         return (float)time.TotalGameTime.TotalSeconds;
     }
+    public static GameTime Scale(this GameTime time, float timeScale)
+    {
+        return new GameTime(time.TotalGameTime * timeScale, time.ElapsedGameTime * timeScale);
+    }
     #endregion
 
     #region Color

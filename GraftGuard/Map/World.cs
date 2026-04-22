@@ -35,6 +35,7 @@ internal class World
     public List<ScatteredPart> ScatteredParts { get; set; } = [];
     public MapDefinition CurrentMap { get; set; }
     public ParticleManager Particles { get; set; }
+    public bool ShowTowerDecay { get; set; }
 
     // Constructor
     public World(DrawManager drawing)
@@ -56,6 +57,7 @@ internal class World
         Garage = new Garage(CurrentMap);
         Inventory = new Inventory();
         Particles = new ParticleManager();
+        ShowTowerDecay = true;
 
         //Player.OnDamaged += () => {
         //    Effects.DamageParticles(Particles, Player.Position);

@@ -66,7 +66,9 @@ internal class TowerTurret : Tower
 
     public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        DrawDecay(drawing);
+        if (world.ShowTowerDecay)
+            DrawDecay(drawing);
+
         float direction = CurrentDirection;
         drawing.DrawCentered(Texture, Position, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);
         drawing.DrawCentered(TTurret, Position, origin: new Vector2(-TTurret.Width / 2 + 2, 0), rotation: direction, isUi: isUi, sortMode: defaultSortMode, drawLayer: 1 + drawLayerOffset);

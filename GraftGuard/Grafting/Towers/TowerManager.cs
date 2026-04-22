@@ -45,8 +45,7 @@ internal class TowerManager
     public void MakeTower(
         TowerDefinition tower,
         Vector2 position,
-        List<PartDefinition>? parts = null,
-        bool updatePathCosts = true
+        List<PartDefinition>? parts = null
         )
     {
         Tower placedTower = tower.Factory(position);
@@ -65,8 +64,7 @@ internal class TowerManager
         }
 
         _towers.Add(placedTower);
-        if (updatePathCosts)
-            _world.UpdateAllPathCosts();
+        _world.UpdateAllPathCosts();
     }
 
     /// <summary>

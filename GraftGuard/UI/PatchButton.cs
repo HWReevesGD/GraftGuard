@@ -136,7 +136,7 @@ internal class PatchButton : Button
             position: marginOffset + marginSize / 2.0f - Font.MeasureString(Text) / 2.0f,
             color: TextColor,
             isUi: true,
-            sortMode: SortMode.Top
+            sortMode: SortMode.MiddleTop
             );
     }
 }

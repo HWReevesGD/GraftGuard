@@ -323,6 +323,12 @@ internal class DrawManager
                 break;
             case SortMode.Bottom:
                 break;
+            case SortMode.MiddleTop:
+                sorting = 0.2f;
+                break;
+            case SortMode.MiddleBottom:
+                sorting = 0.7f;
+                break;
         }
 
         if (instruction.Destination is null)
@@ -440,6 +446,8 @@ internal enum SortMode
 {
     Sorted,
     Top,
+    MiddleTop,
     Middle,
+    MiddleBottom,
     Bottom,
 }

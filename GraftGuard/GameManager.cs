@@ -139,6 +139,7 @@ namespace GraftGuard
                 MusicController.Play(Sounds.SongDawnPeaceful);
             }
                 PlayerData.CurrentGame.Timer = DawnTimeLength;
+            PlayerData.CurrentGame.PhaseTimeLength = DawnTimeLength;
             _world.OnStartingDawn();
         }
 

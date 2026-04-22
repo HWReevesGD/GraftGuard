@@ -19,6 +19,7 @@ internal class GameHUD
     private static Texture2D timerTexture;
     private static Texture2D timerOverlayTexture;
     private static Texture2D pixelTexture;
+    private static Texture2D controlReminder;
 
     private readonly static Dictionary<TimeState, string> timeNames = new Dictionary<TimeState, string>
     {
@@ -75,6 +76,8 @@ internal class GameHUD
         timerTexture = content.Load<Texture2D>("UI/Timer");
         timerOverlayTexture = content.Load<Texture2D>("UI/Timer_Overlay");
         pixelTexture = content.Load<Texture2D>("pixel");
+
+        controlReminder = content.Load<Texture2D>("UI/controls_reminder");
     }
 
     public GameHUD(World world)
@@ -322,7 +325,16 @@ internal class GameHUD
 
         DrawTimer(drawing, gameTime, active, hudTopOffset);
 
+        //controls tooltip
+        if (PlayerData.CurrentGame.Time != TimeState.Day)
+        {
+            Rectangle controlReminderRect = new Rectangle((int)Interface.Width - 384, (int)Interface.Height - 384, 384, 384);
+            drawing.Draw(controlReminder, destination: controlReminderRect, isUi: true, sortMode: SortMode.Top);
+        }
+
         particles.Update(gameTime);
         particles.Draw(drawing, gameTime, isUi: true);
+
+
     }
 }

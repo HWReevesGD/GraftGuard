@@ -15,6 +15,7 @@ namespace GraftGuard.Grafting.Registry;
 internal class TowerDefinition
 {
     public readonly string Name;
+    public readonly string Description;
     public readonly CreateTower Factory;
     public readonly DrawPreview DrawPreview;
     public readonly Texture2D Icon;
@@ -27,12 +28,13 @@ internal class TowerDefinition
     /// <param name="factory">Tower creation factory method</param>
     /// <param name="drawPreview">Draw preview method</param>
     /// <param name="icon">Part's icon texture</param>
-    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, Texture2D? icon = null, int roundUnlocked = 0)
+    public TowerDefinition(string name, CreateTower factory, DrawPreview drawPreview, Texture2D? icon = null, int roundUnlocked = 0, string description = "No description provided")
     {
         Name = name;
         Factory = factory;
         DrawPreview = drawPreview;
         Icon = icon ?? Placeholders.TextureMissingIcon;
         RoundUnlocked = roundUnlocked;
+        Description = description;
     }
 }

@@ -8,8 +8,8 @@ internal static class TowerRegistry
 {
     private static List<TowerDefinition> _allTowers = [];
     public static ReadOnlyCollection<TowerDefinition> Towers => _allTowers.AsReadOnly();
-    public static void Register(string towerName, CreateTower towerFactory, DrawPreview drawPreview, Texture2D? towerIcon = null, int roundUnlocked = 0)
+    public static void Register(string towerName, CreateTower towerFactory, DrawPreview drawPreview, Texture2D? towerIcon = null, int roundUnlocked = 0, string description = "No description provided")
     {
-        _allTowers.Add(new TowerDefinition(towerName, towerFactory, drawPreview, icon: towerIcon, roundUnlocked));
+        _allTowers.Add(new TowerDefinition(towerName, towerFactory, drawPreview, icon: towerIcon, roundUnlocked, description));
     }
 }

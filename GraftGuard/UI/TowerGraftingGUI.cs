@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Frozen;
 using System.Collections.Generic;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -81,6 +82,9 @@ internal class TowerGraftingGUI
     // Created Tower Limit and Label
     private PatchLabel _maxTowersLabel;
 
+    // Info Label
+    private PatchLabel _infoDisplay;
+
     public int MaxAllowedTowers { get; set; } = 20;
 
     /// <summary>
@@ -123,6 +127,10 @@ internal class TowerGraftingGUI
             new Vector2(_saveButton.Position.X + _saveButtonSize.X, _saveButton.Position.Y),
             _maxTowersLabelSize
             );
+
+        // Create Info Label
+        _infoDisplay = PatchLabel.MakeBase("Nothing here!", Vector2.Zero, Vector2.One * 48.0f);
+        _infoDisplay.Hidden = true;
     }
 
     public void Setup(Inventory inventory)
@@ -333,6 +341,42 @@ internal class TowerGraftingGUI
 
         // Update Projectiles
         _projectiles.Update(time, world, inputManager);
+
+        // Update Info Label
+        object definition = null;
+        for (int index = 0; index < _partChoiceButtons.Elements.Count; index++)
+        {
+            PatchButton partButton = _partChoiceButtons.Elements[index];
+            if (partButton.IsMouseHovered && !partButton.Disabled)
+            {
+                definition = _partChoices[index];
+            }
+        }
+        if (definition is null)
+        {
+            for (int index = 0; index < _towerChoiceButtons.Elements.Count; index++)
+            {
+                PatchButton towerButton = _towerChoiceButtons.Elements[index];
+                if (towerButton.IsMouseHovered && !towerButton.Disabled)
+                {
+                    definition = _towerChoices[index];
+                }
+            }
+        }
+        if (definition is PartDefinition part)
+        {
+            _infoDisplay.Hidden = false;
+            _infoDisplay.Text = part.Description;
+        }
+        else if (definition is TowerDefinition tower)
+        {
+            _infoDisplay.Hidden = false;
+            _infoDisplay.Text = tower.Description;
+        }
+        else
+        {
+            _infoDisplay.Hidden = true;
+        }
     }
 
     public void SaveCurrentTower(bool button = false)
@@ -447,6 +491,12 @@ internal class TowerGraftingGUI
         {
             drawing.DrawCentered(_currentlyChosenPart.Texture, inputManager.CurrentMouse.Position.ToVector(), color: new Color(1.0f, 1.0f, 1.0f, 0.7f), isUi: true, scale: Vector2.One * 3);
         }
+
+        // Draw Info Label
+        _infoDisplay.Position = inputManager.MouseScreenPosition.ToVector();
+        _infoDisplay.FitToText();
+        _infoDisplay.Position = new Vector2(MathF.Min(_infoDisplay.Position.X, Interface.Width - _infoDisplay.Size.X), MathF.Min(_infoDisplay.Position.Y, Interface.Height - _infoDisplay.Size.Y));
+        _infoDisplay.Draw(drawing, drawLayerOffset: 1);
     }
 
     /// <summary>

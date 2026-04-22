@@ -2,6 +2,7 @@
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
 
 namespace GraftGuard.UI;
 internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
@@ -13,6 +14,7 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
     public NinePatch Patch { get; set; }
     public SpriteFont Font { get; set; }
     public Color TextColor { get; set; }
+    public bool Hidden { get; set; }
     public PatchLabel(string text, Vector2 position, Vector2 size, Texture2D patchTexture, int marginLeft, int marginRight, int marginTop, int marginBottom, SpriteFont? font = null, Color? color = null)
     {
         Text = text;
@@ -22,6 +24,7 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
         // Optional defaults
         Font = font ?? Fonts.Arial;
         TextColor = color ?? Color.White;
+        Hidden = false;
     }
     public static PatchLabel MakeBase(string text, Vector2 position, Vector2 size)
     {
@@ -31,14 +34,22 @@ internal class PatchLabel : IMouseDetectable, IPositional, ISizeable
     {
         return MakeBase(text, position - size * 0.5f, size);
     }
-    public void Draw(DrawManager drawing, Color? color = null)
+    public void Draw(DrawManager drawing, Color? color = null, int drawLayerOffset = 0)
     {
-        Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color);
-        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top);
+        if (Hidden)
+        {
+            return;
+        }
+        Patch.Draw(drawing, Position, size: Size.ToPoint(), color: color, drawLayerOffset: drawLayerOffset);
+        drawing.DrawString(font: Font, text: Text, position: Position + Size * 0.5f - Font.MeasureString(Text) * 0.5f, color: TextColor, isUi: true, sortMode: SortMode.Top, drawLayer: 1 + drawLayerOffset);
     }
 
     public bool IsMouseOver(InputManager inputManager)
     {
         return new Rectangle(Position.ToPoint(), Size.ToPoint()).Contains(inputManager.MouseScreenPosition);
+    }
+    public void FitToText()
+    {
+        Size = Font.MeasureString(Text);
     }
 }

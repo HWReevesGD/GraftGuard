@@ -5,6 +5,9 @@ using System;
 
 namespace GraftGuard.UI.Screens;
 
+/// <summary>
+/// Full screen black growing square swiping transition
+/// </summary>
 internal class SwipeTransition
 {
     private static float scale = 2f;
@@ -21,11 +24,20 @@ internal class SwipeTransition
     private bool isReversed;
     private bool doAutoClear;
 
+    /// <summary>
+    /// Initialize the swipe transition to the given transition mode
+    /// </summary>
+    /// <param name="isReversed">Whether or not it is reversed (Reversed = covered -> clear)</param>
     public SwipeTransition(bool isReversed)
     {
         this.isReversed = isReversed;
     }
 
+    /// <summary>
+    /// Start the transition
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
+    /// <param name="doAutoClear">whether of automatically clear the transition when it finishes</param>
     public void Start(GameTime gameTime, bool doAutoClear = false)
     {
         isRunning = true;
@@ -33,12 +45,21 @@ internal class SwipeTransition
         this.doAutoClear = doAutoClear;
     }
 
+    /// <summary>
+    /// Clear the transition from the screen
+    /// </summary>
     public void Clear()
     {
         isRunning = false;
     }
 
-    public void DrawSquares(DrawManager drawing, float elapsed, int drawLayer)
+    /// <summary>
+    /// Draw the transition squares
+    /// </summary>
+    /// <param name="drawing">DrawManager</param>
+    /// <param name="elapsed">Time elapsed since starting the transition</param>
+    /// <param name="drawLayer">Draw layer</param>
+    private void DrawSquares(DrawManager drawing, float elapsed, int drawLayer)
     {
         int numHorizontal = (int)Math.Ceiling(Interface.Width / (gap * scale));
         int numVertical = (int)Math.Ceiling(Interface.Height / (gap * scale));
@@ -82,12 +103,18 @@ internal class SwipeTransition
         }
     }
 
+    /// <summary>
+    /// Draw the transition if it is active
+    /// </summary>
+    /// <param name="drawing">DrawManager</param>
+    /// <param name="gameTime">GameTime</param>
+    /// <param name="drawLayer">layer to draw at (default: 2)</param>
     public void Draw(DrawManager drawing, GameTime gameTime, int drawLayer = 2)
     {
         if (!isRunning)
             return;
 
-        float elapsed = (float)gameTime.TotalGameTime.TotalSeconds - startTime;
+        float elapsed = gameTime.Total() - startTime;
 
         if (elapsed > swipeTime && doAutoClear)
         {

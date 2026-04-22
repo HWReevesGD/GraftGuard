@@ -1004,6 +1004,18 @@
 /processorParam:TextureFormat=Color
 /build:UI/base_pointer.png
 
+#begin UI/Controls Reminder.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:UI/Controls Reminder.png;UI/controls_reminder.png
+
 #begin UI/enemy_pointer.png
 /importer:TextureImporter
 /processor:TextureProcessor

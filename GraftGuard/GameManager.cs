@@ -42,7 +42,7 @@ namespace GraftGuard
 
             _mainMenu = new MainMenu(game, input, DrawManager);
             _world = new World(DrawManager);
-            _pauseMenu = new PauseMenu(_world, input);
+            _pauseMenu = new PauseMenu(input);
             _gameOverScreen = new GameOverScreen(_world);
             _hud = new GameHUD(_world);
             _towerGrafting = new TowerGraftingGUI();
@@ -279,7 +279,8 @@ namespace GraftGuard
 
                     break;
                 case GameState.Paused:
-                    _pauseMenu.Draw(DrawManager, gameTime, PlayerData.CurrentGame.Time);
+                    DrawGameSession(DrawManager, gameTime, false);
+                    _pauseMenu.Draw(DrawManager, gameTime, true);
                     break;
                 case GameState.GameOver:
                     _gameOverScreen.Draw(DrawManager, gameTime);
@@ -289,7 +290,7 @@ namespace GraftGuard
             //TaskSchedule.DrawDebug(DrawManager);
         }
 
-        private void DrawGameSession(DrawManager drawing, GameTime gameTime)
+        private void DrawGameSession(DrawManager drawing, GameTime gameTime, bool drawHud = true)
         {
             var session = PlayerData.CurrentGame;
 
@@ -325,7 +326,8 @@ namespace GraftGuard
             }
 
             _pointers.Draw(DrawManager, _world);
-            _hud.Draw(drawing, gameTime, session.Time != TimeState.Day);
+            if (drawHud)
+                _hud.Draw(drawing, gameTime, session.Time != TimeState.Day);
             _swipeTransition.Draw(drawing, gameTime);
 
             // HUD

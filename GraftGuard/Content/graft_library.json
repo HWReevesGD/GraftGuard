@@ -116,7 +116,7 @@
         "Basic",
         "Zapping"
       ],
-      "Description": null
+      "Description": "Deals shocks that damage and can be chained"
     }
   ],
   "Bases": [

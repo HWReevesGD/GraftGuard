@@ -43,12 +43,13 @@ internal class PartZapping : IPartBehavior
 
                 if (chain == 0)
                 {
+                    ProjectileZap first = new ProjectileZap(transform.Position, settings.Source.GetTarget());
                     (currentZaps, allZapped) = DoZap(
                         allZapped,
                         settings,
                         transform,
-                        world);
-                    ProjectileZap first = new ProjectileZap(transform.Position, settings.Source.GetTarget());
+                        world,
+                        first);
                     allZaps.Add(first);
                     first.Next.AddRange(currentZaps);
                     allZaps.AddRange(currentZaps);

@@ -47,7 +47,9 @@ internal class TowerSpinner : Tower
 
     public override void Draw(GameTime time, DrawManager drawing, World world, InputManager inputManager, TimeState state, bool isUi = false, SortMode defaultSortMode = SortMode.Sorted, int drawLayerOffset = 0)
     {
-        DrawDecay(drawing);
+        if (world.ShowTowerDecay)
+            DrawDecay(drawing);
+
         drawing.DrawCentered(Texture, Position, isUi: isUi, drawLayer: 1 + drawLayerOffset);
 
         for (int index = 0; index < _attachedParts.Length; index++)

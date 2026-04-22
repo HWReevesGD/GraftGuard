@@ -15,7 +15,7 @@ namespace GraftGuard.Map.Enemies;
 internal class EnemyBasic : Enemy
 {
     public EnemyBasic(Vector2 position, BaseDefinition torso)
-        : base(position, torso, hitboxSize: new Vector2(32, 48), 30.0f, 128.0f)
+        : base(position, torso, hitboxSize: new Vector2(32, 48), 30.0f, 180.0f)
     {
         PathTimer = new IntervalTimer(0.5f);
     }

@@ -18,7 +18,7 @@ internal class EnemyHumanoid : EnemyBasic
     public EnemyHumanoid(Vector2 position) : this(position, HumanoidEnemyRegistry.GetRandomSet()) { }
 
     private EnemyHumanoid(Vector2 position, (BaseDefinition Torso, int Type) set) : base(position, set.Torso)
-    {
+    { 
         Random random = new Random();
         List<PartDefinition> humanoidParts = HumanoidEnemyRegistry.GetPartsForType(set.Type);
 

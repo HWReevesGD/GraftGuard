@@ -42,7 +42,11 @@ internal class TowerManager
         }
     }
 
-    public void MakeTower(TowerDefinition tower, Vector2 position, List<PartDefinition>? parts = null)
+    public void MakeTower(
+        TowerDefinition tower,
+        Vector2 position,
+        List<PartDefinition>? parts = null
+        )
     {
         Tower placedTower = tower.Factory(position);
 

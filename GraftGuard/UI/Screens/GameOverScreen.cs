@@ -10,12 +10,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
-using System.Diagnostics;
-using System.Linq;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace GraftGuard.UI.Screens;
 
+/// <summary>
+/// Game over screen visuals
+/// </summary>
 internal class GameOverScreen
 {
     private World world;
@@ -34,16 +34,10 @@ internal class GameOverScreen
     private static readonly int countRate = 3;
     private static readonly float countUpMaxTime = 3f;
     private static readonly int gap = 50; // gap between score text and score number
-    private static readonly int scoreNumJumpDist = 5;
 
     private static readonly float titleShakeMagnitude = 10;
     private static readonly float titleShakeDecayTime = 0.5f;
     private static readonly float reasonShakeDecayTime = 0.35f;
-
-    //private bool scoreCountIsUp = false;
-    //private bool hiScoreCountIsUp = false;
-    //private int prevDisplayScore = 0;
-    //private int prevDisplayHiScore = 0;
 
     private bool isScoreShowing = false;
     private bool isHiScoreShowing = false;
@@ -55,12 +49,20 @@ internal class GameOverScreen
     private Text reasonText;
     private ShakeTextEffect reasonTextShake;
     private ParticleManager particles;
+    private bool allowExiting = true;
+
+    private SwipeTransition swipeTransition;
+    private GameTime currentGameTime;
 
     public static void LoadContent(ContentManager content)
     {
         backgroundTexture = content.Load<Texture2D>("pixel");
     }
 
+    /// <summary>
+    /// Initialize game over screen to the given world
+    /// </summary>
+    /// <param name="world">World</param>
     public GameOverScreen(World world)
     {
         this.world = world;
@@ -72,8 +74,13 @@ internal class GameOverScreen
             .AddEffect(reasonTextShake);
 
         particles = new ParticleManager();
+        swipeTransition = new SwipeTransition(false);
     }
 
+    /// <summary>
+    /// Get the position to draw game over reason at
+    /// </summary>
+    /// <returns>Game over reason text postiion</returns>
     private Vector2 GetReasonTextPosition()
     {
         float centerX = Interface.Width / 2;
@@ -81,6 +88,12 @@ internal class GameOverScreen
         return new Vector2(centerX, centerY - (110 * screenScale));
     }
 
+    /// <summary>
+    /// Start Game over visuals flow
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
+    /// <param name="session">Session of the current game</param>
+    /// <param name="failReason">Reason why game over happened</param>
     public void SetGameOver(GameTime gameTime, GameData session, string failReason)
     {
         this.session = session;
@@ -180,17 +193,49 @@ internal class GameOverScreen
             .Run(() => isReturnShowing = true);
     }
 
+    /// <summary>
+    /// Exit to the main menu with a transition
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
+    public void Exit(GameTime gameTime)
+    {
+        allowExiting = false;
+        swipeTransition.Start(gameTime, false);
+
+        new TaskSchedule()
+            .Wait(0.5f)
+            .Run(() =>
+            {
+                MainMenu.FireInTransition(currentGameTime);
+                PlayerData.CurrentState = GameState.MainMenu;
+                swipeTransition.Clear();
+                particles.Clear();
+                currentTasks.Cancel();
+                allowExiting = true;
+            });
+    }
+
+    /// <summary>
+    /// Update the GameOverScreen visuals
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
     public void Update(GameTime gameTime)
     {
+        currentGameTime = gameTime;
+
         if (inputManager.WasKeyPressStarted(Keys.Escape) || inputManager.WasKeyPressStarted(Keys.Enter))
-        {
-            currentTasks.Cancel();
-            PlayerData.CurrentState = GameState.MainMenu;
-        }
+            if (allowExiting)
+                Exit(gameTime);
+
         inputManager.Update();
         particles.Update(gameTime);
     }
 
+    /// <summary>
+    /// Draw GameOverScreen visuals
+    /// </summary>
+    /// <param name="drawing">DrawManager</param>
+    /// <param name="gameTime">GameTime</param>
     public void Draw(DrawManager drawing, GameTime gameTime)
     {
         // Draw by the Camera's Position
@@ -290,5 +335,6 @@ internal class GameOverScreen
         }
 
         particles.Draw(drawing, gameTime, isUi: true, drawLayer: 4);
+        swipeTransition.Draw(drawing, gameTime, 5);
     }
 }

@@ -96,6 +96,7 @@ struct Task
 internal class TaskSchedule
 {
     private static readonly List<TaskSchedule> schedules = new List<TaskSchedule>();
+    private static readonly List<TaskSchedule> toRemoveNext = new List<TaskSchedule>();
 
     /// <summary>
     /// Update global task manager
@@ -103,16 +104,16 @@ internal class TaskSchedule
     /// <param name="gameTime">GameTime from this frame</param>
     public static void UpdateAll(GameTime gameTime)
     {
-        List<TaskSchedule> toRemove = new List<TaskSchedule>();
-
         foreach (TaskSchedule schedule in schedules)
         {
+            if (toRemoveNext.Contains(schedule))
+                continue;
             bool isOk = schedule.Update(gameTime);
             if (!isOk)
-                toRemove.Add(schedule);
+                toRemoveNext.Add(schedule);
         }
 
-        foreach (TaskSchedule schedule in toRemove)
+        foreach (TaskSchedule schedule in toRemoveNext)
             schedules.Remove(schedule);
     }
 
@@ -282,6 +283,6 @@ internal class TaskSchedule
     /// </summary>
     public void Cancel()
     {
-        schedules.Remove(this);
+        toRemoveNext.Add(this);
     }
 }

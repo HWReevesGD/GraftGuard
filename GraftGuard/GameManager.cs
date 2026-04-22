@@ -97,7 +97,7 @@ namespace GraftGuard
                     }
                     break;
                 case GameState.Paused:
-                    UpdatePaused();
+                    UpdatePaused(gameTime);
                     if (MediaPlayer.State == MediaState.Playing)
                     {
                         MediaPlayer.Pause();
@@ -256,9 +256,9 @@ namespace GraftGuard
             _gameOverScreen.SetGameOver(gameTime, session, failReason);
         }
 
-        private void UpdatePaused()
+        private void UpdatePaused(GameTime gameTime)
         {
-            _pauseMenu.Update();
+            _pauseMenu.Update(gameTime);
         }
 
         private void UpdateGameOver(GameTime gameTime)

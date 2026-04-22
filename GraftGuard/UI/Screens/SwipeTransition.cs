@@ -42,7 +42,7 @@ internal class SwipeTransition
         isRunning = false;
     }
 
-    public void DrawSquares(DrawManager drawing, float elapsed)
+    public void DrawSquares(DrawManager drawing, float elapsed, int drawLayer)
     {
         int numHorizontal = (int)Math.Ceiling(Interface.Width / (gap * scale));
         int numVertical = (int)Math.Ceiling(Interface.Height / (gap * scale));
@@ -78,7 +78,7 @@ internal class SwipeTransition
                     texture: Placeholders.TexturePixel,
                     destination: new Rectangle((int)(screenPosition.X + posOffset), (int)(screenPosition.Y + posOffset), (int)squareScale, (int)squareScale),
                     rotation: (float)Math.PI / 4,
-                    drawLayer: 2,
+                    drawLayer: drawLayer,
                     color: Color.Black,
                     isUi: true
                     );
@@ -86,7 +86,7 @@ internal class SwipeTransition
         }
     }
 
-    public void Draw(DrawManager drawing, GameTime gameTime)
+    public void Draw(DrawManager drawing, GameTime gameTime, int drawLayer = 2)
     {
         if (!isRunning)
             return;
@@ -99,6 +99,6 @@ internal class SwipeTransition
             return;
         }
 
-        DrawSquares(drawing, elapsed);
+        DrawSquares(drawing, elapsed, drawLayer);
     }
 }

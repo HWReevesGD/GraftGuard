@@ -71,6 +71,16 @@ internal class MainMenuOptionVisual
 }
 
 internal class MainMenu {
+    public static event Action<GameTime> OnInTransition;
+
+    /// <summary>
+    /// Fires the event that tells MainMenu to play the in transition
+    /// </summary>
+    public static void FireInTransition(GameTime gameTime)
+    {
+        OnInTransition?.Invoke(gameTime);
+    }
+
     private readonly MainMenuBackgroundWorld backgroundWorld;
     private readonly InputManager inputManager;
 
@@ -109,7 +119,8 @@ internal class MainMenu {
 
     private float arrowYPosition;
 
-    private SwipeTransition swipeTransition;
+    private SwipeTransition outSwipeTransition;
+    private SwipeTransition inSwipeTransition;
     private bool optionWasPicked;
     private float optionPickedTime;
 
@@ -141,7 +152,13 @@ internal class MainMenu {
         }
         titleYPosition = yPosition;
 
-        swipeTransition = new SwipeTransition(false);
+        outSwipeTransition = new SwipeTransition(false);
+        inSwipeTransition = new SwipeTransition(true);
+
+        OnInTransition += (GameTime gameTime) =>
+        {
+            inSwipeTransition.Start(gameTime, true);
+        };
     }
 
     /// <summary>
@@ -168,14 +185,14 @@ internal class MainMenu {
             case 0: // start new game
                 optionWasPicked = true;
                 optionPickedTime = gameTime.Total();
-                swipeTransition.Start(gameTime, false);
+                outSwipeTransition.Start(gameTime, false);
 
                 new TaskSchedule()
                     .Wait(gameBeginDelayTime)
                     .Run(() => {
                         PlayerData.StartNewGame(GameManager.DawnTimeLength);
                         NewGameStarted?.Invoke();
-                        swipeTransition.Clear();
+                        outSwipeTransition.Clear();
                         // reset main menu
                         optionWasPicked = false;
                     });
@@ -344,6 +361,7 @@ internal class MainMenu {
             .AddEffect(new WavyTextEffect(7 + unpickedXOffsetPosition, -3))
             .Draw(drawing, gameTime, new Vector2(titleLeftPadding + unpickedXOffsetPosition, titleYPosition));
 
-        swipeTransition.Draw(drawing, gameTime);
+        outSwipeTransition.Draw(drawing, gameTime);
+        inSwipeTransition.Draw(drawing, gameTime);
     }
 }

@@ -63,6 +63,7 @@ namespace Grafter
         public float PivotX { get; set; }
         public float PivotY { get; set; }
         public string[] PartBehaviorNames { get; set; } = [];
+        public string Description { get; set; }
 
 
         public override string ToString() => Name;

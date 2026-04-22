@@ -144,6 +144,7 @@ namespace Grafter
                 controller.CurrentlyEditing.CriticalModifier = (float)numCritical.Value;
                 controller.CurrentlyEditing.HealthModifier = (float)numHealth.Value;
                 controller.CurrentlyEditing.Type = isHead.Checked ? PartType.Head : PartType.Limb;
+                controller.CurrentlyEditing.Description = textBoxDescription.Text;
 
                 SaveBehaviors();
 
@@ -198,6 +199,7 @@ namespace Grafter
             numCritical.Value = (decimal)part.CriticalModifier;
             numHealth.Value = (decimal)part.HealthModifier;
             isHead.Checked = part.Type == PartType.Head;
+            textBoxDescription.Text = part.Description;
 
             LoadBehaviors(part);
 

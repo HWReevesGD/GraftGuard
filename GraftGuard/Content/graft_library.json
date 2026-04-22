@@ -17,7 +17,8 @@
       "PartBehaviorNames": [
         "Basic",
         "Slashing"
-      ]
+      ],
+      "Description": "Deals large damage in a small circle"
     },
     {
       "Name": "flamethrower",
@@ -36,7 +37,8 @@
       "PartBehaviorNames": [
         "Basic",
         "Flaming"
-      ]
+      ],
+      "Description": "Shoots mid-range high damage fire"
     },
     {
       "Name": "shotgun",
@@ -55,7 +57,8 @@
       "PartBehaviorNames": [
         "Basic",
         "Shotgunning"
-      ]
+      ],
+      "Description": "Shoots long-range high damage bullets in a spread"
     },
     {
       "Name": "arm",
@@ -73,7 +76,8 @@
       "PivotY": 0.1383792,
       "PartBehaviorNames": [
         "Basic"
-      ]
+      ],
+      "Description": "Deals low damage"
     },
     {
       "Name": "scrap",
@@ -91,7 +95,8 @@
       "PivotY": 0.16590214,
       "PartBehaviorNames": [
         "Basic"
-      ]
+      ],
+      "Description": "Deals low damage"
     },
     {
       "Name": "tesla coil",
@@ -110,7 +115,8 @@
       "PartBehaviorNames": [
         "Basic",
         "Zapping"
-      ]
+      ],
+      "Description": null
     }
   ],
   "Bases": [

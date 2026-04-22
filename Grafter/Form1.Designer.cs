@@ -61,6 +61,8 @@
             txtProjDirPath = new TextBox();
             labelRarity = new Label();
             numRarity = new NumericUpDown();
+            descriptionLabel = new Label();
+            textBoxDescription = new TextBox();
             ((System.ComponentModel.ISupportInitialize)picPreview).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numDamage).BeginInit();
             ((System.ComponentModel.ISupportInitialize)numSpeed).BeginInit();
@@ -103,7 +105,7 @@
             // 
             // picPreview
             // 
-            picPreview.Location = new Point(887, 110);
+            picPreview.Location = new Point(895, 109);
             picPreview.Margin = new Padding(4);
             picPreview.Name = "picPreview";
             picPreview.Size = new Size(654, 727);
@@ -137,7 +139,7 @@
             // label3
             // 
             label3.AutoSize = true;
-            label3.Location = new Point(887, 853);
+            label3.Location = new Point(895, 852);
             label3.Margin = new Padding(4, 0, 4, 0);
             label3.Name = "label3";
             label3.Size = new Size(248, 32);
@@ -310,7 +312,7 @@
             // 
             // baseSelection
             // 
-            baseSelection.Location = new Point(1277, 853);
+            baseSelection.Location = new Point(1285, 852);
             baseSelection.Margin = new Padding(6);
             baseSelection.Name = "baseSelection";
             baseSelection.Size = new Size(264, 41);
@@ -350,7 +352,7 @@
             // 
             // txtContentPath
             // 
-            txtContentPath.Location = new Point(887, 902);
+            txtContentPath.Location = new Point(895, 901);
             txtContentPath.Margin = new Padding(6);
             txtContentPath.Name = "txtContentPath";
             txtContentPath.Size = new Size(329, 39);
@@ -358,7 +360,7 @@
             // 
             // ctSelectButton
             // 
-            ctSelectButton.Location = new Point(1228, 902);
+            ctSelectButton.Location = new Point(1236, 901);
             ctSelectButton.Margin = new Padding(6);
             ctSelectButton.Name = "ctSelectButton";
             ctSelectButton.Size = new Size(313, 41);
@@ -369,7 +371,7 @@
             // 
             // projDirSelectButton
             // 
-            projDirSelectButton.Location = new Point(1228, 955);
+            projDirSelectButton.Location = new Point(1236, 954);
             projDirSelectButton.Margin = new Padding(6);
             projDirSelectButton.Name = "projDirSelectButton";
             projDirSelectButton.Size = new Size(313, 39);
@@ -380,7 +382,7 @@
             // 
             // txtProjDirPath
             // 
-            txtProjDirPath.Location = new Point(887, 955);
+            txtProjDirPath.Location = new Point(895, 954);
             txtProjDirPath.Margin = new Padding(6);
             txtProjDirPath.Name = "txtProjDirPath";
             txtProjDirPath.Size = new Size(329, 39);
@@ -410,11 +412,31 @@
             numRarity.TabIndex = 31;
             numRarity.Value = new decimal(new int[] { 1, 0, 0, 0 });
             // 
+            // descriptionLabel
+            // 
+            descriptionLabel.AutoSize = true;
+            descriptionLabel.Font = new Font("Segoe UI", 12F);
+            descriptionLabel.Location = new Point(578, 20);
+            descriptionLabel.Name = "descriptionLabel";
+            descriptionLabel.Size = new Size(246, 45);
+            descriptionLabel.TabIndex = 33;
+            descriptionLabel.Text = "Part Description";
+            // 
+            // textBoxDescription
+            // 
+            textBoxDescription.Location = new Point(560, 85);
+            textBoxDescription.Multiline = true;
+            textBoxDescription.Name = "textBoxDescription";
+            textBoxDescription.Size = new Size(272, 179);
+            textBoxDescription.TabIndex = 34;
+            // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(13F, 32F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1597, 1039);
+            ClientSize = new Size(1606, 1039);
+            Controls.Add(textBoxDescription);
+            Controls.Add(descriptionLabel);
             Controls.Add(labelRarity);
             Controls.Add(numRarity);
             Controls.Add(behaviorLabel);
@@ -499,5 +521,7 @@
         private TextBox txtProjDirPath;
         private Label labelRarity;
         private NumericUpDown numRarity;
+        private Label descriptionLabel;
+        private TextBox textBoxDescription;
     }
 }

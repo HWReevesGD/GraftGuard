@@ -41,6 +41,11 @@ internal class MenuOptionVisual
     }
 
     /// <summary>
+    /// Gets the bounding box of the text visual
+    /// </summary>
+    public Rectangle Bounds { get => new Rectangle((int)X, (int)(Y - Height), (int)Width, (int)Height); }
+
+    /// <summary>
     /// Gets the position of the text visual
     /// </summary>
     public Vector2 Position { get => new Vector2(itemLeftPadding + XOffset, YPosition);  }
@@ -153,6 +158,10 @@ internal class MainMenu {
         UpdateMenu(gameTime);
     }
 
+    /// <summary>
+    /// Method to be called when a menu item has been picked (pressed enter or clicked on an item)
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
     private void OnOptionPicked(GameTime gameTime)
     {
         switch (selectedItemIndex)
@@ -196,22 +205,27 @@ internal class MainMenu {
             OnOptionPicked(gameTime);
     }
 
+    /// <summary>
+    /// Update for mouse controls on main menu items
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
     private void UpdateButtonMouseInputs(GameTime gameTime)
     {
-        MouseState ms = Mouse.GetState();
+        bool clicked = inputManager.LeftMouseClicked();
+
         for (int i = 0; i < menuItemOrder.Length; i++)
         {
             MenuOptionVisual visual = optionVisuals[i];
+            Point mousePos = inputManager.MouseScreenPosition;
 
-            if (
-                ms.X >= visual.X && ms.X <= visual.X + visual.Width &&
-                ms.Y >= visual.Y && ms.Y <= visual.Y + visual.Height
-                )
+            if (visual.Bounds.Contains(inputManager.MouseScreenPosition))
             {
-                if (prevMouseSelectedItemIndex != i)
+                if (clicked || prevMouseSelectedItemIndex != i)
+                {
                     selectedItemIndex = i;
-
-                prevMouseSelectedItemIndex = i;
+                    if (clicked)
+                        OnOptionPicked(gameTime);
+                }
                 return;
             }
         }
@@ -225,9 +239,11 @@ internal class MainMenu {
     public void UpdateMenu(GameTime gameTime)
     {
         if (!optionWasPicked)
+        {
             ProcessKeys(gameTime);
-
-        UpdateButtonMouseInputs(gameTime);
+            UpdateButtonMouseInputs(gameTime);
+        }
+        
         UpdateMenuItemVisuals(gameTime);
         inputManager.Update();
     }

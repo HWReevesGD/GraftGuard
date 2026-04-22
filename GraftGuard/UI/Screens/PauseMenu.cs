@@ -1,4 +1,4 @@
-﻿// pause menu
+﻿  // pause menu
 
 using GraftGuard.Data;
 using GraftGuard.Graphics;
@@ -18,7 +18,6 @@ internal class PauseMenu
     private readonly static float screenScale = 2;
     private readonly static float padding = 150;
 
-    private static Texture2D backgroundTexture;
     private InputManager inputManager;
 
     private readonly static string[] options = new string[] { "Return to Game", "Quit Game" };
@@ -26,16 +25,23 @@ internal class PauseMenu
     private readonly float arrowsOptionMargin = 25;
     private readonly float arrowLerpSpeed = 20;
     private readonly float textShakeIntensity = 1.5f;
+
     private readonly float viewAreaSpinSpeed = -1f;
+    private readonly float viewAreaTargetDistance = 700;
+    private readonly float viewAreaOutDistance = 1150;
+    private readonly float viewAreaLerpSpeed = 5;
+    private readonly float viewAreaLerpTime = 0.5f;
 
     private int selected = 0;
     private float arrowYPosition = 0;
     private float arrowCenterOffset = 0;
 
+    private float viewAreaDistance = 800;
+    private float lastMenuInTime = 0;
 
     public static void LoadContent(ContentManager content)
     {
-        backgroundTexture = content.Load<Texture2D>("pixel");
+        
     }
 
     public PauseMenu(InputManager inputManager)
@@ -67,10 +73,17 @@ internal class PauseMenu
         inputManager.Update();
     }
 
-    private void DrawBorder(DrawManager drawing, GameTime gameTime)
+    private void DrawBorder(DrawManager drawing, GameTime gameTime, bool enabled)
     {
-        float distance = 700 * screenScale;
+        float targetViewDistance = enabled ? viewAreaTargetDistance : viewAreaOutDistance;
+        viewAreaDistance = MathHelper.Lerp(viewAreaDistance, targetViewDistance, Math.Min(gameTime.Delta() * viewAreaLerpSpeed, 1));
+
+        if (gameTime.Total() - lastMenuInTime > viewAreaLerpTime)
+            return;
+
+        float distance = viewAreaDistance * screenScale;
         int size = (int)Math.Max(Interface.Width, Interface.Height);
+
         for (int i = 0; i < 4; i++)
         {
             float rotation = gameTime.Total() * viewAreaSpinSpeed + (MathF.PI / 2) * i;
@@ -83,12 +96,18 @@ internal class PauseMenu
 
     public void Draw(DrawManager drawing, GameTime gameTime, bool enabled)
     {
+        DrawBorder(drawing, gameTime, enabled);
+
+        if (!enabled)
+            return;
+
+        lastMenuInTime = gameTime.Total();
+
         // draw menu items
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         drawing.Draw(Placeholders.TexturePixel, fullScreenRect, color: new Color(0, 0, 0, 0.75f), isUi: true, drawLayer: 4);
-
-        DrawBorder(drawing, gameTime);
+        
 
         // options
 

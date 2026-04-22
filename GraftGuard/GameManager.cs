@@ -276,6 +276,7 @@ namespace GraftGuard
                 case GameState.Game:
                     DrawGameSession(DrawManager, gameTime);
                     _nextDayTransition.Draw(DrawManager, gameTime);
+                    _pauseMenu.Draw(DrawManager, gameTime, false);
 
                     break;
                 case GameState.Paused:

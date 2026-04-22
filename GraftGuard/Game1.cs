@@ -105,8 +105,8 @@ public class Game1 : Game
 
         // Registering Towers
         TowerRegistry.Register("Spinner", TowerSpinner.Create, TowerSpinner.DrawPreview, Tower.TexturePlaceholderTower);
-        TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret);
-        TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest);
+        TowerRegistry.Register("Turret", TowerTurret.Create, TowerTurret.DrawPreview, Tower.TTurret, 1);
+        TowerRegistry.Register("Nest", TowerNest.Create, TowerNest.DrawPreview, Tower.TNest, 2);
 
         HumanoidEnemyRegistry.Load(Content);
 

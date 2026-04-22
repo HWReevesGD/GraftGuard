@@ -21,6 +21,7 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
     public Color TextColor { get; set; }
     public Texture2D? Icon { get; set; }
     public ButtonIconType IconType { get; set; }
+    public bool Disabled { get; set; } = false;
 
     private MouseState _lastMouseState = new MouseState();
     private MouseState _thisMouseState = new MouseState();
@@ -58,13 +59,24 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
     /// </summary>
     public virtual void Update(InputManager inputManager)
     {
-        // Update Mouse States
-        _lastMouseState = _thisMouseState;
-        _thisMouseState = inputManager.CurrentMouse;
+        if (!Disabled)
+        {
+            // Update Mouse States
+            _lastMouseState = _thisMouseState;
+            _thisMouseState = inputManager.CurrentMouse;
+        } else
+        {
+            _lastMouseState = new MouseState();
+            _thisMouseState = new MouseState();
+        }
     }
 
     public virtual void Draw(DrawManager drawing, Color? color = null, Rectangle? scissor = null)
     {
+        if (Disabled)
+        {
+            drawing.Draw(Placeholders.TexturePixel, Box, sortMode: SortMode.Top, isUi: true, color: new Color(Color.Black, 0.7f));
+        }
         DrawIcon(drawing);
         DrawText(drawing);
     }

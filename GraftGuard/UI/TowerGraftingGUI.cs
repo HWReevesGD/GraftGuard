@@ -173,11 +173,12 @@ internal class TowerGraftingGUI
         {
             TowerDefinition towerDefinition = availableTowers[index];
             _towerChoices.Add(towerDefinition);
-            _towerChoiceButtons.Add(
-                PatchButton.MakeBase(
+            PatchButton button = PatchButton.MakeBase(
                     Vector2.One, Vector2.One,
                     towerDefinition.Name
-                    ));
+                    );
+            _towerChoiceButtons.Add(button);
+            button.Disabled = towerDefinition.RoundUnlocked > PlayerData.CurrentGame.GameLog.RoundsSurvived;
         }
 
         // Populate Parts

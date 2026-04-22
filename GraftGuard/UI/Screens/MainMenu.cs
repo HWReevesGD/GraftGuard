@@ -42,32 +42,17 @@ internal class MainMenuOptionVisual
     /// <summary>
     /// Gets the bounding box of the text visual
     /// </summary>
-    public Rectangle Bounds { get => new Rectangle((int)X, (int)(Y - Height), (int)Width, (int)Height); }
+    public Rectangle Bounds { get => new Rectangle(
+        (int)Position.X,
+        (int)(Position.Y - Text.Height),
+        Text.Width,
+        Text.Height);
+    }
 
     /// <summary>
     /// Gets the position of the text visual
     /// </summary>
     public Vector2 Position { get => new Vector2(itemLeftPadding + XOffset, YPosition);  }
-
-    /// <summary>
-    /// Gets the X-coordinate of the position of the text visual
-    /// </summary>
-    public float X { get => Position.X; }
-
-    /// <summary>
-    /// Gets the Y-coordinate of the position of the text visual
-    /// </summary>
-    public float Y { get => Position.Y; }
-
-    /// <summary>
-    /// Gets the width of the text visual
-    /// </summary>
-    public float Width { get => Text.Width; }
-
-    /// <summary>
-    /// Gets the height of the text visual
-    /// </summary>
-    public float Height { get => Text.Height;  }
 }
 
 internal class MainMenu {
@@ -236,6 +221,7 @@ internal class MainMenu {
 
             if (visual.Bounds.Contains(inputManager.MouseScreenPosition))
             {
+                // if clicked or different item hovered over
                 if (clicked || prevMouseSelectedItemIndex != i)
                 {
                     selectedItemIndex = i;

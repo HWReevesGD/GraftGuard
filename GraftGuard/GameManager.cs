@@ -181,6 +181,7 @@ namespace GraftGuard
             if (inputManager.WasKeyPressStarted(Keys.Escape))
             {
                 PlayerData.CurrentState = GameState.Paused;
+                _pauseMenu.Reset();
                 return;
             }
 

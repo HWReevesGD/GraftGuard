@@ -160,6 +160,14 @@ internal class PauseMenu
     }
 
     /// <summary>
+    /// Reset the pause menu to have the first option selected
+    /// </summary>
+    public void Reset()
+    {
+        selected = 0;
+    }
+
+    /// <summary>
     /// Handle what happens when an option is selected
     /// </summary>
     public void OnOptionPicked(GameTime gameTime)

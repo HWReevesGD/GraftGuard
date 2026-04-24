@@ -110,7 +110,7 @@ internal class PatchButton : Button
 
         Rectangle destinationRectangle = IconType switch
         {
-            ButtonIconType.Fixed => new Rectangle((Position + Size * 0.5f - Icon.GetSize() * 0.5f).ToPoint(), Icon.GetSizePoint()),
+            ButtonIconType.Fixed => new Rectangle((Position + Size * 0.5f - Icon.GetSize() * IconScale * 0.5f).ToPoint(), Icon.GetSizePoint() * IconScale.ToPoint()),
             ButtonIconType.Stretch => new Rectangle(marginPosition.ToPoint(), marginSize.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((marginPosition + marginSize * 0.5f - marginSize.SquareOfSmallest() * 0.5f).ToPoint(), marginSize.SquareOfSmallest().ToPoint())
         };
@@ -121,6 +121,10 @@ internal class PatchButton : Button
 
     protected override void DrawText(DrawManager drawing)
     {
+        if (HideText)
+        {
+            return;
+        }
         if (!FitTextToPatchMargins)
         {
             base.DrawText(drawing);

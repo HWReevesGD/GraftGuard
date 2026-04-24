@@ -38,6 +38,7 @@ internal class GameOverScreen
     private static readonly float titleShakeMagnitude = 10;
     private static readonly float titleShakeDecayTime = 0.5f;
     private static readonly float reasonShakeDecayTime = 0.35f;
+    private static readonly float returnTextFlashPeriod = 0.25f;
 
     private bool isScoreShowing = false;
     private bool isHiScoreShowing = false;
@@ -320,7 +321,7 @@ internal class GameOverScreen
 
         //
 
-        if (isReturnShowing)
+        if (isReturnShowing && MathF.Floor((float)gameTime.Total() / returnTextFlashPeriod) % 2 == 0)
         {
             new Text(Fonts.SubFont, "< Press Enter or Esc to return to Menu >")
                 .SetXOrigin(XOrigin.Center)

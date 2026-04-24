@@ -159,8 +159,8 @@ internal class TaskSchedule
 
     private float time;
     private float elapsed;
-    public List<Task> tasks;
-    public bool isSorted;
+    private List<Task> tasks;
+    private event Action OnCancel;
 
     /// <summary>
     /// Initialize this schedule
@@ -169,7 +169,6 @@ internal class TaskSchedule
     {
         time = 0;
         tasks = new List<Task>();
-        isSorted = false;
         schedules.Add(this);
     }
 
@@ -245,6 +244,17 @@ internal class TaskSchedule
     }
 
     /// <summary>
+    /// Add a delegate that runs when this task is cancelled
+    /// </summary>
+    /// <param name="callback">Delegate (no params)</param>
+    /// <returns>this</returns>
+    public TaskSchedule OnCancelled(Action callback)
+    {
+        OnCancel += callback;
+        return this;
+    }
+
+    /// <summary>
     /// Advance schedule execution forward
     /// </summary>
     /// <param name="gameTime">This frame's GameTime</param>
@@ -284,5 +294,6 @@ internal class TaskSchedule
     public void Cancel()
     {
         toRemoveNext.Add(this);
+        OnCancel?.Invoke();
     }
 }

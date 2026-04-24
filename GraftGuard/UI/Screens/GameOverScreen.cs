@@ -10,8 +10,93 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Collections.Generic;
 
 namespace GraftGuard.UI.Screens;
+
+/// <summary>
+/// Blood splat thing that auto randomizes on initialization
+/// </summary>
+internal struct GameOverBloodSplat
+{
+    private static Texture2D bloodSplatTexture1;
+    private static Texture2D bloodSplatTexture2;
+    private static Texture2D bloodSplatTexture3;
+    private static float screenScale = 2.0f;
+    private static Vector2 splatRegionSize = new Vector2(550, 550);
+    private static float bloodSplatMinSize = 350;
+    private static float bloodSplatMaxSize = 500;
+
+    private static float startOpacity = 1;
+    private static float endOpacity = 0.15f;
+    private static float decayTime = 3;
+
+    private static Vector2 absoluteSplatRegionSize = splatRegionSize * screenScale;
+
+    /// <summary>
+    /// Load blood splat images
+    /// </summary>
+    /// <param name="content">ContentManager</param>
+    public static void LoadContent(ContentManager content)
+    {
+        bloodSplatTexture1 = content.Load<Texture2D>("UI/BloodSplats/BloodSplat1");
+        bloodSplatTexture2 = content.Load<Texture2D>("UI/BloodSplats/BloodSplat2");
+        bloodSplatTexture3 = content.Load<Texture2D>("UI/BloodSplats/BloodSplat3");
+    }
+
+    private float createTime;
+
+    public Texture2D Texture;
+    public float Rotation;
+    public Vector2 CenterOffsetPosition;
+    public Vector2 Size;
+
+    /// <summary>
+    /// Gets the destination rectangle to draw this blood splat at
+    /// </summary>
+    public Rectangle Rect { get => new Rectangle(
+        (int)(Interface.Width / 2 + CenterOffsetPosition.X),
+        (int)(Interface.Height / 2 + CenterOffsetPosition.Y),
+        (int)(Size.X * screenScale),
+        (int)(Size.Y * screenScale)
+        ); }
+
+    /// <summary>
+    /// Get the current color of the blood splat, becomes more transparent over time
+    /// </summary>
+    /// <param name="gameTime">GameTime</param>
+    /// <returns>Color at the current time</returns>
+    public Color GetColor(GameTime gameTime)
+    {
+        float alpha = MathF.Min((gameTime.Total() - createTime) / decayTime, 1);
+        float opacity = MathHelper.Lerp(startOpacity, endOpacity, alpha);
+        return new Color(255, 255, 255, opacity);
+    }
+
+    public GameOverBloodSplat(GameTime gameTime)
+    {
+        Random rng = new Random();
+
+        createTime = gameTime.Total();
+
+        Texture = rng.Next(0, 2) switch
+        {
+            0 => bloodSplatTexture1,
+            1 => bloodSplatTexture2,
+            2 => bloodSplatTexture3,
+            _ => bloodSplatTexture1
+        };
+
+        Rotation = rng.NextSingle() * MathF.PI * 2;
+
+        CenterOffsetPosition = new Vector2(
+            -absoluteSplatRegionSize.X / 2 + rng.NextSingle() * absoluteSplatRegionSize.X,
+            -absoluteSplatRegionSize.Y / 2 + rng.NextSingle() * absoluteSplatRegionSize.Y
+            );
+
+        Size = Vector2.One * MathHelper.Lerp(bloodSplatMinSize, bloodSplatMaxSize, rng.NextSingle());
+    }
+}
 
 /// <summary>
 /// Game over screen visuals
@@ -23,8 +108,6 @@ internal class GameOverScreen
     private InputManager inputManager;
     private float startShowingTime;
     private string failReason = "None";
-
-    private static Texture2D backgroundTexture;
 
     private static readonly float screenScale = 2.0f;
 
@@ -50,6 +133,7 @@ internal class GameOverScreen
     private Text reasonText;
     private ShakeTextEffect reasonTextShake;
     private ParticleManager particles;
+    private List<GameOverBloodSplat> bloodSplats;
     private bool allowExiting = true;
 
     private SwipeTransition swipeTransition;
@@ -57,7 +141,7 @@ internal class GameOverScreen
 
     public static void LoadContent(ContentManager content)
     {
-        backgroundTexture = content.Load<Texture2D>("pixel");
+        GameOverBloodSplat.LoadContent(content);
     }
 
     /// <summary>
@@ -75,6 +159,7 @@ internal class GameOverScreen
             .AddEffect(reasonTextShake);
 
         particles = new ParticleManager();
+        bloodSplats = new List<GameOverBloodSplat>();
         swipeTransition = new SwipeTransition(false);
     }
 
@@ -113,6 +198,19 @@ internal class GameOverScreen
         // do the kind of typing effect
         currentTasks = new TaskSchedule();
         currentTasks.Wait(0.5f);
+
+        TaskSchedule bloodSplatSchedule = new TaskSchedule();
+
+        for (int i = 0; i < 15; i++)
+        {
+            bloodSplatSchedule.Wait(0.02f);
+            bloodSplatSchedule.Run(() =>
+            {
+                bloodSplats.Add(new GameOverBloodSplat(currentGameTime));
+            });
+        }
+
+        currentTasks.OnCancelled(bloodSplatSchedule.Cancel);
 
         string[] words = failReason.Split(" ");
         for (int i = 0; i < words.Length; i++)
@@ -158,7 +256,7 @@ internal class GameOverScreen
         }
 
         int score = session.CurrentScore;
-        int hiScore = PlayerData.HighScore; // PlayerData.HighScore
+        int hiScore = PlayerData.HighScore;
 
         float scoreCountTime = Math.Min(score / (float)countRate, countUpMaxTime);
         float hiScoreCountTime = Math.Min(hiScore / (float)countRate, countUpMaxTime);
@@ -212,6 +310,7 @@ internal class GameOverScreen
                 swipeTransition.Clear();
                 particles.Clear();
                 currentTasks.Cancel();
+                bloodSplats.Clear();
                 allowExiting = true;
             });
     }
@@ -239,18 +338,25 @@ internal class GameOverScreen
     /// <param name="gameTime">GameTime</param>
     public void Draw(DrawManager drawing, GameTime gameTime)
     {
-        // Draw by the Camera's Position
+        // Draw world by the Camera's Position
         world.DrawCamera(drawing, gameTime, session.Time, inputManager, true);
 
-        // draw menu items
+        // draw background
 
         Rectangle fullScreenRect = new Rectangle(0, 0, (int)Interface.Width, (int)Interface.Height);
         Color bgColor = new Color(0, 0, 0, 0.75f);
-        drawing.Draw(backgroundTexture, destination: fullScreenRect, color: bgColor, isUi: true);
+        drawing.Draw(Placeholders.TexturePixel, destination: fullScreenRect, color: bgColor, drawLayer: 1, isUi: true);
 
         float screenScale = 2.0f;
         float centerX = Interface.Width / 2;
         float centerY = Interface.Height / 2;
+
+        // blood splats
+
+        foreach (GameOverBloodSplat bloodSplat in bloodSplats)
+        {
+            drawing.DrawCentered(bloodSplat.Texture, destination: bloodSplat.Rect, color: bloodSplat.GetColor(gameTime), rotation: bloodSplat.Rotation, drawLayer: 2, isUi: true);
+        }
 
         // title
 
@@ -259,10 +365,10 @@ internal class GameOverScreen
 
         new Text(Fonts.SubFont, titleText).SetXOrigin(XOrigin.Center)
             .AddEffect(new ShakeTextEffect(shakeMagnitude))
-            .Draw(drawing, gameTime, new Vector2(centerX, centerY - (150 * screenScale)));
+            .Draw(drawing, gameTime, new Vector2(centerX, centerY - (150 * screenScale)), drawLayer: 3);
 
         // reason
-        reasonText.Draw(drawing, gameTime, GetReasonTextPosition());
+        reasonText.Draw(drawing, gameTime, GetReasonTextPosition(), drawLayer: 3);
 
         // score stuff
 
@@ -280,7 +386,7 @@ internal class GameOverScreen
                 text: scoreText,
                 position: new Vector2(centerX - scoreTextSize.X - scaledGap / 2, scoreY),
                 isUi: true,
-                drawLayer: 2);
+                drawLayer: 3);
 
             drawing.DrawString(
                 font: Fonts.SubFont,
@@ -290,7 +396,7 @@ internal class GameOverScreen
                     scoreY //+ (scoreCountIsUp ? -scaledJump : 0)
                     ),
                 isUi: true,
-                drawLayer: 2);
+                drawLayer: 3);
         }
 
         // hi score text
@@ -306,7 +412,7 @@ internal class GameOverScreen
                     centerX - hiScoreTextSize.X - scaledGap / 2,
                     hiScoreY),
                 isUi: true,
-                drawLayer: 2);
+                drawLayer: 3);
 
             drawing.DrawString(
                 font: Fonts.SubFont,
@@ -316,7 +422,7 @@ internal class GameOverScreen
                     hiScoreY //+ (hiScoreCountIsUp ? -scaledJump : 0)
                     ),
                 isUi: true,
-                drawLayer: 2);
+                drawLayer: 3);
         }
 
         //
@@ -331,6 +437,7 @@ internal class GameOverScreen
                     drawing,
                     gameTime,
                     new Vector2(centerX, centerY + 150 * screenScale),
+                    drawLayer: 3,
                     isUi: true
                     );
         }

@@ -22,6 +22,8 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
     public Texture2D? Icon { get; set; }
     public ButtonIconType IconType { get; set; }
     public bool Disabled { get; set; } = false;
+    public bool HideText { get; set; } = false;
+    public Vector2 IconScale { get; set; } = Vector2.One;
 
     private MouseState _lastMouseState = new MouseState();
     private MouseState _thisMouseState = new MouseState();
@@ -83,6 +85,10 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
 
     protected virtual void DrawText(DrawManager drawing)
     {
+        if (HideText)
+        {
+            return;
+        }
         drawing.DrawString(
             font: Font,
             text: Text,
@@ -96,7 +102,7 @@ internal class Button : IMouseDetectable, IPositional, ISizeable
         if (Icon is null) return;
         Rectangle destinationRectangle = IconType switch
         {
-            ButtonIconType.Fixed => new Rectangle((Position + Size * 0.5f - Icon.GetSize() * 0.5f).ToPoint(), Icon.GetSizePoint()),
+            ButtonIconType.Fixed => new Rectangle((Position + Size * 0.5f - Icon.GetSize() * IconScale * 0.5f).ToPoint(), Icon.GetSizePoint() * IconScale.ToPoint()),
             ButtonIconType.Stretch => new Rectangle(Position.ToPoint(), Size.ToPoint()),
             ButtonIconType.AspectStretch => new Rectangle((Position + Size * 0.5f - Size.SquareOfSmallest() * 0.5f).ToPoint(), Size.SquareOfSmallest().ToPoint())
         };

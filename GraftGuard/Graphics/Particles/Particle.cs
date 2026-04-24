@@ -56,7 +56,7 @@ internal class Particle
     /// <returns>this</returns>
     public Particle SetSpeed(float minSpeed, float maxSpeed)
     {
-        SetSpeed(minSpeed + (float)rng.NextDouble() * (maxSpeed - minSpeed));
+        SetSpeed(minSpeed + rng.NextSingle() * (maxSpeed - minSpeed));
         return this;
     }
 
@@ -79,7 +79,7 @@ internal class Particle
     /// <returns>this</returns>
     public Particle SetLifetime(float minLifetime, float maxLifetime)
     {
-        SetLifetime(minLifetime + (float)rng.NextDouble() * (maxLifetime - minLifetime));
+        SetLifetime(minLifetime + rng.NextSingle() * (maxLifetime - minLifetime));
         return this;
     }
 
@@ -102,7 +102,7 @@ internal class Particle
     /// <returns>this</returns>
     public Particle SetAngle(float minAngle, float maxAngle)
     {
-        SetAngle(minAngle + (float)rng.NextDouble() * (maxAngle - minAngle));
+        SetAngle(minAngle + rng.NextSingle() * (maxAngle - minAngle));
         return this;
     }
 
@@ -125,7 +125,7 @@ internal class Particle
     /// <returns>this</returns>
     public Particle SetRotation(float minRotation, float maxRotation)
     {
-        SetRotation(minRotation + (float)rng.NextDouble() * (maxRotation - minRotation));
+        SetRotation(minRotation + rng.NextSingle() * (maxRotation - minRotation));
         return this;
     }
 
@@ -148,7 +148,7 @@ internal class Particle
     /// <returns>this</returns>
     public Particle SetRotVelocity(float minRotVelocity, float maxRotVelocity)
     {
-        SetRotVelocity(minRotVelocity + (float)rng.NextDouble() * (maxRotVelocity - minRotVelocity));
+        SetRotVelocity(minRotVelocity + rng.NextSingle() * (maxRotVelocity - minRotVelocity));
         return this;
     }
 

@@ -22,8 +22,8 @@ internal class Effects
         for (int i = 0; i < amount; i++)
         {
             Vector2 position = centerPosition + new Vector2(
-                -emissionAreaWidth / 2 + (float)rng.NextDouble() * emissionAreaWidth,
-                -emissionAreaWidth / 2 + (float)rng.NextDouble() * emissionAreaWidth
+                -emissionAreaWidth / 2 + rng.NextSingle() * emissionAreaWidth,
+                -emissionAreaWidth / 2 + rng.NextSingle() * emissionAreaWidth
                 );
             particles.Add(
                 new Particle(Placeholders.TexturePixel)

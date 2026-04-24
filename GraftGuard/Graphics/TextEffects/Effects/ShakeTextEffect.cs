@@ -36,8 +36,8 @@ internal class ShakeTextEffect : ITextEffect
     /// <returns>Modified Letter struct</returns>
     public Letter DoEffect(int index, GameTime gameTime, Letter letter)
     {
-        float xMul = -1 + (float)rng.NextDouble() * 2;
-        float yMul = -1 + (float)rng.NextDouble() * 2;
+        float xMul = -1 + rng.NextSingle() * 2;
+        float yMul = -1 + rng.NextSingle() * 2;
         letter.Position += new Vector2(xMul, yMul) * Magnitude;
         return letter;
     }

@@ -241,8 +241,8 @@ internal class GameOverScreen
                                 .SetAngle(-(float)Math.PI / 4, -(float)Math.PI * 3 / 4)
                                 .SetSpeed(75, 160)
                                 .SetPosition(new Vector2(
-                                    float.Lerp(reasonTextPos.X + reasonText.Width / 2 - wordText.Width, reasonTextPos.X + reasonText.Width / 2, (float)rng.NextDouble()),
-                                    float.Lerp(reasonTextPos.Y, reasonTextPos.Y + reasonText.Height, (float)rng.NextDouble())
+                                    float.Lerp(reasonTextPos.X + reasonText.Width / 2 - wordText.Width, reasonTextPos.X + reasonText.Width / 2, rng.NextSingle()),
+                                    float.Lerp(reasonTextPos.Y, reasonTextPos.Y + reasonText.Height, rng.NextSingle())
                                     ))
                                 .SetAcceleration(new Vector2(0, 1500))
                             );

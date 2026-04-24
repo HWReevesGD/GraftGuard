@@ -88,13 +88,13 @@ internal class MainMenuBackgroundWorld
         float pathSpawnDistancePercentage = MathHelper.Lerp(
             towerSpawnPathLengthMinPercentage,
             towerSpawnPathLengthMaxPercentage,
-            (float)rng.NextDouble()
+            rng.NextSingle()
             );
 
         Vector2 nodePosition = path[(int)(path.Count * pathSpawnDistancePercentage)].WorldPosition;
         return new Vector2(
-            nodePosition.X - towerSpawnMaxRandomOffset / 2 + (float)rng.NextDouble() * towerSpawnMaxRandomOffset,
-            nodePosition.Y - towerSpawnMaxRandomOffset / 2 + (float)rng.NextDouble() * towerSpawnMaxRandomOffset
+            nodePosition.X - towerSpawnMaxRandomOffset / 2 + rng.NextSingle() * towerSpawnMaxRandomOffset,
+            nodePosition.Y - towerSpawnMaxRandomOffset / 2 + rng.NextSingle() * towerSpawnMaxRandomOffset
             );
     }
 

@@ -194,11 +194,13 @@ internal class TowerGraftingGUI
         {
             PartDefinition partDefinition = availableParts[index];
             _partChoices.Add(partDefinition);
-            _partChoiceButtons.Add(
-                PatchButton.MakeBase(
+            PatchButton button = PatchButton.MakeBase(
                     Vector2.One, Vector2.One,
                     icon: partDefinition.Texture
-                    ));
+                    );
+            button.HideText = true;
+            button.IconScale = new Vector2(2, 2);
+            _partChoiceButtons.Add(button);
         }
     }
 
@@ -249,6 +251,8 @@ internal class TowerGraftingGUI
         _partChoiceButtons.Update(time,
             inputManager, (button, index) =>
             {
+                button.Disabled = world.Inventory.GetPartCount(_partChoices[index]) == 0;
+
                 button.Text = $"{world.Inventory.GetPartCount(_partChoices[index])}";
 
                 button.Update(inputManager);
@@ -428,7 +432,12 @@ internal class TowerGraftingGUI
         // Scissor for Parts
         //ReBatchWithScissor(drawing, _partChoiceButtons.GridRectangle);
         // Draw each Part Button
-        _partChoiceButtons.Draw(drawing, (batch, button, _) => button.Draw(batch));
+        _partChoiceButtons.Draw(drawing, (batch, button, _) =>
+        {
+            button.Draw(batch);
+            drawing.DrawString(button.Text, button.Position + new Vector2(4, 4), isUi: true, sortMode: SortMode.Top);
+            drawing.DrawString(button.Text, button.Position + new Vector2(4, 4), isUi: true, sortMode: SortMode.MiddleTop, color: Color.Black, scale: Vector2.One * 1.3f);
+        });
 
         // Back to Normal
         //ReBatchNormal(drawing);

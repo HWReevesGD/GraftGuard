@@ -35,5 +35,6 @@ internal class ProjectileBullet : Projectile
         {
             DealDamage(world, damage, 0.25f);
         }
+
     }
 }

@@ -87,6 +87,12 @@ internal class Projectile
             manager.Remove(this);
         }
 
+        // Whenever a projectile hits terrain, delete it
+        if (world.Terrain.Overlaps(this.HitCircle))
+        {
+            manager.Remove(this);
+        }
+
         RemainingLifetime -= time.Delta();
     }
 

@@ -153,7 +153,7 @@ internal class GameHUD
                 float heartHealthSize = (float)PlayerData.CurrentGame.MaxHealth / numHearts;
                 float lastHeartSize = PlayerData.CurrentGame.Health - heartHealthSize * i;
                 float lastHeartPercentageSize = lastHeartSize / heartHealthSize;
-                spritesheetIndex = (int)Math.Ceiling(lastHeartPercentageSize * (numHeartSegments - 1));
+                spritesheetIndex = (int)Math.Round(lastHeartPercentageSize * (numHeartSegments - 1));
             }
             else
             {

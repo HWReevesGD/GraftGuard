@@ -149,18 +149,11 @@ internal class GameHUD
             // render current heart in fractions
             if (i == currentHearts - 1)
             {
-                // figure out what spritesheet index is needed
-                // this took a bit of thinking so its thoroughly annotated
-
-                float percentSegmentSize = 1f / numHearts;
-                // overall health percentage
-                float healthPercent = (float)PlayerData.CurrentGame.Health / PlayerData.CurrentGame.MaxHealth;
-                // health percentage relevant to this heart
-                float percentMod = healthPercent % percentSegmentSize;
-                // as percentage of the percentage of one heart
-                float heartPercent = percentMod / percentSegmentSize;
-                // force round down (so that spritesheetIndex will not equal numHeartSegments)
-                spritesheetIndex = (int)Math.Round(heartPercent * numHeartSegments - 0.5f);
+                // figure out the sprite sheet index needed to display this heart
+                float heartHealthSize = (float)PlayerData.CurrentGame.MaxHealth / numHearts;
+                float lastHeartSize = PlayerData.CurrentGame.Health - heartHealthSize * i;
+                float lastHeartPercentageSize = lastHeartSize / heartHealthSize;
+                spritesheetIndex = (int)Math.Ceiling(lastHeartPercentageSize * (numHeartSegments - 1));
             }
             else
             {

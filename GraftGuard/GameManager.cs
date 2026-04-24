@@ -184,6 +184,12 @@ namespace GraftGuard
                 return;
             }
 
+            // If the player hit enter during dawn, skip to day
+            if (inputManager.WasKeyPressStarted(Keys.Enter) && PlayerData.CurrentGame.Time == TimeState.Dawn)
+            {
+                session.Timer = 0;
+            }
+
             //bool canPlayerMove = (session.Time != TimeState.Day);
 
             _world.Update(gameTime, inputManager, session.Time, true);

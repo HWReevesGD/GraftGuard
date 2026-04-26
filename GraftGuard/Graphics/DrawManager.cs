@@ -11,7 +11,7 @@ namespace GraftGuard.Graphics;
 internal class DrawManager
 {
     public SpriteBatch Batch;
-    public const int LayerCount = 8;
+    public const int LayerCount = 10;
     public List<List<DrawInstruction>> DrawLayers { get; private set; } = [];
     public List<List<DrawInstruction>> DrawUILayers { get; private set; } = [];
     public const float SortingCompressment = 1.0f / 100_000_000_000.0f;

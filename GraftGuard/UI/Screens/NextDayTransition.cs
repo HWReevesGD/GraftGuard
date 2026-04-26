@@ -45,7 +45,7 @@ internal class NextDayTransition
             Alpha = MathF.Min(TimeLeft, 1.0f);
         }
 
-        drawing.Draw(Placeholders.TexturePixel, Interface.ScreenRect, drawLayer: 4, isUi: true, color: new Color(Color.Black, Alpha));
+        drawing.Draw(Placeholders.TexturePixel, Interface.ScreenRect, drawLayer: 8, isUi: true, color: new Color(Color.Black, Alpha));
 
         string day = $"DAY: {PlayerData.CurrentGame.GameLog.RoundsSurvived}";
 
@@ -60,7 +60,7 @@ internal class NextDayTransition
             day = $"DAY: {PlayerData.CurrentGame.GameLog.RoundsSurvived + 1}";
         }
 
-        drawing.DrawString(day, Interface.ScreenCenter, centered: true, font: Fonts.MainFont, color: new Color(Color.White, Alpha), drawLayer: 5, isUi: true);
+        drawing.DrawString(day, Interface.ScreenCenter, centered: true, font: Fonts.MainFont, color: new Color(Color.White, Alpha), drawLayer: 9, isUi: true);
     }
 
     public void EndTransition()

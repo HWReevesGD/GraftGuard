@@ -70,8 +70,6 @@ internal class MainMenu {
     private readonly MainMenuBackgroundWorld backgroundWorld;
     private readonly InputManager inputManager;
 
-    private static Texture2D note;
-
     private readonly static float titleLeftPadding = 20;
     private readonly static float itemLeftPadding = 40;
     private readonly static float itemBottomPadding = 20;
@@ -95,7 +93,7 @@ internal class MainMenu {
 
     public static void LoadContent(ContentManager content)
     {
-        note = content.Load<Texture2D>("UI/note");
+        MainMenuNote.LoadContent(content);
     }
 
     private Game1 game;
@@ -111,6 +109,9 @@ internal class MainMenu {
     private SwipeTransition inSwipeTransition;
     private bool optionWasPicked;
     private float optionPickedTime;
+
+    private GameTime currentGameTime;
+    private MainMenuNote note;
 
     public event ActionEvent NewGameStarted;
 
@@ -143,6 +144,8 @@ internal class MainMenu {
         outSwipeTransition = new SwipeTransition(false);
         inSwipeTransition = new SwipeTransition(true);
 
+        note = new MainMenuNote();
+
         OnInTransition += (GameTime gameTime) =>
         {
             inSwipeTransition.Start(gameTime, true);
@@ -157,6 +160,8 @@ internal class MainMenu {
     {
         if (inputManager.WasKeyPressStarted(Keys.Escape))
             game.Exit();
+
+        currentGameTime = gameTime;
 
         backgroundWorld.Update(gameTime);
         UpdateMenu(gameTime);
@@ -177,8 +182,13 @@ internal class MainMenu {
 
                 new TaskSchedule()
                     .Wait(gameBeginDelayTime)
+                    // this note transition should only happen on a new game...
+                    /// but it is only new game! so it always happen
+                    .Run(() => note.Start(currentGameTime.Total()))
+                    .Wait(2f)
                     .Run(() => {
                         PlayerData.StartNewGame(GameManager.DawnTimeLength);
+                        note.Stop();
                         NewGameStarted?.Invoke();
                         outSwipeTransition.Clear();
                         // reset main menu
@@ -350,14 +360,9 @@ internal class MainMenu {
             .AddEffect(new WavyTextEffect(7 + unpickedXOffsetPosition, -3))
             .Draw(drawing, gameTime, new Vector2(titleLeftPadding + unpickedXOffsetPosition, titleYPosition));
 
-        int noteWidth = (int)(Interface.Width * .25);
-        int noteHeight = (int)(Interface.Height * .4);
-
-        int notePadding = 25;
-        drawing.Draw(note, new Rectangle((int)Interface.Width - noteWidth - notePadding, (int)Interface.Height - noteHeight - notePadding, noteWidth, noteHeight),
-            isUi: true);
-
         outSwipeTransition.Draw(drawing, gameTime);
         inSwipeTransition.Draw(drawing, gameTime);
+
+        note.Draw(drawing, gameTime);
     }
 }

@@ -88,7 +88,8 @@ internal class Projectile
         }
 
         // Whenever a projectile hits terrain, delete it
-        if (world.Terrain.Overlaps(this.HitCircle))
+        // unless the texture is a dark orb, spiders shoot those
+        if (world.Terrain.Overlaps(this.HitCircle) && this.Texture != TDarkOrb)
         {
             manager.Remove(this);
         }

@@ -7,6 +7,7 @@ using GraftGuard.Graphics.TextEffects.Effects;
 using GraftGuard.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 
@@ -69,6 +70,8 @@ internal class MainMenu {
     private readonly MainMenuBackgroundWorld backgroundWorld;
     private readonly InputManager inputManager;
 
+    private static Texture2D note;
+
     private readonly static float titleLeftPadding = 20;
     private readonly static float itemLeftPadding = 40;
     private readonly static float itemBottomPadding = 20;
@@ -87,12 +90,12 @@ internal class MainMenu {
         "Start Game",
         "Continue Game",
         "Options",
-        "View Componedium"
+        //"View Componedium"
         ];
 
     public static void LoadContent(ContentManager content)
     {
-        
+        note = content.Load<Texture2D>("UI/note");
     }
 
     private Game1 game;
@@ -346,6 +349,13 @@ internal class MainMenu {
             .SetKerning(3)
             .AddEffect(new WavyTextEffect(7 + unpickedXOffsetPosition, -3))
             .Draw(drawing, gameTime, new Vector2(titleLeftPadding + unpickedXOffsetPosition, titleYPosition));
+
+        int noteWidth = (int)(Interface.Width * .25);
+        int noteHeight = (int)(Interface.Height * .4);
+
+        int notePadding = 25;
+        drawing.Draw(note, new Rectangle((int)Interface.Width - noteWidth - notePadding, (int)Interface.Height - noteHeight - notePadding, noteWidth, noteHeight),
+            isUi: true);
 
         outSwipeTransition.Draw(drawing, gameTime);
         inSwipeTransition.Draw(drawing, gameTime);

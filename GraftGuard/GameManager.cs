@@ -185,8 +185,8 @@ namespace GraftGuard
                 return;
             }
 
-            // If the player hit enter during dawn, skip to day
-            if (inputManager.WasKeyPressStarted(Keys.Enter) && PlayerData.CurrentGame.Time == TimeState.Dawn)
+            // If the player hit enter during dawn or night, skip to next time
+            if (inputManager.WasKeyPressStarted(Keys.Enter) && PlayerData.CurrentGame.Time != TimeState.Day && _world.EnemyManager.Enemies.Count <= 0)
             {
                 session.Timer = 0;
             }

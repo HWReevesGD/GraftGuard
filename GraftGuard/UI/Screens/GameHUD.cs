@@ -251,12 +251,14 @@ internal class GameHUD
             isUi: true);
         }
 
-        if(PlayerData.CurrentGame.Time == TimeState.Night)
+        if(PlayerData.CurrentGame.Time != TimeState.Day)
         {
             float offset = -40.0f;
-            new Text(Fonts.SubFont, $"Enemies Remaining: {world.EnemyManager.Enemies.Count}")
+            int enemiesRemaining = world.EnemyManager.Enemies.Count;
+            string displayText = enemiesRemaining <= 0 ? $"Press Enter to Skip {PlayerData.CurrentGame.Time}" : $"Enemies Remaining: {enemiesRemaining}";
+            new Text(Fonts.SubFont, displayText)
               .SetXOrigin(XOrigin.Center)
-              .Draw(drawing, gameTime, new Vector2(Interface.Width / 2 + 350f * hudScale, hudTopOffset + (64f + offset) * hudScale),
+              .Draw(drawing, gameTime, new Vector2(Interface.Width / 2 + 320f * hudScale, hudTopOffset + (64f + offset) * hudScale),
                isUi: true);
         }
 
@@ -287,7 +289,7 @@ internal class GameHUD
 
     public void Draw(DrawManager drawing, GameTime gameTime, bool active)
     {
-
+        TimeState currentTime = PlayerData.CurrentGame.Time;
         // whole hud offset
 
         if (hudPrevInactive != active)
@@ -311,17 +313,20 @@ internal class GameHUD
             hudTopOffset = MathHelper.Lerp(0, scaledInactiveTop, easeInAlpha);
         }
 
-        if (PlayerData.CurrentGame.Time == TimeState.Night)
+        int tooltipYOffset = 0;
+
+        if (currentTime == TimeState.Night)
         {
+            tooltipYOffset = - 110;
             DrawHealth(drawing, gameTime, active, hudTopOffset);
         }
 
         DrawTimer(drawing, gameTime, active, hudTopOffset);
 
         //controls tooltip
-        if (PlayerData.CurrentGame.Time != TimeState.Day)
+        if (currentTime != TimeState.Day)
         {
-            Rectangle controlReminderRect = new Rectangle((int)Interface.Width - 384, (int)Interface.Height - 384, 384, 384);
+            Rectangle controlReminderRect = new Rectangle((int)Interface.Width - 384, (int)Interface.Height - 384 + tooltipYOffset, 384, 384);
             drawing.Draw(controlReminder, destination: controlReminderRect, isUi: true, sortMode: SortMode.Top);
         }
 

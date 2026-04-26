@@ -259,6 +259,7 @@ namespace GraftGuard
 
         private void ToggleGameOver(GameTime gameTime, GameData session, string failReason)
         {
+            PlayerData.RecordCurrentGame();
             PlayerData.CurrentState = GameState.GameOver;
             _gameOverScreen.SetGameOver(gameTime, session, failReason);
         }

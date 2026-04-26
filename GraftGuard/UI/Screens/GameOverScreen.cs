@@ -114,8 +114,9 @@ internal class GameOverScreen
     private static readonly string titleText = "GAME OVER";
     private static readonly string scoreText = "SCORE: ";
     private static readonly string hiScoreText = "HIGH SCORE: ";
-    private static readonly int countRate = 3;
-    private static readonly float countUpMaxTime = 3f;
+    private static readonly int countRate = 100;
+    private static readonly float countUpMaxTime = 1.5f;
+    private static readonly float countUpMinTime = 0.5f;
     private static readonly int gap = 50; // gap between score text and score number
 
     private static readonly float titleShakeMagnitude = 10;
@@ -258,8 +259,8 @@ internal class GameOverScreen
         int score = session.CurrentScore;
         int hiScore = PlayerData.HighScore;
 
-        float scoreCountTime = Math.Min(score / (float)countRate, countUpMaxTime);
-        float hiScoreCountTime = Math.Min(hiScore / (float)countRate, countUpMaxTime);
+        float scoreCountTime = Math.Clamp(score / (float)countRate, countUpMinTime, countUpMaxTime);
+        float hiScoreCountTime = Math.Clamp(hiScore / (float)countRate, countUpMinTime, countUpMaxTime);
 
         currentTasks.Run(() => isScoreShowing = true);
 
@@ -268,27 +269,27 @@ internal class GameOverScreen
             currentTasks
                 .Loop(scoreCountTime, (_, elapsed) =>
                 {
-                    displayScore = (int)Math.Min(Math.Round(score * elapsed / scoreCountTime), score);
+                    displayScore = (int)MathHelper.Lerp(0, score, elapsed / scoreCountTime);
                 })
                 .Run(() => displayScore = score).Wait(1f);
         }
 
         currentTasks
-            .Wait(1f)
+            .Wait(0.2f)
             .Run(() => isHiScoreShowing = true);
 
         if (hiScore != 0)
         {
             currentTasks
-                .Loop(scoreCountTime, (_, elapsed) =>
+                .Loop(hiScoreCountTime, (_, elapsed) =>
                 {
-                    displayScore = (int)Math.Min(Math.Round(score * elapsed / scoreCountTime), score);
+                    displayHiScore = (int)MathHelper.Lerp(0, hiScore, elapsed / hiScoreCountTime);
                 })
                 .Run(() => displayHiScore = hiScore);
         }
 
         currentTasks
-            .Wait(1f)
+            .Wait(0.5f)
             .Run(() => isReturnShowing = true);
     }
 

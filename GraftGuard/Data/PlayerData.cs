@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 
@@ -19,10 +20,8 @@ namespace GraftGuard.Data
     {
         public static GameState CurrentState { get; set; } = GameState.MainMenu;
 
-        public static SaveData SaveData { get; set; }
-
-        public static int HighScore { get; set; }
-        public static List<GameData> GameHistory { get; set; }
+        public static int HighScore { get; set; } = 0;
+        public static List<GameData> GameHistory { get; set; } = new List<GameData>();
 
 
         // The active game
@@ -42,11 +41,13 @@ namespace GraftGuard.Data
 
         public static void RecordCurrentGame()
         {
-            if (CurrentGame != null)
+            GameHistory ??= new List<GameData>();
+            GameHistory.Add(CurrentGame);
+
+            Debug.WriteLine($"{CurrentGame.CurrentScore} > {HighScore} = {CurrentGame.CurrentScore > HighScore}");
+            if (CurrentGame.CurrentScore > HighScore)
             {
-                SaveData.GameHistory.Add(CurrentGame);
-                if (CurrentGame.CurrentScore > SaveData.HighScore)
-                    SaveData.HighScore = CurrentGame.CurrentScore;
+                HighScore = CurrentGame.CurrentScore;
             }
         }
 

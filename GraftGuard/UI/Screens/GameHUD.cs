@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace GraftGuard.UI.Screens;
 
@@ -251,7 +252,7 @@ internal class GameHUD
             isUi: true);
         }
 
-        if(PlayerData.CurrentGame.Time != TimeState.Day)
+        if (PlayerData.CurrentGame.Time != TimeState.Day)
         {
             float offset = -40.0f;
             int enemiesRemaining = world.EnemyManager.Enemies.Count;
@@ -275,20 +276,31 @@ internal class GameHUD
             (int)(sTopMargin + sBarMargin + hudTopOffset),
             (int)((sWidth - sBarMargin * 2) * timerProgressBarScale),
             (int)(sHeight * timerBarHeightScale - sBarMargin * 2)
-            ), color: Color.Purple,
-            isUi: true);
+            ),
+            color: Color.Purple,
+            isUi: true,
+            sortMode: SortMode.Sorted, 
+            drawLayer: 7
+        );
 
+        // 
         drawing.Draw(timerOverlayTexture, new Rectangle(
             (int)(Interface.Width / 2 - sWidth / 2),
             (int)(sTopMargin + hudTopOffset),
             (int)sWidth,
             (int)sHeight
-            ), color: Color.White,
-            isUi: true);
+            ),
+            color: Color.White,
+            isUi: true,
+            sortMode: SortMode.Top, 
+            drawLayer: 7
+        );
     }
 
     public void Draw(DrawManager drawing, GameTime gameTime, bool active)
     {
+        drawing.ForceScissor = null;
+
         TimeState currentTime = PlayerData.CurrentGame.Time;
         // whole hud offset
 

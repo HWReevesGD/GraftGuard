@@ -24,7 +24,7 @@ namespace GraftGuard.Data
 
     public enum Difficulty
     {
-        Easy = 3,
+        Easy = 2,
         Medium = 6,
         Hard = 9,
     }
